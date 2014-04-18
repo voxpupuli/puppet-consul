@@ -3,19 +3,37 @@
 
 ##Installation
 
-###What [Modulename] affects
+###What This Module Affects
 
-* A list of files, packages, services, or operations that the module will alter, impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form. 
+* Installs the consul daemon (via url or package)
+* Optionally installs a user to run it under
+* Installs a configuration file (/etc/consul/config.json)
+* Manages the consul service via upstart
 
 ##Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing the fancy stuff with your module here. 
+```puppet
+file '/opt/consul/':
+  ensure => 'directory',
+  owner  => 'consul',
+  group  => 'root',
+} ->
+class { 'consul':
+  config_hash => {
+    {
+      'datacenter' => 'east-aws',
+      'data_dir'   => '/opt/consul',
+      'log_level'  => 'INFO',
+      'node_name'  => 'foobar',
+      'server'     =>true
+    }
+  }
+}
+```
 
 ##Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+This module requires upstart to manage the service. Patches welcome! (with tests)
 
 ##Development
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or 
