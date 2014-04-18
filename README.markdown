@@ -13,7 +13,7 @@
 ##Usage
 
 ```puppet
-file '/opt/consul/':
+file { '/opt/consul/':
   ensure => 'directory',
   owner  => 'consul',
   group  => 'root',
