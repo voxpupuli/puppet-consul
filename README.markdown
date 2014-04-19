@@ -35,6 +35,8 @@ class { 'consul':
 
 This module requires upstart to manage the service. Patches welcome! (with tests)
 
+Also it depends on the JSON gem, or a modern ruby.
+
 ##Development
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or 
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a 
