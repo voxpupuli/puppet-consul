@@ -1,12 +1,14 @@
 require 'spec_helper'
 
-describe 'consul', :type => :class do
+describe 'consul' do
 
   # Installation Stuff
   context 'On an unsupported arch' do
-    let(:facts) {{
+    let(:facts) {{ :architecture => 'bogus' }}
+    let(:params) {{
+      :install_method => 'package'
     }}
-    it { expect { subject }.to raise_error(Puppet::Error) }
+    it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
   end
   context 'When requesting to install via a package with defaults' do
     let(:facts) {{ :architecture => 'x86_64' }}
