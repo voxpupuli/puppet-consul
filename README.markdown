@@ -20,13 +20,11 @@ file { '/opt/consul/':
 } ->
 class { 'consul':
   config_hash => {
-    {
       'datacenter' => 'east-aws',
       'data_dir'   => '/opt/consul',
       'log_level'  => 'INFO',
       'node_name'  => 'foobar',
       'server'     =>true
-    }
   }
 }
 ```
