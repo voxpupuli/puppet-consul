@@ -9,6 +9,11 @@ class consul::install {
       url       => $consul::download_url,
       target    => $consul::bin_dir,
       extension => 'zip',
+    } ->
+    file { "$consul::bin_dir/consul":
+      mode   => '0777',
+      owner   => 'root',
+      group   => 'root',
     }
 
   } elsif $consul::install_method == 'package' {
