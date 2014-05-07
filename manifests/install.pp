@@ -9,6 +9,8 @@ class consul::install {
       url       => $consul::download_url,
       target    => $consul::bin_dir,
       extension => 'zip',
+      checksum  => false,
+      follow_redirects => true,
     }
 
   } elsif $consul::install_method == 'package' {
