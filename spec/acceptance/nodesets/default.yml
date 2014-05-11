@@ -1,0 +1,7 @@
+HOSTS:
+  ubuntu-12-04:
+    platform: ubuntu-12.04-x64
+    image: solarkennedy/ubuntu-12.04-puppet
+    hypervisor: docker
+CONFIG: 
+  type: foss
