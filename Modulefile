@@ -8,4 +8,4 @@ description   'UNKNOWN'
 project_page  'https://github.com/solarkennedy/puppet-consul'
 
 dependency 'puppetlabs/stdlib'
-dependency 'camptocamp/archive'
+dependency 'nanliu/staging'
