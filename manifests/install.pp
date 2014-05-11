@@ -4,13 +4,18 @@ class consul::install {
 
   if $consul::install_method == 'url' {
 
-    archive { 'consul':
-      ensure    => 'present',
-      url       => $consul::download_url,
-      target    => $consul::bin_dir,
-      extension => 'zip',
-      checksum  => false,
-      follow_redirects => true,
+    ensure_packages(['unzip'])
+    staging::file { 'consul.zip':
+      source => $consul::download_url
+    } ->
+    staging::extract { 'consul.zip':
+      target  => $consul::bin_dir,
+      creates => "${consul::bin_dir}/consul",
+    } ->
+    file { "${consul::bin_dir}/consul":
+      owner => 'root',
+      group => 'root',
+      mode  => '0555',
     }
 
   } elsif $consul::install_method == 'package' {
