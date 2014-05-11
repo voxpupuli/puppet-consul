@@ -8,7 +8,7 @@ class consul::params {
   $install_method = 'url'
   $package_name   = 'consul'
   $package_ensure = 'latest'
-  $version = '0.1.0'
+  $version = '0.2.0'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
