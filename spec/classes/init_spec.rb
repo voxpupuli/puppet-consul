@@ -28,21 +28,21 @@ describe 'consul' do
   end
   context "When installing via URL by default" do
     let(:facts) {{ :architecture => 'x86_64' }}
-    it { should contain_archive('consul').with(:url => 'https://dl.bintray.com/mitchellh/consul/0.1.0_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.2.0_linux_amd64.zip') }
   end
   context "When installing via URL by with a special version" do
     let(:params) {{
       :version   => '42',
     }}
     let(:facts) {{ :architecture => 'x86_64' }}
-    it { should contain_archive('consul').with(:url => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
   end
   context "When installing via URL by with a custom url" do
     let(:facts) {{ :architecture => 'x86_64' }}
     let(:params) {{
       :download_url   => 'http://myurl',
     }}
-    it { should contain_archive('consul').with(:url => 'http://myurl') }
+    it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
   end
 
   context "By default, a user should be installed" do
