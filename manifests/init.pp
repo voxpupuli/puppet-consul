@@ -22,6 +22,8 @@
 class consul (
   $manage_user    = true,
   $user           = 'consul',
+  $manage_group   = true,
+  $group          = 'consul',
   $bin_dir        = '/usr/local/bin',
   $arch           = $consul::params::arch,
   $version        = $consul::params::version,

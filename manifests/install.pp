@@ -40,5 +40,9 @@ class consul::install {
       ensure => 'present',
     }
   }
-
+  if $consul::manage_group {
+    group { $consul::group:
+      ensure => 'present',
+    }
+  }
 }

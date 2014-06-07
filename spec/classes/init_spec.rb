@@ -45,20 +45,30 @@ describe 'consul' do
     it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
   end
 
-  context "By default, a user should be installed" do
+  context "By default, a user and group should be installed" do
     let(:facts) {{ :architecture => 'x86_64' }}
     it { should contain_user('consul').with(:ensure => :present) }
+    it { should contain_group('consul').with(:ensure => :present) }
   end
   context "When asked not to manage the user" do
     let(:facts) {{ :architecture => 'x86_64' }}
     let(:params) {{ :manage_user => false }}
     it { should_not contain_user('consul') }
   end
+  context "When asked not to manage the group" do
+    let(:facts) {{ :architecture => 'x86_64' }}
+    let(:params) {{ :manage_group => false }}
+    it { should_not contain_group('consul') }
+  end
   context "With a custom username" do
     let(:facts) {{ :architecture => 'x86_64' }}
-    let(:params) {{ :user => 'custom_consul_user' }}
+    let(:params) {{
+      :user => 'custom_consul_user',
+      :group => 'custom_consul_group',
+    }}
     it { should contain_user('custom_consul_user').with(:ensure => :present) }
-    it { should contain_file('/etc/init/consul.conf').with_content(/setuid custom_consul_user/) }
+    it { should contain_group('custom_consul_group').with(:ensure => :present) }
+    it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
   end
 
   # Config Stuff
