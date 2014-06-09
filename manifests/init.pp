@@ -19,6 +19,9 @@
 # [*package_ensure*]
 #   Only valid when the install_method == package. Defaults to `present`.
 #
+# [*extra_options*]
+#   Extra arguments to be passed to the consul agent
+#
 class consul (
   $manage_user    = true,
   $user           = 'consul',
@@ -32,6 +35,7 @@ class consul (
   $package_name   = $consul::params::package_name,
   $package_ensure = $consul::params::package_ensure,
   $config_dir     = '/etc/consul',
+  $extra_options  = '',
   $config_hash    = {},
   $service_enable = true,
   $service_ensure = 'running',
