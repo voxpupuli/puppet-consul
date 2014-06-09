@@ -44,7 +44,7 @@ define consul::check(
   }
 
   $check_hash = {
-    check => merge($basic_hash, $check_definition, $port_hash)
+    check => merge($basic_hash, $check_definition)
   }
 
   File[$consul::config_dir] ->
