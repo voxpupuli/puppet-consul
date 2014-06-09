@@ -72,7 +72,13 @@ describe 'consul' do
   end
 
   # Config Stuff
-
+  context "With extra_options" do
+    let(:facts) {{ :architecture => 'x86_64' }}
+    let(:params) {{
+      :extra_options => '-some-extra-argument'
+    }}
+    it { should contain_file('/etc/init/consul.conf').with_content(/\$CONSUL agent .*-some-extra-argument$/) }
+  end
   # Service Stuff
 
 end
