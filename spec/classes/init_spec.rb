@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe 'consul' do
 
+  RSpec.configure do |c|
+    c.default_facts = {
+      :operatingsystem => 'Ubuntu'
+    }
+  end
   # Installation Stuff
   context 'On an unsupported arch' do
     let(:facts) {{ :architecture => 'bogus' }}
@@ -69,6 +74,16 @@ describe 'consul' do
     it { should contain_user('custom_consul_user').with(:ensure => :present) }
     it { should contain_group('custom_consul_group').with(:ensure => :present) }
     it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
+  end
+
+  context "On a redhat-based OS" do
+    let(:facts) {{
+      :architecture    => 'x86_64',
+      :operatingsystem => 'CentOS'
+    }}
+
+    it { should contain_class('consul').with_init_style('redhat') }
+    it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
   end
 
   # Config Stuff

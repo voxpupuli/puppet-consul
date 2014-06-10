@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+#       /etc/rc.d/init.d/consul
+#
+#       Daemonize the consul agent.
+#
+# chkconfig:   2345 95 95
+# description: Service discovery and configuration made easy. \
+#  Distributed, highly available, and datacenter-aware.
+# processname: consul
+# pidfile: /var/run/consul/pidfile
+
+# Source function library.
+. /etc/init.d/functions
+
+CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
+CONFIG=<%= scope.lookupvar('consul::config_dir') %>
+PID_FILE=/var/run/consul/pidfile
+LOG_FILE=/var/log/consul
+
+start() {
+        echo -n "Starting consul: "
+        daemon --user=<%= scope.lookupvar('consul::user') %> \
+            --pidfile="$PID_FILE" \
+            "$CONSUL" agent -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &
+        retcode=$?
+        touch /var/lock/subsys/consul
+        return $retcode
+}
+
+stop() {
+        echo -n "Shutting down consul: "
+        "$CONSUL" leave
+
+        retcode=$?
+        rm -f /var/lock/subsys/consul
+        return $retcode
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        "$CONSUL" info
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    reload)
+        kill -HUP `cat $PID_FILE`
+        ;;
+    condrestart)
+        [ -f /var/lock/subsys/consul ] && restart || :
+        ;;
+    *)
+        echo "Usage: consul {start|stop|status|reload|restart}"
+        exit 1
+        ;;
+esac
+exit $?

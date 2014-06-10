@@ -28,11 +28,26 @@ class consul::install {
     fail("The provided install method ${consul::install_method} is invalid")
   }
 
-  file { '/etc/init/consul.conf':
-    mode   => '0444',
-    owner   => 'root',
-    group   => 'root',
-    content => template('consul/consul.upstart.erb'),
+  case $consul::init_style {
+    'upstart' : {
+      file { '/etc/init/consul.conf':
+        mode   => '0444',
+        owner   => 'root',
+        group   => 'root',
+        content => template('consul/consul.upstart.erb'),
+      }
+    }
+    'redhat' : {
+      file { '/etc/init.d/consul':
+        mode    => '0555',
+        owner   => 'root',
+        group   => 'root',
+        content => template('consul/consul.redhat.erb')
+      }
+    }
+    default : {
+      fail("I don't know how to create an init script for style $init_style")
+    }
   }
 
   if $consul::manage_user {

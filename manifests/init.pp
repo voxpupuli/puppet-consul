@@ -22,6 +22,8 @@
 # [*extra_options*]
 #   Extra arguments to be passed to the consul agent
 #
+# [*init_style*]
+#   What style of init system your system uses.
 class consul (
   $manage_user    = true,
   $user           = 'consul',
@@ -39,6 +41,7 @@ class consul (
   $config_hash    = {},
   $service_enable = true,
   $service_ensure = 'running',
+  $init_style     = $consul::params::init_style,
 ) inherits consul::params {
 
   validate_bool($manage_user)

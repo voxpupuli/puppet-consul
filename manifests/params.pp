@@ -16,4 +16,10 @@ class consul::params {
     default:           { fail("Unsupported kernel architecture: ${::architecture}") }
   }
 
+  $init_style = $::operatingsystem ? {
+    'Ubuntu'             => 'upstart',
+    'CentOS'             => 'redhat',
+    'RedHat'             => 'redhat',
+    default => undef
+  }
 }
