@@ -17,7 +17,11 @@ class consul::params {
   }
 
   $init_style = $::operatingsystem ? {
-    'Ubuntu'             => 'upstart',
+    'Ubuntu'             => $::lsbdistrelease ? {
+      '8.04'           => 'hardy',
+      /(10|12|14)\.04/ => 'upstart',
+      default => undef
+    },
     'CentOS'             => 'redhat',
     'RedHat'             => 'redhat',
     default => undef

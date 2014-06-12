@@ -45,6 +45,14 @@ class consul::install {
         content => template('consul/consul.redhat.erb')
       }
     }
+    'hardy' : {
+      file { '/etc/init.d/consul':
+        mode    => '0555',
+        owner   => 'root',
+        group   => 'root',
+        content => template('consul/consul.hardy.erb')
+      }
+    }
     default : {
       fail("I don't know how to create an init script for style $init_style")
     }
