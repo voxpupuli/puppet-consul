@@ -93,7 +93,11 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('hardy') }
-    it { should contain_file('/etc/init.d/consul').with_content(/start-stop-daemon .* \$DAEMON/) }
+    it {
+      should contain_file('/etc/init.d/consul')
+        .with_content(/start-stop-daemon .* \$DAEMON/)
+        .with_content(/DAEMON_ARGS="agent/)
+    }
   end
 
   # Config Stuff
