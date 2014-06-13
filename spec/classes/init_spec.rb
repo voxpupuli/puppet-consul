@@ -97,6 +97,7 @@ describe 'consul' do
       should contain_file('/etc/init.d/consul')
         .with_content(/start-stop-daemon .* \$DAEMON/)
         .with_content(/DAEMON_ARGS="agent/)
+        .with_content(/--user \$USER/)
     }
   end
 
