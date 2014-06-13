@@ -45,12 +45,12 @@ class consul::install {
         content => template('consul/consul.redhat.erb')
       }
     }
-    'hardy' : {
+    'debian' : {
       file { '/etc/init.d/consul':
         mode    => '0555',
         owner   => 'root',
         group   => 'root',
-        content => template('consul/consul.hardy.erb')
+        content => template('consul/consul.debian.erb')
       }
     }
     default : {

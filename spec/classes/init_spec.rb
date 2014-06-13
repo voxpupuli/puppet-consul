@@ -92,13 +92,22 @@ describe 'consul' do
       :lsbdistrelease  => '8.04',
     }}
 
-    it { should contain_class('consul').with_init_style('hardy') }
+    it { should contain_class('consul').with_init_style('debian') }
     it {
       should contain_file('/etc/init.d/consul')
         .with_content(/start-stop-daemon .* \$DAEMON/)
         .with_content(/DAEMON_ARGS="agent/)
         .with_content(/--user \$USER/)
     }
+  end
+
+  context "On squeeze" do
+    let(:facts) {{
+      :operatingsystem => 'Debian',
+      :operatingsystemrelease => '7.1'
+    }}
+
+    it { should contain_class('consul').with_init_style('debian') }
   end
 
   # Config Stuff
