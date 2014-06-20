@@ -7,5 +7,5 @@ summary       'UNKNOWN'
 description   'UNKNOWN'
 project_page  'https://github.com/solarkennedy/puppet-consul'
 
-dependency 'puppetlabs/stdlib'
-dependency 'nanliu/staging'
+dependency 'puppetlabs/stdlib', '>= 0.1.6'
+dependency 'nanliu/staging', '>=0.4.0'
