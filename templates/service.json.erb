@@ -1,2 +1,5 @@
 <%- require 'json' -%>
+<%- if @service_hash['service']['port']  -%> 
+<%-   @service_hash['service']['port'] = @service_hash['service']['port'].to_i -%> 
+<%- end -%> 
 <%= JSON.pretty_generate(Hash[@service_hash.sort]) %>
