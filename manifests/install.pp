@@ -2,6 +2,15 @@
 #
 class consul::install {
 
+  if $consul::data_dir {
+    file { "${consul::data_dir}":
+      ensure => 'directory',
+      owner => $consul::user,
+      group => $consul::group,
+      mode  => '0755',
+    }
+  }
+
   if $consul::install_method == 'url' {
 
     ensure_packages(['unzip'])
@@ -18,10 +27,34 @@ class consul::install {
       mode  => '0555',
     }
 
+    if ($consul::ui_dir and $consul::data_dir) {
+      file { "${consul::data_dir}/${consul::version}_web_ui":
+        ensure => 'directory',
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755',
+      } ->
+      staging::deploy { 'consul_web_ui.zip':
+        source  => "${consul::ui_download_url}",
+        target  => "${consul::data_dir}/${consul::version}_web_ui",
+        creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
+      }
+      file { "${consul::ui_dir}":
+        ensure => 'symlink',
+        target => "${consul::data_dir}/${consul::version}_web_ui/dist",
+      }
+    }
+
   } elsif $consul::install_method == 'package' {
 
     package { $consul::package_name:
       ensure => $consul::package_ensure,
+    }
+
+    if $consul::ui_package_name {
+      package { $consul::ui_package_name:
+        ensure => $consul::ui_package_ensure,
+      }
     }
 
   } else {
