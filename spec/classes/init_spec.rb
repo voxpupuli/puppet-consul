@@ -77,13 +77,34 @@ describe 'consul' do
     it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
   end
 
-  context "On a redhat-based OS" do
+  context "On a redhat 6 based OS" do
     let(:facts) {{
-      :operatingsystem => 'CentOS'
+      :operatingsystem => 'CentOS',
+      :operatingsystemmajrelease => 6,
     }}
 
-    it { should contain_class('consul').with_init_style('redhat') }
+    it { should contain_class('consul').with_init_style('sysv') }
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
+  end
+
+  context "On a redhat 7 based OS" do
+    let(:facts) {{
+      :operatingsystem => 'CentOS',
+      :operatingsystemmajrelease => 7,
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+  end
+
+  context "On a fedora 20 based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Fedora',
+      :operatingsystemmajrelease => 20,
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On hardy" do

@@ -22,9 +22,15 @@ class consul::params {
       /(10|12|14)\.04/ => 'upstart',
       default => undef
     },
+    /CentOS|RedHat/      => $::operatingsystemmajrelease ? {
+      /(4|5|6)/ => 'sysv',
+      default   => 'systemd',
+    },
+    'Fedora'             => $::operatingsystemmajrelease ? {
+      /(12|13|14)/ => 'sysv',
+      default      => 'systemd',
+    },
     'Debian'             => 'debian',
-    'CentOS'             => 'redhat',
-    'RedHat'             => 'redhat',
     default => undef
   }
 }
