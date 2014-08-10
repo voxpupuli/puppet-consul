@@ -52,9 +52,95 @@ describe 'consul' do
     it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
   end
 
+
+  context 'When requesting to install via a package with defaults' do
+    let(:params) {{
+      :install_method => 'package'
+    }}
+    it { should contain_package('consul').with(:ensure => 'latest') }
+  end
+
+  context 'When requesting to install UI via a custom package and version' do
+    let(:params) {{
+      :install_method    => 'package',
+      :ui_package_ensure => 'specific_ui_release',
+      :ui_package_name   => 'custom_consul_ui_package',
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_package('custom_consul_ui_package').with(:ensure => 'specific_ui_release') }
+  end
+
+  context "When installing UI via URL by default" do
+    let(:params) {{
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.3.0_web_ui.zip') }
+  end
+
+  context "When installing UI via URL by with a special version" do
+    let(:params) {{
+      :version => '42',
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_web_ui.zip') }
+  end
+
+  context "When installing UI via URL by with a custom url" do
+    let(:params) {{
+      :ui_download_url => 'http://myurl',
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_staging__deploy('consul_web_ui.zip').with(:source => 'http://myurl') }
+  end
+
   context "By default, a user and group should be installed" do
     it { should contain_user('consul').with(:ensure => :present) }
     it { should contain_group('consul').with(:ensure => :present) }
+  end
+
+  context "When data_dir is provided" do
+    let(:params) {{
+      :config_hash => {
+        'data_dir' => '/dir1',
+      },
+    }}
+    it { should contain_file('/dir1').with(:ensure => :directory) }
+  end
+
+  context "When data_dir not provided" do
+    it { should_not contain_file('/dir1').with(:ensure => :directory) }
+  end
+
+  context "When ui_dir is provided but not data_dir" do
+    let(:params) {{
+      :config_hash => {
+        'ui_dir' => '/dir1/dir2',
+      },
+    }}
+    it { should_not contain_file('/dir1/dir2') }
+  end
+
+  context "When ui_dir and data_dir is provided" do
+    let(:params) {{
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_file('/dir1') }
+    it { should contain_file('/dir1/dir2') }
   end
 
   context "When asked not to manage the user" do

@@ -5,9 +5,11 @@
 #
 class consul::params {
 
-  $install_method = 'url'
-  $package_name   = 'consul'
-  $package_ensure = 'latest'
+  $install_method    = 'url'
+  $package_name      = 'consul'
+  $package_ensure    = 'latest'
+  $ui_package_name   = 'consul_ui'
+  $ui_package_ensure = 'latest'
   $version = '0.3.0'
 
   case $::architecture {
