@@ -1,0 +1,17 @@
+[Unit]
+Description=Consul Agent
+Wants=basic.target
+After=basic.target network.target
+
+[Service]
+User=<%= scope.lookupvar('consul::user') %>
+Group=<%= scope.lookupvar('consul::group') %>
+ExecStart=<%= scope.lookupvar('consul::bin_dir') %>/consul agent \
+  -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
