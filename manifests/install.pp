@@ -37,12 +37,20 @@ class consul::install {
         content => template('consul/consul.upstart.erb'),
       }
     }
-    'redhat' : {
+    'systemd' : {
+      file { '/lib/systemd/system/consul.service':
+        mode   => '0644',
+        owner   => 'root',
+        group   => 'root',
+        content => template('consul/consul.systemd.erb'),
+      }
+    }
+    'sysv' : {
       file { '/etc/init.d/consul':
         mode    => '0555',
         owner   => 'root',
         group   => 'root',
-        content => template('consul/consul.redhat.erb')
+        content => template('consul/consul.sysv.erb')
       }
     }
     'debian' : {

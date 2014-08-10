@@ -8,7 +8,7 @@
 * Installs the consul daemon (via url or package)
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
-* Manages the consul service via upstart
+* Manages the consul service via upstart, sysv, or systemd
 
 ##Usage
 
@@ -31,9 +31,7 @@ class { 'consul':
 
 ##Limitations
 
-This module requires upstart to manage the service. Patches welcome! (with tests)
-
-Also it depends on the JSON gem, or a modern ruby.
+Depends on the JSON gem, or a modern ruby.
 
 ##Development
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or 
