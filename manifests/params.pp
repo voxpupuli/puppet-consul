@@ -10,7 +10,7 @@ class consul::params {
   $package_ensure    = 'latest'
   $ui_package_name   = 'consul_ui'
   $ui_package_ensure = 'latest'
-  $version = '0.3.0'
+  $version = '0.3.1'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
