@@ -35,7 +35,7 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.3.0_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.3.1_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
