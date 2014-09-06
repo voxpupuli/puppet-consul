@@ -69,6 +69,13 @@ class consul::install {
         group   => 'root',
         content => template('consul/consul.upstart.erb'),
       }
+      file { '/etc/init.d/consul':
+        ensure => link,
+        target => "/lib/init/upstart-job",
+        owner  => root,
+        group  => root,
+        mode   => 0755,
+      }
     }
     'systemd' : {
       file { '/lib/systemd/system/consul.service':
