@@ -11,6 +11,7 @@ class consul::install {
     }
   }
 
+  notify {$consul::install_method: }
   if $consul::install_method == 'url' {
 
     ensure_packages(['unzip'])
@@ -51,7 +52,8 @@ class consul::install {
       ensure => $consul::package_ensure,
     }
 
-    if $consul::ui_package_name {
+    # Guessing this is a bug 
+    if $consul::ui_dir {
       package { $consul::ui_package_name:
         ensure => $consul::ui_package_ensure,
       }
