@@ -11,7 +11,6 @@ class consul::install {
     }
   }
 
-  notify {$consul::install_method: }
   if $consul::install_method == 'url' {
 
     ensure_packages(['unzip'])
