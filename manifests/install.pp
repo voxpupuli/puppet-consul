@@ -51,7 +51,6 @@ class consul::install {
       ensure => $consul::package_ensure,
     }
 
-    # Guessing this is a bug 
     if $consul::ui_dir {
       package { $consul::ui_package_name:
         ensure => $consul::ui_package_ensure,
