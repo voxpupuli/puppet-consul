@@ -7,7 +7,7 @@
 # [*version*]
 #   Specify version of consul binary to download.
 #
-# [*join_leader*]
+# [*join_cluster*]
 #   Specify the hostname or IP of a known consul node, likely the original.  Defaults to 'UNSET'
 #
 # [*config_hash*]
@@ -38,7 +38,7 @@ class consul (
   $user              = 'consul',
   $manage_group      = true,
   $group             = 'consul',
-  $join_leader       = 'UNSET',
+  $join_cluster      = 'UNSET',
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
   $version           = $consul::params::version,

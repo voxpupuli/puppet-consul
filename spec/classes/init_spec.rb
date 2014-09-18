@@ -20,12 +20,12 @@ describe 'consul' do
 
   context 'When joining consul to a cluster by a known URL' do
     let(:params) {{
-      :join_leader => 'leader.test.com'
+      :join_cluster => 'other_host.test.com'
     }}
-    it { should contain_exec('join consul leader').with(:command => 'consul join leader.test.com') }
+    it { should contain_exec('join consul cluster').with(:command => 'consul join other_host.test.com') }
   end
   context 'By default, should not attempt to join a cluser' do
-    it { should_not contain_exec('join consul leader') }
+    it { should_not contain_exec('join consul cluster') }
   end
 
   context 'When requesting to install via a package with defaults' do
