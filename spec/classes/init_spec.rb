@@ -18,6 +18,16 @@ describe 'consul' do
     it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
+  context 'When joining consul to a cluster by a known URL' do
+    let(:params) {{
+      :join_leader => 'leader.test.com'
+    }}
+    it { should contain_exec('join consul leader').with(:command => 'consul join leader.test.com') }
+  end
+  context 'By default, should not attempt to join a cluser' do
+    it { should_not contain_exec('join consul leader') }
+  end
+
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
       :install_method => 'package'
