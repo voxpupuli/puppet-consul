@@ -153,6 +153,15 @@ describe 'consul' do
     it { should contain_file('/dir1/dir2') }
   end
 
+  context 'The bootstrap_expect in config_hash is an int' do
+    let(:params) {{
+      :config_hash =>
+        { 'bootstrap_expect' => '5' }
+    }}
+    it { should contain_file('config.json').with_content(/bootstrap_expect: 5/) }
+    it { should_not contain_file('config.json').with_content(/bootstrap_expect: "5"/) }
+  end
+
   context "When asked not to manage the user" do
     let(:params) {{ :manage_user => false }}
     it { should_not contain_user('consul') }

@@ -38,7 +38,7 @@ class consul (
   $user              = 'consul',
   $manage_group      = true,
   $group             = 'consul',
-  $join_cluster      = 'UNSET',
+  $join_cluster      = false,
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
   $version           = $consul::params::version,
