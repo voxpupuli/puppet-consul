@@ -158,8 +158,8 @@ describe 'consul' do
       :config_hash =>
         { 'bootstrap_expect' => '5' }
     }}
-    it { should contain_file('config.json').with_content(/bootstrap_expect: 5/) }
-    it { should_not contain_file('config.json').with_content(/bootstrap_expect: "5"/) }
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should_not contain_file('config.json').with_content(/"bootstrap_expect": "5"/) }
   end
 
   context "When asked not to manage the user" do
