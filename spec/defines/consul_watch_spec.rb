@@ -15,7 +15,7 @@ describe 'consul::watch' do
       let (:facts) {{ :architecture => 'x86_64', :version => '1.3.0' }}
       let (:params) {{
         'type'    => 'nodes',
-        'handler' => 'handler_path'
+        'handler' => 'handler_path',
       }}
       it {
         should contain_file('/etc/consul/watch_my_watch.json')
@@ -33,7 +33,7 @@ describe 'consul::watch' do
 
   describe 'with handler no type' do
     let(:params) {{
-      'handler' => 'handler_path'
+      'handler' => 'handler_path',
     }}
     it {
       expect { should raise_error(Puppet::Error)}
@@ -42,7 +42,7 @@ describe 'consul::watch' do
 
   describe 'with valid type no handler' do
     let(:params) {{
-      'type'  => 'nodes'
+      'type'  => 'nodes',
     }}
     it {
       expect { should raise_error(Puppet::Error)}
@@ -52,7 +52,7 @@ describe 'consul::watch' do
   describe 'with valid type and handler' do
     let(:params) {{
       'type'    => 'nodes',
-      'handler' => 'handler_path'
+      'handler' => 'handler_path',
     }}
     it {
       should contain_file('/etc/consul/watch_my_watch.json') \
@@ -90,8 +90,9 @@ describe 'consul::watch' do
       context 'with key' do
         let (:params) {{
           'type'    => 'key',
-          'key'     => 'KeyName',
           'handler' => 'handler_path',
+
+          'key'     => 'KeyName',
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
@@ -115,8 +116,9 @@ describe 'consul::watch' do
       context 'with keyprefix' do
         let (:params) {{
           'type'      => 'keyprefix',
-          'keyprefix' => 'keyPref',
           'handler'   => 'handler_path',
+
+          'keyprefix' => 'keyPref',
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
@@ -140,8 +142,9 @@ describe 'consul::watch' do
       context 'with service' do
         let (:params) {{
           'type'      => 'service',
-          'service'   => 'serviceName',
           'handler'   => 'handler_path',
+
+          'service'   => 'serviceName',
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
@@ -153,8 +156,8 @@ describe 'consul::watch' do
       context 'with all optionals' do
         let (:params) {{
           'type'        => 'service',
-          'service'     => 'serviceName',
           'handler'     => 'handler_path',
+          'service'     => 'serviceName',
 
           'service_tag' => 'serviceTagName',
           'passingonly' => 'true'

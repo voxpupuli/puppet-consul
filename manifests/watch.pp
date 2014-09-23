@@ -1,3 +1,4 @@
+
 define consul::watch(
   $handler      = undef,
   $datacenter   = undef,
@@ -14,8 +15,6 @@ define consul::watch(
   include consul
   $id = $title
 
-  $versionArray = split($::consul::version, '.')
-
   $basic_hash = {
     'type'       => $type,
     'handler'    => $handler,
@@ -23,7 +22,7 @@ define consul::watch(
     'token'      => $token,
   }
 
-
+  $versionArray = split($::consul::version, '.')
   if ($versionArray[0] < 1 or ($versionArray[0] == 0 and $versionArray[1] < 4)) {
     fail ('Watches are only supported in Consul 0.4.0 and above')
   }
@@ -35,7 +34,6 @@ define consul::watch(
   if (! $type ) {
     fail ('All watch conditions must have a type defined')
   }
-
 
   case $type {
     'key': {
@@ -61,13 +59,13 @@ define consul::watch(
       $type_hash = {
         service     => $service,
         tag         => $service_tag,
-        passingonly => $passingonly
+        passingonly => $passingonly,
       }
     }
     'checks': {
       $type_hash = {
         service => $service,
-        state   => $state
+        state   => $state,
       }
     }
     'event': {
@@ -79,7 +77,6 @@ define consul::watch(
       $type_hash = {}
     }
     default: {
-      # code
       fail("${type} is an unrecogonized watch type that is not supported currently")
     }
   }
