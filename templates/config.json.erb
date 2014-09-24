@@ -1,3 +1,4 @@
 <%- require 'json' -%>
 <%- @config_hash.has_key?("protocol") and @config_hash["protocol"] = @config_hash["protocol"].to_i -%>
+<%- @config_hash.has_key?("bootstrap_expect") and @config_hash["bootstrap_expect"] = @config_hash["bootstrap_expect"].to_i -%>
 <%= JSON.pretty_generate(Hash[@config_hash.sort]) %>

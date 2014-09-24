@@ -10,4 +10,14 @@ class consul::run_service {
     enable     => $consul::service_enable,
   }
 
+  if $consul::join_cluster {
+    exec { 'join consul cluster':
+      cwd         => $consul::config_dir,
+      path        => $consul::bin_dir,
+      command     => "consul join ${consul::join_cluster}",
+      refreshonly => true,
+      subscribe   => Service['consul'],
+    }
+  }
+
 }
