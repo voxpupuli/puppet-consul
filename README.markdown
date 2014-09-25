@@ -82,6 +82,21 @@ class { 'consul':
 }
 ```
 
+## Service Definition
+
+To declare the availability of a service, you can use the `service` define. This 
+will register the service through the local consul client agent and optionally 
+configure a health check to monitor its availability.
+
+```puppet
+consul::service { 'redis':
+  tags => ['master'],
+  port => 8000,
+  check_script => '/usr/local/bin/check_redis.py',
+  check_interval => '10s',
+}
+```
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.
