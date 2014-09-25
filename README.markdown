@@ -65,7 +65,7 @@ To have the host automatically join a cluster after the service starts, pass
 in a URL or IP that you can safely assume will exist and be running consul.
 ```puppet
 class { 'consul':
-  join_cluster => ‘my_leader.example.com’,
+  join_cluster => 'my_leader.example.com',
 }
 ```
 
@@ -73,7 +73,7 @@ If you are bootstrapping a new cluster, it helps to also add a bootstrap_expect
 value to the config hash so that servers can elect a leader once quota is met.
 ```puppet
 class { 'consul':
-  join_cluster => ‘my_neighbor.example.com’,
+  join_cluster => 'my_neighbor.example.com',
   config_hash => {
       ...
       'server'           => true,
