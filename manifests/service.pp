@@ -42,6 +42,8 @@ define consul::service(
   }
 
   if $port {
+    # implicit conversion from string to int so it won't be quoted in JSON 
+    $port = $port * 1
     $port_hash = {
       port => $port
     }
