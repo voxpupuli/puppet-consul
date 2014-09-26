@@ -59,6 +59,44 @@ and use with a reverse proxy:
   }
 ```
 
+## Join a cluster
+
+To have the host automatically join a cluster after the service starts, pass
+in a URL or IP that you can safely assume will exist and be running consul.
+```puppet
+class { 'consul':
+  join_cluster => 'my_leader.example.com',
+}
+```
+
+If you are bootstrapping a new cluster, it helps to also add a bootstrap_expect
+value to the config hash so that servers can elect a leader once quota is met.
+```puppet
+class { 'consul':
+  join_cluster => 'my_neighbor.example.com',
+  config_hash => {
+      ...
+      'server'           => true,
+      'bootstrap_expect' => 3
+  }
+}
+```
+
+## Service Definition
+
+To declare the availability of a service, you can use the `service` define. This 
+will register the service through the local consul client agent and optionally 
+configure a health check to monitor its availability.
+
+```puppet
+consul::service { 'redis':
+  tags           => ['master'],
+  port           => 8000,
+  check_script   => '/usr/local/bin/check_redis.py',
+  check_interval => '10s',
+}
+```
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.

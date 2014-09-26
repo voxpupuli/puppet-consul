@@ -36,6 +36,17 @@ describe 'consul' do
     it { should contain_class('consul::config').with(:purge => false) }
   end
 
+  context 'When joining consul to a cluster by a known URL' do
+    let(:params) {{
+      :join_cluster => 'other_host.test.com'
+    }}
+    it { should contain_exec('join consul cluster').with(:command => 'consul join other_host.test.com') }
+  end
+
+  context 'By default, should not attempt to join a cluser' do
+    it { should_not contain_exec('join consul cluster') }
+  end
+
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
       :install_method => 'package'
@@ -159,6 +170,15 @@ describe 'consul' do
     }}
     it { should contain_file('/dir1') }
     it { should contain_file('/dir1/dir2') }
+  end
+
+  context 'The bootstrap_expect in config_hash is an int' do
+    let(:params) {{
+      :config_hash =>
+        { 'bootstrap_expect' => '5' }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should_not contain_file('config.json').with_content(/"bootstrap_expect": "5"/) }
   end
 
   context "When asked not to manage the user" do
