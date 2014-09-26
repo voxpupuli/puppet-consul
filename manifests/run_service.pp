@@ -13,9 +13,9 @@ class consul::run_service {
   if $consul::join_cluster {
     exec { 'join consul cluster':
       cwd         => $consul::config_dir,
-      path        => $consul::bin_dir,
+      path        => [$consul::bin_dir,'/bin','/usr/bin'],
       command     => "consul join ${consul::join_cluster}",
-      refreshonly => true,
+      onlyif      => 'consul info | grep -P "num_peers\s*=\s*0"',
       subscribe   => Service['consul'],
     }
   }
