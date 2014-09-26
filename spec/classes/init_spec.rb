@@ -18,6 +18,24 @@ describe 'consul' do
     it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
+  context 'When not specifying whether to purge config' do
+    it { should contain_file('/etc/consul').with(:purge => true,:recurse => true) }
+  end
+
+  context 'When passing a non-bool as purge_config_dir' do
+    let(:params) {{
+      :purge_config_dir => 'hello'
+    }}
+    it { expect { should compile }.to raise_error(/is not a boolean/) }
+  end
+
+  context 'When disable config purging' do
+    let(:params) {{
+      :purge_config_dir => false
+    }}
+    it { should contain_class('consul::config').with(:purge => false) }
+  end
+
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
       :install_method => 'package'

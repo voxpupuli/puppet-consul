@@ -57,6 +57,7 @@ class consul (
   $init_style        = $consul::params::init_style,
 ) inherits consul::params {
 
+  validate_bool($purge_config_dir)
   validate_bool($manage_user)
   validate_hash($config_hash)
 
