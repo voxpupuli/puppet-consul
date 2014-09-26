@@ -34,6 +34,7 @@ class consul (
   $manage_user       = true,
   $user              = 'consul',
   $manage_group      = true,
+  $purge_config_dir  = false,
   $group             = 'consul',
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
@@ -69,7 +70,9 @@ class consul (
   }
 
   class { 'consul::install': } ->
-  class { 'consul::config': } ~>
+  class { 'consul::config':
+    purge => $purge_config_dir
+  } ~>
   class { 'consul::run_service': } ->
   Class['consul']
 
