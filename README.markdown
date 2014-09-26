@@ -90,9 +90,9 @@ configure a health check to monitor its availability.
 
 ```puppet
 consul::service { 'redis':
-  tags => ['master'],
-  port => 8000,
-  check_script => '/usr/local/bin/check_redis.py',
+  tags           => ['master'],
+  port           => 8000,
+  check_script   => '/usr/local/bin/check_redis.py',
   check_interval => '10s',
 }
 ```
