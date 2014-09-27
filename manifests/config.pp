@@ -2,10 +2,14 @@
 #
 # This class is called from consul
 #
-class consul::config {
+class consul::config(
+  $purge = true
+) {
 
   file { $consul::config_dir:
-    ensure => 'directory',
+    ensure  => 'directory',
+    purge   => $purge,
+    recurse => $purge,
   } ->
   file { 'config.json':
     path    => "${consul::config_dir}/config.json",
