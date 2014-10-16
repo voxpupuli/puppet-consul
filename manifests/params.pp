@@ -33,6 +33,7 @@ class consul::params {
       default      => 'systemd',
     },
     'Debian'             => 'debian',
+    'SLES'               => 'sles',
     default => undef
   }
 }
