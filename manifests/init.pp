@@ -43,6 +43,7 @@ class consul (
   $purge_config_dir  = true,
   $group             = 'consul',
   $join_cluster      = false,
+  $join_wan          = false,
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
   $version           = $consul::params::version,
