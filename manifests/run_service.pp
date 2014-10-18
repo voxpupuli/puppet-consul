@@ -20,4 +20,14 @@ class consul::run_service {
     }
   }
 
+  if $consul::join_wan {
+    exec { 'join consul wan':
+      cwd         => $consul::config_dir,
+      path        => [$consul::bin_dir,'/bin','/usr/bin'],
+      command     => "consul join -wan ${consul::join_wan}",
+      onlyif      => "consul members -wan -detailed | grep -vP \"dc=${consul::config_hash['datacenter']}\" | grep -P 'alive'",
+      subscribe   => Service['consul'],
+    }
+  }
+
 }
