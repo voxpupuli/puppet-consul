@@ -18,6 +18,10 @@ CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 PID_FILE=/var/run/consul/pidfile
 LOG_FILE=/var/log/consul
 
+[ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
+
+export GOMAXPROCS=${GOMAXPROCS:-2}
+
 start() {
         echo -n "Starting consul: "
         daemon --user=<%= scope.lookupvar('consul::user') %> \
