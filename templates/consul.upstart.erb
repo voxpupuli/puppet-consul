@@ -6,17 +6,13 @@ stop on runlevel [06]
 env CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 env CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 
-setuid <%= scope.lookupvar('consul::user') %>
-setgid <%= scope.lookupvar('consul::group') %>
-
 
 script
     # read settings like GOMAXPROCS from "/etc/default/consul", if available.
     [ -e /etc/default/consul ] && . /etc/default/consul
 
     export GOMAXPROCS=${GOMAXPROCS:-2}
-    exec $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
-
+    exec sudo -u <%= scope.lookupvar('consul::user') %> -g <%= scope.lookupvar('consul::group') %> $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
 end script
 
 respawn
