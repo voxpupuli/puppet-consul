@@ -29,7 +29,7 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul/ui') do
-      it { should be_linked_to '/opt/consul/0.2.0_web_ui' }
+      it { should be_linked_to '/opt/consul/0.4.1_web_ui' }
     end
 
     describe service('consul') do
@@ -39,7 +39,7 @@ describe 'consul class' do
     it { should contain_service('mysql-server').with_ensure('present') }
 
     describe command('consul version') do
-      it { should return_stdout /Consul v0\.2\.0/ }
+      it { should return_stdout /Consul v0\.4\.1/ }
     end
 
   end

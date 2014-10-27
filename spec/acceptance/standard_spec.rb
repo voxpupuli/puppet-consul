@@ -31,7 +31,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      it { should return_stdout /Consul v0\.2\.0/ }
+      it { should return_stdout /Consul v0\.4\.1/ }
     end
 
   end
