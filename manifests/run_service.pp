@@ -15,7 +15,7 @@ class consul::run_service {
       cwd         => $consul::config_dir,
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
       command     => "consul join ${consul::join_cluster}",
-      onlyif      => 'consul info | grep -P "num_peers\s*=\s*0"',
+      onlyif      => 'consul info | grep "known_servers = 0"',
       subscribe   => Service['consul'],
     }
   }
