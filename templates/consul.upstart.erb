@@ -6,7 +6,14 @@ stop on runlevel [06]
 env CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 env CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 
-exec sudo -u <%= scope.lookupvar('consul::user') %> -g <%= scope.lookupvar('consul::group') %> $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
+
+script
+    # read settings like GOMAXPROCS from "/etc/default/consul", if available.
+    [ -e /etc/default/consul ] && . /etc/default/consul
+
+    export GOMAXPROCS=${GOMAXPROCS:-2}
+    exec sudo -u <%= scope.lookupvar('consul::user') %> -g <%= scope.lookupvar('consul::group') %> $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
+end script
 
 respawn
 respawn limit 10 10
