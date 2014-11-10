@@ -18,6 +18,11 @@ class consul::params {
     default:           { fail("Unsupported kernel architecture: ${::architecture}") }
   }
 
+  case $::operatingsystem {
+    'Darwin': { $os = 'darwin' }
+    default:  { $os = 'linux' }
+  }
+
   $init_style = $::operatingsystem ? {
     'Ubuntu'             => $::lsbdistrelease ? {
       '8.04'           => 'debian',
@@ -34,6 +39,7 @@ class consul::params {
     },
     'Debian'             => 'debian',
     'SLES'               => 'sles',
+    'Darwin'             => 'launchd',
     default => undef
   }
 }
