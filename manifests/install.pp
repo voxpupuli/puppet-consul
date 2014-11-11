@@ -2,11 +2,6 @@
 #
 class consul::install {
 
-  $root_group = $::operatingsystem ? {
-    'Darwin' => 'wheel',
-    default  => 'root',
-  }
-
   if $consul::data_dir {
     file { "${consul::data_dir}":
       ensure => 'directory',
@@ -18,7 +13,9 @@ class consul::install {
 
   if $consul::install_method == 'url' {
 
-    # ensure_packages(['unzip'])
+    if $::operatingsystem != 'darwin' {
+      ensure_packages(['unzip'])
+    }
     staging::file { 'consul.zip':
       source => $consul::download_url
     } ->
@@ -28,7 +25,7 @@ class consul::install {
     } ->
     file { "${consul::bin_dir}/consul":
       owner => 'root',
-      group => $root_group,
+      group => 0, # 0 instead of root because OS X uses "wheel".
       mode  => '0555',
     }
 
@@ -36,7 +33,7 @@ class consul::install {
       file { "${consul::data_dir}/${consul::version}_web_ui":
         ensure => 'directory',
         owner  => 'root',
-        group  => $root_group,
+        group  => 0, # 0 instead of root because OS X uses "wheel".
         mode   => '0755',
       } ->
       staging::deploy { 'consul_web_ui.zip':
