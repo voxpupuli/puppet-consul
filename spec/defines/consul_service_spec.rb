@@ -14,6 +14,18 @@ describe 'consul::service' do
         .with_content(/"name" *: *"my_service"/)
     }
   end
+  describe 'with service name' do
+    let(:params) {{
+      'service_name' => 'different_name',
+    }}
+
+    it {
+      should contain_file("/etc/consul/service_my_service.json")
+        .with_content(/"service" *: *{/)
+        .with_content(/"id" *: *"my_service"/)
+        .with_content(/"name" *: *"different_name"/)
+    }
+  end
   describe 'with interval' do
     let(:params) {{
       'check_interval'    => '30s',
