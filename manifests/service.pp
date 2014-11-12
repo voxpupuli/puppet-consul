@@ -1,4 +1,5 @@
 define consul::service(
+  $service_name   = $title,
   $tags           = [],
   $port           = undef,
   $check_ttl      = undef,
@@ -10,7 +11,7 @@ define consul::service(
 
   $basic_hash = {
     'id'   => $id,
-    'name' => $name,
+    'name' => $service_name,
     'tags' => $tags,
   }
 
