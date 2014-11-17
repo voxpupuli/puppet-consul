@@ -88,5 +88,5 @@ define consul::watch(
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/watch_${id}.json":
     content => template('consul/watch.json.erb'),
-  } ~> Class['consul::run_service']
+  }
 }

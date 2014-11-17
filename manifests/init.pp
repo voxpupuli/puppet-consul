@@ -85,4 +85,8 @@ class consul (
   class { 'consul::run_service': } ->
   Class['consul']
 
+  include consul::reload
+  Consul::Watch <| |> ~> Class['consul::reload']
+  Consul::Check <| |> ~> Class['consul::reload']
+  Consul::Service <| |> ~> Class['consul::reload']
 }
