@@ -273,6 +273,13 @@ describe 'consul' do
     }}
     it { should contain_file('/etc/init/consul.conf').with_content(/\$CONSUL agent .*-some-extra-argument$/) }
   end
+
   # Service Stuff
+  context "After successful init" do
+    it {
+      should contain_service('consul')
+      should contain_class('consul::reload')
+    }
+  end
 
 end
