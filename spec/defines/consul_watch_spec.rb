@@ -6,13 +6,34 @@ describe 'consul::watch' do
 
   describe 'version checks' do
     context 'with version < 0.4.0' do
-      let (:facts) {{ :architecture => 'x86_64', :version => '0.3.0' }}
+      let (:facts) {{ :architecture => 'x86_64' }}
+      let(:hiera_data) {{ 'consul::version' => '0.3.0' }}
+      let (:params) {{
+        'type'    => 'nodes',
+        'handler' => 'handler_path',
+      }}
       it {
-        expect { should raise_error(Puppet::Error)}
+        expect {
+          should contain_file('/etc/consul/watch_my_watch.json')
+        }.to raise_error(Puppet::Error, /Watches are only supported in Consul 0.4.0 and above/)
       }
     end
+
+    context 'with version 0.4.1' do
+      let (:facts) {{ :architecture => 'x86_64' }}
+      let(:hiera_data) {{ 'consul::version' => '0.4.1' }}
+      let (:params) {{
+        'type'    => 'nodes',
+        'handler' => 'handler_path',
+      }}
+      it {
+        should contain_file('/etc/consul/watch_my_watch.json')
+      }
+    end
+
     context 'with version 1.3.0' do
-      let (:facts) {{ :architecture => 'x86_64', :version => '1.3.0' }}
+      let (:facts) {{ :architecture => 'x86_64' }}
+      let(:hiera_data) {{ 'consul::version' => '1.3.0' }}
       let (:params) {{
         'type'    => 'nodes',
         'handler' => 'handler_path',

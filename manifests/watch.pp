@@ -22,8 +22,7 @@ define consul::watch(
     'token'      => $token,
   }
 
-  $versionArray = split($::consul::version, '.')
-  if ($versionArray[0] < 1 or ($versionArray[0] == 0 and $versionArray[1] < 4)) {
+  if (versioncmp($::consul::version, '0.4.0') < 0) {
     fail ('Watches are only supported in Consul 0.4.0 and above')
   }
 
