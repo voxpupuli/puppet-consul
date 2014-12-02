@@ -257,6 +257,13 @@ describe 'consul' do
     }
   end
 
+  context "When asked not to manage the init_style" do
+    let(:params) {{ :init_style => false }}
+    it { should contain_class('consul').with_init_style(false) }
+    it { should_not contain_file("/etc/init.d/consul") }
+    it { should_not contain_file("/lib/systemd/system/consul.service") }
+  end
+
   context "On squeeze" do
     let(:facts) {{
       :operatingsystem => 'Debian',
