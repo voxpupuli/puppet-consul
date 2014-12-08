@@ -192,6 +192,35 @@ describe 'consul' do
     it { should_not contain_file('config.json').with_content(/"bootstrap_expect": "5"/) }
   end
 
+  context 'Config_defaults is used to provide additional config' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should contain_file('config.json').with_content(/"data_dir": "\/dir1"/) }
+  end
+
+  context 'Config_defaults is used to provide additional config and is overridden' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+          'server' => false,
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+          'server' => true,
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should contain_file('config.json').with_content(/"data_dir": "\/dir1"/) }
+    it { should contain_file('config.json').with_content(/"server": true/) }
+  end
+
   context "When asked not to manage the user" do
     let(:params) {{ :manage_user => false }}
     it { should_not contain_user('consul') }
