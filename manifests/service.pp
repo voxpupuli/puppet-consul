@@ -1,4 +1,5 @@
 define consul::service(
+  $service_name   = $title,
   $tags           = [],
   $port           = undef,
   $check_ttl      = undef,
@@ -10,7 +11,7 @@ define consul::service(
 
   $basic_hash = {
     'id'   => $id,
-    'name' => $name,
+    'name' => $service_name,
     'tags' => $tags,
   }
 
@@ -42,8 +43,9 @@ define consul::service(
   }
 
   if $port {
+    # implicit conversion from string to int so it won't be quoted in JSON 
     $port_hash = {
-      port => $port
+      port => $port * 1
     }
   } else {
     $port_hash = {}

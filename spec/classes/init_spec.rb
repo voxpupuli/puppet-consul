@@ -18,6 +18,46 @@ describe 'consul' do
     it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
+  context 'When not specifying whether to purge config' do
+    it { should contain_file('/etc/consul').with(:purge => true,:recurse => true) }
+  end
+
+  context 'When passing a non-bool as purge_config_dir' do
+    let(:params) {{
+      :purge_config_dir => 'hello'
+    }}
+    it { expect { should compile }.to raise_error(/is not a boolean/) }
+  end
+
+  context 'When disable config purging' do
+    let(:params) {{
+      :purge_config_dir => false
+    }}
+    it { should contain_class('consul::config').with(:purge => false) }
+  end
+
+  context 'When joining consul to a cluster by a known URL' do
+    let(:params) {{
+      :join_cluster => 'other_host.test.com'
+    }}
+    it { should contain_exec('join consul cluster').with(:command => 'consul join other_host.test.com') }
+  end
+
+  context 'By default, should not attempt to join a cluser' do
+    it { should_not contain_exec('join consul cluster') }
+  end
+
+  context 'When joining consul to a wan cluster by a known URL' do
+    let(:params) {{
+        :join_wan => 'wan_host.test.com'
+    }}
+    it { should contain_exec('join consul wan').with(:command => 'consul join -wan wan_host.test.com') }
+  end
+
+  context 'By default, should not attempt to join a wan cluster' do
+    it { should_not contain_exec('join consul wan') }
+  end
+
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
       :install_method => 'package'
@@ -35,7 +75,7 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.3.1_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
@@ -80,7 +120,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.3.1_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a special version" do
@@ -141,6 +181,44 @@ describe 'consul' do
     }}
     it { should contain_file('/dir1') }
     it { should contain_file('/dir1/dir2') }
+  end
+
+  context 'The bootstrap_expect in config_hash is an int' do
+    let(:params) {{
+      :config_hash =>
+        { 'bootstrap_expect' => '5' }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should_not contain_file('config.json').with_content(/"bootstrap_expect": "5"/) }
+  end
+
+  context 'Config_defaults is used to provide additional config' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should contain_file('config.json').with_content(/"data_dir": "\/dir1"/) }
+  end
+
+  context 'Config_defaults is used to provide additional config and is overridden' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+          'server' => false,
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+          'server' => true,
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
+    it { should contain_file('config.json').with_content(/"data_dir": "\/dir1"/) }
+    it { should contain_file('config.json').with_content(/"server": true/) }
   end
 
   context "When asked not to manage the user" do
@@ -206,6 +284,13 @@ describe 'consul' do
         .with_content(/DAEMON_ARGS="agent/)
         .with_content(/--user \$USER/)
     }
+  end
+
+  context "When asked not to manage the init_style" do
+    let(:params) {{ :init_style => false }}
+    it { should contain_class('consul').with_init_style(false) }
+    it { should_not contain_file("/etc/init.d/consul") }
+    it { should_not contain_file("/lib/systemd/system/consul.service") }
   end
 
   context "On squeeze" do
