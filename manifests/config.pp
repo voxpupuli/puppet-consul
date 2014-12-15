@@ -3,7 +3,8 @@
 # This class is called from consul
 #
 class consul::config(
-  $purge = true
+  $purge       = true,
+  $config_hash = $consul::config_hash, 
 ) {
 
   file { $consul::config_dir:
