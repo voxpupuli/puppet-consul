@@ -57,6 +57,6 @@ define consul::service(
 
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/service_${id}.json":
-    content => template('consul/service.json.erb'),
+    content => consul_sorted_json($service_hash),
   } ~> Class['consul::run_service']
 }
