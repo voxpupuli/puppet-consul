@@ -85,7 +85,8 @@ class consul (
 
   class { 'consul::install': } ->
   class { 'consul::config':
-    purge => $purge_config_dir
+    config_hash => $_config_hash,
+    purge       => $purge_config_dir,
   } ~>
   class { 'consul::run_service': } ->
   Class['consul']
