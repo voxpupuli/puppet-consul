@@ -7,6 +7,7 @@ describe 'consul' do
       :architecture    => 'x86_64',
       :operatingsystem => 'Ubuntu',
       :lsbdistrelease  => '10.04',
+      :kernel          => 'Linux',
     }
   end
   # Installation Stuff
