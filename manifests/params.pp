@@ -26,7 +26,7 @@ class consul::params {
     },
     /CentOS|RedHat/      => $::operatingsystemmajrelease ? {
       /(4|5|6)/ => 'sysv',
-      default   => 'systemd',
+      default   => 'sysv',
     },
     'Fedora'             => $::operatingsystemmajrelease ? {
       /(12|13|14)/ => 'sysv',
