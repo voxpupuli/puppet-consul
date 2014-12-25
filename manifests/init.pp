@@ -58,6 +58,7 @@ class consul (
   $config_dir        = '/etc/consul',
   $extra_options     = '',
   $config_hash       = {},
+  $config_defaults   = {},
   $service_enable    = true,
   $service_ensure    = 'running',
   $init_style        = $consul::params::init_style,
@@ -66,13 +67,17 @@ class consul (
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
   validate_hash($config_hash)
+  validate_hash($config_defaults)
 
-  if $config_hash['data_dir'] {
-    $data_dir = $config_hash['data_dir']
+  $_config_hash = merge($config_defaults, $config_hash)
+  validate_hash($_config_hash)
+
+  if $_config_hash['data_dir'] {
+    $data_dir = $_config_hash['data_dir']
   }
 
-  if $config_hash['ui_dir'] {
-    $ui_dir = $config_hash['ui_dir']
+  if $_config_hash['ui_dir'] {
+    $ui_dir = $_config_hash['ui_dir']
   }
 
   if ($ui_dir and ! $data_dir) {
@@ -81,7 +86,8 @@ class consul (
 
   class { 'consul::install': } ->
   class { 'consul::config':
-    purge => $purge_config_dir
+    config_hash => $_config_hash,
+    purge       => $purge_config_dir,
   } ~>
   class { 'consul::run_service': } ->
   Class['consul']

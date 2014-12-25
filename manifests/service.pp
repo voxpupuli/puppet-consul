@@ -1,4 +1,5 @@
 define consul::service(
+  $service_name   = $title,
   $tags           = [],
   $port           = undef,
   $check_ttl      = undef,
@@ -10,7 +11,7 @@ define consul::service(
 
   $basic_hash = {
     'id'   => $id,
-    'name' => $name,
+    'name' => $service_name,
     'tags' => $tags,
   }
 
@@ -56,6 +57,6 @@ define consul::service(
 
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/service_${id}.json":
-    content => template('consul/service.json.erb'),
+    content => consul_sorted_json($service_hash),
   } ~> Class['consul::run_service']
 }

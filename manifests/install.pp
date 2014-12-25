@@ -63,64 +63,67 @@ class consul::install {
     fail("The provided install method ${consul::install_method} is invalid")
   }
 
-  case $consul::init_style {
-    'upstart' : {
-      file { '/etc/init/consul.conf':
-        mode   => '0444',
-        owner   => 'root',
-        group   => 'root',
-        content => template('consul/consul.upstart.erb'),
+  if $consul::init_style {
+
+    case $consul::init_style {
+      'upstart' : {
+        file { '/etc/init/consul.conf':
+          mode   => '0444',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.upstart.erb'),
+        }
+        file { '/etc/init.d/consul':
+          ensure => link,
+          target => "/lib/init/upstart-job",
+          owner  => root,
+          group  => root,
+          mode   => 0755,
+        }
       }
-      file { '/etc/init.d/consul':
-        ensure => link,
-        target => "/lib/init/upstart-job",
-        owner  => root,
-        group  => root,
-        mode   => 0755,
+      'systemd' : {
+        file { '/lib/systemd/system/consul.service':
+          mode   => '0644',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.systemd.erb'),
+        }
       }
-    }
-    'systemd' : {
-      file { '/lib/systemd/system/consul.service':
-        mode   => '0644',
-        owner   => 'root',
-        group   => 'root',
-        content => template('consul/consul.systemd.erb'),
+      'sysv' : {
+        file { '/etc/init.d/consul':
+          mode    => '0555',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.sysv.erb')
+        }
       }
-    }
-    'sysv' : {
-      file { '/etc/init.d/consul':
-        mode    => '0555',
-        owner   => 'root',
-        group   => 'root',
-        content => template('consul/consul.sysv.erb')
+      'debian' : {
+        file { '/etc/init.d/consul':
+          mode    => '0555',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.debian.erb')
+        }
       }
-    }
-    'debian' : {
-      file { '/etc/init.d/consul':
-        mode    => '0555',
-        owner   => 'root',
-        group   => 'root',
-        content => template('consul/consul.debian.erb')
+      'sles' : {
+        file { '/etc/init.d/consul':
+          mode    => '0555',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.sles.erb')
+        }
       }
-    }
-    'sles' : {
-      file { '/etc/init.d/consul':
-        mode    => '0555',
-        owner   => 'root',
-        group   => 'root',
-        content => template('consul/consul.sles.erb')
+      'launchd' : {
+        file { '/Library/LaunchDaemons/io.consul.daemon.plist':
+          mode    => '0644',
+          owner   => 'root',
+          group   => 'wheel',
+          content => template('consul/consul.launchd.erb')
+        }
       }
-    }
-    'launchd' : {
-      file { '/Library/LaunchDaemons/io.consul.daemon.plist':
-        mode    => '0644',
-        owner   => 'root',
-        group   => 'wheel',
-        content => template('consul/consul.launchd.erb')
+      default : {
+        fail("I don't know how to create an init script for style ${consul::init_style}")
       }
-    }
-    default : {
-      fail("I don't know how to create an init script for style ${consul::init_style}")
     }
   }
 

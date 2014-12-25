@@ -188,8 +188,37 @@ describe 'consul' do
       :config_hash =>
         { 'bootstrap_expect' => '5' }
     }}
-    it { should contain_file('config.json').with_content(/"bootstrap_expect": 5/) }
-    it { should_not contain_file('config.json').with_content(/"bootstrap_expect": "5"/) }
+    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
+    it { should_not contain_file('config.json').with_content(/"bootstrap_expect":"5"/) }
+  end
+
+  context 'Config_defaults is used to provide additional config' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
+    it { should contain_file('config.json').with_content(/"data_dir":"\/dir1"/) }
+  end
+
+  context 'Config_defaults is used to provide additional config and is overridden' do
+    let(:params) {{
+      :config_defaults => {
+          'data_dir' => '/dir1',
+          'server' => false,
+      },
+      :config_hash => {
+          'bootstrap_expect' => '5',
+          'server' => true,
+      }
+    }}
+    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
+    it { should contain_file('config.json').with_content(/"data_dir":"\/dir1"/) }
+    it { should contain_file('config.json').with_content(/"server":true/) }
   end
 
   context "When asked not to manage the user" do
@@ -255,6 +284,13 @@ describe 'consul' do
         .with_content(/DAEMON_ARGS="agent/)
         .with_content(/--user \$USER/)
     }
+  end
+
+  context "When asked not to manage the init_style" do
+    let(:params) {{ :init_style => false }}
+    it { should contain_class('consul').with_init_style(false) }
+    it { should_not contain_file("/etc/init.d/consul") }
+    it { should_not contain_file("/lib/systemd/system/consul.service") }
   end
 
   context "On squeeze" do
