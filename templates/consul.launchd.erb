@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>             <string>io.consul.daemon</string>
+<% if scope.lookupvar('consul::service_enable') %>
+    <key>Disabled</key>          <false/>
+<% else %>
+    <key>Disabled></key>         <true/>
+<% end %>
+    <key>RunAtLoad</key>         <true/>
+    <key>KeepAlive</key>         <true/>
+    <key>ProgramArguments</key>
+        <array>
+            <string><%= scope.lookupvar('consul::bin_dir') %>/consul</string>
+            <string>agent</string>
+            <string>-config-dir</string>
+            <string><%= scope.lookupvar('consul::config_dir') %></string>
+<% require 'shellwords' %>
+<% for extra_option in Shellwords.split(scope.lookupvar('consul::extra_options')) %>
+            <string><%= extra_option %></string>
+<% end %>
+        </array>
+</dict>
+</plist>

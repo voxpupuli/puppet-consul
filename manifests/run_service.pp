@@ -6,6 +6,10 @@
 class consul::run_service {
 
   service { 'consul':
+    name       => $consul::init_style ? {
+      'launchd' => 'io.consul.daemon',
+      default   => 'consul'
+    },
     ensure     => $consul::service_ensure,
     enable     => $consul::service_enable,
   }

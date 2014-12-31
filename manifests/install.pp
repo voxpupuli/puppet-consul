@@ -13,7 +13,9 @@ class consul::install {
 
   if $consul::install_method == 'url' {
 
-    ensure_packages(['unzip'])
+    if $::operatingsystem != 'darwin' {
+      ensure_packages(['unzip'])
+    }
     staging::file { 'consul.zip':
       source => $consul::download_url
     } ->
@@ -23,7 +25,7 @@ class consul::install {
     } ->
     file { "${consul::bin_dir}/consul":
       owner => 'root',
-      group => 'root',
+      group => 0, # 0 instead of root because OS X uses "wheel".
       mode  => '0555',
     }
 
@@ -31,7 +33,7 @@ class consul::install {
       file { "${consul::data_dir}/${consul::version}_web_ui":
         ensure => 'directory',
         owner  => 'root',
-        group  => 'root',
+        group  => 0, # 0 instead of root because OS X uses "wheel".
         mode   => '0755',
       } ->
       staging::deploy { 'consul_web_ui.zip':
@@ -111,12 +113,19 @@ class consul::install {
           content => template('consul/consul.sles.erb')
         }
       }
+      'launchd' : {
+        file { '/Library/LaunchDaemons/io.consul.daemon.plist':
+          mode    => '0644',
+          owner   => 'root',
+          group   => 'wheel',
+          content => template('consul/consul.launchd.erb')
+        }
+      }
       default : {
-        fail("I don't know how to create an init script for style $init_style")
+        fail("I don't know how to create an init script for style ${consul::init_style}")
       }
     }
   }
-
 
   if $consul::manage_user {
     user { $consul::user:
