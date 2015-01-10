@@ -9,3 +9,4 @@ project_page  'https://github.com/solarkennedy/puppet-consul'
 
 dependency 'puppetlabs/stdlib', '>= 0.1.6'
 dependency 'nanliu/staging', '>=0.4.0'
+dependency 'puppetlabs/firewall', '>=1.3.0'
