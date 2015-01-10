@@ -7,7 +7,7 @@ class consul::config(
   $purge = true,
 ) {
 
-  # implicit conversion from string to int so it won't be quoted in JSON 
+  # implicit conversion from string to int so it won't be quoted in JSON
   if has_key($config_hash, 'protocol') {
     $protocol_hash = {
       protocol => $config_hash['protocol'] * 1
@@ -16,7 +16,7 @@ class consul::config(
     $protocol_hash = {}
   }
 
-  # implicit conversion from string to int so it won't be quoted in JSON 
+  # implicit conversion from string to int so it won't be quoted in JSON
   if has_key($config_hash, 'bootstrap_expect') {
     $bootstrap_expect_hash = {
       'bootstrap_expect' => $config_hash['bootstrap_expect'] * 1

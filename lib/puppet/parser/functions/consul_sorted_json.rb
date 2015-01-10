@@ -34,8 +34,7 @@ Would return: {'key':'value'}
   ) do |arguments|
     raise(Puppet::ParseError, "sorted_json(): Wrong number of arguments " +
       "given (#{arguments.size} for 1)") if arguments.size != 1
-
-    json = arguments[0]
+    json = arguments[0].delete_if {|key, value| value == :undef }
     return sorted_json(json)
   end
 end
