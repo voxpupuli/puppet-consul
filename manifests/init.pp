@@ -7,9 +7,6 @@
 # [*version*]
 #   Specify version of consul binary to download.
 #
-# [*join_cluster*]
-#   Specify the hostname or IP of a known consul node, likely the original.  Defaults to 'UNSET'
-#
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
@@ -42,7 +39,6 @@ class consul (
   $manage_group      = true,
   $purge_config_dir  = true,
   $group             = 'consul',
-  $join_cluster      = false,
   $join_wan          = false,
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
