@@ -21,22 +21,27 @@ class consul::params {
   $os = downcase($::kernel)
 
   $init_style = $::operatingsystem ? {
-    'Ubuntu'             => $::lsbdistrelease ? {
-      '8.04'           => 'debian',
-      /(10|12|14)\.04/ => 'upstart',
-      default => undef
+    'Ubuntu' => versioncmp($::lsbdistrelease, '8.04') ? {
+      '-1' => 'debian',
+      '0'  => 'debian',
+      '1'  => 'upstart',
     },
-    /CentOS|RedHat/      => $::operatingsystemmajrelease ? {
-      /(4|5|6)/ => 'sysv',
-      default   => 'systemd',
+    /CentOS|RedHat/ => versioncmp($::operatingsystemrelease, '7.0') ? {
+      '-1' => 'sysv',
+      '0'  => 'systemd',
+      '1'  => 'systemd'
     },
-    'Fedora'             => $::operatingsystemmajrelease ? {
-      /(12|13|14)/ => 'sysv',
-      default      => 'systemd',
+    'Fedora' => versioncmp($::operatingsystemrelease, '12') ? {
+      '-1' => 'sysv',
+      '0'  => 'systemd',
+      '1'  => 'systemd'
     },
     'Debian'             => 'debian',
     'SLES'               => 'sles',
     'Darwin'             => 'launchd',
     default => undef
+  }
+  if $init_style == undef {
+    fail("Unsupported O/S")
   }
 }
