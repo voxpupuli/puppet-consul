@@ -1,5 +1,5 @@
 name          'KyleAnderson-consul'
-version '0.4.4'
+version '0.4.5'
 source        'https://github.com/solarkennedy/puppet-consul'
 author        'Kyle Anderson <kyle@xkyle.com>'
 license       'Apache License, Version 2.0'
