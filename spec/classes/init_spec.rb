@@ -234,7 +234,7 @@ describe 'consul' do
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
-      :operatingsystemmajrelease => 6,
+      :operatingsystemrelease => '6.5'
     }}
 
     it { should contain_class('consul').with_init_style('sysv') }
@@ -244,7 +244,7 @@ describe 'consul' do
   context "On a redhat 7 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
-      :operatingsystemmajrelease => 7,
+      :operatingsystemrelease => '7.0'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -254,7 +254,7 @@ describe 'consul' do
   context "On a fedora 20 based OS" do
     let(:facts) {{
       :operatingsystem => 'Fedora',
-      :operatingsystemmajrelease => 20,
+      :operatingsystemrelease => '20'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
