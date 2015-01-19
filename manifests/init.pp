@@ -57,11 +57,13 @@ class consul (
   $config_defaults   = {},
   $service_enable    = true,
   $service_ensure    = 'running',
+  $manage_service    = true,
   $init_style        = $consul::params::init_style,
 ) inherits consul::params {
 
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
+  validate_bool($manage_service)
   validate_hash($config_hash)
   validate_hash($config_defaults)
 
