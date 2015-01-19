@@ -29,6 +29,13 @@ describe 'consul' do
     }}
     it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
+  
+  context 'When passing a non-bool as manage_service' do
+    let(:params) {{
+      :manage_service => 'hello'
+    }}
+    it { expect { should compile }.to raise_error(/is not a boolean/) }
+  end
 
   context 'When disable config purging' do
     let(:params) {{
@@ -219,6 +226,12 @@ describe 'consul' do
   context "When asked not to manage the group" do
     let(:params) {{ :manage_group => false }}
     it { should_not contain_group('consul') }
+  end
+
+  context "When asked not to manage the service" do
+    let(:params) {{ :manage_service => false }}
+
+    it { should_not contain_service('consul') }
   end
 
   context "With a custom username" do
