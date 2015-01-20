@@ -39,6 +39,7 @@ class consul::params {
     'Debian'             => 'debian',
     'SLES'               => 'sles',
     'Darwin'             => 'launchd',
+    'Amazon'             => 'sysv',
     default => undef
   }
   if $init_style == undef {
