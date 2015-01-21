@@ -12,7 +12,8 @@ script
     [ -e /etc/default/consul ] && . /etc/default/consul
 
     export GOMAXPROCS=${GOMAXPROCS:-2}
-    exec sudo -u <%= scope.lookupvar('consul::user') %> -g <%= scope.lookupvar('consul::group') %> $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
+    exec su -s /bin/sh -c 'exec "$0" "$@"' <%= scope.lookupvar('consul::user') %> -- \
+        $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
 end script
 
 respawn
