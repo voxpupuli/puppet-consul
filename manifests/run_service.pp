@@ -10,10 +10,12 @@ class consul::run_service {
     default   => 'consul',
   }
 
-  service { 'consul':
-    ensure => $consul::service_ensure,
-    name   => $init_selector,
-    enable => $consul::service_enable,
+  if $consul::manage_service == true {
+    service { 'consul':
+      ensure => $consul::service_ensure,
+      name   => $init_selector,
+      enable => $consul::service_enable,
+    }
   }
 
   if $consul::join_wan {

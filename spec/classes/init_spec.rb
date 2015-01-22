@@ -29,6 +29,13 @@ describe 'consul' do
     }}
     it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
+  
+  context 'When passing a non-bool as manage_service' do
+    let(:params) {{
+      :manage_service => 'hello'
+    }}
+    it { expect { should compile }.to raise_error(/is not a boolean/) }
+  end
 
   context 'When disable config purging' do
     let(:params) {{
@@ -221,6 +228,12 @@ describe 'consul' do
     it { should_not contain_group('consul') }
   end
 
+  context "When asked not to manage the service" do
+    let(:params) {{ :manage_service => false }}
+
+    it { should_not contain_service('consul') }
+  end
+
   context "With a custom username" do
     let(:params) {{
       :user => 'custom_consul_user',
@@ -231,10 +244,53 @@ describe 'consul' do
     it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
   end
 
+  context "When the user provides a hash of services" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+
+    it { should contain_consul__service('test_service1').with_port('5') }
+    it { should have_consul__service_resource_count(1) }
+  end
+
+  context "When the user provides a hash of watches" do
+    let (:params) {{
+      :watches => {
+        'test_watch1' => {
+           'type'    => 'nodes',
+           'handler' => 'test.sh',
+        }
+      }
+    }}
+
+    it { should contain_consul__watch('test_watch1').with_type('nodes') }
+    it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
+    it { should have_consul__watch_resource_count(1) }
+  end
+
+  context "When the user provides a hash of watches" do
+    let (:params) {{
+      :checks => {
+        'test_check1' => {
+          'interval' => '30',
+          'script'   => 'test.sh',
+        }
+      }
+    }}
+
+    it { should contain_consul__check('test_check1').with_interval('30') }
+    it { should contain_consul__check('test_check1').with_script('test.sh') }
+    it { should have_consul__check_resource_count(1) }
+  end
+
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
-      :operatingsystemmajrelease => 6,
+      :operatingsystemrelease => '6.5'
     }}
 
     it { should contain_class('consul').with_init_style('sysv') }
@@ -244,7 +300,7 @@ describe 'consul' do
   context "On a redhat 7 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
-      :operatingsystemmajrelease => 7,
+      :operatingsystemrelease => '7.0'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -254,7 +310,7 @@ describe 'consul' do
   context "On a fedora 20 based OS" do
     let(:facts) {{
       :operatingsystem => 'Fedora',
-      :operatingsystemmajrelease => 20,
+      :operatingsystemrelease => '20'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
