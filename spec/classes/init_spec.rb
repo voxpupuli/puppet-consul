@@ -266,6 +266,7 @@ describe 'consul' do
     }}
 
     it { should contain_consul__watch('test_watch1').with_type('nodes') }
+    it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
     it { should have_consul__watch_resource_count(1) }
   end
 
@@ -280,6 +281,7 @@ describe 'consul' do
     }}
 
     it { should contain_consul__check('test_check1').with_interval('30') }
+    it { should contain_consul__check('test_check1').with_script('test.sh') }
     it { should have_consul__check_resource_count(1) }
   end
 
