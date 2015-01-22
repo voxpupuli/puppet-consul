@@ -7,9 +7,6 @@
 # [*version*]
 #   Specify version of consul binary to download.
 #
-# [*join_cluster*]
-#   Specify the hostname or IP of a known consul node, likely the original.  Defaults to 'UNSET'
-#
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
@@ -42,7 +39,6 @@ class consul (
   $manage_group      = true,
   $purge_config_dir  = true,
   $group             = 'consul',
-  $join_cluster      = false,
   $join_wan          = false,
   $bin_dir           = '/usr/local/bin',
   $arch              = $consul::params::arch,
@@ -61,13 +57,21 @@ class consul (
   $config_defaults   = {},
   $service_enable    = true,
   $service_ensure    = 'running',
+  $manage_service    = true,
   $init_style        = $consul::params::init_style,
+  $services          = {},
+  $watches           = {},
+  $checks            = {},
 ) inherits consul::params {
 
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
+  validate_bool($manage_service)
   validate_hash($config_hash)
   validate_hash($config_defaults)
+  validate_hash($services)
+  validate_hash($watches)
+  validate_hash($checks)
 
   $config_hash_real = merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
@@ -82,6 +86,18 @@ class consul (
 
   if ($ui_dir and ! $data_dir) {
     warning('data_dir must be set to install consul web ui')
+  }
+
+  if $services {
+    create_resources(consul::service, $services)
+  }
+
+  if $watches {
+    create_resources(consul::watch, $watches)
+  }
+
+  if $checks {
+    create_resources(consul::check, $checks)
   }
 
   class { 'consul::install': } ->
