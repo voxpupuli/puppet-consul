@@ -59,6 +59,9 @@ class consul (
   $service_ensure    = 'running',
   $manage_service    = true,
   $init_style        = $consul::params::init_style,
+  $services          = {},
+  $watches           = {},
+  $checks            = {},
 ) inherits consul::params {
 
   validate_bool($purge_config_dir)
@@ -66,6 +69,9 @@ class consul (
   validate_bool($manage_service)
   validate_hash($config_hash)
   validate_hash($config_defaults)
+  validate_hash($services)
+  validate_hash($watches)
+  validate_hash($checks)
 
   $_config_hash = merge($config_defaults, $config_hash)
   validate_hash($_config_hash)
@@ -80,6 +86,18 @@ class consul (
 
   if ($ui_dir and ! $data_dir) {
     warning('data_dir must be set to install consul web ui')
+  }
+
+  if $services {
+    create_resources(consul::service, $services)
+  }
+
+  if $watches {
+    create_resources(consul::watch, $watches)
+  }
+
+  if $checks {
+    create_resources(consul::check, $checks)
   }
 
   class { 'consul::install': } ->

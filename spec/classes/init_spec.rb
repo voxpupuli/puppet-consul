@@ -244,6 +244,49 @@ describe 'consul' do
     it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
   end
 
+  context "When the user provides a hash of services" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+
+    it { should contain_consul__service('test_service1').with_port('5') }
+    it { should have_consul__service_resource_count(1) }
+  end
+
+  context "When the user provides a hash of watches" do
+    let (:params) {{
+      :watches => {
+        'test_watch1' => {
+           'type'    => 'nodes',
+           'handler' => 'test.sh',
+        }
+      }
+    }}
+
+    it { should contain_consul__watch('test_watch1').with_type('nodes') }
+    it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
+    it { should have_consul__watch_resource_count(1) }
+  end
+
+  context "When the user provides a hash of watches" do
+    let (:params) {{
+      :checks => {
+        'test_check1' => {
+          'interval' => '30',
+          'script'   => 'test.sh',
+        }
+      }
+    }}
+
+    it { should contain_consul__check('test_check1').with_interval('30') }
+    it { should contain_consul__check('test_check1').with_script('test.sh') }
+    it { should have_consul__check_resource_count(1) }
+  end
+
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
