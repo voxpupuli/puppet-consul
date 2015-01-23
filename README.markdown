@@ -3,6 +3,15 @@
 
 ##Installation
 
+##Compatibility
+
+Any module release that is tagged with 0.4.* is compatible with the 0.4.x
+versions of consul. Anything tagged with 0.5.* is compatible with consul
+0.5.x, etc.
+
+So, if you are using consul 0.4.1, try to use the lastes tagged release
+on the 4 series. Do *not* pull from master.
+
 ###What This Module Affects
 
 * Installs the consul daemon (via url or package)
