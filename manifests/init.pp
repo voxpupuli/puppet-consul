@@ -73,15 +73,15 @@ class consul (
   validate_hash($watches)
   validate_hash($checks)
 
-  $_config_hash = merge($config_defaults, $config_hash)
-  validate_hash($_config_hash)
+  $config_hash_real = merge($config_defaults, $config_hash)
+  validate_hash($config_hash_real)
 
-  if $_config_hash['data_dir'] {
-    $data_dir = $_config_hash['data_dir']
+  if $config_hash_real['data_dir'] {
+    $data_dir = $config_hash_real['data_dir']
   }
 
-  if $_config_hash['ui_dir'] {
-    $ui_dir = $_config_hash['ui_dir']
+  if $config_hash_real['ui_dir'] {
+    $ui_dir = $config_hash_real['ui_dir']
   }
 
   if ($ui_dir and ! $data_dir) {
@@ -102,7 +102,7 @@ class consul (
 
   class { 'consul::install': } ->
   class { 'consul::config':
-    config_hash => $_config_hash,
+    config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   } ~>
   class { 'consul::run_service': } ->
