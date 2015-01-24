@@ -15,7 +15,9 @@ class consul::params {
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
     'i386':            { $arch = '386'   }
-    default:           { fail("Unsupported kernel architecture: ${::architecture}") }
+    default:           {
+      fail("Unsupported kernel architecture: ${::architecture}")
+    }
   }
 
   $os = downcase($::kernel)
@@ -42,6 +44,6 @@ class consul::params {
     default => undef
   }
   if $init_style == undef {
-    fail("Unsupported O/S")
+    fail('Unsupported OS')
   }
 }
