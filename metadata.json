@@ -1,0 +1,33 @@
+{
+  "name": "KyleAnderson-consul",
+  "version": "0.5.0",
+  "author": "Kyle Anderson <kyle@xkyle.com>",
+  "summary": "Configures Consul by Hashicorp",
+  "license": "Apache-2.0",
+  "source": "https://github.com/solarkennedy/puppet-consul",
+  "project_page": "https://github.com/solarkennedy/puppet-consul",
+  "issues_url": "https://github.com/solarkennedy/puppet-consul/issues",
+  "description": "Configures Consul by Hashicorp",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 0.1.6 <5.0.0"},
+    {"name":"nanliu/staging","version_requirement":">=0.4.0 <2.0.0"}
+  ],
+  "operatingsystem_support": [
+    {
+    "operatingsystem":"RedHat",
+    "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
+    },
+    {
+    "operatingsystem":"CentOS",
+    "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
+    },
+    {
+    "operatingsystem": "Ubuntu",
+    "operatingsystemrelease": [ "12.04", "10.04", "14.04" ]
+    },
+    {
+    "operatingsystem": "Fedora",
+    "operatingsystemrelease": [ "11", "12", "13", "14", "16", "17", "18", "19", "20", "21" ]
+    }
+  ]
+}
