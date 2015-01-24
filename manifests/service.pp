@@ -1,3 +1,29 @@
+# == Define consul::service
+#
+# Sets up a Consul service definition
+# http://www.consul.io/docs/agent/services.html
+#
+# == Parameters
+#
+# [*service_name*]
+#   Name of the service. Defaults to title.
+#
+# [*tags*]
+#   Array of strings.
+#
+# [*port*]
+#   TCP port the service runs on.
+#
+# [*check_ttl*]
+#   If provided, the number of seconds before a failing healthcheck
+#   is considered hard-down.
+#
+# [*check_script*]
+#   Full path to a nagios compliant healthcheck script
+#
+# [*check_interval*]
+#   Seconds between healthcheck executions.
+#
 define consul::service(
   $service_name   = $title,
   $tags           = [],
@@ -16,12 +42,12 @@ define consul::service(
   }
 
   if $check_ttl and $check_interval {
-    fail("Only one of check_ttl and check_interval can be defined")
+    fail('Only one of check_ttl and check_interval can be defined')
   }
 
   if $check_ttl {
     if $check_script {
-      fail("check_script must not be defined for ttl checks")
+      fail('check_script must not be defined for ttl checks')
     }
     $check_hash = {
       check => {
@@ -30,7 +56,7 @@ define consul::service(
     }
   } elsif $check_interval {
     if (! $check_script) {
-      fail("check_script must be defined for interval checks")
+      fail('check_script must be defined for interval checks')
     }
     $check_hash = {
       check => {

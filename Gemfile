@@ -14,6 +14,5 @@ end
 
 group :development do
   gem 'json'
-  gem 'beaker', '~> 1.11.0'
   gem 'beaker-rspec'
 end
