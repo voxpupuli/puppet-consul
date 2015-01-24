@@ -1,6 +1,14 @@
 # == Class consul::config
 #
-# This class is called from consul
+# This class is called from consul::init to install the config file.
+#
+# == Parameters
+#
+# [*config_hash*]
+#   Hash for Consul to be deployed as JSON
+#
+# [*purge*]
+#   Bool. If set will make puppet remove stale config files.
 #
 class consul::config(
   $config_hash,
@@ -12,22 +20,22 @@ class consul::config(
     case $consul::init_style {
       'upstart' : {
         file { '/etc/init/consul.conf':
-          mode   => '0444',
+          mode    => '0444',
           owner   => 'root',
           group   => 'root',
           content => template('consul/consul.upstart.erb'),
         }
         file { '/etc/init.d/consul':
           ensure => link,
-          target => "/lib/init/upstart-job",
-          owner  => root,
-          group  => root,
+          target => '/lib/init/upstart-job',
+          owner  => 'root',
+          group  => 'root',
           mode   => '0755',
         }
       }
       'systemd' : {
         file { '/lib/systemd/system/consul.service':
-          mode   => '0644',
+          mode    => '0644',
           owner   => 'root',
           group   => 'root',
           content => template('consul/consul.systemd.erb'),
