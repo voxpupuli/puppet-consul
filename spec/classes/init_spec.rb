@@ -297,6 +297,16 @@ describe 'consul' do
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
   end
 
+  context "On an Amazon based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Amazon',
+      :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
+    }}
+
+    it { should contain_class('consul').with_init_style('sysv') }
+    it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
+  end
+
   context "On a redhat 7 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
