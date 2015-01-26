@@ -28,7 +28,7 @@ class consul::params {
       '0'  => 'debian',
       '1'  => 'upstart',
     },
-    /CentOS|RedHat/ => versioncmp($::operatingsystemrelease, '7.0') ? {
+    /Scientific|CentOS|RedHat/ => versioncmp($::operatingsystemrelease, '7.0') ? {
       '-1' => 'sysv',
       '0'  => 'systemd',
       '1'  => 'systemd'
