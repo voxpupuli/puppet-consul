@@ -22,6 +22,10 @@
     "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
     },
     {
+    "operatingsystem":"Scientific Linux",
+    "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
+    },
+    {
     "operatingsystem": "Ubuntu",
     "operatingsystemrelease": [ "12.04", "10.04", "14.04" ]
     },
