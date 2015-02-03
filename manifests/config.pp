@@ -15,6 +15,8 @@ class consul::config(
   $purge = true,
 ) {
 
+  include stdlib
+
   if $consul::init_style {
 
     case $consul::init_style {
@@ -95,6 +97,15 @@ class consul::config(
     }
   } else {
     $bootstrap_expect_hash = {}
+  }
+
+  $hash_services = $config_hash['services']
+  $hiera_services = hiera_hash('consul::service')
+
+  $services = merge($hiera_services,$hash_services)
+
+  if $services {
+    create_resources(consul::service,$services)
   }
 
   file { $consul::config_dir:
