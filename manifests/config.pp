@@ -15,6 +15,8 @@ class consul::config(
   $purge = true,
 ) {
 
+  include stdlib
+
   if $consul::init_style {
 
     case $consul::init_style {
@@ -97,6 +99,15 @@ class consul::config(
     $bootstrap_expect_hash = {}
   }
 
+  $hash_services = $config_hash['services']
+  $hiera_services = hiera_hash('consul::service')
+
+  $services = merge($hiera_services,$hash_services)
+
+  if $services {
+    create_resources(consul::service,$services)
+  }
+
   file { $consul::config_dir:
     ensure  => 'directory',
     purge   => $purge,
@@ -104,7 +115,7 @@ class consul::config(
   } ->
   file { 'config.json':
     path    => "${consul::config_dir}/config.json",
-    content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
+    content => consul_sorted_json(merge(delete($config_hash,'services'),$bootstrap_expect_hash,$protocol_hash)),
   }
 
 }

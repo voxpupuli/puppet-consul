@@ -83,6 +83,44 @@ consul::service { 'redis':
 }
 ```
 
+## Hiera usage example
+
+```
+
+# default agent config ('common.yaml')
+consul::config_dir: '/etc/consul'
+consul::install_method: 'package'
+consul::config_hash:
+  datacenter: 'datacentername'
+  data_dir: '/var/lib/consul'
+  retry_join: 
+    - '10.0.0.1'
+    - '10.0.0.2'
+    - '10.0.0.3'
+
+# master config override ('consul-master.yaml')
+consul::config_hash:
+  log_level: 'INFO'
+  server: true
+  bootstrap_expect: 3
+  ui_dir: '/usr/share/consul/web-ui'
+  client_addr: '0.0.0.0'
+
+# service definitions ('some-service.yaml')
+# Alternative 1
+consul::service:
+  'some-service':
+    tags: [ 'tag-1' , 'tag-a' ]
+    port: 9999
+      
+# Alternative 2
+consul::config_hash:
+  services:
+    'servicename':
+      tags: [ 'some' , 'tags' ]
+      port: 2181
+```
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.
