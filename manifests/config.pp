@@ -115,7 +115,7 @@ class consul::config(
   } ->
   file { 'config.json':
     path    => "${consul::config_dir}/config.json",
-    content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
+    content => consul_sorted_json(merge(delete($config_hash,'services'),$bootstrap_expect_hash,$protocol_hash)),
   }
 
 }
