@@ -51,13 +51,15 @@ class consul::install {
 
   } elsif $consul::install_method == 'package' {
 
-    package { $consul::package_name:
+    package { 'consul':
       ensure => $consul::package_ensure,
+      name   => $consul::package_name,
     }
 
     if $consul::ui_dir {
-      package { $consul::ui_package_name:
+      package { 'consul_ui':
         ensure => $consul::ui_package_ensure,
+        name   => $consul::ui_package_name,
       }
     }
 

@@ -68,7 +68,10 @@ describe 'consul' do
       :package_ensure => 'specific_release',
       :package_name   => 'custom_consul_package'
     }}
-    it { should contain_package('custom_consul_package').with(:ensure => 'specific_release') }
+    it { should contain_package('consul').with({
+      :name   => 'custom_consul_package',
+      :ensure => 'specific_release',
+    })}
   end
 
   context "When installing via URL by default" do
@@ -107,7 +110,10 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_package('custom_consul_ui_package').with(:ensure => 'specific_ui_release') }
+    it { should contain_package('consul_ui').with({
+      :name  => 'custom_consul_ui_package',
+      :ensure => 'specific_ui_release'
+    })}
   end
 
   context "When installing UI via URL by default" do
