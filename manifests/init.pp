@@ -105,7 +105,5 @@ class consul (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   } ~>
-  class { 'consul::run_service': } ->
-  Class['consul']
-
+  class { 'consul::run_service': }
 }
