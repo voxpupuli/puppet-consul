@@ -252,7 +252,6 @@ describe 'consul' do
         }
       }
     }}
-
     it { should contain_consul__service('test_service1').with_port('5') }
     it { should have_consul__service_resource_count(1) }
   end
@@ -266,13 +265,12 @@ describe 'consul' do
         }
       }
     }}
-
     it { should contain_consul__watch('test_watch1').with_type('nodes') }
     it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
     it { should have_consul__watch_resource_count(1) }
   end
 
-  context "When the user provides a hash of watches" do
+  context "When the user provides a hash of checks" do
     let (:params) {{
       :checks => {
         'test_check1' => {
@@ -281,10 +279,38 @@ describe 'consul' do
         }
       }
     }}
-
     it { should contain_consul__check('test_check1').with_interval('30') }
     it { should contain_consul__check('test_check1').with_script('test.sh') }
     it { should have_consul__check_resource_count(1) }
+  end
+
+  context "With multiple watches and a config hash for #83" do
+    let (:params) {{
+      :config_hash => {
+        'data_dir'   => '/cust/consul',
+        'datacenter' => 'devint',
+        'log_level'  => 'INFO',
+        'node_name'  => "${fqdn}"
+      },
+      :watches => {
+        'services' => {
+          'type'    => 'services',
+          'handler' => 'sudo python /usr/local/bin/reacktor services'
+        },
+        'httpd_service' => {
+          'type'    => 'service',
+          'service' => 'httpd',
+          'handler' => 'sudo python /usr/local/bin/reacktor service --service httpd'
+        },
+        'tomcat_service' => {
+          'type'    => 'service',
+          'service' => 'tomcat',
+          'handler' => 'sudo python /usr/local/bin/reacktor service --service tomcat'
+        }
+      }
+    }}
+    it { should contain_consul__watch('services') }
+    it { should have_consul__watch_resource_count(3) }
   end
 
   context "On a redhat 6 based OS" do
