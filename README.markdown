@@ -83,6 +83,42 @@ consul::service { 'redis':
 }
 ```
 
+See the service.pp docstrings for all available inputs.
+
+You can also use `consul::services` which accepts a hash of services, and makes
+it easy to declare in hiera.
+
+## Watch Definitions
+
+```puppet
+consul::watch { 'my_watch':
+  type        => 'service',
+  handler     => 'handler_path',
+  service     => 'serviceName',
+  service_tag => 'serviceTagName',
+  passingonly => 'true',
+}
+```
+
+See the watch.pp docstrings for all available inputs.
+
+You can also use `consul::watches` which accepts a hash of watches, and makes
+it easy to declare in hiera.
+
+## Check Definitions
+
+```puppet
+consul::check { 'true_check':
+  interval => '30s',
+  script   => 'true',
+}
+```
+
+See the check.pp docstrings for all available inputs.
+
+You can also use `consul::checks` which accepts a hash of checks, and makes
+it easy to declare in hiera.
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.
