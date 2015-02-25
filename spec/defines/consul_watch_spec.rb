@@ -144,7 +144,7 @@ describe 'consul::watch' do
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
             .with_content(/"type" *: *"keyprefix"/)
-            .with_content(/"keyprefix" *: *"keyPref"/)
+            .with_content(/"prefix" *: *"keyPref"/)
         }
       end
     end
