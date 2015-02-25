@@ -15,18 +15,45 @@
 
 CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG=<%= scope.lookupvar('consul::config_dir') %>
-PID_FILE=/var/run/consul/pidfile
+PID_FILE=/var/run/consul/consul.pid
 LOG_FILE=/var/log/consul
 
 [ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
 
 export GOMAXPROCS=${GOMAXPROCS:-2}
 
+#
+# Create the /var/run/consul directory, which can live on a tmpfs
+# filesystem and be destroyed between reboots.
+#
+mkrundir() {
+        [ ! -d /var/run/consul ] && mkdir -p /var/run/consul
+        chown <%= scope.lookupvar('consul::user') %> /var/run/consul
+}
+
+#
+# Create a PID file if it doesn't already exist, for clean upgrades
+# from previous init-script controlled daemons.
+#
+KILLPROC_OPT="-p ${PID_FILE}"
+mkpidfile() {
+        # Create PID file if it didn't exist
+        mkrundir
+        [ ! -f $PID_FILE ] && pidofproc $CONSUL > $PID_FILE
+        chown <%= scope.lookupvar('consul::user') %> /var/run/consul
+        if [ $? -ne 0 ] ; then
+            rm $PID_FILE
+            KILLPROC_OPT=""
+        fi
+}
+
 start() {
         echo -n "Starting consul: "
+        mkrundir
+        [ -f $PID_FILE ] && rm $PID_FILE
         daemon --user=<%= scope.lookupvar('consul::user') %> \
             --pidfile="$PID_FILE" \
-            "$CONSUL" agent -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &
+            "$CONSUL" agent -pid-file "${PID_FILE}" -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &
         retcode=$?
         touch /var/lock/subsys/consul
         return $retcode
@@ -34,10 +61,17 @@ start() {
 
 stop() {
         echo -n "Shutting down consul: "
-        "$CONSUL" leave
+        # If consul is not acting as a server, exit gracefully
+        if ("${CONSUL}" info 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+            "$CONSUL" leave
+        fi
+
+        # If acting as a server, or if leave failed, kill it.
+        mkpidfile
+        killproc $KILLPROC_OPT $CONSUL -9
 
         retcode=$?
-        rm -f /var/lock/subsys/consul
+        rm -f /var/lock/subsys/consul $PID_FILE
         return $retcode
 }
 
@@ -56,7 +90,8 @@ case "$1" in
         start
         ;;
     reload)
-        kill -HUP `cat $PID_FILE`
+        mkpidfile
+        killproc $KILLPROC_OPT $CONSUL -HUP
         ;;
     condrestart)
         [ -f /var/lock/subsys/consul ] && restart || :
