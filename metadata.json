@@ -25,6 +25,7 @@
     "operatingsystem":"Scientific Linux",
     "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
     },
+    {
     "operatingsystem":"Oracle Linux",
     "operatingsystemrelease":[ "5.0", "6.0", "7.0" ]
     },
