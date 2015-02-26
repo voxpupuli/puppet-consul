@@ -8,6 +8,9 @@
 # [*service_name*]
 #   Name of the service. Defaults to title.
 #
+# [*id*]
+#   The unique ID of the service on the node. Defaults to title.
+#
 # [*tags*]
 #   Array of strings.
 #
