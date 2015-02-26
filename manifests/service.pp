@@ -8,6 +8,9 @@
 # [*service_name*]
 #   Name of the service. Defaults to title.
 #
+# [*id*]
+#   The unique ID of the service on the node. Defaults to title.
+#
 # [*tags*]
 #   Array of strings.
 #
@@ -26,6 +29,7 @@
 #
 define consul::service(
   $service_name   = $title,
+  $id             = $title,
   $tags           = [],
   $port           = undef,
   $check_ttl      = undef,
@@ -33,7 +37,6 @@ define consul::service(
   $check_interval = undef,
 ) {
   include consul
-  $id = $title
 
   $basic_hash = {
     'id'   => $id,
@@ -69,7 +72,7 @@ define consul::service(
   }
 
   if $port {
-    # implicit conversion from string to int so it won't be quoted in JSON 
+    # implicit conversion from string to int so it won't be quoted in JSON
     $port_hash = {
       port => $port * 1
     }
