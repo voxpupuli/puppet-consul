@@ -88,7 +88,7 @@ define consul::watch(
         fail('keyprefix is required for watch type of [keyprefix]')
       }
       $type_hash = {
-        keyprefix => $keyprefix,
+        prefix => $keyprefix,
       }
     }
     'service': {
