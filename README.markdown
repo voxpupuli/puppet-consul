@@ -119,6 +119,19 @@ See the check.pp docstrings for all available inputs.
 You can also use `consul::checks` which accepts a hash of checks, and makes
 it easy to declare in hiera.
 
+## ACL Definitions
+
+```puppet
+consul_acl { 'ctoken':
+  ensure => 'present',
+  rules  => {'key' => {'test' => {'policy' => 'read'}}},
+  type   => 'client',
+}
+```
+
+Do not use duplicate names, and remember that the ACL ID (a read-only property for this type)
+is used as the token for requests, not the name
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.

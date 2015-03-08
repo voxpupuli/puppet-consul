@@ -62,6 +62,7 @@ class consul (
   $services          = {},
   $watches           = {},
   $checks            = {},
+  $acls              = {},
 ) inherits consul::params {
 
   validate_bool($purge_config_dir)
@@ -72,6 +73,7 @@ class consul (
   validate_hash($services)
   validate_hash($watches)
   validate_hash($checks)
+  validate_hash($acls)
 
   $config_hash_real = merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
@@ -98,6 +100,10 @@ class consul (
 
   if $checks {
     create_resources(consul::check, $checks)
+  }
+
+  if $acls {
+    create_resources(consul_acl, $acls)
   }
 
   class { 'consul::install': } ->
