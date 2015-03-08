@@ -22,27 +22,34 @@ class consul::params {
 
   $os = downcase($::kernel)
 
-  $init_style = $::operatingsystem ? {
-    'Ubuntu' => versioncmp($::lsbdistrelease, '8.04') ? {
-      '-1' => 'debian',
-      '0'  => 'debian',
-      '1'  => 'upstart',
-    },
-    /Scientific|CentOS|RedHat|OracleLinux/ => versioncmp($::operatingsystemrelease, '7.0') ? {
-      '-1' => 'sysv',
-      '0'  => 'systemd',
-      '1'  => 'systemd'
-    },
-    'Fedora' => versioncmp($::operatingsystemrelease, '12') ? {
-      '-1' => 'sysv',
-      '0'  => 'systemd',
-      '1'  => 'systemd'
-    },
-    'Debian'             => 'debian',
-    'SLES'               => 'sles',
-    'Darwin'             => 'launchd',
-    'Amazon'             => 'sysv',
-    default => undef
+  if $::operatingsystem == 'Ubuntu' {
+    if versioncmp($::lsbdistrelease, '8.04') < 1 {
+      $init_style = 'debian'
+    } else {
+      $init_style = 'upstart'
+    }
+  } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
+    if versioncmp($::operatingsystemrelease, '7.0') < 0 {
+      $init_style = 'sysv'
+    } else {
+      $init_style  = 'systemd'
+    }
+  } elsif $::operatingsystem == 'Fedora' {
+    if versioncmp($::operatingsystemrelease, '12') < 0 {
+      $init_style = 'sysv'
+    } else {
+      $init_style = 'systemd'
+    }
+  } elsif $::operatingsystem == 'Debian' {
+    $init_style = 'debian'
+  } elsif $::operatingsystem == 'SLES' {
+    $init_style = 'sles'
+  } elsif $::operatingsystem == 'Darwin' {
+    $init_style = 'launchd'
+  } elsif $::operatingsystem == 'Amazon' {
+    $init_style = 'sysv'
+  } else {
+    $init_style = undef
   }
   if $init_style == undef {
     fail('Unsupported OS')
