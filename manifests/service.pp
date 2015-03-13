@@ -39,7 +39,7 @@ define consul::service(
     'port'    => $port,
   }
 
-  $serice_hash = { 'service' => delete_undef_values($service_hash_all) }
+  $service_hash = { 'service' => delete_undef_values($service_hash_all) }
 
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/service_${service_name}.json":
