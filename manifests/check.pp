@@ -1,75 +1,71 @@
 # == Define consul::check
 #
-# Sets up a Consul healthcheck
+# Sets up a Consul healthcheck. One of script, http, or ttl must be specified
 # http://www.consul.io/docs/agent/checks.html
 #
 # == Parameters
 #
-# [*ttl*]
-#   Value in seconds before the http endpoint considers a failing healthcheck
-#   to be "HARD" down.
+# [*id*]
+#   Optional. ID for this check, must be unique.
+#
+# [*check_name*]
+#   Optional. Name for this check. If unspecified, defaults to the resource
+#   name.
 #
 # [*script*]
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes.
 #
+# [*http*]
+#   URL to check.
+#
+# [*ttl*]
+#   Value in seconds before the http endpoint considers a failing healthcheck
+#   to be "HARD" down.
+#
+# [*service_id*]
+#   Optional. Name of a service to associate this check with.
+#
 # [*interval*]
-#   Value in seconds for the interval between runs of the check
+#   Time interval between runs of the check. Only defined for script and
+#   HTTP checks.
+#
+# [*timeout*]
+#   How long the check should run before timing out. Only defined for HTTP
+#   checks.
 #
 # [*notes*]
 #   Human readable description of the check
 #
 define consul::check(
-  $ttl      = undef,
-  $script   = undef,
-  $interval = undef,
-  $notes    = undef,
+  $id         = undef,
+  $check_name = $title,
+  $script     = undef,
+  $http       = undef,
+  $ttl        = undef,
+  $service_id = undef,
+  $interval   = undef,
+  $timeout    = undef,
+  $notes      = undef,
 ) {
   include consul
-  $id = $title
 
-  $basic_hash = {
-    'id'   => $id,
-    'name' => $name,
+  $check_hash_all = {
+    'id'         => $id,
+    'name'       => $check_name,
+    'script'     => $script,
+    'http'       => $http,
+    'ttl'        => $ttl,
+    'service_id' => $service_id,
+    'interval'   => $interval,
+    'timeout'    => $timeout,
+    'notes'      => $notes,
   }
 
-  if $ttl and $interval {
-    fail('Only one of ttl and interval can be defined')
-  }
-
-  if $ttl {
-    if $script {
-      fail('script must not be defined for ttl checks')
-    }
-    $check_definition = {
-      ttl => $ttl,
-    }
-  } elsif $interval {
-    if (! $script) {
-      fail('script must be defined for interval checks')
-    }
-    $check_definition = {
-      script   => $script,
-      interval => $interval,
-    }
-  } else {
-    fail('One of ttl or interval must be defined.')
-  }
-
-  if $notes {
-    $notes_hash = {
-      notes => $notes
-    }
-  } else {
-    $notes_hash = {}
-  }
-
-  $check_hash = {
-    check => merge($basic_hash, $check_definition, $notes_hash)
-  }
+  $check_hash = { 'check' => delete_undef_values($check_hash_all) }
 
   File[$consul::config_dir] ->
-  file { "${consul::config_dir}/check_${id}.json":
+  file { "${consul::config_dir}/check_${check_name}.json":
     content => template('consul/check.json.erb'),
   } ~> Class['consul::run_service']
 }
