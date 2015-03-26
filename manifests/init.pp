@@ -90,6 +90,10 @@ class consul (
     warning('data_dir must be set to install consul web ui')
   }
 
+  if $config_hash_real['download_dir'] {
+    $download_dir = $config_hash_real['download_dir']
+  }
+
   if $services {
     create_resources(consul::service, $services)
   }

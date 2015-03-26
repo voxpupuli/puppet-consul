@@ -73,6 +73,9 @@ describe 'consul' do
 
   context "When installing via URL by default" do
     it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip') }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_amd64').with(:ensure => :directory) }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_amd64/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/usr/local/bin/consul_0.4.1_linux_amd64/consul') }
   end
 
   context "When installing via URL by with a special version" do
@@ -80,6 +83,9 @@ describe 'consul' do
       :version   => '42',
     }}
     it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
+    it { should contain_file('/usr/local/bin/consul_42_linux_amd64').with(:ensure => :directory) }
+    it { should contain_file('/usr/local/bin/consul_42_linux_amd64/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/usr/local/bin/consul_42_linux_amd64/consul') }
   end
 
   context "When installing via URL by with a custom url" do
@@ -87,8 +93,43 @@ describe 'consul' do
       :download_url   => 'http://myurl',
     }}
     it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_amd64').with(:ensure => :directory) }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_amd64/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/usr/local/bin/consul_0.4.1_linux_amd64/consul') }
   end
 
+  context "When installing via URL with a custom download directory" do
+    let(:params) {{
+      :config_hash => {
+        'download_dir' => '/opt'
+      }
+    }}
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip') }
+    it { should contain_file('/opt/consul_0.4.1_linux_amd64').with(:ensure => :directory) }
+    it { should contain_file('/opt/consul_0.4.1_linux_amd64/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/opt/consul_0.4.1_linux_amd64/consul') }
+  end
+
+  context 'When installed via URL on a different arch' do
+    let(:facts) {{ :architecture => 'i386' }}
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_386.zip') }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_386').with(:ensure => :directory) }
+    it { should contain_file('/usr/local/bin/consul_0.4.1_linux_386/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/usr/local/bin/consul_0.4.1_linux_386/consul') }
+  end
+
+  context 'When installed via URL on a different arch with a custom download directory' do
+    let(:facts) {{ :architecture => 'i386' }}
+    let(:params) {{
+      :config_hash => {
+        'download_dir' => '/opt'
+      }
+    }}
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_386.zip') }
+    it { should contain_file('/opt/consul_0.4.1_linux_386').with(:ensure => :directory) }
+    it { should contain_file('/opt/consul_0.4.1_linux_386/consul').with(:mode => '0555') }
+    it { should contain_file('/usr/local/bin/consul').with(:target => '/opt/consul_0.4.1_linux_386/consul') }
+  end
 
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
