@@ -71,5 +71,5 @@ define consul::check(
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/check_${id}.json":
     content => template('consul/check.json.erb'),
-  } ~> Class['consul::run_service']
+  } ~> Service['consul']
 }
