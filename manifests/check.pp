@@ -20,52 +20,64 @@
 #   Human readable description of the check
 #
 define consul::check(
-  $ttl      = undef,
-  $script   = undef,
-  $interval = undef,
-  $notes    = undef,
+  $id         = $title,
+  $ttl        = undef,
+  $http       = undef,
+  $script     = undef,
+  $interval   = undef,
+  $service_id = undef,
+  $timeout    = undef,
+  $notes      = undef,
 ) {
   include consul
-  $id = $title
 
   $basic_hash = {
-    'id'   => $id,
-    'name' => $name,
+    'id'         => $id,
+    'name'       => $name,
+    'service_id' => $service_id,
+    'notes'      => $notes,
   }
 
-  if $ttl and $interval {
-    fail('Only one of ttl and interval can be defined')
+  if $http and $script {
+    fail('Only one of script and http can be defined')
   }
 
   if $ttl {
-    if $script {
-      fail('script must not be defined for ttl checks')
+    if $script or $http {
+      fail('script or http must not be defined for ttl checks')
+    }
+    if $timeout {
+      warning('timeout only valid for http requests')
     }
     $check_definition = {
       ttl => $ttl,
     }
-  } elsif $interval {
-    if (! $script) {
-      fail('script must be defined for interval checks')
+  } elsif $http {
+    if (! $interval) {
+      fail('http must be defined for interval checks')
     }
     $check_definition = {
-      script   => $script,
-      interval => $interval,
+      http       => $http,
+      interval   => $interval,
+      timeout    => $timeout,
+    }
+  } elsif $script {
+    if (! $interval) {
+      fail('script must be defined for interval checks')
+    }
+    if $timeout {
+      warning('timeout only valid for http requests')
+    }
+    $check_definition = {
+      script     => $script,
+      interval   => $interval,
     }
   } else {
-    fail('One of ttl or interval must be defined.')
-  }
-
-  if $notes {
-    $notes_hash = {
-      notes => $notes
-    }
-  } else {
-    $notes_hash = {}
+    fail('One of ttl, script, or http must be defined.')
   }
 
   $check_hash = {
-    check => merge($basic_hash, $check_definition, $notes_hash)
+    check => delete_undef_values(merge($basic_hash, $check_definition))
   }
 
   File[$consul::config_dir] ->
