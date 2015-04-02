@@ -5,9 +5,15 @@
 #
 # == Parameters
 #
+# [*id*]
+#   The id for the check (defaults to $title)
+#
 # [*ttl*]
 #   Value in seconds before the http endpoint considers a failing healthcheck
 #   to be "HARD" down.
+#
+# [*http*]
+#   HTTP endpoint for the service healthcheck
 #
 # [*script*]
 #   Full path to the location of the healthcheck script. Must be nagios
@@ -15,6 +21,12 @@
 #
 # [*interval*]
 #   Value in seconds for the interval between runs of the check
+#
+# [*service_id*]
+#   An optional service_id to match this check against
+#
+# [*timeout*]
+#   A timeout value for HTTP request only
 #
 # [*notes*]
 #   Human readable description of the check
