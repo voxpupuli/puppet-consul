@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>             <string>io.consul.daemon</string>
+    <key>UserName</key>          <string><%= scope.lookupvar('consul::user') %></string>
+    <key>GroupName</key>         <string><%= scope.lookupvar('consul::group') %></string>
 <% if scope.lookupvar('consul::service_enable') %>
     <key>Disabled</key>          <false/>
 <% else %>
