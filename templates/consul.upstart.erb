@@ -6,6 +6,7 @@ stop on runlevel [06]
 env CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 env CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 
+umask <%= scope.lookupvar('consul::umask') %>
 
 script
     # read settings like GOMAXPROCS from "/etc/default/consul", if available.

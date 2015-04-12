@@ -36,6 +36,7 @@ case "$1" in
         echo -n "Starting consul "
         ## Start daemon with startproc(8). If this fails
         ## the return value is set appropriately by startproc.
+        umask <%= scope.lookupvar('consul::umask') %>
         startproc $CONSUL_BIN agent -config-dir "$CONFIG_DIR" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE"
 
         # Remember status and be verbose
