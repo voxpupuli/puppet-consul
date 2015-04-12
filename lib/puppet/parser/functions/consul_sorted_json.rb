@@ -15,7 +15,7 @@ def sorted_json(obj)
       obj.keys.sort.each do |k|
         ret.push(k.to_json << ":" << sorted_json(obj[k]))
       end
-      return "{" << ret.join(",") << "}";
+      return "{" << ret.join(",") << "}\n";
     else
       raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
   end
