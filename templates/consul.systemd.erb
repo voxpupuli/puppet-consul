@@ -6,7 +6,6 @@ After=basic.target network.target
 [Service]
 User=<%= scope.lookupvar('consul::user') %>
 Group=<%= scope.lookupvar('consul::group') %>
-Umask=<%= scope.lookupvar('consul::umask') %>
 ExecStart=<%= scope.lookupvar('consul::bin_dir') %>/consul agent \
   -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>
 ExecReload=/bin/kill -HUP $MAINPID
