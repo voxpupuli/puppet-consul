@@ -63,6 +63,7 @@ class consul (
   $watches           = {},
   $checks            = {},
   $acls              = {},
+  $umask             = '0022',
 ) inherits consul::params {
 
   validate_bool($purge_config_dir)
