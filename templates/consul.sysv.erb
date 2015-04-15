@@ -52,9 +52,10 @@ start() {
         mkrundir
         [ -f $PID_FILE ] && rm $PID_FILE
         daemon --user=<%= scope.lookupvar('consul::user') %> \
-            --pidfile="$PID_FILE" \
-            "$CONSUL" agent -pid-file "${PID_FILE}" -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &
+            --pidfile=$PID_FILE \
+            " { ${CONSUL} agent -pid-file ${PID_FILE} -config-dir ${CONFIG} <%= scope.lookupvar('consul::extra_options') %> &>> ${LOG_FILE} & } ;  echo \$! >| ${PID_FILE}"
         retcode=$?
+        echo
         touch /var/lock/subsys/consul
         return $retcode
 }
@@ -68,9 +69,10 @@ stop() {
 
         # If acting as a server, or if leave failed, kill it.
         mkpidfile
-        killproc $KILLPROC_OPT $CONSUL -9
+        killproc $KILLPROC_OPT $CONSUL -INT
 
         retcode=$?
+        echo
         rm -f /var/lock/subsys/consul $PID_FILE
         return $retcode
 }
