@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/solarkennedy/puppet-consul/issues",
   "description": "Configures Consul by Hashicorp",
   "dependencies": [
-    {"name":"puppetlabs/stdlib","version_requirement":">= 0.1.6 <5.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0 <5.0.0"},
     {"name":"nanliu/staging","version_requirement":">=0.4.0 <2.0.0"}
   ],
   "operatingsystem_support": [
