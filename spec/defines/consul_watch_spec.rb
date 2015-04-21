@@ -181,12 +181,12 @@ describe 'consul::watch' do
           'service'     => 'serviceName',
 
           'service_tag' => 'serviceTagName',
-          'passingonly' => 'true'
+          'passingonly' => true
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
             .with_content(/"tag" *: *"serviceTagName"/)
-            .with_content(/"passingonly" *: *"true"/)
+            .with_content(/"passingonly" *: *true/)
         }
       end
     end
