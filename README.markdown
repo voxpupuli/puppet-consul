@@ -22,33 +22,49 @@ on the 4 series. Do *not* pull from master.
 
 ##Usage
 
+To set up a single consul server, with several agents attached:
+On the server:
 ```puppet
-class { 'consul':
+class { '::consul':
   config_hash => {
-      'datacenter' => 'east-aws',
-      'data_dir'   => '/opt/consul',
-      'log_level'  => 'INFO',
-      'node_name'  => 'foobar',
-      'server'     => true
+    'bootstrap_expect' => 1,
+    'data_dir'         => '/opt/consul',
+    'datacenter'       => 'east-aws',
+    'log_level'        => 'INFO',
+    'node_name'        => 'server',
+    'server'           => true,
+  }
+}
+```
+On the agent(s):
+```puppet
+class { '::consul':
+  config_hash => {
+    'data_dir'   => '/opt/consul',
+    'datacenter' => 'east-aws',
+    'log_level'  => 'INFO',
+    'node_name'  => 'agent',
+    'retry_join' => ['172.16.0.1'],
   }
 }
 ```
 
 ##Web UI
 
-To install and run the Web UI, include `ui_dir` in the `config_hash`.  You may also 
-want to change the `client_addr` to `0.0.0.0` from the default `127.0.0.1`, 
-for example:
+To install and run the Web UI on the server, include `ui_dir` in the
+`config_hash`. You may also want to change the `client_addr` to `0.0.0.0` from
+the default `127.0.0.1`, for example:
 ```puppet
-class { 'consul':
+class { '::consul':
   config_hash => {
-      'datacenter'  => 'east-aws',
-      'data_dir'    => '/opt/consul',
-      'ui_dir'      => '/opt/consul/ui',
-      'client_addr' => '0.0.0.0',
-      'log_level'   => 'INFO',
-      'node_name'   => 'foobar',
-      'server'      => true
+    'bootstrap_expect' => 1,
+    'client_addr'      => '0.0.0.0',
+    'data_dir'         => '/opt/consul',
+    'datacenter'       => 'east-aws',
+    'log_level'        => 'INFO',
+    'node_name'        => 'server',
+    'server'           => true,
+    'ui_dir'           => '/opt/consul/ui',
   }
 }
 ```
@@ -70,16 +86,20 @@ and use with a reverse proxy:
 
 ## Service Definition
 
-To declare the availability of a service, you can use the `service` define. This 
-will register the service through the local consul client agent and optionally 
+To declare the availability of a service, you can use the `service` define. This
+will register the service through the local consul client agent and optionally
 configure a health check to monitor its availability.
 
 ```puppet
-consul::service { 'redis':
-  tags           => ['master'],
-  port           => 8000,
-  check_script   => '/usr/local/bin/check_redis.py',
-  check_interval => '10s',
+::consul::service { 'redis':
+  checks  => [
+    {
+      script   => '/usr/local/bin/check_redis.py',
+      interval => '10s'
+    }
+  ],
+  port    => 6379,
+  tags    => ['master']
 }
 ```
 
@@ -91,12 +111,12 @@ it easy to declare in hiera.
 ## Watch Definitions
 
 ```puppet
-consul::watch { 'my_watch':
-  type        => 'service',
+::consul::watch { 'my_watch':
   handler     => 'handler_path',
+  passingonly => true,
   service     => 'serviceName',
   service_tag => 'serviceTagName',
-  passingonly => 'true',
+  type        => 'service',
 }
 ```
 
@@ -108,9 +128,9 @@ it easy to declare in hiera.
 ## Check Definitions
 
 ```puppet
-consul::check { 'true_check':
+::consul::check { 'true_check':
   interval => '30s',
-  script   => 'true',
+  script   => '/bin/true',
 }
 ```
 
@@ -137,6 +157,6 @@ is used as the token for requests, not the name
 Depends on the JSON gem, or a modern ruby.
 
 ##Development
-Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or 
-[fork](https://github.com/solarkennedy/puppet-consul/fork) and open a 
+Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
+[fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)

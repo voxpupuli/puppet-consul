@@ -74,6 +74,10 @@ define consul::watch(
     fail ('All watch conditions must have a type defined')
   }
 
+  if ($passingonly ) {
+    validate_bool($passingonly)
+  }
+
   case $type {
     'key': {
       if (! $key ) {
