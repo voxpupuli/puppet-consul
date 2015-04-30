@@ -41,7 +41,11 @@ class consul::params {
       $init_style = 'systemd'
     }
   } elsif $::operatingsystem == 'Debian' {
-    $init_style = 'debian'
+    if versioncmp($::operatingsystemrelease, '8.0') < 0 {
+      $init_style = 'debian'
+    } else {
+      $init_style = 'systemd'
+    }
   } elsif $::operatingsystem == 'SLES' {
     $init_style = 'sles'
   } elsif $::operatingsystem == 'Darwin' {
