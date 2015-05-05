@@ -1,15 +1,13 @@
 # == Class consul::intall
 #
-# Installs consule based in the parameters from init
-#
 class consul::install {
 
   if $consul::data_dir {
-    file { $consul::data_dir:
+    file { "${consul::data_dir}":
       ensure => 'directory',
-      owner  => $consul::user,
-      group  => $consul::group,
-      mode   => '0755',
+      owner => $consul::user,
+      group => $consul::group,
+      mode  => '0755',
     }
   }
 
@@ -18,17 +16,43 @@ class consul::install {
     if $::operatingsystem != 'darwin' {
       ensure_packages(['unzip'])
     }
-    staging::file { 'consul.zip':
-      source => $consul::download_url
-    } ->
-    staging::extract { 'consul.zip':
-      target  => $consul::bin_dir,
-      creates => "${consul::bin_dir}/consul",
-    } ->
-    file { "${consul::bin_dir}/consul":
-      owner => 'root',
-      group => 0, # 0 instead of root because OS X uses "wheel".
-      mode  => '0555',
+
+    # Installing consul for the very first time
+    if ($::consul_version == undef) {
+
+      staging::file { "consul_${consul::version}.zip":
+        source => $consul::download_url,
+      } ->
+      staging::extract { "consul_${consul::version}.zip":
+        target => $consul::bin_dir,
+      } ->
+      file { "${consul::bin_dir}/consul":
+        owner => 'root',
+        group => 0, # 0 instead of root because OS X uses "wheel".
+        mode  => '0555',
+      }
+
+    # Upgrading existing installation of consul
+    } elsif ($::consul_version != $consul::version) {
+
+      exec { "removing consul v${::consul_version}":
+        command => "/bin/rm -f ${consul::bin_dir}/consul",
+      } ->
+      staging::file { "consul_${consul::version}.zip":
+        source => $consul::download_url,
+      } ->
+      staging::extract { "consul_${consul::version}.zip":
+        target => $consul::bin_dir,
+      } ->
+      file { "${consul::bin_dir}/consul":
+        owner => 'root',
+        group => 0, # 0 instead of root because OS X uses "wheel".
+        mode  => '0555',
+      }
+
+      if $consul::manage_service == true {
+        File["${consul::bin_dir}/consul"] ~> Service['consul']
+      }
     }
 
     if ($consul::ui_dir and $consul::data_dir) {
@@ -38,12 +62,12 @@ class consul::install {
         group  => 0, # 0 instead of root because OS X uses "wheel".
         mode   => '0755',
       } ->
-      staging::deploy { 'consul_web_ui.zip':
-        source  => $consul::ui_download_url,
+      staging::deploy { "consul_web_ui_${consul::version}.zip":
+        source  => "${consul::ui_download_url}",
         target  => "${consul::data_dir}/${consul::version}_web_ui",
         creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
       }
-      file { $consul::ui_dir:
+      file { "${consul::ui_dir}":
         ensure => 'symlink',
         target => "${consul::data_dir}/${consul::version}_web_ui/dist",
       }
