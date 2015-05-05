@@ -1,13 +1,15 @@
 # == Class consul::intall
 #
+# Installs consule based in the parameters from init
+#
 class consul::install {
 
   if $consul::data_dir {
-    file { "${consul::data_dir}":
+    file { $consul::data_dir:
       ensure => 'directory',
-      owner => $consul::user,
-      group => $consul::group,
-      mode  => '0755',
+      owner  => $consul::user,
+      group  => $consul::group,
+      mode   => '0755',
     }
   }
 
@@ -63,11 +65,11 @@ class consul::install {
         mode   => '0755',
       } ->
       staging::deploy { "consul_web_ui_${consul::version}.zip":
-        source  => "${consul::ui_download_url}",
+        source  => $consul::ui_download_url,
         target  => "${consul::data_dir}/${consul::version}_web_ui",
         creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
       }
-      file { "${consul::ui_dir}":
+      file { $consul::ui_dir:
         ensure => 'symlink',
         target => "${consul::data_dir}/${consul::version}_web_ui/dist",
       }
