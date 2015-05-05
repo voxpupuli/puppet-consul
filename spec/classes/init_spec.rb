@@ -72,7 +72,7 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul_0.4.1.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip') }
+    it { should contain_staging__file('consul_0.5.0.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
@@ -118,7 +118,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui_0.4.1.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.4.1_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui_0.5.0.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a special version" do
@@ -145,8 +145,8 @@ describe 'consul' do
   end
 
   context "When upgrading remove existing binary" do
-    let(:facts) {{ :consul_version => '0.5.0' }}
-    it { should contain_exec('removing consul v0.5.0').with(:command => '/bin/rm -f /usr/local/bin/consul') }
+    let(:facts) {{ :consul_version => '0.4.1' }}
+    it { should contain_exec('removing consul v0.4.1').with(:command => '/bin/rm -f /usr/local/bin/consul') }
   end
 
   context "By default, a user and group should be installed" do
