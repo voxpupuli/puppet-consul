@@ -18,7 +18,7 @@ DESC="Consul service discovery framework"
 NAME=consul
 DAEMON=<%= scope.lookupvar('consul::bin_dir') %>/$NAME
 PIDFILE=/var/run/$NAME/$NAME.pid
-DAEMON_ARGS="agent -pid-file ${PIDFILE} -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>"
+DAEMON_ARGS="agent -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>"
 USER=<%= scope.lookupvar('consul::user') %>
 SCRIPTNAME=/etc/init.d/$NAME
 
