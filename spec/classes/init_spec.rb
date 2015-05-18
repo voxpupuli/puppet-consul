@@ -29,7 +29,7 @@ describe 'consul' do
     }}
     it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
-  
+
   context 'When passing a non-bool as manage_service' do
     let(:params) {{
       :manage_service => 'hello'
@@ -72,21 +72,21 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip') }
+    it { should contain_staging__file('consul_0.5.0.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
     let(:params) {{
       :version   => '42',
     }}
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
+    it { should contain_staging__file('consul_42.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a custom url" do
     let(:params) {{
       :download_url   => 'http://myurl',
     }}
-    it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
+    it { should contain_staging__file('consul_0.5.0.zip').with(:source => 'http://myurl') }
   end
 
 
@@ -117,7 +117,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui_0.5.0.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a special version" do
@@ -128,7 +128,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui_42.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a custom url" do
@@ -139,7 +139,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__deploy('consul_web_ui.zip').with(:source => 'http://myurl') }
+    it { should contain_staging__deploy('consul_web_ui_0.5.0.zip').with(:source => 'http://myurl') }
   end
 
   context "By default, a user and group should be installed" do
