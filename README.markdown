@@ -152,6 +152,11 @@ consul_acl { 'ctoken':
 Do not use duplicate names, and remember that the ACL ID (a read-only property for this type)
 is used as the token for requests, not the name
 
+Optionally, you may supply an `acl_api_token`.  This will allow you to create
+ACLs if the anonymous token doesn't permit ACL changes (which is likely).
+The api token may be the master token, another management token, or any
+client token with sufficient privileges.
+
 ##Limitations
 
 Depends on the JSON gem, or a modern ruby.
