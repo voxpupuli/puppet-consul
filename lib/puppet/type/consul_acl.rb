@@ -18,6 +18,14 @@ Puppet::Type.newtype(:consul_acl) do
     defaultto 'client'
   end
 
+  newproperty(:acl_api_token) do
+    desc 'Token for accessing the ACL API'
+    validate do |value|
+      raise ArgumentError, "ACL API token must be a string" if not value.is_a?(String)
+    end
+    defaultto ''
+  end
+
   newproperty(:rules) do
     desc 'hash of ACL rules for this token'
     defaultto {}
