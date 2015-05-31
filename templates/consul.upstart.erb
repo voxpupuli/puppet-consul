@@ -5,14 +5,26 @@ stop on runlevel [06]
 
 env CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 env CONFIG=<%= scope.lookupvar('consul::config_dir') %>
+env USER=<%= scope.lookupvar('consul::user') %>
+env GROUP=<%= scope.lookupvar('consul::group') %>
+env DEFAULTS=/etc/default/consul
+env RUNDIR=/var/run/consul
+env PID_FILE=/var/run/consul/consul.pid
 
+pre-start script
+  [ -e $DEFAULTS ] && . $DEFAULTS
+
+  mkdir -p $RUNDIR           || true
+  chmod 0750 $RUNDIR         || true
+  chown $USER:$GROUP $RUNDIR || true
+end script
 
 script
     # read settings like GOMAXPROCS from "/etc/default/consul", if available.
-    [ -e /etc/default/consul ] && . /etc/default/consul
+    [ -e $DEFAULTS ] && . $DEFAULTS
 
     export GOMAXPROCS=${GOMAXPROCS:-2}
-    exec sudo -u <%= scope.lookupvar('consul::user') %> -g <%= scope.lookupvar('consul::group') %> $CONSUL agent -config-dir $CONFIG <%= scope.lookupvar('consul::extra_options') %>
+    exec start-stop-daemon -u $USER -g $GROUP -p $PID_FILE -x $CONSUL -S -- agent -config-dir $CONFIG -pid-file $PID_FILE <%= scope.lookupvar('consul::extra_options') %>
 end script
 
 respawn
