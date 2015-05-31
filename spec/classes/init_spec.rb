@@ -241,7 +241,8 @@ describe 'consul' do
     }}
     it { should contain_user('custom_consul_user').with(:ensure => :present) }
     it { should contain_group('custom_consul_group').with(:ensure => :present) }
-    it { should contain_file('/etc/init/consul.conf').with_content(/sudo -u custom_consul_user -g custom_consul_group/) }
+    it { should contain_file('/etc/init/consul.conf').with_content(/env USER=custom_consul_user/) }
+    it { should contain_file('/etc/init/consul.conf').with_content(/env GROUP=custom_consul_group/) }
   end
 
   context "When the user provides a hash of services" do
@@ -389,7 +390,7 @@ describe 'consul' do
     let(:params) {{
       :extra_options => '-some-extra-argument'
     }}
-    it { should contain_file('/etc/init/consul.conf').with_content(/\$CONSUL agent .*-some-extra-argument$/) }
+    it { should contain_file('/etc/init/consul.conf').with_content(/\$CONSUL -S -- agent .*-some-extra-argument$/) }
   end
   # Service Stuff
 
