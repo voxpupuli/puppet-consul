@@ -185,8 +185,8 @@ describe 'consul' do
       :config_hash =>
         { 'bootstrap_expect' => '5' }
     }}
-    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
-    it { should_not contain_file('config.json').with_content(/"bootstrap_expect":"5"/) }
+    it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
+    it { should_not contain_file('consul config.json').with_content(/"bootstrap_expect":"5"/) }
   end
 
   context 'Config_defaults is used to provide additional config' do
@@ -198,8 +198,8 @@ describe 'consul' do
           'bootstrap_expect' => '5',
       }
     }}
-    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
-    it { should contain_file('config.json').with_content(/"data_dir":"\/dir1"/) }
+    it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
+    it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
   end
 
   context 'Config_defaults is used to provide additional config and is overridden' do
@@ -213,9 +213,9 @@ describe 'consul' do
           'server' => true,
       }
     }}
-    it { should contain_file('config.json').with_content(/"bootstrap_expect":5/) }
-    it { should contain_file('config.json').with_content(/"data_dir":"\/dir1"/) }
-    it { should contain_file('config.json').with_content(/"server":true/) }
+    it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
+    it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
+    it { should contain_file('consul config.json').with_content(/"server":true/) }
   end
 
   context "When asked not to manage the user" do
