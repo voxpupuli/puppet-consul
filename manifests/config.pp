@@ -102,7 +102,7 @@ class consul::config(
     purge   => $purge,
     recurse => $purge,
   } ->
-  file { 'config.json':
+  file { 'consul config.json':
     path    => "${consul::config_dir}/config.json",
     content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
   }
