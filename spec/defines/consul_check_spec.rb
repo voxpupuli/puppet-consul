@@ -160,4 +160,14 @@ describe 'consul::check' do
       should raise_error(Puppet::Error)
     }
   end
+  describe 'with a / in the id' do
+    let(:params) {{
+      'ttl' => '30s',
+      'service_id' => 'my_service',
+      'id' => 'aa/bb',
+    }}
+    it { should contain_file("/etc/consul/check_aa_bb.json") \
+        .with_content(/"id" *: *"aa\/bb"/)
+    }
+  end
 end
