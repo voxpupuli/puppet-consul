@@ -61,8 +61,9 @@ define consul::check(
 
   consul_validate_checks($check_hash[check])
 
+  $escaped_id = regsubst($id,'\/','_')
   File[$consul::config_dir] ->
-  file { "${consul::config_dir}/check_${id}.json":
+  file { "${consul::config_dir}/check_${escaped_id}.json":
     content => template('consul/check.json.erb'),
   } ~> Class['consul::run_service']
 }
