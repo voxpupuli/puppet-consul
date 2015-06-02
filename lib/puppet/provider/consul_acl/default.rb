@@ -6,14 +6,7 @@ Puppet::Type.type(:consul_acl).provide(
 ) do
   mk_resource_methods
 
-  def self.instances
-    acls = list_resources
-    acls.collect do |acl|
-      new(acl)
-    end
-  end
-
-  def self.list_resources
+  def self.list_resources(acl_api_token)
     if @acls
       return @acls
     end
@@ -23,14 +16,14 @@ Puppet::Type.type(:consul_acl).provide(
     uri = URI('http://localhost:8500/v1/acl')
     http = Net::HTTP.new(uri.host, uri.port)
 
-    path=uri.request_uri + '/list'
+    path=uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
     res = http.request(req)
 
     if res.code == '200'
       acls = JSON.parse(res.body)
     else
-      acls = []
+      raise(Puppet::Error,"Cannot retrieve ACLs: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
 
     nacls = acls.collect do |acl|
@@ -53,18 +46,11 @@ Puppet::Type.type(:consul_acl).provide(
     nacls
   end
 
-  def self.prefetch(resources)
-    instances.each do |prov|
-      if resource = resources[prov.name]
-        resource.provider = prov
-      end
-    end
-  end
-
   def put_acl(method,body)
     uri = URI('http://localhost:8500/v1/acl')
     http = Net::HTTP.new(uri.host, uri.port)
-    path = uri.request_uri + "/#{method}"
+    acl_api_token = @resource[:acl_api_token]
+    path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
     req = Net::HTTP::Put.new(path)
     if body
       req.body = body.to_json
@@ -76,7 +62,8 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def get_resource_id(name)
-    resources = self.class.list_resources.select do |res|
+    acl_api_token = @resource[:acl_api_token]
+    resources = self.class.list_resources(acl_api_token).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
