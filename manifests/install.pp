@@ -15,37 +15,50 @@ class consul::install {
 
   if $consul::install_method == 'url' {
 
+    $version = $consul::version
+    $consul_archive_target = "consul_${version}.zip"
+    $consul_web_ui_archive_target = "consul_web_ui_${version}.zip"
+
     if $::operatingsystem != 'darwin' {
       ensure_packages(['unzip'])
     }
-    staging::file { 'consul.zip':
+    staging::file { $consul_archive_target:
       source => $consul::download_url
     } ->
-    staging::extract { 'consul.zip':
-      target  => $consul::bin_dir,
-      creates => "${consul::bin_dir}/consul",
+    file { "${consul::bin_dir}/consul_${version}/":
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 0,
+      mode   => '0755',
+    } ->
+    staging::extract { $consul_archive_target:
+      target  => "${consul::bin_dir}/consul_${version}/",
+      creates => "${consul::bin_dir}/consul_${version}/consul",
     } ->
     file { "${consul::bin_dir}/consul":
-      owner => 'root',
-      group => 0, # 0 instead of root because OS X uses "wheel".
-      mode  => '0555',
+      owner  => 'root',
+      group  => 0, # 0 instead of root because OS X uses "wheel".
+      mode   => '0555',
+      target => "${consul::bin_dir}/consul_${version}/consul",
+      notify => Class['consul::run_service'],
     }
 
+
     if ($consul::ui_dir and $consul::data_dir) {
-      file { "${consul::data_dir}/${consul::version}_web_ui":
+      file { "${consul::data_dir}/${version}_web_ui":
         ensure => 'directory',
         owner  => 'root',
         group  => 0, # 0 instead of root because OS X uses "wheel".
         mode   => '0755',
       } ->
-      staging::deploy { 'consul_web_ui.zip':
+      staging::deploy { $consul_web_ui_archive_target:
         source  => $consul::ui_download_url,
-        target  => "${consul::data_dir}/${consul::version}_web_ui",
-        creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
+        target  => "${consul::data_dir}/${version}_web_ui",
+        creates => "${consul::data_dir}/${version}_web_ui/dist",
       }
       file { $consul::ui_dir:
         ensure => 'symlink',
-        target => "${consul::data_dir}/${consul::version}_web_ui/dist",
+        target => "${consul::data_dir}/${version}_web_ui/dist",
       }
     }
 
