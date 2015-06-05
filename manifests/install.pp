@@ -19,7 +19,7 @@ class consul::install {
       ensure_packages(['unzip'])
     }
     staging::file { 'consul.zip':
-      source => $consul::download_url
+      source => $consul::real_download_url
     } ->
     staging::extract { 'consul.zip':
       target  => $consul::bin_dir,
@@ -39,7 +39,7 @@ class consul::install {
         mode   => '0755',
       } ->
       staging::deploy { 'consul_web_ui.zip':
-        source  => $consul::ui_download_url,
+        source  => $consul::real_ui_download_url,
         target  => "${consul::data_dir}/${consul::version}_web_ui",
         creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
       }
