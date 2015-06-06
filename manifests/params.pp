@@ -5,12 +5,16 @@
 #
 class consul::params {
 
-  $install_method    = 'url'
-  $package_name      = 'consul'
-  $package_ensure    = 'latest'
-  $ui_package_name   = 'consul_ui'
-  $ui_package_ensure = 'latest'
-  $version = '0.5.0'
+  $install_method        = 'url'
+  $package_name          = 'consul'
+  $package_ensure        = 'latest'
+  $download_url_base     = 'https://dl.bintray.com/mitchellh/consul/'
+  $download_extension    = 'zip'
+  $ui_package_name       = 'consul_ui'
+  $ui_package_ensure     = 'latest'
+  $ui_download_url_base  = 'https://dl.bintray.com/mitchellh/consul/'
+  $ui_download_extension = 'zip'
+  $version               = '0.5.0'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
