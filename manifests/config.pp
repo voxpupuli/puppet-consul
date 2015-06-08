@@ -109,9 +109,10 @@ class consul::config(
 
 
   exec { 'systemctl daemon-reload':
-    path      => ['/bin','/usr/bin','/sbin','/usr/sbin'],
-    command   => "systemctl daemon-reload",
-    subscribe => File['/lib/systemd/system/consul.service'],
+    path        => ['/bin','/usr/bin','/sbin','/usr/sbin'],
+    command     => "systemctl daemon-reload",
+    subscribe   => File['/lib/systemd/system/consul.service'],
+    refreshonly => true,
   }
 
 }
