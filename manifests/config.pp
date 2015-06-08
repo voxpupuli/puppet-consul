@@ -107,4 +107,11 @@ class consul::config(
     content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
   }
 
+
+  exec { 'systemctl daemon-reload':
+    path      => ['/bin','/usr/bin','sbin','/usr/sbin'],
+    command   => "systemctl daemon-reload",
+    subscribe => File['/lib/systemd/system/consul.service'],
+  }
+
 }
