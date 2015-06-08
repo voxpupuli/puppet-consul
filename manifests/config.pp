@@ -40,6 +40,12 @@ class consul::config(
           group   => 'root',
           content => template('consul/consul.systemd.erb'),
         }
+        exec { 'systemctl daemon-reload':
+          path        => ['/bin','/usr/bin','/sbin','/usr/sbin'],
+          command     => 'systemctl daemon-reload',
+          subscribe   => File['/lib/systemd/system/consul.service'],
+          refreshonly => true,
+        }
       }
       'sysv' : {
         file { '/etc/init.d/consul':
@@ -105,14 +111,6 @@ class consul::config(
   file { 'consul config.json':
     path    => "${consul::config_dir}/config.json",
     content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
-  }
-
-
-  exec { 'systemctl daemon-reload':
-    path        => ['/bin','/usr/bin','/sbin','/usr/sbin'],
-    command     => 'systemctl daemon-reload',
-    subscribe   => File['/lib/systemd/system/consul.service'],
-    refreshonly => true,
   }
 
 }
