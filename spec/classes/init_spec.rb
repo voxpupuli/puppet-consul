@@ -6,6 +6,7 @@ describe 'consul' do
     c.default_facts = {
       :architecture    => 'x86_64',
       :operatingsystem => 'Ubuntu',
+      :osfamily        => 'Debian',
       :lsbdistrelease  => '10.04',
       :kernel          => 'Linux',
     }
@@ -29,7 +30,7 @@ describe 'consul' do
     }}
     it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
-  
+
   context 'When passing a non-bool as manage_service' do
     let(:params) {{
       :manage_service => 'hello'
