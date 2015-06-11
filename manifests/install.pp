@@ -13,56 +13,57 @@ class consul::install {
     }
   }
 
-  if $consul::install_method == 'url' {
-
-    if $::operatingsystem != 'darwin' {
-      ensure_packages(['unzip'])
-    }
-    staging::file { 'consul.zip':
-      source => $consul::real_download_url
-    } ->
-    staging::extract { 'consul.zip':
-      target  => $consul::bin_dir,
-      creates => "${consul::bin_dir}/consul",
-    } ->
-    file { "${consul::bin_dir}/consul":
-      owner => 'root',
-      group => 0, # 0 instead of root because OS X uses "wheel".
-      mode  => '0555',
-    }
-
-    if ($consul::ui_dir and $consul::data_dir) {
-      file { "${consul::data_dir}/${consul::version}_web_ui":
-        ensure => 'directory',
-        owner  => 'root',
-        group  => 0, # 0 instead of root because OS X uses "wheel".
-        mode   => '0755',
+  case $consul::install_method {
+    'url': {
+      if $::operatingsystem != 'darwin' {
+        ensure_packages(['unzip'])
+      }
+      staging::file { 'consul.zip':
+        source => $consul::real_download_url
       } ->
-      staging::deploy { 'consul_web_ui.zip':
-        source  => $consul::real_ui_download_url,
-        target  => "${consul::data_dir}/${consul::version}_web_ui",
-        creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
+      staging::extract { 'consul.zip':
+        target  => $consul::bin_dir,
+        creates => "${consul::bin_dir}/consul",
+      } ->
+      file { "${consul::bin_dir}/consul":
+        owner => 'root',
+        group => 0, # 0 instead of root because OS X uses "wheel".
+        mode  => '0555',
       }
-      file { $consul::ui_dir:
-        ensure => 'symlink',
-        target => "${consul::data_dir}/${consul::version}_web_ui/dist",
+
+      if ($consul::ui_dir and $consul::data_dir) {
+        file { "${consul::data_dir}/${consul::version}_web_ui":
+          ensure => 'directory',
+          owner  => 'root',
+          group  => 0, # 0 instead of root because OS X uses "wheel".
+          mode   => '0755',
+        } ->
+        staging::deploy { 'consul_web_ui.zip':
+          source  => $consul::real_ui_download_url,
+          target  => "${consul::data_dir}/${consul::version}_web_ui",
+          creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
+        }
+        file { $consul::ui_dir:
+          ensure => 'symlink',
+          target => "${consul::data_dir}/${consul::version}_web_ui/dist",
+        }
       }
     }
+    'package': {
+      package { $consul::package_name:
+        ensure => $consul::package_ensure,
+      }
 
-  } elsif $consul::install_method == 'package' {
-
-    package { $consul::package_name:
-      ensure => $consul::package_ensure,
-    }
-
-    if $consul::ui_dir {
-      package { $consul::ui_package_name:
-        ensure => $consul::ui_package_ensure,
+      if $consul::ui_dir {
+        package { $consul::ui_package_name:
+          ensure => $consul::ui_package_ensure,
+        }
       }
     }
-
-  } else {
-    fail("The provided install method ${consul::install_method} is invalid")
+    'none': {}
+    default: {
+      fail("The provided install method ${consul::install_method} is invalid")
+    }
   }
 
   if $consul::manage_user {

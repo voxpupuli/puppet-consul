@@ -45,6 +45,21 @@ class { '::consul':
     'log_level'  => 'INFO',
     'node_name'  => 'agent',
     'retry_join' => ['172.16.0.1'],
+  }ii
+}
+```
+Disable install and service components:
+```puppet
+class { '::consul':
+  install_method => 'none',
+  init_style     => false,
+  manage_service => false,
+  config_hash => {
+    'data_dir'   => '/opt/consul',
+    'datacenter' => 'east-aws',
+    'log_level'  => 'INFO',
+    'node_name'  => 'agent',
+    'retry_join' => ['172.16.0.1'],
   }
 }
 ```
