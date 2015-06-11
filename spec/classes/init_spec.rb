@@ -110,6 +110,16 @@ describe 'consul' do
     it { should contain_package('custom_consul_ui_package').with(:ensure => 'specific_ui_release') }
   end
 
+  context 'When requesting to not to install' do
+    let(:params) {{
+      :install_method => 'none'
+    }}
+    it { should_not contain_package('consul') }
+    it { should_not contain_package('consul_ui') }
+    it { should_not contain_staging__file('consul.zip') }
+    it { should_not contain_staging__file('consul_web_ui.zip') }
+  end
+
   context "When installing UI via URL by default" do
     let(:params) {{
       :config_hash => {
