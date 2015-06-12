@@ -11,7 +11,9 @@
 #   Use this to populate the JSON config file for consul.
 #
 # [*install_method*]
-#   Defaults to `url` but can be `package` if you want to install via a system package.
+#   Valid strings: `package` - install via system package
+#                  `url`     - download and extract from a url. Defaults to `url`.
+#                  `none`    - disable install.
 #
 # [*package_name*]
 #   Only valid when the install_method == package. Defaults to `consul`.
