@@ -52,7 +52,6 @@ do_start()
     #   0 if daemon has been started
     #   1 if daemon was already running
     #   2 if daemon could not be started
-    echo "Starting consul and backgrounding"
     mkrundir
     start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --chuid $USER --background --make-pidfile --test > /dev/null \
         || return 1
@@ -60,22 +59,19 @@ do_start()
         $DAEMON_ARGS \
         || return 2
 
-    echo -n "Waiting for consul daemon to be listening..."
     for i in `seq 1 30`; do
         if ! start-stop-daemon --quiet --stop --test --pidfile $PIDFILE --exec $DAEMON --user $USER; then
-            echo " FAIL: consul process died"
-            return 2
+            RETVAL=2
+            sleep 1
+            continue
         fi
         if "$DAEMON" info >/dev/null; then
-            echo " OK"
             return 0
         fi
-        echo -n .
-        sleep 1
     done
-    echo " FAIL: consul process is alive, but is not listening."
-    return 2
+    return "$RETVAL"
 }
+
 
 #
 # Function that stops the daemon/service
