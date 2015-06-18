@@ -14,6 +14,15 @@ describe 'consul::service' do
         .with_content(/"name" *: *"my_service"/)
     }
   end
+  describe 'with different ensure' do
+    let(:params) {{
+      'ensure' => 'absent',
+    }}
+    it {
+      should contain_file("/etc/consul/service_my_service.json")
+        .with('ensure' => 'absent')
+    }
+  end
   describe 'with service name' do
     let(:params) {{
       'service_name' => 'different_name',
@@ -108,11 +117,11 @@ describe 'consul::service' do
       ],
       'port' => 5,
     }}
-    it { 
+    it {
       should contain_file("/etc/consul/service_my_service.json")
         .with_content(/"port":5/)
     }
-    it { 
+    it {
       should_not contain_file("/etc/consul/service_my_service.json")
         .with_content(/"port":"5"/)
     }

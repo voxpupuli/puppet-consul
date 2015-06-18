@@ -5,6 +5,10 @@
 #
 # == Parameters
 #
+# [*ensure*]
+#   Define availability of service. Use 'absent' to remove existing services.
+#   Defaults to 'present'
+#
 # [*service_name*]
 #   Name of the service. Defaults to title.
 #
@@ -24,6 +28,7 @@
 #   If provided an array of checks that will be added to this service
 #
 define consul::service(
+  $ensure         = 'present',
   $service_name   = $title,
   $id             = $title,
   $tags           = [],
@@ -56,8 +61,9 @@ define consul::service(
     service => delete_undef_values(merge($basic_hash, $port_hash))
   }
 
-  File[$consul::config_dir] ->
   file { "${consul::config_dir}/service_${id}.json":
+    ensure  => $ensure,
     content => consul_sorted_json($service_hash),
+    require => File[$consul::config_dir],
   } ~> Class['consul::run_service']
 }
