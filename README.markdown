@@ -176,6 +176,14 @@ client token with sufficient privileges.
 
 Depends on the JSON gem, or a modern ruby.
 
+## Consul Template
+
+Consul Template is a piece of software to dynamically write out config files
+using templates that are populated with values from Consul. This module does
+not configure consul template. See 
+[gdhbashton/consu_template](https://github.com/hashicorp/consul-template) for
+a module that can do that.
+
 ##Development
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
