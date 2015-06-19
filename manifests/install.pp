@@ -4,12 +4,14 @@
 #
 class consul::install {
 
-  if $consul::data_dir {
-    file { $consul::data_dir:
-      ensure => 'directory',
-      owner  => $consul::user,
-      group  => $consul::group,
-      mode   => '0755',
+  if $consul::manage_user {
+    user { $consul::user:
+      ensure => 'present',
+    }
+  }
+  if $consul::manage_group {
+    group { $consul::group:
+      ensure => 'present',
     }
   }
 
@@ -66,14 +68,13 @@ class consul::install {
     }
   }
 
-  if $consul::manage_user {
-    user { $consul::user:
-      ensure => 'present',
+  if $consul::data_dir {
+    file { $consul::data_dir:
+      ensure => 'directory',
+      owner  => $consul::user,
+      group  => $consul::group,
+      mode   => '0755',
     }
   }
-  if $consul::manage_group {
-    group { $consul::group:
-      ensure => 'present',
-    }
-  }
+
 }
