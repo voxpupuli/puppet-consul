@@ -89,10 +89,14 @@ class consul (
 
   if $config_hash_real['data_dir'] {
     $data_dir = $config_hash_real['data_dir']
+  } else {
+    $data_dir = undef
   }
 
   if $config_hash_real['ui_dir'] {
     $ui_dir = $config_hash_real['ui_dir']
+  } else {
+    $ui_dir = undef
   }
 
   if ($ui_dir and ! $data_dir) {
