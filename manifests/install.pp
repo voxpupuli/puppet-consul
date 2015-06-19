@@ -69,11 +69,13 @@ class consul::install {
   if $consul::manage_user {
     user { $consul::user:
       ensure => 'present',
+      system => true,
     }
   }
   if $consul::manage_group {
     group { $consul::group:
       ensure => 'present',
+      system => true,
     }
   }
 }
