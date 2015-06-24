@@ -56,8 +56,17 @@ class consul::install {
 
       if $consul::ui_dir {
         package { $consul::ui_package_name:
-          ensure => $consul::ui_package_ensure,
+          ensure  => $consul::ui_package_ensure,
+          require => Package[$consul::package_name]
         }
+      }
+
+      if $consul::manage_user {
+        User[$consul::user] -> Package[$consul::package_name]
+      }
+
+      if $consul::data_dir {
+        Package[$consul::package_name] -> File[$consul::data_dir]
       }
     }
     'none': {}
@@ -70,6 +79,10 @@ class consul::install {
     user { $consul::user:
       ensure => 'present',
       system => true,
+    }
+
+    if $consul::manage_group {
+      Group[$consul::group] -> User[$consul::user]
     }
   }
   if $consul::manage_group {
