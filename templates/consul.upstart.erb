@@ -27,6 +27,13 @@ script
     exec start-stop-daemon -u $USER -g $GROUP -p $PID_FILE -x $CONSUL -S -- agent -config-dir $CONFIG -pid-file $PID_FILE <%= scope.lookupvar('consul::extra_options') %>
 end script
 
+pre-stop script
+    # Only leave the cluster if running as an agent
+    if (sudo -u $USER -g $GROUP $CONSUL info 2>/dev/null | grep -q 'server = false' 2>/dev/null); then
+        exec sudo -u $USER -g $GROUP $CONSUL leave
+    fi
+end script
+
 respawn
 respawn limit 10 10
 kill timeout 10
