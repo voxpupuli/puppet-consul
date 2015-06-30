@@ -29,8 +29,8 @@ end script
 
 pre-stop script
     # Only leave the cluster if running as an agent
-    if (sudo -u $USER -g $GROUP $CONSUL info 2>/dev/null | grep -q 'server = false' 2>/dev/null); then
-        exec sudo -u $USER -g $GROUP $CONSUL leave
+    if ($CONSUL info 2>/dev/null | grep -q 'server = false' 2>/dev/null); then
+        exec $CONSUL leave
     fi
 end script
 
