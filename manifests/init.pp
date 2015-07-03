@@ -39,6 +39,7 @@ class consul (
   $manage_user           = true,
   $user                  = 'consul',
   $manage_group          = true,
+  $extra_groups          = [],
   $purge_config_dir      = true,
   $group                 = 'consul',
   $join_wan              = false,
@@ -76,6 +77,7 @@ class consul (
 
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
+  validate_array($extra_groups)
   validate_bool($manage_service)
   validate_hash($config_hash)
   validate_hash($config_defaults)
