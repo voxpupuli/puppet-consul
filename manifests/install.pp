@@ -79,6 +79,7 @@ class consul::install {
     user { $consul::user:
       ensure => 'present',
       system => true,
+      groups => $consul::extra_groups,
     }
 
     if $consul::manage_group {
