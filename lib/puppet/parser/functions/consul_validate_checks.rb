@@ -6,26 +6,26 @@ def validate_checks(obj)
       end
     when Hash
         if (obj.key?("http") && obj.key?("script"))
-          raise Puppet::ParseError('script and http must not be defined together')
+          raise Puppet::ParseError.new('script and http must not be defined together')
         end
 
         if obj.key?("ttl")
           if (obj.key?("http") || obj.key?("script") || obj.key?("interval"))
-            raise Puppet::ParseError('script or http must not be defined for ttl checks')
+            raise Puppet::ParseError.new('script or http must not be defined for ttl checks')
           end
         elsif obj.key?("http")
           if (! obj.key?("interval"))
-            raise Puppet::ParseError('http must be defined for interval checks')
+            raise Puppet::ParseError.new('http must be defined for interval checks')
           end
         elsif obj.key?("script")
           if (! obj.key?("interval"))
-            raise Puppet::ParseError('script must be defined for interval checks')
+            raise Puppet::ParseError.new('script must be defined for interval checks')
           end
         else
-          raise Puppet::ParseError('One of ttl, script, or http must be defined.')
+          raise Puppet::ParseError.new('One of ttl, script, or http must be defined.')
         end
     else
-      raise Puppet::ParseError("Unable to handle object of type <%s>" % obj.class.to_s)
+      raise Puppet::ParseError.new("Unable to handle object of type <%s>" % obj.class.to_s)
   end
 end
 
