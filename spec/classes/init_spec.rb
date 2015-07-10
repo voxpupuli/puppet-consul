@@ -373,9 +373,9 @@ describe 'consul' do
 
     it { should contain_class('consul').with_init_style('debian') }
     it {
-      should contain_file('/etc/init.d/consul')
-        .with_content(/start-stop-daemon .* \$DAEMON/)
-        .with_content(/DAEMON_ARGS="agent/)
+      should contain_file('/etc/init.d/consul') \
+        .with_content(/start-stop-daemon .* \$DAEMON/) \
+        .with_content(/DAEMON_ARGS="agent/) \
         .with_content(/--user \$USER/)
     }
   end
