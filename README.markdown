@@ -45,7 +45,7 @@ class { '::consul':
     'log_level'  => 'INFO',
     'node_name'  => 'agent',
     'retry_join' => ['172.16.0.1'],
-  }ii
+  }
 }
 ```
 Disable install and service components:
