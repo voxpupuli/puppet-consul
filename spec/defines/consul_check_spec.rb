@@ -43,7 +43,7 @@ describe 'consul::check' do
         .with_content(/"service_id" *: *"my_service"/)
     }
   end
-  describe 'with script and token' do
+  describe 'reload service with script and token' do
     let(:params) {{
       'interval' => '30s',
       'script'   => 'true',
@@ -56,6 +56,7 @@ describe 'consul::check' do
         .with_content(/"interval" *: *"30s"/) \
         .with_content(/"script" *: *"true"/) \
         .with_content(/"token" *: *"too-cool-for-this-script"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with http' do
@@ -88,7 +89,7 @@ describe 'consul::check' do
         .with_content(/"service_id" *: *"my_service"/)
     }
   end
-  describe 'with http and token' do
+  describe 'reload service with http and token' do
     let(:params) {{
       'interval' => '30s',
       'http'     => 'localhost',
@@ -101,6 +102,7 @@ describe 'consul::check' do
         .with_content(/"interval" *: *"30s"/) \
         .with_content(/"http" *: *"localhost"/) \
         .with_content(/"token" *: *"too-cool-for-this-http"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with http and removed undef values' do
@@ -140,7 +142,7 @@ describe 'consul::check' do
         .with_content(/"service_id" *: *"my_service"/)
     }
   end
-  describe 'with ttl and token' do
+  describe 'reload service with ttl and token' do
     let(:params) {{
       'ttl'   => '30s',
       'token' => 'too-cool-for-this-ttl'
@@ -151,6 +153,7 @@ describe 'consul::check' do
         .with_content(/"name" *: *"my_check"/) \
         .with_content(/"ttl" *: *"30s"/) \
         .with_content(/"token" *: *"too-cool-for-this-ttl"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with both ttl and interval' do

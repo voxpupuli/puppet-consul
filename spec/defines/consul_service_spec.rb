@@ -23,6 +23,12 @@ describe 'consul::service' do
         .with('ensure' => 'absent')
     }
   end
+  describe 'notify reload service' do
+    it {
+      should contain_file("/etc/consul/service_my_service.json") \
+        .that_notifies('Class[consul::reload_service]')
+    }
+  end
   describe 'with service name' do
     let(:params) {{
       'service_name' => 'different_name',

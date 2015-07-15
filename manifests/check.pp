@@ -5,6 +5,10 @@
 #
 # == Parameters
 #
+# [*ensure*]
+#   Define availability of check. Use 'absent' to remove existing checks.
+#   Defaults to 'present'
+#
 # [*id*]
 #   The id for the check (defaults to $title)
 #
@@ -35,6 +39,7 @@
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
 define consul::check(
+  $ensure     = present,
   $id         = $title,
   $ttl        = undef,
   $http       = undef,
@@ -69,6 +74,7 @@ define consul::check(
   $escaped_id = regsubst($id,'\/','_')
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/check_${escaped_id}.json":
+    ensure  => $ensure,
     content => template('consul/check.json.erb'),
-  } ~> Class['consul::run_service']
+  } ~> Class['consul::reload_service']
 }
