@@ -31,6 +31,9 @@
 # [*notes*]
 #   Human readable description of the check
 #
+# [*token*]
+#   ACL token for interacting with the catalog (must be 'management' type)
+#
 define consul::check(
   $id         = $title,
   $ttl        = undef,
@@ -40,6 +43,7 @@ define consul::check(
   $service_id = undef,
   $timeout    = undef,
   $notes      = undef,
+  $token      = undef,
 ) {
   include consul
 
@@ -47,12 +51,13 @@ define consul::check(
     'id'         => $id,
     'name'       => $name,
     'ttl'        => $ttl,
-    'http'        => $http,
+    'http'       => $http,
     'script'     => $script,
     'interval'   => $interval,
     'timeout '   => $timeout,
     'service_id' => $service_id,
     'notes'      => $notes,
+    'token'      => $token,
   }
 
   $check_hash = {

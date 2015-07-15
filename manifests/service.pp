@@ -27,6 +27,9 @@
 # [*checks*]
 #   If provided an array of checks that will be added to this service
 #
+# [*token*]
+#   ACL token for interacting with the catalog (must be 'management' type)
+#
 define consul::service(
   $ensure         = 'present',
   $service_name   = $title,
@@ -35,6 +38,7 @@ define consul::service(
   $address        = undef,
   $port           = undef,
   $checks         = [],
+  $token          = undef,
 ) {
   include consul
 
@@ -45,7 +49,8 @@ define consul::service(
     'name'    => $service_name,
     'address' => $address,
     'tags'    => $tags,
-    'checks'  => $checks
+    'checks'  => $checks,
+    'token'   => $token,
   }
 
   if $port {
