@@ -8,6 +8,9 @@
 # [*id*]
 #   The id for the check (defaults to $title)
 #
+# [*check_ensure*]
+#   Ensure state of the check. (defaults to present)
+#
 # [*ttl*]
 #   Value in seconds before the http endpoint considers a failing healthcheck
 #   to be "HARD" down.
@@ -18,6 +21,13 @@
 # [*script*]
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes.
+#
+# [*script_source*]
+#   Full puppet path to the location of the healthcheck script to deploy.
+#   ie: 'puppet:///modules/consul_checks/check.sh'
+#
+# [*script_path*]
+#   Where to deploy service check script
 #
 # [*interval*]
 #   Value in seconds for the interval between runs of the check
@@ -32,22 +42,35 @@
 #   Human readable description of the check
 #
 define consul::check(
-  $id         = $title,
-  $ttl        = undef,
-  $http       = undef,
-  $script     = undef,
-  $interval   = undef,
-  $service_id = undef,
-  $timeout    = undef,
-  $notes      = undef,
+  $id            = $title,
+  $check_ensure  = present,
+  $ttl           = undef,
+  $http          = undef,
+  $script        = undef,
+  $script_source = undef,
+  $script_path   = undef,
+  $interval      = undef,
+  $service_id    = undef,
+  $timeout       = undef,
+  $notes         = undef,
 ) {
   include consul
+
+  # Deploy script if necessary
+  if $script_source {
+    file { "${id}":
+      ensure => $check_ensure,
+      source => $script_source,
+      path   => $script_path,
+      mode   => 755,
+    }
+  }
 
   $basic_hash = {
     'id'         => $id,
     'name'       => $name,
     'ttl'        => $ttl,
-    'http'        => $http,
+    'http'       => $http,
     'script'     => $script,
     'interval'   => $interval,
     'timeout '   => $timeout,
@@ -65,5 +88,6 @@ define consul::check(
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/check_${escaped_id}.json":
     content => template('consul/check.json.erb'),
+    ensure  => $check_ensure,
   } ~> Class['consul::run_service']
 }
