@@ -180,4 +180,14 @@ describe 'consul::service' do
       expect { should raise_error(Puppet::Error) }
     }
   end
+  describe 'with token' do
+    let(:params) {{
+      'token' => 'too-cool-for-this-service',
+    }}
+
+    it {
+      should contain_file("/etc/consul/service_my_service.json") \
+        .with_content(/"token" *: *"too-cool-for-this-service"/)
+    }
+  end
 end
