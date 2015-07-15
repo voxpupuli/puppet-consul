@@ -14,7 +14,7 @@ class consul::params {
   $ui_package_ensure     = 'latest'
   $ui_download_url_base  = 'https://dl.bintray.com/mitchellh/consul/'
   $ui_download_extension = 'zip'
-  $version               = '0.5.0'
+  $version               = '0.5.2'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }

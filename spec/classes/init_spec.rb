@@ -73,7 +73,7 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
@@ -128,7 +128,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a special version" do
