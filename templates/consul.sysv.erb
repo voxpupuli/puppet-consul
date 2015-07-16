@@ -12,11 +12,13 @@
 
 # Source function library.
 . /etc/init.d/functions
-
+<% config_ports = scope.lookupvar('consul::config::config_ports') -%>
 CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 PID_FILE=/var/run/consul/consul.pid
 LOG_FILE=/var/log/consul
+RETRY=240
+SS_BIN=`which ss`
 
 [ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
 
@@ -64,8 +66,18 @@ stop() {
         # If consul is not acting as a server, exit gracefully
         if ("${CONSUL}" info 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
             "$CONSUL" leave
-        fi
-
+	fi
+        <% first_loop=0 %>
+        for (( i=1; i<=$RETRY; i++ ))
+	do
+	    if [ "`$SS_BIN -nao '( <% config_ports.keys.sort.each do |key| -%><% if config_ports[key] > 0 %><% if first_loop == 0 %>sport = :<%=config_ports[key]-%><% first_loop=1 %><% else %> or sport = :<%=config_ports[key]-%><% end %><% end %><% end -%> )' | wc -l`" -gt 1 ];
+	    then
+	        /bin/echo "Waiting one more second to stop consul (check $i) "
+	       /bin/sleep 1
+	   else
+	      break
+	   fi
+	done	
         # If acting as a server, or if leave failed, kill it.
         mkpidfile
         killproc $KILLPROC_OPT $CONSUL -9

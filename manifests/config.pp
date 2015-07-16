@@ -13,8 +13,28 @@
 class consul::config(
   $config_hash,
   $purge = true,
+  $port_hash = undef,
 ) {
-
+  $port_hash_default = {
+    'dns'      => 8600,
+    'http'     => 8500,
+    'https'    => -1,
+    'rpc'      => 8400,
+    'serf_lan' => 8301,
+    'serf_wan' => 8302,
+    'server'   => 8300,
+  }
+  $config_ports_not_int = merge($port_hash_default, $port_hash)
+  $config_ports={
+    'dns'      => $config_ports_not_int['dns'] * 1,
+    'http'     => $config_ports_not_int['http'] * 1,
+    'https'    => $config_ports_not_int['https'] * 1,
+    'rpc'      => $config_ports_not_int['rpc'] * 1,
+    'serf_lan' => $config_ports_not_int['serf_lan'] * 1,
+    'serf_wan' => $config_ports_not_int['serf_wan'] * 1,
+    'server'   => $config_ports_not_int['server'] * 1,
+  }
+  validate_hash($config_ports)
   if $consul::init_style {
 
     case $consul::init_style {
