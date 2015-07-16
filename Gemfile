@@ -1,23 +1,27 @@
-source "http://rubygems.org"
-
-group :test do
-  gem "rake"
-  gem 'beaker', '~> 1.11.0'
-  gem "retriable", '~> 1.4.1'
-  gem "rest-client", '<= 1.7.0'
-  gem "puppet-blacksmith", '~> 2.3.1'
-  gem "puppet", '~> 3.7.0'
-  gem "puppet-lint"
-  gem "rspec-puppet", :git => 'https://github.com/rodjek/rspec-puppet.git'
-  gem "rspec", '~> 3.1.0'
-  gem "rspec-core", '~> 3.1.7'
-  gem "puppet-syntax"
-  gem "puppetlabs_spec_helper"
-  gem "hiera-puppet-helper"
-  gem "nokogiri", '~> 1.5.10'
-end
+source "https://rubygems.org"
 
 group :development do
-  gem 'json'
-  gem 'beaker-rspec'
+  gem "beaker", "> 2.0.0"
+  gem "beaker-rspec", ">= 5.1.0"
+  gem "pry"
+  gem "puppet-blacksmith"
+  gem "serverspec"
+  gem "vagrant-wrapper"
+end
+
+group :test do
+  gem "json"
+  gem "rake"
+  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.7.0'
+  gem "puppet-lint"
+
+  # Pin for 1.8.7 compatibility for now
+  gem "rspec", '< 3.2.0'
+  gem "rspec-core", "3.1.7"
+  gem "rspec-puppet", "~> 2.1"
+
+  gem "puppet-syntax"
+  gem "puppetlabs_spec_helper"
+  gem "hiera"
+  gem "hiera-puppet-helper"
 end
