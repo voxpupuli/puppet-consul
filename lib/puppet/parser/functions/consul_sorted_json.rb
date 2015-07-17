@@ -2,8 +2,11 @@ require 'json'
 
 def sorted_json(obj)
   case obj
-    when String, Fixnum, Float, TrueClass, FalseClass, NilClass
+    when Fixnum, Float, TrueClass, FalseClass, NilClass
       return obj.to_json
+    when String
+      # Convert quoted integers (string) to int
+      return (obj.match(/\A[-]?[0-9]+\z/) ? obj.to_i : obj).to_json
     when Array
       arrayRet = []
       obj.each do |a|
