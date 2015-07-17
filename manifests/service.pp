@@ -48,22 +48,14 @@ define consul::service(
     'id'      => $id,
     'name'    => $service_name,
     'address' => $address,
+    'port'    => $port,
     'tags'    => $tags,
     'checks'  => $checks,
     'token'   => $token,
   }
 
-  if $port {
-    # implicit conversion from string to int so it won't be quoted in JSON
-    $port_hash = {
-      port => $port * 1
-    }
-  } else {
-    $port_hash = {}
-  }
-
   $service_hash = {
-    service => delete_undef_values(merge($basic_hash, $port_hash))
+    service => delete_undef_values($basic_hash)
   }
 
   file { "${consul::config_dir}/service_${id}.json":
