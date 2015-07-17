@@ -154,6 +154,9 @@ See the check.pp docstrings for all available inputs.
 You can also use `consul::checks` which accepts a hash of checks, and makes
 it easy to declare in hiera.
 
+## Removing Service, Check and Watch definitions
+Do `ensure => absent` while removing existing service, check and watch definitions. This ensures consul will be reloaded via `SIGHUP`. If you have `purge_config_dir` set to `true` and simply remove the definition it will cause consul to restart.
+
 ## ACL Definitions
 
 ```puppet

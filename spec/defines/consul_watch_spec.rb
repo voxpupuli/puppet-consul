@@ -279,4 +279,14 @@ describe 'consul::watch' do
 
   end
 
+  describe 'notify reload service' do
+    let (:params) {{
+      'type' => 'nodes',
+      'handler' => 'handler_path',
+    }}
+    it {
+      should contain_file('/etc/consul/watch_my_watch.json') \
+          .that_notifies("Class[consul::reload_service]") \
+    }
+  end
 end

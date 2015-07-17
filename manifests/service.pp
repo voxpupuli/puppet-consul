@@ -31,7 +31,7 @@
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
 define consul::service(
-  $ensure         = 'present',
+  $ensure         = present,
   $service_name   = $title,
   $id             = $title,
   $tags           = [],
@@ -70,5 +70,5 @@ define consul::service(
     ensure  => $ensure,
     content => consul_sorted_json($service_hash),
     require => File[$consul::config_dir],
-  } ~> Class['consul::run_service']
+  } ~> Class['consul::reload_service']
 }

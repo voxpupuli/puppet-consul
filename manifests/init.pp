@@ -128,7 +128,7 @@ class consul (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   } ~>
-  class { 'consul::run_service': }
-  ->
+  class { 'consul::run_service': } ->
+  class { 'consul::reload_service': } ->
   anchor {'consul_last': }
 }
