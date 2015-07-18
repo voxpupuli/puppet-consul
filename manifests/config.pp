@@ -83,24 +83,6 @@ class consul::config(
     }
   }
 
-  # implicit conversion from string to int so it won't be quoted in JSON
-  if has_key($config_hash, 'protocol') {
-    $protocol_hash = {
-      protocol => $config_hash['protocol'] * 1
-    }
-  } else {
-    $protocol_hash = {}
-  }
-
-  # implicit conversion from string to int so it won't be quoted in JSON
-  if has_key($config_hash, 'bootstrap_expect') {
-    $bootstrap_expect_hash = {
-      'bootstrap_expect' => $config_hash['bootstrap_expect'] * 1
-    }
-  } else {
-    $bootstrap_expect_hash = {}
-  }
-
   file { $consul::config_dir:
     ensure  => 'directory',
     purge   => $purge,
@@ -109,7 +91,7 @@ class consul::config(
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    content => consul_sorted_json(merge($config_hash,$bootstrap_expect_hash,$protocol_hash)),
+    content => consul_sorted_json($config_hash),
   }
 
 }
