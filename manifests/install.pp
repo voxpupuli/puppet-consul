@@ -42,7 +42,7 @@ class consul::install {
           source  => $consul::real_ui_download_url,
           target  => "${consul::data_dir}/${consul::version}_web_ui",
           creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
-        }
+        } ->
         file { $consul::ui_dir:
           ensure => 'symlink',
           target => "${consul::data_dir}/${consul::version}_web_ui/dist",
