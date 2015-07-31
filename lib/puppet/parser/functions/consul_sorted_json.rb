@@ -1,9 +1,11 @@
 require 'json'
 
+module ConsulSortedJson
 
-# Convert quoted integers (string) to int
-def convert_integers(obj)
-  case obj
+  module_function
+  # Convert quoted integers (string) to int
+  def convert_integers(obj)
+    case obj
     when Fixnum, Float, TrueClass, FalseClass, NilClass
       return obj
     when String
@@ -18,17 +20,18 @@ def convert_integers(obj)
       sort_keys( obj.merge( obj ) {|k, v| convert_integers v } )
     else
       raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+    end
   end
-end
 
-def sort_keys(h)
-  keys = h.keys.sort
-  Hash[keys.zip(h.values_at(*keys))]
-end
+  def sort_keys(h)
+    keys = h.keys.sort
+    Hash[keys.zip(h.values_at(*keys))]
+  end
 
-def sorted_json(config_hash)
-  cleaned = convert_integers(config_hash)
-  JSON.pretty_generate( sort_keys( cleaned ) )
+  def sorted_json(config_hash)
+    cleaned = convert_integers(config_hash)
+    JSON.pretty_generate( sort_keys( cleaned ) )
+  end
 end
 
 module Puppet::Parser::Functions
@@ -44,7 +47,8 @@ Would return: {'key':'value'}
   ) do |arguments|
     raise(Puppet::ParseError, "sorted_json(): Wrong number of arguments " +
       "given (#{arguments.size} for 1)") if arguments.size != 1
-    json = arguments[0].delete_if {|key, value| value == :undef }
-    return sorted_json(json)
+    raise(Puppet::ParseError, "sorted_json(): takes a hash") unless arguments[0].is_a?(Hash)
+    config = arguments[0].delete_if {|key, value| value == :undef }
+    return ConsulSortedJson.sorted_json(config)
   end
 end
