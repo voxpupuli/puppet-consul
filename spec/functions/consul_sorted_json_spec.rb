@@ -4,11 +4,11 @@ describe 'consul_sorted_json', :type => :puppet_function do
 
   let(:test_hash){ { 'z' => 3, 'a' => '1', 'p' => '2' } }
   before do
-    @json = subject.call([nested_test_hash])
+    @json = subject.call([test_hash])
   end
   it "sorts keys" do
-    expect( @json.index('a') ).to be < json.index('p')
-    expect( @json.index('p') ).to be < json.index('z')
+    expect( @json.index('a') ).to be < @json.index('p')
+    expect( @json.index('p') ).to be < @json.index('z')
   end
 
   it "requires one argument" do
@@ -16,11 +16,11 @@ describe 'consul_sorted_json', :type => :puppet_function do
   end
 
   it "prints pretty json" do
-    expect(json.split("\n").size).to eql(test_hash.size + 2) # +2 for { and }
+    expect(@json.split("\n").size).to eql(test_hash.size + 2) # +2 for { and }
   end
 
   it "converts numbers to integers" do
-    expect(JSON.parse(json)).to have_attributes(:values => [1,2,3])
+    expect(JSON.parse(@json)).to have_attributes(:values => [1,2,3])
   end
 
   context 'nesting' do
