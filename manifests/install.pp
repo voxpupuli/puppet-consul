@@ -18,18 +18,21 @@ class consul::install {
       if $::operatingsystem != 'darwin' {
         ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
       }
-      staging::file { 'consul.zip':
+      Exec {
+        provider => shell
+      } 
+      staging::file { "${consul::real_download_file}":
         source => $consul::real_download_url
       } ->
-      staging::extract { 'consul.zip':
-        target  => $consul::bin_dir,
-        creates => "${consul::bin_dir}/consul",
+      staging::extract { "${consul::real_download_file}":
+        target         => $consul::bin_dir,
+        onlyif         => "test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` != ${consul::version}; unlessval=$?; if [ \$unlessval = 0 ]; then rm -f ${consul::bin_dir}/consul; fi; test \$unlessval = 0",
       } ->
       file { "${consul::bin_dir}/consul":
         owner => 'root',
         group => 0, # 0 instead of root because OS X uses "wheel".
         mode  => '0555',
-      }
+      } ~> Service['consul']
 
       if ($consul::ui_dir and $consul::data_dir) {
         if $::operatingsystem != 'darwin' {
@@ -41,7 +44,7 @@ class consul::install {
           group  => 0, # 0 instead of root because OS X uses "wheel".
           mode   => '0755',
         } ->
-        staging::deploy { 'consul_web_ui.zip':
+        staging::deploy { "${consul::real_ui_download_file}":
           source  => $consul::real_ui_download_url,
           target  => "${consul::data_dir}/${consul::version}_web_ui",
           creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
