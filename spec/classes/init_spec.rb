@@ -4,11 +4,11 @@ describe 'consul' do
 
   RSpec.configure do |c|
     c.default_facts = {
-      :architecture    => 'x86_64',
-      :operatingsystem => 'Ubuntu',
-      :osfamily        => 'Debian',
-      :lsbdistrelease  => '10.04',
-      :kernel          => 'Linux',
+      :architecture           => 'x86_64',
+      :operatingsystem        => 'Ubuntu',
+      :osfamily               => 'Debian',
+      :operatingsystemrelease => '10.04',
+      :kernel                 => 'Linux',
     }
   end
   # Installation Stuff
