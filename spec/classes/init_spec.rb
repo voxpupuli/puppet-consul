@@ -374,7 +374,7 @@ describe 'consul' do
   context "On hardy" do
     let(:facts) {{
       :operatingsystem => 'Ubuntu',
-      :lsbdistrelease  => '8.04',
+      :operatingsystemrelease  => '8.04',
     }}
 
     it { should contain_class('consul').with_init_style('debian') }
@@ -384,6 +384,16 @@ describe 'consul' do
         .with_content(/DAEMON_ARGS="agent/) \
         .with_content(/--user \$USER/)
     }
+  end
+
+  context "On a Ubuntu Vivid 15.04 based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Ubuntu',
+      :operatingsystemrelease => '15.04'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "When asked not to manage the init_style" do
