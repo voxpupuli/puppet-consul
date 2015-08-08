@@ -26,13 +26,13 @@ class consul::install {
       } ->
       staging::extract { "${consul::real_download_file}":
         target         => $consul::bin_dir,
-        onlyif         => "test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` != ${consul::version}; unlessval=$?; if [ \$unlessval = 0 ]; then rm -f ${consul::bin_dir}/consul; fi; test \$unlessval = 0",
+        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
       } ->
       file { "${consul::bin_dir}/consul":
         owner => 'root',
         group => 0, # 0 instead of root because OS X uses "wheel".
         mode  => '0555',
-      } ~> Service['consul']
+      } ~> Class['consul::run_service']
 
       if ($consul::ui_dir and $consul::data_dir) {
         if $::operatingsystem != 'darwin' {
