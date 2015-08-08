@@ -36,7 +36,7 @@ class consul::params {
       # Introducing fact 'is_systemd' since Ubuntu 15.04 can be systemd OR upstart (defaults to systemd though)
       # Fact allows us to retrieve the client side value.
       # We convert to boolean incase some people may have stringify facts turned on or not set in puppet 3.x still.
-      $is_systemd = str2bool("$::is_systemd")
+      $is_systemd = str2bool("${::is_systemd}")
       if $is_systemd == true {
         $init_style = 'systemd'
       }
