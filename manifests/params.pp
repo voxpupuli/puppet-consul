@@ -29,8 +29,19 @@ class consul::params {
   if $::operatingsystem == 'Ubuntu' {
     if versioncmp($::lsbdistrelease, '8.04') < 1 {
       $init_style = 'debian'
-    } else {
+    } elsif versioncmp($::operatingsystemrelease, "15.04") < 0 {
       $init_style = 'upstart'
+    }
+    else {
+      # Introducing fact 'is_systemd' since Ubuntu 15.04 can be systemd OR upstart (defaults to systemd though)
+      # Fact allows us to retrieve the client side value.
+      # We compare against boolean as well as string true because some people may have stringify facts turned on or not set in puppet still.
+      if $::is_systemd == true or $::is_systemd == "true" {
+        $init_style = 'systemd'
+      } 
+      else {
+        $init_style = 'upstart'
+      }
     }
   } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
     if versioncmp($::operatingsystemrelease, '7.0') < 0 {
