@@ -191,3 +191,9 @@ a module that can do that.
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
+
+
+##Testing
+
+    bundle install
+    bundle exec rake test

@@ -1,43 +1,76 @@
 require 'json'
 
-def sorted_json(obj)
-  case obj
+module ConsulSortedJson
+
+  module_function
+
+
+  def sorted_json(config_hash, pretty)
+    cleaned = convert_integers(config_hash)
+
+    if pretty
+      JSON.pretty_generate( sort_keys( cleaned ) )
+    else
+      sort_keys( cleaned ).to_json
+    end
+  end
+
+  # Recursively convert all quoted integers(strings) to a real
+  # integer. We can assume, given the consul configuration schema,
+  # that all integers in strings are meant to be real integers.
+  def convert_integers(obj)
+    case obj
     when Fixnum, Float, TrueClass, FalseClass, NilClass
-      return obj.to_json
+      return obj
     when String
-      # Convert quoted integers (string) to int
-      return (obj.match(/\A[-]?[0-9]+\z/) ? obj.to_i : obj).to_json
+      if obj.match(/\A[-]?[0-9]+\z/) # integer check
+        obj.to_i
+      else
+        obj
+      end
     when Array
-      arrayRet = []
-      obj.each do |a|
-        arrayRet.push(sorted_json(a))
-      end
-      return "[" << arrayRet.join(',') << "]";
+      obj.map{ |element| convert_integers(element) } # go deeper
     when Hash
-      ret = []
-      obj.keys.sort.each do |k|
-        ret.push(k.to_json << ":" << sorted_json(obj[k]))
-      end
-      return "{" << ret.join(",") << "}";
+      obj.merge( obj ) {|k, v| convert_integers( v ) } # go deeper
     else
       raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+    end
+  end
+
+  # recursively sort keys
+  def sort_keys(h)
+    keys = h.keys.sort
+    Hash[keys.zip(h.values_at(*keys).map{ |e| e.is_a?(Hash) ? sort_keys(e) : e  })]
   end
 end
 
 module Puppet::Parser::Functions
-  newfunction(:consul_sorted_json, :type => :rvalue, :doc => <<-EOS
-This function takes data, outputs making sure the hash keys are sorted
+
+  doc = <<-DOC
+This function takes configuration data and returns a json string that
+can be rendered to a file. It sorts the keys recursively. This is
+needed to ensure that a change in the order of data received does not
+register a change in the file and restart services etc.. It also
+converts integers in strings to real integers.
 
 *Examples:*
 
-    sorted_json({'key'=>'value'})
+    sorted_json({'b' => 2, 'a'=>1})
+    =>  {'a' => 1, 'b' => 2}
 
-Would return: {'key':'value'}
-    EOS
-  ) do |arguments|
-    raise(Puppet::ParseError, "sorted_json(): Wrong number of arguments " +
-      "given (#{arguments.size} for 1)") if arguments.size != 1
-    json = arguments[0].delete_if {|key, value| value == :undef }
-    return sorted_json(json)
+    sorted_json({'b' => 2, 'a'=>1}, true)
+    =>  {
+          'a' => 1,
+          'b' => 2
+        }
+
+DOC
+
+  # custom functions must be called with a single array
+  newfunction(:consul_sorted_json, :type => :rvalue, :doc => doc  ) do |config|
+    pretty = config[1] || false # backwards compatible
+    raise(Puppet::ParseError, "sorted_json(): takes a hash") unless config[0].is_a?(Hash) # validate
+    _config = config[0].delete_if {|key, value| value == :undef }  #cleanup
+    return ConsulSortedJson.sorted_json(_config, pretty)
   end
 end
