@@ -10,9 +10,13 @@
 # [*purge*]
 #   Bool. If set will make puppet remove stale config files.
 #
+# [*pretty_print_json*]
+#   Add whitespace to config to make it more readable. Defaults to `false`.
+#
 class consul::config(
   $config_hash,
   $purge = true,
+  $pretty = false,
 ) {
 
   if $consul::init_style {
@@ -91,7 +95,7 @@ class consul::config(
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    content => consul_sorted_json($config_hash),
+    content => consul_sorted_json($config_hash, $pretty),
   }
 
 }
