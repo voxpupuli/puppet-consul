@@ -41,7 +41,8 @@ class consul::config(
           content => template('consul/consul.systemd.erb'),
         }~>
         exec { 'consul-systemd-reload':
-          command     => '/usr/bin/systemctl daemon-reload',
+          command     => 'systemctl daemon-reload',
+          path        => [ '/usr/bin', '/bin', '/usr/sbin' ],
           refreshonly => true,
         }
       }

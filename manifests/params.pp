@@ -27,10 +27,12 @@ class consul::params {
   $os = downcase($::kernel)
 
   if $::operatingsystem == 'Ubuntu' {
-    if versioncmp($::lsbdistrelease, '8.04') < 1 {
+    if versioncmp($::operatingsystemrelease, '8.04') < 1 {
       $init_style = 'debian'
-    } else {
+    } elsif versioncmp($::operatingsystemrelease, '15.04') < 0 {
       $init_style = 'upstart'
+    } else {
+      $init_style = 'systemd'
     }
   } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
     if versioncmp($::operatingsystemrelease, '7.0') < 0 {
