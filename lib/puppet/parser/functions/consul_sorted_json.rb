@@ -6,12 +6,13 @@ module ConsulSortedJson
 
 
   def sorted_json(config_hash, pretty)
-    cleaned = convert_integers(config_hash)
+    cleaned = convert_integers( config_hash )
+    sorted  = sort_keys( cleaned )
 
     if pretty
-      JSON.pretty_generate( sort_keys( cleaned ) )
+      JSON.pretty_generate( sorted )
     else
-      sort_keys( cleaned ).to_json
+      JSON.generate( sorted )
     end
   end
 
@@ -40,8 +41,22 @@ module ConsulSortedJson
   # recursively sort keys
   def sort_keys(h)
     keys = h.keys.sort
-    Hash[keys.zip(h.values_at(*keys).map{ |e| e.is_a?(Hash) ? sort_keys(e) : e  })]
+    values = h.values_at(*keys).map{ |e| handle_element(e) }
+    # this is an optimazation strategy, it performed better in benchmark tests
+    Hash[keys.zip(values)]
   end
+
+  def handle_element e
+    case e
+    when Hash
+      sort_keys(e)
+    when Array
+      e.map{ |el| el.is_a?(Hash) ? sort_keys(el) : el }
+    else
+      e
+    end
+  end
+
 end
 
 module Puppet::Parser::Functions
