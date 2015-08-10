@@ -15,9 +15,11 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
+      include staging
       if $::operatingsystem != 'darwin' {
         ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
       }
+
       # This was done for puppet 3.x not supporting Ubuntu 15 and Fedora 22, and since this ruby line doesn't support site.pp... override of Service { provider => 'systemd' }
       if versioncmp($::puppetversion, 4.2) < 0 {
         $ruby_service_stop = $::operatingsystem ? {
@@ -28,7 +30,14 @@ class consul::install {
       } else {
         $ruby_service_stop = "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
       }
-
+      # I don't trust mistakes in $staging::path as if it was set to / then this find would delete everything except that one file all the way from the root path /
+      # And since we're only supporting Linux and Darwin(Mac) in this current revision of this puppet-consul module.
+      # This cleans all files in the staging folder except this specific file
+      if $staging::path =~ /^\/opt\/staging.*/ {
+        $clean_staging_dir = "find ${staging::path}/consul ! -name '${consul::real_download_file}' -type f -exec rm -f {} +"
+      } else {
+        $clean_staging_dir = "find /opt/staging/consul ! -name '${consul::real_download_file}' -type f -exec rm -f {} +"
+      }
       # This was done to make it so we don't have to do absolute paths in our unless inside staging::extract, since that module doesn't allow us to pass path => to it.
       Exec {
         provider => shell
@@ -38,7 +47,7 @@ class consul::install {
       } ->
       staging::extract { "${consul::real_download_file}":
         target         => $consul::bin_dir,
-        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then ${ruby_service_stop}; rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
+        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then ${clean_staging_dir}; ${ruby_service_stop}; rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
       } ->
       file { "${consul::bin_dir}/consul":
         owner => 'root',
@@ -56,7 +65,7 @@ class consul::install {
           group  => 0, # 0 instead of root because OS X uses "wheel".
           mode   => '0755',
         } ->
-        staging::deploy { "${consul::real_ui_download_file}":
+        staging::deploy { 'consul_web_ui.zip':
           source  => $consul::real_ui_download_url,
           target  => "${consul::data_dir}/${consul::version}_web_ui",
           creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
