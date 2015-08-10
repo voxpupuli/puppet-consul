@@ -232,7 +232,7 @@ describe 'consul' do
     }}
     it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
     it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
-    it { should contain_file('consul config.json').with_content(/"server": true/) }
+    it { should contain_file('consul config.json').with_content(/"server":true/) }
   end
 
   context "When asked not to manage the user" do
