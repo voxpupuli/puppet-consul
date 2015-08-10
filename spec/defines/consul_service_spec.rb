@@ -127,11 +127,11 @@ describe 'consul::service' do
     }}
     it {
       should contain_file("/etc/consul/service_my_service.json") \
-        .with_content(/"port": 5/)
+        .with_content(/"port":5/)
     }
     it {
       should_not contain_file("/etc/consul/service_my_service.json") \
-        .with_content(/"port": "5"/)
+        .with_content(/"port":"5"/)
     }
   end
   describe 'with both ttl and script' do
