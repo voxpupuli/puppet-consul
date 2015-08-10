@@ -18,6 +18,18 @@ class consul::install {
       if $::operatingsystem != 'darwin' {
         ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
       }
+      # This was done for puppet 3.x not supporting Ubuntu 15 and Fedora 22, and since this ruby line doesn't support site.pp... override of Service { provider => 'systemd' }
+      if versioncmp($::puppetversion, 4.2) < 0 {
+        $ruby_service_stop = $::operatingsystem ? {
+          'fedora' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",
+          'ubuntu' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",
+          default  => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
+        }
+      } else {
+        $ruby_service_stop = "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
+      }
+
+      # This was done to make it so we don't have to do absolute paths in our unless inside staging::extract, since that module doesn't allow us to pass path => to it.
       Exec {
         provider => shell
       } 
@@ -26,7 +38,7 @@ class consul::install {
       } ->
       staging::extract { "${consul::real_download_file}":
         target         => $consul::bin_dir,
-        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
+        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then ${ruby_service_stop}; rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
       } ->
       file { "${consul::bin_dir}/consul":
         owner => 'root',
