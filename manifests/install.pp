@@ -15,7 +15,9 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
+      # This is done just so we can take a look at what staging path it wants to use, if we remove this, we have to completely assume or manage the staging path
       include staging
+
       if $::operatingsystem != 'darwin' {
         ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
       }
@@ -38,10 +40,6 @@ class consul::install {
       } else {
         $clean_staging_dir = "find /opt/staging/consul ! -name '${consul::real_download_file}' -type f -exec rm -f {} +"
       }
-      # This was done to make it so we don't have to do absolute paths in our unless inside staging::extract, since that module doesn't allow us to pass path => to it.
-      Exec {
-        provider => shell
-      } 
       staging::file { "${consul::real_download_file}":
         source => $consul::real_download_url
       } ->
