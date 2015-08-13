@@ -28,13 +28,13 @@ class consul::install {
       #
       # This was done for puppet 3.x not supporting Ubuntu 15 and Fedora 22, and since this ruby line doesn't support site.pp... override of Service { provider => 'systemd' }
       if $::puppetversion =~ /^4/ {
+        $ruby_service_stop = "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
+      } else {
         $ruby_service_stop = $::operatingsystem ? {
           'fedora' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",
           'ubuntu' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",
           default  => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
         }
-      } else {
-        $ruby_service_stop = "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul').provider.send('stop')\""
       }
       # I don't trust mistakes in $staging::path as if it was set to / then this find would delete everything except that one file all the way from the root path /
       # And since we're only supporting Linux and Darwin(Mac) in this current revision of this puppet-consul module.
