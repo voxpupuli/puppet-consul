@@ -26,8 +26,9 @@ class consul::install {
       ## Suggest moving to using puppetlabs-transition module to do the service work
       ##  after it gets some patchwork and closer to release version
       #
+      # Puppetversion fact has to be in quotes due to versioncmp differences between Puppet 3.x and 4.x
       # This was done for puppet 3.x not supporting Ubuntu 15 and Fedora 22, and since this ruby line doesn't support site.pp... override of Service { provider => 'systemd' }
-      if versioncmp($::puppetversion, 4.2) < 0 {
+      if versioncmp("${::puppetversion}", 4.2) < 0 {
         $ruby_service_stop = $::operatingsystem ? {
           'fedora' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",
           'ubuntu' => "ruby -r 'puppet' -e \"Puppet::Type.type(:service).newservice(:name => 'consul', :provider => '${consul::init_style}').provider.send('stop')\"",

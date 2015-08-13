@@ -9,7 +9,6 @@ describe 'consul' do
       :osfamily               => 'Debian',
       :operatingsystemrelease => '10.04',
       :kernel                 => 'Linux',
-      :puppetversion          => ENV['PUPPET_VERSION'],
     }
   end
   # Installation Stuff
