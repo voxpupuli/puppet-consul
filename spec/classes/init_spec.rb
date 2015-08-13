@@ -61,7 +61,10 @@ describe 'consul' do
   end
 
   context 'Require unzip package when installing via URL' do
-    it { should contain_staging__file('consul.zip').that_requires('Package[unzip]') }
+    let(:params) {{
+      :version   => '0.5.2',
+    }}
+    it { should contain_staging__file('0.5.2_linux_amd64.zip').that_requires('Package[unzip]') }
   end
 
   context "Require unzip package when installing UI via URL" do
@@ -96,21 +99,25 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip') }
+    let(:params) {{
+      :version   => '0.5.2',
+    }}
+    it { should contain_staging__file('0.5.2_linux_amd64.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
     let(:params) {{
       :version   => '42',
     }}
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
+    it { should contain_staging__file('42_linux_amd64.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a custom url" do
     let(:params) {{
       :download_url   => 'http://myurl',
+      :version   => '0.5.2',
     }}
-    it { should contain_staging__file('consul.zip').with(:source => 'http://myurl') }
+    it { should contain_staging__file('0.5.2_linux_amd64.zip').with(:source => 'http://myurl') }
   end
 
 
@@ -140,7 +147,7 @@ describe 'consul' do
     }}
     it { should_not contain_package('consul') }
     it { should_not contain_package('consul_ui') }
-    it { should_not contain_staging__file('consul.zip') }
+    it { should_not contain_staging__file('0.5.2_linux_amd64.zip') }
     it { should_not contain_staging__file('consul_web_ui.zip') }
   end
 

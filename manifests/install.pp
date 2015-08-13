@@ -15,13 +15,17 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
-      # This is done just so we can take a look at what staging path it wants to use, if we remove this, we have to completely assume or manage the staging path
+      # This is done just so we can take a look at what staging path it wants to use.
+      # If we remove this, we have to completely assume or manage the staging path
       include staging
 
       if $::operatingsystem != 'darwin' {
-        ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
+        ensure_packages(['unzip'], { 'before' => Staging::File[$consul::real_download_file] })
       }
 
+      ## Suggest moving to using puppetlabs-transition module to do the service work
+      ##  after it gets some patchwork and closer to release version
+      #
       # This was done for puppet 3.x not supporting Ubuntu 15 and Fedora 22, and since this ruby line doesn't support site.pp... override of Service { provider => 'systemd' }
       if versioncmp($::puppetversion, 4.2) < 0 {
         $ruby_service_stop = $::operatingsystem ? {
@@ -40,12 +44,12 @@ class consul::install {
       } else {
         $clean_staging_dir = "find /opt/staging/consul ! -name '${consul::real_download_file}' -type f -exec rm -f {} +"
       }
-      staging::file { "${consul::real_download_file}":
+      staging::file { $consul::real_download_file:
         source => $consul::real_download_url
       } ->
-      staging::extract { "${consul::real_download_file}":
-        target         => $consul::bin_dir,
-        unless         => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then ${clean_staging_dir}; ${ruby_service_stop}; rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
+      staging::extract { $consul::real_download_file:
+        target => $consul::bin_dir,
+        unless => "which consul > /dev/null ; if [ $? = 0 ]; then test `consul version | grep -m1 -o [0-9\\.] | tr -d '\\n'` = ${consul::version}; unlessval=$?; if [ \$unlessval = 1 ]; then ${clean_staging_dir}; ${ruby_service_stop}; rm -f ${consul::bin_dir}/consul; fi; else unlessval=1; fi; test \$unlessval = 0",
       } ->
       file { "${consul::bin_dir}/consul":
         owner => 'root',
