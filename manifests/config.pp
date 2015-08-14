@@ -86,6 +86,8 @@ class consul::config(
 
   file { $consul::config_dir:
     ensure  => 'directory',
+    owner   => $consul::user,
+    group   => $consul::group,
     purge   => $purge,
     recurse => $purge,
   } ->
