@@ -49,6 +49,13 @@ describe 'consul' do
     it { should contain_class('consul::config').that_notifies(['Class[consul::run_service]']) }
   end
 
+  context 'consul::config should not notify consul::run_service on config change' do
+    let(:params) {{
+      :restart_on_change => false
+    }}
+    it { should_not contain_class('consul::config').that_notifies(['Class[consul::run_service]']) }
+  end
+
   context 'When joining consul to a wan cluster by a known URL' do
     let(:params) {{
         :join_wan => 'wan_host.test.com'

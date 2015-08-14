@@ -27,6 +27,11 @@
 # [*ui_package_ensure*]
 #   Only valid when the install_method == package. Defaults to `latest`.
 #
+# [*restart_on_change*]
+#   Determines whether to restart consul agent on $config_hash changes.
+#   This will not affect reloads when service, check or watch configs change.
+# Defaults to `true`.
+#
 # [*extra_options*]
 #   Extra arguments to be passed to the consul agent
 #
@@ -65,6 +70,7 @@ class consul (
   $service_enable        = true,
   $service_ensure        = 'running',
   $manage_service        = true,
+  $restart_on_change     = true,
   $init_style            = $consul::params::init_style,
   $services              = {},
   $watches               = {},
@@ -79,6 +85,7 @@ class consul (
   validate_bool($manage_user)
   validate_array($extra_groups)
   validate_bool($manage_service)
+  validate_bool($restart_on_change)
   validate_hash($config_hash)
   validate_hash($config_defaults)
   validate_hash($services)
@@ -121,13 +128,19 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
+  $notify_service = $restart_on_change ? {
+    true    => Class['consul::run_service'],
+    default => undef,
+  }
+
   anchor {'consul_first': }
   ->
   class { 'consul::install': } ->
   class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
-  } ~>
+    notify      => $notify_service,
+  } ->
   class { 'consul::run_service': } ->
   class { 'consul::reload_service': } ->
   anchor {'consul_last': }
