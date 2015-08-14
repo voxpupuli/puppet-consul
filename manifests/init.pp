@@ -86,7 +86,7 @@ class consul (
   validate_hash($checks)
   validate_hash($acls)
 
-  $config_hash_real = merge($config_defaults, $config_hash)
+  $config_hash_real = deep_merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
 
   if $config_hash_real['data_dir'] {

@@ -243,15 +243,24 @@ describe 'consul' do
       :config_defaults => {
           'data_dir' => '/dir1',
           'server' => false,
+          'ports' => {
+            'http' => 1,
+          },
       },
       :config_hash => {
           'bootstrap_expect' => '5',
           'server' => true,
+          'ports' => {
+            'http'  => -1,
+            'https' => 8500,
+          },
       }
     }}
     it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
     it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
     it { should contain_file('consul config.json').with_content(/"server":true/) }
+    it { should contain_file('consul config.json').with_content(/"http":-1/) }
+    it { should contain_file('consul config.json').with_content(/"https":8500/) }
   end
 
   context "When asked not to manage the user" do
