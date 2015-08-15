@@ -277,6 +277,30 @@ describe 'consul' do
     it { should_not contain_service('consul') }
   end
 
+  context "When a reload_service is triggered with service_ensure stopped" do
+    let (:params) {{
+      :service_ensure => 'stopped',
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+    it { should_not contain_exec('reload consul service')  }
+  end
+
+  context "When a reload_service is triggered with manage_service false" do
+    let (:params) {{
+      :manage_service => false,
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+    it { should_not contain_exec('reload consul service')  }
+  end
+
   context "With a custom username" do
     let(:params) {{
       :user => 'custom_consul_user',
@@ -298,6 +322,7 @@ describe 'consul' do
     }}
     it { should contain_consul__service('test_service1').with_port('5') }
     it { should have_consul__service_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "When the user provides a hash of watches" do
@@ -312,6 +337,7 @@ describe 'consul' do
     it { should contain_consul__watch('test_watch1').with_type('nodes') }
     it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
     it { should have_consul__watch_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "When the user provides a hash of checks" do
@@ -326,6 +352,7 @@ describe 'consul' do
     it { should contain_consul__check('test_check1').with_interval('30') }
     it { should contain_consul__check('test_check1').with_script('test.sh') }
     it { should have_consul__check_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "With multiple watches and a config hash for #83" do
@@ -355,6 +382,7 @@ describe 'consul' do
     }}
     it { should contain_consul__watch('services') }
     it { should have_consul__watch_resource_count(3) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "On a redhat 6 based OS" do
