@@ -9,7 +9,7 @@ class consul::reload_service {
 
   # Don't attempt to reload if we're not supposed to be running.
   # This can happen during pre-provisioning of a node.
-  if $::consul::service_ensure != 'stopped' {
+  if $consul::manage_service == true and $consul::service_ensure == 'running' {
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
       command     => 'consul reload',
