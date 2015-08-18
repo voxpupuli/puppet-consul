@@ -10,9 +10,13 @@
 # [*purge*]
 #   Bool. If set will make puppet remove stale config files.
 #
+# [*rpc_port*]
+#   Port consul is using for rpc requests.  Default = 8400.
+#
 class consul::config(
   $config_hash,
   $purge = true,
+  $rpc_port = '8400',
 ) {
 
   if $consul::init_style {
@@ -52,6 +56,12 @@ class consul::config(
           owner   => 'root',
           group   => 'root',
           content => template('consul/consul.sysv.erb')
+        }
+        file { '/etc/sysconfig/consul':
+          mode    => '0644',
+          owner   => 'root',
+          group   => 'root',
+          content => template('consul/consul.sysconfig.erb'),
         }
       }
       'debian' : {

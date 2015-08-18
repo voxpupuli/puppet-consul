@@ -62,8 +62,8 @@ start() {
 stop() {
         echo -n "Shutting down consul: "
         # If consul is not acting as a server, exit gracefully
-        if ("${CONSUL}" info 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
-            "$CONSUL" leave
+        if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+            "$CONSUL" leave ${RPC_ADDR}
         fi
 
         # If acting as a server, or if leave failed, kill it.
@@ -83,7 +83,7 @@ case "$1" in
         stop
         ;;
     status)
-        "$CONSUL" info
+        "$CONSUL" info ${RPC_ADDR}
         ;;
     restart)
         stop

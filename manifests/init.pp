@@ -112,6 +112,10 @@ class consul (
     warning('data_dir must be set to install consul web ui')
   }
 
+  if ($config_hash_real['ports'] and $config_hash_real['ports']['rpc']) {
+    $custom_rpc_port = $config_hash_real['ports']['rpc']
+  }
+
   if $services {
     create_resources(consul::service, $services)
   }
@@ -140,6 +144,7 @@ class consul (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
     notify      => $notify_service,
+    rpc_port    => $custom_rpc_port,
   } ->
   class { 'consul::run_service': } ->
   class { 'consul::reload_service': } ->
