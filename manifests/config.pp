@@ -16,7 +16,6 @@
 class consul::config(
   $config_hash,
   $purge = true,
-  $rpc_port = '8400',
 ) {
 
   if $consul::init_style {
@@ -56,12 +55,6 @@ class consul::config(
           owner   => 'root',
           group   => 'root',
           content => template('consul/consul.sysv.erb')
-        }
-        file { '/etc/sysconfig/consul':
-          mode    => '0644',
-          owner   => 'root',
-          group   => 'root',
-          content => template('consul/consul.sysconfig.erb'),
         }
       }
       'debian' : {

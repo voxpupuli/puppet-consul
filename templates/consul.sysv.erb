@@ -17,6 +17,7 @@ CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 PID_FILE=/var/run/consul/consul.pid
 LOG_FILE=/var/log/consul
+RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
 
 [ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
 
