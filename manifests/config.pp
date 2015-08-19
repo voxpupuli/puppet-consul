@@ -10,9 +10,6 @@
 # [*purge*]
 #   Bool. If set will make puppet remove stale config files.
 #
-# [*rpc_port*]
-#   Port consul is using for rpc requests.  Default = 8400.
-#
 class consul::config(
   $config_hash,
   $purge = true,
