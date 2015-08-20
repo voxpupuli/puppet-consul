@@ -169,6 +169,7 @@ GEM
       signet (~> 0.6)
     hiera (1.3.4)
       json_pure
+    hiera-puppet-helper (1.0.1)
     hocon (0.9.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -279,6 +280,9 @@ PLATFORMS
 DEPENDENCIES
   beaker (> 2.0.0)
   beaker-rspec (>= 5.1.0)
+  hiera
+  hiera-puppet-helper
+  json
   pry
   puppet (~> 3.7.0)
   puppet-blacksmith
@@ -291,3 +295,6 @@ DEPENDENCIES
   rspec-puppet (~> 2.1)
   serverspec
   vagrant-wrapper
+
+BUNDLED WITH
+   1.10.6

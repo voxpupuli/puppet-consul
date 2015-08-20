@@ -115,7 +115,7 @@ class consul (
   if ($config_hash_real['ports'] and $config_hash_real['ports']['rpc']) {
     $rpc_port = $config_hash_real['ports']['rpc']
   } else {
-    $rpc_port = '8400'
+    $rpc_port = 8400
   }
 
   if ($config_hash_real['addresses'] and $config_hash_real['addresses']['rpc']) {
