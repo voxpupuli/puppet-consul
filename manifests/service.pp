@@ -60,7 +60,7 @@ define consul::service(
 
   file { "${consul::config_dir}/service_${id}.json":
     ensure  => $ensure,
-    content => consul_sorted_json($service_hash),
+    content => consul_sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
     require => File[$consul::config_dir],
   } ~> Class['consul::reload_service']
 }

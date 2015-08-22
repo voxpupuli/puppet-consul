@@ -92,7 +92,7 @@ class consul::config(
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    content => consul_sorted_json($config_hash),
+    content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
 
 }

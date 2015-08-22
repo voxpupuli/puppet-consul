@@ -75,6 +75,6 @@ define consul::check(
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/check_${escaped_id}.json":
     ensure  => $ensure,
-    content => template('consul/check.json.erb'),
+    content => consul_sorted_json($check_hash, $consul::pretty_config, $consul::pretty_config_indent),
   } ~> Class['consul::reload_service']
 }

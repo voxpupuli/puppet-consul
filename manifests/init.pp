@@ -10,6 +10,12 @@
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
+# [*pretty_config*]
+#   Generates a human readable JSON config file. Defaults to `false`.
+#
+# [*pretty_config_indent*]
+#   Toggle indentation for human readable JSON file. Defaults to `4`.
+#
 # [*install_method*]
 #   Valid strings: `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
@@ -67,6 +73,8 @@ class consul (
   $extra_options         = '',
   $config_hash           = {},
   $config_defaults       = {},
+  $pretty_config         = false,
+  $pretty_config_indent  = 4,
   $service_enable        = true,
   $service_ensure        = 'running',
   $manage_service        = true,
@@ -88,6 +96,8 @@ class consul (
   validate_bool($restart_on_change)
   validate_hash($config_hash)
   validate_hash($config_defaults)
+  validate_bool($pretty_config)
+  validate_integer($pretty_config_indent)
   validate_hash($services)
   validate_hash($watches)
   validate_hash($checks)

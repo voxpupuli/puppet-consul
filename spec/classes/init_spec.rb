@@ -252,6 +252,7 @@ describe 'consul' do
           'server' => false,
           'ports' => {
             'http' => 1,
+            'rpc'  => '8300',
           },
       },
       :config_hash => {
@@ -268,6 +269,26 @@ describe 'consul' do
     it { should contain_file('consul config.json').with_content(/"server":true/) }
     it { should contain_file('consul config.json').with_content(/"http":-1/) }
     it { should contain_file('consul config.json').with_content(/"https":8500/) }
+    it { should contain_file('consul config.json').with_content(/"rpc":8300/) }
+  end
+
+  context 'When pretty config is true' do
+    let(:params) {{
+      :pretty_config => true,
+      :config_hash => {
+          'bootstrap_expect' => '5',
+          'server' => true,
+          'ports' => {
+            'http'  => -1,
+            'https' => 8500,
+          },
+      }
+    }}
+    it { should contain_file('consul config.json').with_content(/"bootstrap_expect": 5,/) }
+    it { should contain_file('consul config.json').with_content(/"server": true/) }
+    it { should contain_file('consul config.json').with_content(/"http": -1,/) }
+    it { should contain_file('consul config.json').with_content(/"https": 8500/) }
+    it { should contain_file('consul config.json').with_content(/"ports": {/) }
   end
 
   context "When asked not to manage the user" do
