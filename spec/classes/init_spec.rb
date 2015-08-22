@@ -404,6 +404,15 @@ describe 'consul' do
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
   end
 
+  context "On an Archlinux based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Archlinux',
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+  end
+
   context "On an Amazon based OS" do
     let(:facts) {{
       :operatingsystem => 'Amazon',

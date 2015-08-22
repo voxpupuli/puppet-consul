@@ -52,6 +52,8 @@ class consul::params {
     } else {
       $init_style = 'systemd'
     }
+  } elsif $::operatingsystem == 'Archlinux' {
+    $init_style = 'systemd'
   } elsif $::operatingsystem == 'SLES' {
     $init_style = 'sles'
   } elsif $::operatingsystem == 'Darwin' {
