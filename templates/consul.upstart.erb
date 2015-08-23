@@ -10,6 +10,7 @@ env GROUP=<%= scope.lookupvar('consul::group') %>
 env DEFAULTS=/etc/default/consul
 env RUNDIR=/var/run/consul
 env PID_FILE=/var/run/consul/consul.pid
+env RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
 
 pre-start script
   [ -e $DEFAULTS ] && . $DEFAULTS
@@ -29,8 +30,8 @@ end script
 
 pre-stop script
     # Only leave the cluster if running as an agent
-    if ($CONSUL info 2>/dev/null | grep -q 'server = false' 2>/dev/null); then
-        exec $CONSUL leave
+    if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+        exec "$CONSUL" leave ${RPC_ADDR}
     fi
 end script
 

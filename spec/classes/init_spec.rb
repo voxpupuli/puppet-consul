@@ -448,6 +448,39 @@ describe 'consul' do
     }
   end
 
+   context "When using upstart" do
+    let (:params) {{
+      :init_style => 'upstart'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on upstart" do
+    let (:params) {{
+      :init_style => 'upstart',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
