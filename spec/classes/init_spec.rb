@@ -448,7 +448,21 @@ describe 'consul' do
     }
   end
 
-   context "When using debian" do
+  context "When rpc_addr defaults to client_addr on sysv" do
+    let (:params) {{
+      :init_style => 'sysv',
+      :config_hash => {
+        'client_addr' => '192.168.34.56',
+      }
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=192.168.34.56:8400/)
+    }
+  end
+
+  context "When using debian" do
     let (:params) {{
       :init_style => 'debian'
     }}
