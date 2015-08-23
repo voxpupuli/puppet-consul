@@ -122,6 +122,20 @@ class consul (
     warning('data_dir must be set to install consul web ui')
   }
 
+  if ($config_hash_real['ports'] and $config_hash_real['ports']['rpc']) {
+    $rpc_port = $config_hash_real['ports']['rpc']
+  } else {
+    $rpc_port = 8400
+  }
+
+  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['rpc']) {
+    $rpc_addr = $config_hash_real['addresses']['rpc']
+  } elsif ($config_hash_real['client_addr']) {
+    $rpc_addr = $config_hash_real['client_addr']
+  } else {
+    $rpc_addr = $::ipaddress_lo
+  }
+
   if $services {
     create_resources(consul::service, $services)
   }

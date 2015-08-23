@@ -415,6 +415,39 @@ describe 'consul' do
     it { should contain_exec('reload consul service')  }
   end
 
+  context "When using sysv" do
+    let (:params) {{
+      :init_style => 'sysv'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on sysv" do
+    let (:params) {{
+      :init_style => 'sysv',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
