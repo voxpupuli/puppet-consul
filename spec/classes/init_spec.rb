@@ -448,6 +448,86 @@ describe 'consul' do
     }
   end
 
+  context "When rpc_addr defaults to client_addr on sysv" do
+    let (:params) {{
+      :init_style => 'sysv',
+      :config_hash => {
+        'client_addr' => '192.168.34.56',
+      }
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=192.168.34.56:8400/)
+    }
+  end
+
+  context "When using debian" do
+    let (:params) {{
+      :init_style => 'debian'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('debian') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on debian" do
+    let (:params) {{
+      :init_style => 'debian',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('debian') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
+  context "When using upstart" do
+    let (:params) {{
+      :init_style => 'upstart'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on upstart" do
+    let (:params) {{
+      :init_style => 'upstart',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
   context "On a redhat 6 based OS" do
     let(:facts) {{
       :operatingsystem => 'CentOS',
