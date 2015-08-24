@@ -353,7 +353,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_environment(['CONSUL_RPC_ADDR=127.0.0.1:8400'])
+        with_command('consul reload -rpc-addr=127.0.0.1:8400')
     }
   end
 
@@ -373,7 +373,22 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_environment(['CONSUL_RPC_ADDR=consul.example.com:9999'])
+        with_command('consul reload -rpc-addr=consul.example.com:9999')
+    }
+  end
+
+  context "When consul is reloaded with a default client_addr" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      },
+      :config_hash => {
+        'client_addr' => '192.168.34.56',
+      }
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_command('consul reload -rpc-addr=192.168.34.56:8400')
     }
   end
 

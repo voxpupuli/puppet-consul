@@ -12,10 +12,7 @@ class consul::reload_service {
   if $consul::manage_service == true and $consul::service_ensure == 'running' {
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
-      command     => 'consul reload',
-      environment => [
-        "CONSUL_RPC_ADDR=${consul::rpc_addr}:${consul::rpc_port}",
-      ],
+      command     => "consul reload -rpc-addr=${consul::rpc_addr}:${consul::rpc_port}",
       refreshonly => true,
     }
   }
