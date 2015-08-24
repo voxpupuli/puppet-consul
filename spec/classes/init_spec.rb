@@ -353,7 +353,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_environment('CONSUL_RPC_ADDR=127.0.0.1:8400')
+        with_environment(['CONSUL_RPC_ADDR=127.0.0.1:8400'])
     }
   end
 
@@ -373,7 +373,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_environment('CONSUL_RPC_ADDR=consul.example.com:9999')
+        with_environment(['CONSUL_RPC_ADDR=consul.example.com:9999'])
     }
   end
 
