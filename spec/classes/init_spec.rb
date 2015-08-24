@@ -342,6 +342,41 @@ describe 'consul' do
     it { should contain_file('/etc/init/consul.conf').with_content(/env GROUP=custom_consul_group/) }
   end
 
+  context "When consul is reloaded" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      }
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_environment('CONSUL_RPC_ADDR=127.0.0.1:8400')
+    }
+  end
+
+  context "When consul is reloaded on a custom port" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      },
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_environment('CONSUL_RPC_ADDR=consul.example.com:9999')
+    }
+  end
+
   context "When the user provides a hash of services" do
     let (:params) {{
       :services => {

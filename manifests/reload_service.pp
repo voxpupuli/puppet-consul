@@ -13,6 +13,9 @@ class consul::reload_service {
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
       command     => 'consul reload',
+      environment => [
+        "CONSUL_RPC_ADDR=${consul::rpc_addr}:${consul::rpc_port}",
+      ],
       refreshonly => true,
     }
   }
