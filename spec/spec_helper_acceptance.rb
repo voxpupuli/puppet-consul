@@ -1,10 +1,9 @@
-require 'beaker-rspec'
+require 'beaker-rspec/spec_helper'
+require 'beaker-rspec/helpers/serverspec'
+require 'beaker/puppet_install_helper'
 
-#hosts.each do |host|
-#  # Install Puppet
-#  install_puppet
-#end
-#
+run_puppet_install_helper unless ENV['BEAKER_provision'] == 'no'
+
 RSpec.configure do |c|
   # Project root
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))

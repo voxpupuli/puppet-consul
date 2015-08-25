@@ -3,5 +3,8 @@ HOSTS:
     platform: ubuntu-12.04-x64
     image: solarkennedy/ubuntu-12.04-puppet
     hypervisor: docker
+    #docker_cmd: /usr/sbin/sshd -D
+    docker_cmd: '["/sbin/init"]' 
+    docker_preserve_image: true
 CONFIG: 
   type: foss
