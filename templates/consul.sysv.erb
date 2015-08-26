@@ -96,7 +96,7 @@ stop() {
         killproc $KILLPROC_OPT $CONSUL
         retcode=$?
 
-        rm -f /var/lock/subsys/consul
+        rm -f /var/lock/subsys/consul $PID_FILE
         return $retcode
 }
 
