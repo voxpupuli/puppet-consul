@@ -61,17 +61,41 @@ start() {
 }
 
 stop() {
+        DELAY=5 # seconds maximum to wait for a leave
+
         echo -n "Shutting down consul: "
+        mkpidfile
+
         # If consul is not acting as a server, exit gracefully
+        # Use SIGINT to create a "leave" event, unless the user has explicitly
+        # changed that behavior in the Consul config.
         if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
-            "$CONSUL" leave ${RPC_ADDR}
+            consul_pid=$(cat $PID_FILE)
+            killproc $KILLPROC_OPT $CONSUL -INT
+            retcode=$?
+
+            # We'll wait if necessary to make sure the leave works, and return
+            # early if we can.  If not, escalate to harsher signals.
+            try=0
+            while [ $try -lt $DELAY ]; do
+                if ! checkpid $consul_pid ; then
+                    rm -f /var/lock/subsys/consul
+                    return $retcode
+                fi
+                sleep 1
+                let try+=1
+            done
         fi
 
-        # If acting as a server, or if leave failed, kill it.
-        mkpidfile
-        killproc $KILLPROC_OPT $CONSUL -9
-
+        # If acting as a server, use a SIGTERM to avoid a leave.
+        # This behavior is also configurable.  Avoid doing a "leave" because
+        # having servers missing is a bad thing that we want to notice.
+        #
+        # A SIGTERM will mark the node as "failed" until it rejoins.
+        # killproc with no arguments uses TERM, then escalates to KILL.
+        killproc $KILLPROC_OPT $CONSUL
         retcode=$?
+
         rm -f /var/lock/subsys/consul $PID_FILE
         return $retcode
 }
@@ -102,4 +126,7 @@ case "$1" in
         exit 1
         ;;
 esac
-exit $?
+retcode=$?
+# Don't let the [OK] get stomped on.
+echo
+exit $retcode
