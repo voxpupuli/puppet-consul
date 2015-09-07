@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
