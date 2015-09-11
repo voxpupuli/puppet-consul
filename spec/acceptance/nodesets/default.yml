@@ -1,9 +1,1 @@
-HOSTS:
-  ubuntu-12-04:
-    platform: ubuntu-12.04-x64
-    image: solarkennedy/ubuntu-12.04-puppet
-    hypervisor: docker
-    docker_cmd: '["/sbin/init"]' 
-    docker_preserve_image: true
-CONFIG: 
-  type: foss
+ubuntu-1404-x64.yml
