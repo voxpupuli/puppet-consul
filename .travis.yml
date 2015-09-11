@@ -2,19 +2,19 @@
 language: ruby
 bundler_args: --without development
 before_install: rm Gemfile.lock || true
-sudo: true
+sudo: false
+cache: bundler
 rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.0
-script: if [[ $BEAKER == true ]]; then make beaker; else bundle exec rake test; fi
+script: bundle exec rake test
 env:
   - PUPPET_VERSION="~> 3.1.0"
   - PUPPET_VERSION="~> 3.3.0"
   - PUPPET_VERSION="~> 3.7.4" FUTURE_PARSER=yes STRICT_VARIABLES=yes
   - PUPPET_VERSION="~> 4.0.0"
   - PUPPET_VERSION="~> 4.1.0"
-  - BEAKER=true
 matrix:
   exclude:
   - rvm: 1.9.3
@@ -41,7 +41,3 @@ matrix:
     env: PUPPET_VERSION="~> 4.1.0"
   - rvm: 2.0.0
     env: PUPPET_VERSION="~> 4.1.0"
-  - rvm: 1.9.3
-    env: BEAKER=true
-  - rvm: 2.0.0
-    env: BEAKER=true
