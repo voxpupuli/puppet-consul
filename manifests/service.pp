@@ -58,7 +58,8 @@ define consul::service(
     service => delete_undef_values($basic_hash)
   }
 
-  file { "${consul::config_dir}/service_${id}.json":
+  $escaped_id = regsubst($id,'\/','_','G')
+  file { "${consul::config_dir}/service_${escaped_id}.json":
     ensure  => $ensure,
     content => consul_sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
     require => File[$consul::config_dir],
