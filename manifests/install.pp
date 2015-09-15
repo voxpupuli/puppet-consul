@@ -36,7 +36,7 @@ class consul::install {
       if ($consul::ui_dir and $consul::data_dir) {
         if $::operatingsystem != 'darwin' {
           if ! defined ( Package['unzip'] ) {
-            ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
+            Package['unzip'] -> Staging::Deploy['consul_web_ui.zip']
           }
         }
         file { "${consul::data_dir}/${consul::version}_web_ui":
