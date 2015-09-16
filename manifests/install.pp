@@ -16,7 +16,9 @@ class consul::install {
   case $consul::install_method {
     'url': {
       if $::operatingsystem != 'darwin' {
-        ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
+        if ! defined ( Package['unzip'] ) {
+          ensure_packages(['unzip'], { 'before' => Staging::File['consul.zip'] })
+        }
       }
       staging::file { 'consul.zip':
         source => $consul::real_download_url
@@ -33,7 +35,9 @@ class consul::install {
 
       if ($consul::ui_dir and $consul::data_dir) {
         if $::operatingsystem != 'darwin' {
-          Package['unzip'] -> Staging::Deploy['consul_web_ui.zip']
+          if ! defined ( Package['unzip'] ) {
+            Package['unzip'] -> Staging::Deploy['consul_web_ui.zip']
+          }
         }
         file { "${consul::data_dir}/${consul::version}_web_ui":
           ensure => 'directory',
