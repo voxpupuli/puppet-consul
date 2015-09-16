@@ -1,8 +1,8 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides:          consul
-# Required-Start:    $local_fs $remote_fs
-# Required-Stop:     $local_fs $remote_fs
+# Required-Start:    $local_fs $remote_fs $syslog $named $network
+# Required-Stop:     $local_fs $remote_fs $syslog $named $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      S 0 1 6
 # Short-Description: Consul service discovery framework
