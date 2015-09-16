@@ -185,6 +185,23 @@ describe 'consul::service' do
         .with_content(/"http" *: *"localhost"/)
     }
   end
+  describe 'with a / in the id' do
+    let(:params) {{
+      'id' => 'aa/bb',
+    }}
+    it { should contain_file("/etc/consul/service_aa_bb.json") \
+        .with_content(/"id" *: *"aa\/bb"/)
+    }
+  end
+  describe 'with multiple / in the id' do
+    let(:params) {{
+      'id' => 'aa/bb/cc',
+    }}
+    it { should contain_file("/etc/consul/service_aa_bb_cc.json") \
+        .with_content(/"id" *: *"aa\/bb\/cc"/)
+    }
+  end
+
   describe 'with multiple checks script and invalid http' do
     let(:params) {{
       'checks' => [

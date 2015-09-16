@@ -218,4 +218,14 @@ describe 'consul::check' do
         .with_content(/"id" *: *"aa\/bb"/)
     }
   end
+  describe 'with multiple / in the id' do
+    let(:params) {{
+      'ttl' => '30s',
+      'service_id' => 'my_service',
+      'id' => 'aa/bb/cc',
+    }}
+    it { should contain_file("/etc/consul/check_aa_bb_cc.json") \
+        .with_content(/"id" *: *"aa\/bb\/cc"/)
+    }
+  end
 end
