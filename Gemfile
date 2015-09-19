@@ -1,28 +1,31 @@
-source "https://rubygems.org"
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-group :development do
-  gem 'beaker', github: 'puppetlabs/beaker', branch: 'master'
-  gem "beaker-rspec", ">= 5.1.0"
-  gem "beaker-puppet_install_helper"
-  gem "pry"
-  gem "puppet-blacksmith"
-  gem "serverspec"
-  gem "vagrant-wrapper"
+group :development, :unit_tests do
+  gem 'rake',                                              :require => false
+  gem 'rspec', '< 3.2',                                    :require => false if RUBY_VERSION =~ /^1.8/
+  gem 'rspec-puppet',                                      :require => false
+  gem 'puppetlabs_spec_helper',                            :require => false
+  gem 'metadata-json-lint',                                :require => false
+  gem 'puppet-lint',                                       :require => false
+  gem 'rspec-puppet-facts',                                :require => false
 end
 
-group :test do
-  gem "json"
-  gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.7.0'
-  gem "puppet-lint"
+group :system_tests do
+  #gem 'beaker',              :require => false
+  gem 'beaker', github: 'puppetlabs/beaker', branch: 'master'
+  gem 'beaker-rspec',        :require => false
+  gem 'beaker_spec_helper',  :require => false
+  gem 'serverspec',          :require => false
+end
 
-  # Pin for 1.8.7 compatibility for now
-  gem "rspec", '< 3.2.0'
-  gem "rspec-core", "3.1.7"
-  gem "rspec-puppet", "~> 2.1"
+if facterversion = ENV['FACTER_GEM_VERSION']
+  gem 'facter', facterversion, :require => false
+else
+  gem 'facter', :require => false
+end
 
-  gem "puppet-syntax"
-  gem "puppetlabs_spec_helper"
-  gem "hiera"
-  gem "hiera-puppet-helper"
+if puppetversion = ENV['PUPPET_GEM_VERSION']
+  gem 'puppet', puppetversion, :require => false
+else
+  gem 'puppet', :require => false
 end
