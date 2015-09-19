@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe 'consul::watch' do
-  let(:facts) {{ :architecture => 'x86_64', :version => '0.4.0' }}
+  let(:facts) {{ :architecture => 'x86_64' }}
   let(:title) { "my_watch" }
 
   describe 'version checks' do
     context 'with version < 0.4.0' do
       let (:facts) {{ :architecture => 'x86_64' }}
-      let(:hiera_data) {{ 'consul::version' => '0.3.0' }}
+      let (:pre_condition) { 'class { "consul": version => "0.3.0" }'}
       let (:params) {{
         'type'    => 'nodes',
         'handler' => 'handler_path',
@@ -21,7 +21,7 @@ describe 'consul::watch' do
 
     context 'with version 0.4.1' do
       let (:facts) {{ :architecture => 'x86_64' }}
-      let(:hiera_data) {{ 'consul::version' => '0.4.1' }}
+      let (:pre_condition) { 'class { "consul": version => "0.4.1" }'}
       let (:params) {{
         'type'    => 'nodes',
         'handler' => 'handler_path',
@@ -33,7 +33,7 @@ describe 'consul::watch' do
 
     context 'with version 1.3.0' do
       let (:facts) {{ :architecture => 'x86_64' }}
-      let(:hiera_data) {{ 'consul::version' => '1.3.0' }}
+      let (:pre_condition) { 'class { "consul": version => "1.3.0" }'}
       let (:params) {{
         'type'    => 'nodes',
         'handler' => 'handler_path',
