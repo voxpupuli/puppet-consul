@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 group :development do
-  gem "beaker", "> 2.0.0"
+  gem 'beaker', github: 'puppetlabs/beaker', branch: 'master'
   gem "beaker-rspec", ">= 5.1.0"
   gem "beaker-puppet_install_helper"
   gem "pry"
