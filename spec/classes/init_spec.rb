@@ -67,25 +67,6 @@ describe 'consul' do
     it { should_not contain_exec('join consul wan') }
   end
 
-  context 'Require unzip package when installing via URL' do
-    it { should contain_staging__file('consul.zip').that_requires('Package[unzip]') }
-  end
-
-  context "Require unzip package when installing UI via URL" do
-    let(:params) {{
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_staging__deploy('consul_web_ui.zip').that_requires('Package[unzip]') }
-  end
-
-  context 'OS X should not contain unzip package' do
-    let(:facts) {{ :operatingsystem => 'darwin' }}
-    it { should_not contain_package('unzip') }
-  end
-
   context 'When requesting to install via a package with defaults' do
     let(:params) {{
       :install_method => 'package'
