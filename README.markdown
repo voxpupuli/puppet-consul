@@ -15,6 +15,7 @@ on the 4 series. Do *not* pull from master.
 ###What This Module Affects
 
 * Installs the consul daemon (via url or package)
+  * If installing from zip, you *must* ensure the unzip utility is available.
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
 * Manages the consul service via upstart, sysv, or systemd
