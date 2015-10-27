@@ -36,9 +36,6 @@ Puppet::Type.newtype(:consul_acl) do
 
   newproperty(:id) do
     desc 'ID of token'
-    validate do |v|
-      raise(Puppet::Error, 'This is a read only property')
-    end
   end
 
   autorequire(:service) do
