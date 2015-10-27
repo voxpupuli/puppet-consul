@@ -15,6 +15,7 @@ on the 4 series. Do *not* pull from master.
 ###What This Module Affects
 
 * Installs the consul daemon (via url or package)
+  * If installing from zip, you *must* ensure the unzip utility is available.
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
 * Manages the consul service via upstart, sysv, or systemd
@@ -45,7 +46,7 @@ class { '::consul':
     'log_level'  => 'INFO',
     'node_name'  => 'agent',
     'retry_join' => ['172.16.0.1'],
-  }ii
+  }
 }
 ```
 Disable install and service components:
@@ -86,17 +87,17 @@ class { '::consul':
 For more security options, consider leaving the `client_addr` set to `127.0.0.1`
 and use with a reverse proxy:
 ```puppet
-  $aliases = ['consul', 'consul.example.com']
+$aliases = ['consul', 'consul.example.com']
 
-  # Reverse proxy for Web interface
-  include 'nginx'
+# Reverse proxy for Web interface
+include 'nginx'
 
-  $server_names = [$::fqdn, $aliases]
+$server_names = [$::fqdn, $aliases]
 
-  nginx::resource::vhost { $::fqdn:
-    proxy       => 'http://localhost:8500',
-    server_name => $server_names,
-  }
+nginx::resource::vhost { $::fqdn:
+  proxy       => 'http://localhost:8500',
+  server_name => $server_names,
+}
 ```
 
 ## Service Definition
@@ -153,6 +154,13 @@ See the check.pp docstrings for all available inputs.
 
 You can also use `consul::checks` which accepts a hash of checks, and makes
 it easy to declare in hiera.
+
+## Removing Service, Check and Watch definitions
+
+Do `ensure => absent` while removing existing service, check and watch
+definitions. This ensures consul will be reloaded via `SIGHUP`. If you have
+`purge_config_dir` set to `true` and simply remove the definition it will cause
+consul to restart.
 
 ## ACL Definitions
 

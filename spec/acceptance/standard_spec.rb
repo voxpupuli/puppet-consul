@@ -7,6 +7,7 @@ describe 'consul class' do
     it 'should work with no errors based on the example' do
       pp = <<-EOS
         class { 'consul':
+          version     => '0.5.2',
           config_hash => {
               'datacenter' => 'east-aws',
               'data_dir'   => '/opt/consul',
@@ -31,7 +32,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      it { should return_stdout /Consul v0\.4\.1/ }
+      its(:stdout) { should match /Consul v0\.5\.2/ }
     end
 
   end

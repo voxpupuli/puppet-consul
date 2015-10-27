@@ -10,6 +10,12 @@
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
+# [*pretty_config*]
+#   Generates a human readable JSON config file. Defaults to `false`.
+#
+# [*pretty_config_indent*]
+#   Toggle indentation for human readable JSON file. Defaults to `4`.
+#
 # [*install_method*]
 #   Valid strings: `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
@@ -26,6 +32,11 @@
 #
 # [*ui_package_ensure*]
 #   Only valid when the install_method == package. Defaults to `latest`.
+#
+# [*restart_on_change*]
+#   Determines whether to restart consul agent on $config_hash changes.
+#   This will not affect reloads when service, check or watch configs change.
+# Defaults to `true`.
 #
 # [*extra_options*]
 #   Extra arguments to be passed to the consul agent
@@ -62,9 +73,12 @@ class consul (
   $extra_options         = '',
   $config_hash           = {},
   $config_defaults       = {},
+  $pretty_config         = false,
+  $pretty_config_indent  = 4,
   $service_enable        = true,
   $service_ensure        = 'running',
   $manage_service        = true,
+  $restart_on_change     = true,
   $init_style            = $consul::params::init_style,
   $services              = {},
   $watches               = {},
@@ -79,14 +93,17 @@ class consul (
   validate_bool($manage_user)
   validate_array($extra_groups)
   validate_bool($manage_service)
+  validate_bool($restart_on_change)
   validate_hash($config_hash)
   validate_hash($config_defaults)
+  validate_bool($pretty_config)
+  validate_integer($pretty_config_indent)
   validate_hash($services)
   validate_hash($watches)
   validate_hash($checks)
   validate_hash($acls)
 
-  $config_hash_real = merge($config_defaults, $config_hash)
+  $config_hash_real = deep_merge($config_defaults, $config_hash)
   validate_hash($config_hash_real)
 
   if $config_hash_real['data_dir'] {
@@ -105,6 +122,20 @@ class consul (
     warning('data_dir must be set to install consul web ui')
   }
 
+  if ($config_hash_real['ports'] and $config_hash_real['ports']['rpc']) {
+    $rpc_port = $config_hash_real['ports']['rpc']
+  } else {
+    $rpc_port = 8400
+  }
+
+  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['rpc']) {
+    $rpc_addr = $config_hash_real['addresses']['rpc']
+  } elsif ($config_hash_real['client_addr']) {
+    $rpc_addr = $config_hash_real['client_addr']
+  } else {
+    $rpc_addr = $::ipaddress_lo
+  }
+
   if $services {
     create_resources(consul::service, $services)
   }
@@ -121,14 +152,20 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
+  $notify_service = $restart_on_change ? {
+    true    => Class['consul::run_service'],
+    default => undef,
+  }
+
   anchor {'consul_first': }
   ->
   class { 'consul::install': } ->
   class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
-  } ~>
-  class { 'consul::run_service': }
-  ->
+    notify      => $notify_service,
+  } ->
+  class { 'consul::run_service': } ->
+  class { 'consul::reload_service': } ->
   anchor {'consul_last': }
 }

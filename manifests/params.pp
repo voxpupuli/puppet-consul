@@ -14,7 +14,7 @@ class consul::params {
   $ui_package_ensure     = 'latest'
   $ui_download_url_base  = 'https://dl.bintray.com/mitchellh/consul/'
   $ui_download_extension = 'zip'
-  $version               = '0.5.0'
+  $version               = '0.5.2'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
@@ -27,10 +27,12 @@ class consul::params {
   $os = downcase($::kernel)
 
   if $::operatingsystem == 'Ubuntu' {
-    if versioncmp($::lsbdistrelease, '8.04') < 1 {
+    if versioncmp($::operatingsystemrelease, '8.04') < 1 {
       $init_style = 'debian'
-    } else {
+    } elsif versioncmp($::operatingsystemrelease, '15.04') < 0 {
       $init_style = 'upstart'
+    } else {
+      $init_style = 'systemd'
     }
   } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
     if versioncmp($::operatingsystemrelease, '7.0') < 0 {
@@ -50,6 +52,8 @@ class consul::params {
     } else {
       $init_style = 'systemd'
     }
+  } elsif $::operatingsystem == 'Archlinux' {
+    $init_style = 'systemd'
   } elsif $::operatingsystem == 'SLES' {
     $init_style = 'sles'
   } elsif $::operatingsystem == 'Darwin' {
