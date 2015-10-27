@@ -7,6 +7,7 @@ describe 'consul class' do
     it 'should work with no errors based on the UI example' do
       pp = <<-EOS
         class { 'consul':
+          version     => '0.5.2',
           config_hash => {
             'datacenter'  => 'east-aws',
             'data_dir'    => '/opt/consul',
@@ -29,17 +30,15 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul/ui') do
-      it { should be_linked_to '/opt/consul/0.4.1_web_ui' }
+      it { should be_linked_to '/opt/consul/0.5.2_web_ui' }
     end
 
     describe service('consul') do
       it { should be_enabled }
     end
 
-    it { should contain_service('mysql-server').with_ensure('present') }
-
     describe command('consul version') do
-      it { should return_stdout /Consul v0\.4\.1/ }
+      its(:stdout) { should match /Consul v0\.5\.2/ }
     end
 
   end

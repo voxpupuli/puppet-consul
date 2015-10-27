@@ -8,7 +8,9 @@ describe 'consul::check' do
     let(:params) {{}}
 
     it {
-      expect { should raise_error(Puppet::Error) }
+      expect {
+        should raise_error(Puppet::Error, /Wrong number of arguments/)
+      }
     }
   end
   describe 'with script' do
@@ -18,10 +20,10 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
-        .with_content(/"interval" *: *"30s"/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"interval" *: *"30s"/) \
         .with_content(/"script" *: *"true"/)
     }
   end
@@ -33,12 +35,28 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
-        .with_content(/"interval" *: *"30s"/)
-        .with_content(/"script" *: *"true"/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"script" *: *"true"/) \
         .with_content(/"service_id" *: *"my_service"/)
+    }
+  end
+  describe 'reload service with script and token' do
+    let(:params) {{
+      'interval' => '30s',
+      'script'   => 'true',
+      'token'    => 'too-cool-for-this-script'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"script" *: *"true"/) \
+        .with_content(/"token" *: *"too-cool-for-this-script"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with http' do
@@ -48,11 +66,11 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
-        .with_content(/"interval" *: *"30s"/)
-        .with_content(/"http" *: *"localhost"/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"http" *: *"localhost"/) \
     }
   end
   describe 'with http and service_id' do
@@ -63,12 +81,28 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
-        .with_content(/"interval" *: *"30s"/)
-        .with_content(/"http" *: *"localhost"/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"http" *: *"localhost"/) \
         .with_content(/"service_id" *: *"my_service"/)
+    }
+  end
+  describe 'reload service with http and token' do
+    let(:params) {{
+      'interval' => '30s',
+      'http'     => 'localhost',
+      'token'    => 'too-cool-for-this-http'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"http" *: *"localhost"/) \
+        .with_content(/"token" *: *"too-cool-for-this-http"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with http and removed undef values' do
@@ -78,7 +112,7 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .without_content(/"service_id"/)
+        .without_content(/"service_id"/) \
         .without_content(/"notes"/)
     }
   end
@@ -88,9 +122,9 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
         .with_content(/"ttl" *: *"30s"/)
     }
   end
@@ -101,11 +135,25 @@ describe 'consul::check' do
     }}
     it {
       should contain_file("/etc/consul/check_my_check.json") \
-        .with_content(/"id" *: *"my_check"/)
-        .with_content(/"name" *: *"my_check"/)
-        .with_content(/"check" *: *{/)
-        .with_content(/"ttl" *: *"30s"/)
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"ttl" *: *"30s"/) \
         .with_content(/"service_id" *: *"my_service"/)
+    }
+  end
+  describe 'reload service with ttl and token' do
+    let(:params) {{
+      'ttl'   => '30s',
+      'token' => 'too-cool-for-this-ttl'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"ttl" *: *"30s"/) \
+        .with_content(/"token" *: *"too-cool-for-this-ttl"/) \
+        .that_notifies("Class[consul::reload_service]") \
     }
   end
   describe 'with both ttl and interval' do
@@ -114,7 +162,7 @@ describe 'consul::check' do
       'interval' => '60s'
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
     }
   end
   describe 'with both ttl and script' do
@@ -123,7 +171,7 @@ describe 'consul::check' do
       'script' => 'true'
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
     }
   end
   describe 'with both ttl and http' do
@@ -132,7 +180,7 @@ describe 'consul::check' do
       'http' => 'http://localhost/health',
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
     }
   end
   describe 'with both script and http' do
@@ -141,7 +189,7 @@ describe 'consul::check' do
       'http' => 'http://localhost/health',
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /script and http must not be defined together/)
     }
   end
   describe 'with script but no interval' do
@@ -149,7 +197,7 @@ describe 'consul::check' do
       'script' => 'true',
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /script must be defined for interval checks/)
     }
   end
   describe 'with http but no interval' do
@@ -157,7 +205,7 @@ describe 'consul::check' do
       'http' => 'http://localhost/health',
     }}
     it {
-      should raise_error(Puppet::Error)
+      should raise_error(Puppet::Error, /http must be defined for interval checks/)
     }
   end
   describe 'with a / in the id' do
@@ -168,6 +216,16 @@ describe 'consul::check' do
     }}
     it { should contain_file("/etc/consul/check_aa_bb.json") \
         .with_content(/"id" *: *"aa\/bb"/)
+    }
+  end
+  describe 'with multiple / in the id' do
+    let(:params) {{
+      'ttl' => '30s',
+      'service_id' => 'my_service',
+      'id' => 'aa/bb/cc',
+    }}
+    it { should contain_file("/etc/consul/check_aa_bb_cc.json") \
+        .with_content(/"id" *: *"aa\/bb\/cc"/)
     }
   end
 end

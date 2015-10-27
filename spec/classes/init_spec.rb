@@ -4,11 +4,11 @@ describe 'consul' do
 
   RSpec.configure do |c|
     c.default_facts = {
-      :architecture    => 'x86_64',
-      :operatingsystem => 'Ubuntu',
-      :osfamily        => 'Debian',
-      :lsbdistrelease  => '10.04',
-      :kernel          => 'Linux',
+      :architecture           => 'x86_64',
+      :operatingsystem        => 'Ubuntu',
+      :osfamily               => 'Debian',
+      :operatingsystemrelease => '10.04',
+      :kernel                 => 'Linux',
     }
   end
   # Installation Stuff
@@ -45,6 +45,17 @@ describe 'consul' do
     it { should contain_class('consul::config').with(:purge => false) }
   end
 
+  context 'consul::config should notify consul::run_service' do
+    it { should contain_class('consul::config').that_notifies(['Class[consul::run_service]']) }
+  end
+
+  context 'consul::config should not notify consul::run_service on config change' do
+    let(:params) {{
+      :restart_on_change => false
+    }}
+    it { should_not contain_class('consul::config').that_notifies(['Class[consul::run_service]']) }
+  end
+
   context 'When joining consul to a wan cluster by a known URL' do
     let(:params) {{
         :join_wan => 'wan_host.test.com'
@@ -73,7 +84,7 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_linux_amd64.zip') }
+    it { should contain_staging__file('consul.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip') }
   end
 
   context "When installing via URL by with a special version" do
@@ -128,7 +139,9 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.0_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip') }
+    it { should contain_file('/dir1/dir2').that_requires('Staging::Deploy[consul_web_ui.zip]') }
+    it { should contain_file('/dir1/dir2').with(:ensure => 'symlink') }
   end
 
   context "When installing UI via URL by with a special version" do
@@ -218,15 +231,45 @@ describe 'consul' do
       :config_defaults => {
           'data_dir' => '/dir1',
           'server' => false,
+          'ports' => {
+            'http' => 1,
+            'rpc'  => '8300',
+          },
       },
       :config_hash => {
           'bootstrap_expect' => '5',
           'server' => true,
+          'ports' => {
+            'http'  => -1,
+            'https' => 8500,
+          },
       }
     }}
     it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
     it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
     it { should contain_file('consul config.json').with_content(/"server":true/) }
+    it { should contain_file('consul config.json').with_content(/"http":-1/) }
+    it { should contain_file('consul config.json').with_content(/"https":8500/) }
+    it { should contain_file('consul config.json').with_content(/"rpc":8300/) }
+  end
+
+  context 'When pretty config is true' do
+    let(:params) {{
+      :pretty_config => true,
+      :config_hash => {
+          'bootstrap_expect' => '5',
+          'server' => true,
+          'ports' => {
+            'http'  => -1,
+            'https' => 8500,
+          },
+      }
+    }}
+    it { should contain_file('consul config.json').with_content(/"bootstrap_expect": 5,/) }
+    it { should contain_file('consul config.json').with_content(/"server": true/) }
+    it { should contain_file('consul config.json').with_content(/"http": -1,/) }
+    it { should contain_file('consul config.json').with_content(/"https": 8500/) }
+    it { should contain_file('consul config.json').with_content(/"ports": {/) }
   end
 
   context "When asked not to manage the user" do
@@ -245,6 +288,30 @@ describe 'consul' do
     it { should_not contain_service('consul') }
   end
 
+  context "When a reload_service is triggered with service_ensure stopped" do
+    let (:params) {{
+      :service_ensure => 'stopped',
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+    it { should_not contain_exec('reload consul service')  }
+  end
+
+  context "When a reload_service is triggered with manage_service false" do
+    let (:params) {{
+      :manage_service => false,
+      :services => {
+        'test_service1' => {
+          'port' => '5'
+        }
+      }
+    }}
+    it { should_not contain_exec('reload consul service')  }
+  end
+
   context "With a custom username" do
     let(:params) {{
       :user => 'custom_consul_user',
@@ -254,6 +321,56 @@ describe 'consul' do
     it { should contain_group('custom_consul_group').with(:ensure => :present) }
     it { should contain_file('/etc/init/consul.conf').with_content(/env USER=custom_consul_user/) }
     it { should contain_file('/etc/init/consul.conf').with_content(/env GROUP=custom_consul_group/) }
+  end
+
+  context "When consul is reloaded" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      }
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_command('consul reload -rpc-addr=127.0.0.1:8400')
+    }
+  end
+
+  context "When consul is reloaded on a custom port" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      },
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_command('consul reload -rpc-addr=consul.example.com:9999')
+    }
+  end
+
+  context "When consul is reloaded with a default client_addr" do
+    let (:params) {{
+      :services => {
+        'test_service1' => {}
+      },
+      :config_hash => {
+        'client_addr' => '192.168.34.56',
+      }
+    }}
+    it {
+      should contain_exec('reload consul service').
+        with_command('consul reload -rpc-addr=192.168.34.56:8400')
+    }
   end
 
   context "When the user provides a hash of services" do
@@ -266,6 +383,7 @@ describe 'consul' do
     }}
     it { should contain_consul__service('test_service1').with_port('5') }
     it { should have_consul__service_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "When the user provides a hash of watches" do
@@ -280,6 +398,7 @@ describe 'consul' do
     it { should contain_consul__watch('test_watch1').with_type('nodes') }
     it { should contain_consul__watch('test_watch1').with_handler('test.sh') }
     it { should have_consul__watch_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "When the user provides a hash of checks" do
@@ -294,6 +413,7 @@ describe 'consul' do
     it { should contain_consul__check('test_check1').with_interval('30') }
     it { should contain_consul__check('test_check1').with_script('test.sh') }
     it { should have_consul__check_resource_count(1) }
+    it { should contain_exec('reload consul service')  }
   end
 
   context "With multiple watches and a config hash for #83" do
@@ -323,6 +443,120 @@ describe 'consul' do
     }}
     it { should contain_consul__watch('services') }
     it { should have_consul__watch_resource_count(3) }
+    it { should contain_exec('reload consul service')  }
+  end
+
+  context "When using sysv" do
+    let (:params) {{
+      :init_style => 'sysv'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on sysv" do
+    let (:params) {{
+      :init_style => 'sysv',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
+  context "When rpc_addr defaults to client_addr on sysv" do
+    let (:params) {{
+      :init_style => 'sysv',
+      :config_hash => {
+        'client_addr' => '192.168.34.56',
+      }
+    }}
+    it { should contain_class('consul').with_init_style('sysv') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=192.168.34.56:8400/)
+    }
+  end
+
+  context "When using debian" do
+    let (:params) {{
+      :init_style => 'debian'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('debian') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on debian" do
+    let (:params) {{
+      :init_style => 'debian',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('debian') }
+    it {
+      should contain_file('/etc/init.d/consul').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
+  end
+
+  context "When using upstart" do
+    let (:params) {{
+      :init_style => 'upstart'
+    }}
+    let (:facts) {{
+      :ipaddress_lo => '127.0.0.1'
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=127.0.0.1:8400/)
+    }
+  end
+
+  context "When overriding default rpc port on upstart" do
+    let (:params) {{
+      :init_style => 'upstart',
+      :config_hash => {
+        'ports' => {
+          'rpc' => '9999'
+        },
+        'addresses' => {
+          'rpc' => 'consul.example.com'
+        }
+      }
+    }}
+    it { should contain_class('consul').with_init_style('upstart') }
+    it {
+      should contain_file('/etc/init/consul.conf').
+        with_content(/-rpc-addr=consul.example.com:9999/)
+    }
   end
 
   context "On a redhat 6 based OS" do
@@ -333,6 +567,15 @@ describe 'consul' do
 
     it { should contain_class('consul').with_init_style('sysv') }
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
+  end
+
+  context "On an Archlinux based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Archlinux',
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On an Amazon based OS" do
@@ -368,16 +611,26 @@ describe 'consul' do
   context "On hardy" do
     let(:facts) {{
       :operatingsystem => 'Ubuntu',
-      :lsbdistrelease  => '8.04',
+      :operatingsystemrelease  => '8.04',
     }}
 
     it { should contain_class('consul').with_init_style('debian') }
     it {
-      should contain_file('/etc/init.d/consul')
-        .with_content(/start-stop-daemon .* \$DAEMON/)
-        .with_content(/DAEMON_ARGS="agent/)
+      should contain_file('/etc/init.d/consul') \
+        .with_content(/start-stop-daemon .* \$DAEMON/) \
+        .with_content(/DAEMON_ARGS="agent/) \
         .with_content(/--user \$USER/)
     }
+  end
+
+  context "On a Ubuntu Vivid 15.04 based OS" do
+    let(:facts) {{
+      :operatingsystem => 'Ubuntu',
+      :operatingsystemrelease => '15.04'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "When asked not to manage the init_style" do

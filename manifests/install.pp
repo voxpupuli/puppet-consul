@@ -15,9 +15,6 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
-      if $::operatingsystem != 'darwin' {
-        ensure_packages(['unzip'])
-      }
       staging::file { 'consul.zip':
         source => $consul::real_download_url
       } ->
@@ -42,7 +39,7 @@ class consul::install {
           source  => $consul::real_ui_download_url,
           target  => "${consul::data_dir}/${consul::version}_web_ui",
           creates => "${consul::data_dir}/${consul::version}_web_ui/dist",
-        }
+        } ->
         file { $consul::ui_dir:
           ensure => 'symlink',
           target => "${consul::data_dir}/${consul::version}_web_ui/dist",

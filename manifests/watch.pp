@@ -5,6 +5,10 @@
 #
 # == Parameters
 #
+# [*ensure*]
+#   Define availability of watch. Use 'absent' to remove existing watches.
+#   Defaults to 'present'
+#
 # [*handler*]
 #   Full path to the script that will be excuted.
 #
@@ -40,6 +44,7 @@
 #   Name of an event to watch for.
 #
 define consul::watch(
+  $ensure       = present,
   $handler      = undef,
   $datacenter   = undef,
   $token        = undef,
@@ -130,6 +135,7 @@ define consul::watch(
 
   File[$consul::config_dir] ->
   file { "${consul::config_dir}/watch_${id}.json":
-    content => template('consul/watch.json.erb'),
-  } ~> Class['consul::run_service']
+    ensure  => $ensure,
+    content => consul_sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
+  } ~> Class['consul::reload_service']
 }

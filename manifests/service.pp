@@ -27,14 +27,18 @@
 # [*checks*]
 #   If provided an array of checks that will be added to this service
 #
+# [*token*]
+#   ACL token for interacting with the catalog (must be 'management' type)
+#
 define consul::service(
-  $ensure         = 'present',
+  $ensure         = present,
   $service_name   = $title,
   $id             = $title,
   $tags           = [],
   $address        = undef,
   $port           = undef,
   $checks         = [],
+  $token          = undef,
 ) {
   include consul
 
@@ -44,26 +48,20 @@ define consul::service(
     'id'      => $id,
     'name'    => $service_name,
     'address' => $address,
+    'port'    => $port,
     'tags'    => $tags,
-    'checks'  => $checks
-  }
-
-  if $port {
-    # implicit conversion from string to int so it won't be quoted in JSON
-    $port_hash = {
-      port => $port * 1
-    }
-  } else {
-    $port_hash = {}
+    'checks'  => $checks,
+    'token'   => $token,
   }
 
   $service_hash = {
-    service => delete_undef_values(merge($basic_hash, $port_hash))
+    service => delete_undef_values($basic_hash)
   }
 
-  file { "${consul::config_dir}/service_${id}.json":
+  $escaped_id = regsubst($id,'\/','_','G')
+  file { "${consul::config_dir}/service_${escaped_id}.json":
     ensure  => $ensure,
-    content => consul_sorted_json($service_hash),
+    content => consul_sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
     require => File[$consul::config_dir],
-  } ~> Class['consul::run_service']
+  } ~> Class['consul::reload_service']
 }

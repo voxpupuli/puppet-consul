@@ -77,7 +77,7 @@ describe 'consul::watch' do
     }}
     it {
       should contain_file('/etc/consul/watch_my_watch.json') \
-          .with_content(/"handler" *: *"handler_path"/)
+          .with_content(/"handler" *: *"handler_path"/) \
           .with_content(/"type" *: *"nodes"/)
     }
   end
@@ -92,7 +92,7 @@ describe 'consul::watch' do
     }}
     it {
       should contain_file('/etc/consul/watch_my_watch.json') \
-          .with_content(/"datacenter" *: *"dcName"/)
+          .with_content(/"datacenter" *: *"dcName"/) \
           .with_content(/"token" *: *"tokenValue"/)
     }
   end
@@ -117,7 +117,7 @@ describe 'consul::watch' do
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(/"type" *: *"key"/)
+            .with_content(/"type" *: *"key"/) \
             .with_content(/"key" *: *"KeyName"/)
         }
       end
@@ -143,7 +143,7 @@ describe 'consul::watch' do
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(/"type" *: *"keyprefix"/)
+            .with_content(/"type" *: *"keyprefix"/) \
             .with_content(/"prefix" *: *"keyPref"/)
         }
       end
@@ -169,7 +169,7 @@ describe 'consul::watch' do
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(/"type" *: *"service"/)
+            .with_content(/"type" *: *"service"/) \
             .with_content(/"service" *: *"serviceName"/)
         }
       end
@@ -185,7 +185,7 @@ describe 'consul::watch' do
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(/"tag" *: *"serviceTagName"/)
+            .with_content(/"tag" *: *"serviceTagName"/) \
             .with_content(/"passingonly" *: *true/)
         }
       end
@@ -213,7 +213,7 @@ describe 'consul::watch' do
         }}
         it {
           should contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(/"service" *: *"serviceName"/)
+            .with_content(/"service" *: *"serviceName"/) \
             .with_content(/"state" *: *"serviceState"/)
         }
       end
@@ -279,4 +279,14 @@ describe 'consul::watch' do
 
   end
 
+  describe 'notify reload service' do
+    let (:params) {{
+      'type' => 'nodes',
+      'handler' => 'handler_path',
+    }}
+    it {
+      should contain_file('/etc/consul/watch_my_watch.json') \
+          .that_notifies("Class[consul::reload_service]") \
+    }
+  end
 end

@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -11,7 +11,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.2.0 <5.0.0"
+      "version_requirement": ">= 4.6.0 <5.0.0"
     },
     {
       "name": "nanliu/staging",
@@ -56,8 +56,12 @@
       "operatingsystemrelease": [
         "12.04",
         "10.04",
-        "14.04"
+        "14.04",
+        "15.04"
       ]
+    },
+    {
+      "operatingsystem": "Archlinux"
     },
     {
       "operatingsystem": "Fedora",
