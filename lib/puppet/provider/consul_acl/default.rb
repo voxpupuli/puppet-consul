@@ -99,7 +99,7 @@ Puppet::Type.type(:consul_acl).provide(
       rules = ""
     end
     type = @resource[:type]
-    id = self.get_resource_id(name)
+    id = @resource[:id]
     if id
       if @property_flush[:ensure] == :absent
         put_acl("destroy/#{id}", nil)
@@ -111,7 +111,8 @@ Puppet::Type.type(:consul_acl).provide(
                           "rules" => "#{rules}" })
 
     else
-      put_acl('create', { "name"  => "#{name}",
+      put_acl('create', { "id"    => "#{id}",
+                          "name"  => "#{name}",
                           "type"  => "#{type}",
                           "rules" => "#{rules}" })
     end
