@@ -1,0 +1,31 @@
+
+
+## vars:
+$consulTargetDir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
+$consulExe = "`"" + $consulTargetDir + "\consul.exe`""
+$consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::params::package_target'] %>" + "\config\`"`"`"" -replace "/", "\"
+$consulInstString = $consulExe + " " + $consulConfig + " " + "`"`"-bind=<%= scope['consul::params::bind_addr'] %>`"`""
+$consulErrLog = $consulTargetDir + "\logs\consul-err.log"
+$consulStdLog = $consulTargetDir + "\logs\consul.log"
+
+##env:
+Set-Location $consulTargetDir
+
+## build service:
+.\helper\nssm.exe install Consul $consulInstString 
+.\helper\nssm.exe set Consul AppDirectory $consulTargetDir
+.\helper\nssm.exe set Consul DisplayName Consul
+.\helper\nssm.exe set Consul AppStopMethodConsole 15000
+.\helper\nssm.exe set Consul AppStopMethodSkip 2
+.\helper\nssm.exe set Consul AppStopMethodSkip 4
+.\helper\nssm.exe set Consul AppStderr $consulErrLog
+.\helper\nssm.exe set Consul AppStdout $consulStdLog
+.\helper\nssm.exe set Consul AppRotateFiles 1
+.\helper\nssm.exe set Consul AppRotateOnline 0
+.\helper\nssm.exe set Consul AppRotateBytes 1024000
+.\helper\nssm.exe set Consul AppRestartDelay 0
+.\helper\nssm.exe set Consul AppExit Default Restart
+.\helper\nssm.exe set Consul Start SERVICE_AUTO_START
+
+## all done:
+exit 0
