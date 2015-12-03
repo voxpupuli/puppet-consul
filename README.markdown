@@ -2,21 +2,19 @@
 ( Forked from solarkennedy/puppet-consul - https://github.com/solarkennedy/puppet-consul/ This file is also adapted from it.)
 
 Original Doc and module by [Kyle Anderson](https://github.com/solarkennedy)
+
 Modified far too extensively by [TJ Miller jr](https://github.com/MrDuctTape) to add Windows agent-side functionality.
 
 Initial load date: 12/3/2015
 
 ##Installation
 * Download the module and park it in your tenant/repository
-* 
 * If you have Linux hosts, insure that [nanliu/staging](https://forge.puppetlabs.com/nanliu/staging) is included on your puppet master (See Dependencies, below)
 * If you have Windows hosts and are using hiera, insure that you use Puppet filepath standards when building the .yaml files (examples below)
 * For Windows use, you will need [NSSM](https://nssm.cc/) (Dependencies, below), and you will want to put the executable (nssm.exe) in *./files/nssm64
 * Refer to Consul [Documentation](https://www.consul.io/docs/index.html) for configuration and parameters.
 * If you use SSL keys (and you should), go get your own and them install them in *./files/agent_ssl/
 
-
-.
 
 ##Compatibility
 Any module release that is tagged with 0.4.* is compatible with the 0.4.x
