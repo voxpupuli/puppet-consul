@@ -1,0 +1,27 @@
+$pathDir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
+$oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path
+$newPath = $oldPath + ";" + $pathDir
+
+# set/modify the path for Consul (with safety tests!) to avoid hassles:
+Function AddTo-SystemPath {
+
+ Param(
+  [array]$targetDir
+  )
+ $VerifiedPathsToAdd = $Null
+ Foreach($Path in $targetDir) {
+
+  if($env:Path -like "*$Path*") {
+   Write-Host "Current item in path is: $Path"
+   Write-Host "$Path already exists in Path statement" }
+   else { $VerifiedPathsToAdd += ";$Path"
+    Write-Host "`$VerifiedPathsToAdd updated to contain: $Path"}
+
+  if($VerifiedPathsToAdd -ne $null) {
+   Write-Host "`$VerifiedPathsToAdd contains: $verifiedPathsToAdd"
+   Write-Host "Adding $Path to Path statement now..."
+   Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
+
+   }
+  }
+ }
