@@ -1,10 +1,5 @@
 class consul::windows_agent(
   $package_target = $consul::params::package_target,
-  $executable     = $consul::params::executable,
-  $package_name   = $consul::params::package_name,
-  $version        = $consul::params::version,
-# interpolated and assumed:
-  $service_config = "${executable} agent -config-dir ${package_target}/config/' ",
 
 ) {
 

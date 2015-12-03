@@ -89,13 +89,6 @@ class consul (
   $watches               = {},
   $checks                = {},
   $acls                  = {},
-# Windows-specific:
-#  $executable            = $consul::params::executable,
-#  $package_name          = $consul::params::package_name,
-#  $package_target        = $consul::params::package_target,
-#  $version               = $consul::params::version,
-#  $agent_src_url         = $consul::params::download_url_base,
-#  $service_name          = $consul::params::service_name,
 
 ) inherits consul::params {
 
@@ -165,7 +158,7 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
-# Windows handles services differently, so...
+# Windows handles services differently, so servies will be too...
   if $::operatingsystem != 'windows' {
     $notify_service = $restart_on_change ? {
       true    => Class['consul::run_service'],
@@ -173,6 +166,7 @@ class consul (
     }
   }
 
+# And we'll have to modify a few things here as well:
   if $::operatingsystem == 'windows' {
     anchor {'consul_first': } ->
     class { 'consul::windows_agent':

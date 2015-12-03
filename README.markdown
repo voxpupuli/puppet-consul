@@ -39,12 +39,12 @@ versions of consul. Anything tagged with 0.5.* is compatible with consul
 ## Notes:
 You will notice two distinct styles in here. That's because I didn't touch the original consul module I forked off of any more than necessary.
 
-The certificates and keys that you find in here are 100% fake. they're only included as examples, so go use your own.
+The certificates and keys that you find in here are 100% fake. They're only included as examples, so go use your own.
 
 Certificates will be automatically selected and installed if you switch consul::do_ssl: on, but you will have to do one of two things to the module to make it work:
 * use a file/dir structure similar to what you see in place now (in '*./files/agent_ssl'), and modify '*./manifests/keys_ssl.pp' to taste. It will work once you customize the names and add valid keys.
 * modify 'manifests/keys_ssl.pp' to use [Vault](https://www.vaultproject.io/), [SecretServer](https://forge.puppetlabs.com/sshipway/ss), or whatever abstraction mechanism you prefer.
-(Recommendation? Do the latter; leaving private certs loafing around will make your security guys very nervous.
+(Recommendation? Do the latter; leaving private certs loafing around will make your security guys very nervous.)
 
 In our company, we use custom facts to make automation easier. And really - you should too! If you don't, well, you will need to update the params in keys_ssl.pp a bit to pull the right facts for your environment, and/or just correct the paths for your needs.
 
