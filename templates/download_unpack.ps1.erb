@@ -1,0 +1,24 @@
+Set-Location "<%= scope['consul::params::package_target'] %>"
+
+## download the agent:
+(New-Object Net.WebClient).DownloadFile('<%= scope['consul::params::download_url_base'] %>/<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>',"<%= scope['consul::params::package_target'] %>/<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>")
+
+# do a small safety to insure the directory is there:
+if (!(Test-Path "<%= scope['consul::params::package_target'] %>")) { 
+    mkdir <%= scope['consul::params::package_target'] %>
+}
+$this_dir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
+$this_file = $this_dir + "\<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>"
+
+# unpack the critter:
+function Expand-me($file, $destination) {
+  $shell = new-object -com shell.application
+  $zip = $shell.NameSpace($file)
+  foreach($item in $zip.items()) {
+      $shell.Namespace($destination).copyhere($item)
+  }
+}
+
+Expand-me -File $this_file -Destination $this_dir
+
+

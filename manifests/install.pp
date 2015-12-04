@@ -66,6 +66,9 @@ class consul::install {
         Package[$consul::package_name] -> File[$consul::data_dir]
       }
     }
+    'windows': {
+      notify { 'This is a Windows computer, so installation will be handled differently...':}
+    }
     'none': {}
     default: {
       fail("The provided install method ${consul::install_method} is invalid")
