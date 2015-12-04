@@ -4,7 +4,7 @@
 $consulTargetDir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
 $consulExe = "`"" + $consulTargetDir + "\consul.exe`""
 $consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::params::package_target'] %>" + "\config\`"`"`"" -replace "/", "\"
-$consulInstString = $consulExe + " " + $consulConfig + " " + "`"`"-bind=<%= scope['consul::params::bind_addr'] %>`"`""
+$consulInstString = $consulExe + " " + $consulConfig
 $consulErrLog = $consulTargetDir + "\logs\consul-err.log"
 $consulStdLog = $consulTargetDir + "\logs\consul.log"
 
@@ -12,7 +12,7 @@ $consulStdLog = $consulTargetDir + "\logs\consul.log"
 Set-Location $consulTargetDir
 
 ## build service:
-.\helper\nssm.exe install Consul $consulInstString 
+.\helper\nssm.exe install Consul $consulInstString
 .\helper\nssm.exe set Consul AppDirectory $consulTargetDir
 .\helper\nssm.exe set Consul DisplayName Consul
 .\helper\nssm.exe set Consul AppStopMethodConsole 15000
