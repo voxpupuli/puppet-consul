@@ -14,7 +14,6 @@ class consul::params {
   $ui_download_url_base  = 'https://dl.bintray.com/mitchellh/consul/'
   $ui_download_extension = 'zip'
   $version               = '0.5.2'
-  $bind_addr             = $::ipaddress
 
   if $::operatingsystem != 'windows' {
     case $::architecture {
