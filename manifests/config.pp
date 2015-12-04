@@ -87,25 +87,17 @@ class consul::config(
     }
   }
 
-  if $::operatingsystem != 'windows' {
-    file { $consul::config_dir:
-      ensure  => 'directory',
-      owner   => $consul::user,
-      group   => $consul::group,
-      purge   => $purge,
-      recurse => $purge,
-    }
-    file { 'consul config.json':
-      ensure  => present,
-      path    => "${consul::config_dir}/config.json",
-      content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
-    }
-  } else {
-    file { "${consul::params::package_target}/config/consul-agent.json":
-      ensure  => 'present',
-#      content => template('consul/consul.conf-json.erb'),
-      content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
-    }
+  file { $consul::config_dir:
+    ensure  => 'directory',
+    owner   => $consul::user,
+    group   => $consul::group,
+    purge   => $purge,
+    recurse => $purge,
+  }
+  file { 'consul config.json':
+    ensure  => present,
+    path    => "${consul::config_dir}/config.json",
+    content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
 
 }
