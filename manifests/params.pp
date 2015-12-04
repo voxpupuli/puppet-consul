@@ -28,7 +28,6 @@ class consul::params {
 
   if $::operatingsystem == 'windows' {
     $package_target = "C:/Consul"
-    $package_name   = '_windows_386.zip'
     $service_name   = 'Consul'
     $executable     = "C:/Consul"
     $init_style = 'windows'
