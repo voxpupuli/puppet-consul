@@ -54,7 +54,6 @@ class consul (
   $purge_config_dir      = true,
   $group                 = 'consul',
   $join_wan              = false,
-  $do_ssl                = true,
   $bin_dir               = '/usr/local/bin',
   $arch                  = $consul::params::arch,
   $version               = $consul::params::version,
@@ -172,9 +171,6 @@ class consul (
       purge       => $purge_config_dir,
       notify      => $notify_service,
     } ->
-    class { 'consul::keys_ssl':
-      package_target => $consul::params::package_target,
-    } ->
     class { 'consul::windows_service':
       package_target => $consul::params::package_target,
       service_name   => $consul::params::service_name,
@@ -187,10 +183,6 @@ class consul (
       config_hash => $config_hash_real,
       purge       => $purge_config_dir,
       notify      => $notify_service,
-    } ->
-    class { 'consul::keys_ssl':
-      package_target => $consul::params::package_target,
-      config_dir     => $consul::config_dir,
     } ->
     class { 'consul::run_service': } ->
     class { 'consul::reload_service': } ->
