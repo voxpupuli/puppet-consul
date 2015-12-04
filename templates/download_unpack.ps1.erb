@@ -1,14 +1,21 @@
-Set-Location "<%= scope['consul::params::package_target'] %>"
+# do a small safety to insure the directory is there:
+$temp_folder = "C:\Temp\consul-temp"
+if (!(Test-Path "$temp_folder")) {
+    mkdir $temp_folder
+}
 
 ## download the agent:
-(New-Object Net.WebClient).DownloadFile('<%= scope['consul::params::download_url_base'] %>/<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>',"<%= scope['consul::params::package_target'] %>/<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>")
+$download_url = "<%= scope['$consul::real_download_url'] %>"
+$download_filename = $download_url.Substring($download_url.LastIndexOf("/") + 1)
+(New-Object Net.WebClient).DownloadFile("$download_url","$temp_folder/$download_filename")
 
 # do a small safety to insure the directory is there:
-if (!(Test-Path "<%= scope['consul::params::package_target'] %>")) { 
-    mkdir <%= scope['consul::params::package_target'] %>
+$bin_folder = "<%= scope['$consul::bin_dir'] %>"  -replace "/", "\"
+if (!(Test-Path "$bin_folder")) {
+    mkdir $bin_folder
 }
-$this_dir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
-$this_file = $this_dir + "\<%= scope['consul::params::version'] %><%= scope['consul::params::package_name'] %>"
+
+$download_file = $temp_folder + "\" + $download_filename
 
 # unpack the critter:
 function Expand-me($file, $destination) {
@@ -19,6 +26,4 @@ function Expand-me($file, $destination) {
   }
 }
 
-Expand-me -File $this_file -Destination $this_dir
-
-
+Expand-me -File $download_file -Destination $bin_folder
