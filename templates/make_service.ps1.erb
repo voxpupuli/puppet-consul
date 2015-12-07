@@ -1,10 +1,10 @@
 
 
 ## vars:
-$consulTargetDir = "<%= scope['consul::params::package_target'] %>" -replace "/", "\"
+$consulTargetDir = "<%= scope['consul::bin_dir'] %>" -replace "/", "\"
 $consulExe = "`"" + $consulTargetDir + "\consul.exe`""
-$consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::params::package_target'] %>" + "\config\`"`"`"" -replace "/", "\"
-$consulInstString = $consulExe + " " + $consulConfig
+$consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::config_dir'] %>" + "`"`"`"" -replace "/", "\"
+$consulInstString = $consulExe + " " + $consulConfig + " " + "`"`"-bind=<%= scope['consul::params::bind_addr'] %>`"`""
 $consulErrLog = $consulTargetDir + "\logs\consul-err.log"
 $consulStdLog = $consulTargetDir + "\logs\consul.log"
 
