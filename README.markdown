@@ -137,7 +137,6 @@ consul::config_hash:
 
 To set up a single consul server, with several agents attached:
 On the server:
-
 ```puppet
 class { '::consul':
   config_hash => {
@@ -151,7 +150,6 @@ class { '::consul':
 }
 ```
 On the agent(s):
-
 ```puppet
 class { '::consul':
   config_hash => {
@@ -164,7 +162,6 @@ class { '::consul':
 }
 ```
 Disable install and service components:
-
 ```puppet
 class { '::consul':
   install_method => 'none',
@@ -185,7 +182,6 @@ class { '::consul':
 To install and run the Web UI on the server, include `ui_dir` in the
 `config_hash`. You may also want to change the `client_addr` to `0.0.0.0` from
 the default `127.0.0.1`, for example:
-
 ```puppet
 class { '::consul':
   config_hash => {
@@ -202,7 +198,6 @@ class { '::consul':
 ```
 For more security options, consider leaving the `client_addr` set to `127.0.0.1`
 and use with a reverse proxy:
-
 ```puppet
 $aliases = ['consul', 'consul.example.com']
 
