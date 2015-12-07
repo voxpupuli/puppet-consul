@@ -3,7 +3,7 @@
 ## vars:
 $consulTargetDir = "<%= scope['consul::bin_dir'] %>" -replace "/", "\"
 $consulExe = "`"" + $consulTargetDir + "\consul.exe`""
-$consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::config_dir'] %>" + "`"`"`"" -replace "/", "\"
+$consulConfig = "`"`"agent -config-dir=`"<%= scope['consul::config_dir'] %>`"`"" -replace "/", "\"
 $consulInstString = $consulExe + " " + $consulConfig + " " + "`"`"-bind=<%= scope['consul::params::bind_addr'] %>`"`""
 $consulErrLog = $consulTargetDir + "\logs\consul-err.log"
 $consulStdLog = $consulTargetDir + "\logs\consul.log"
