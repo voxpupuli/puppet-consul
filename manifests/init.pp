@@ -10,6 +10,9 @@
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
+# [*config_mode*]
+#   Use this to set the JSON config file mode for consul.
+#
 # [*pretty_config*]
 #   Generates a human readable JSON config file. Defaults to `false`.
 #
@@ -73,6 +76,7 @@ class consul (
   $extra_options         = '',
   $config_hash           = {},
   $config_defaults       = {},
+  $config_mode           = $consul::params::config_mode,
   $pretty_config         = false,
   $pretty_config_indent  = 4,
   $service_enable        = true,

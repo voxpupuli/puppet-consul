@@ -323,6 +323,19 @@ describe 'consul' do
     it { should contain_file('/etc/init/consul.conf').with_content(/env GROUP=custom_consul_group/) }
   end
 
+  context "Config with custom file mode" do
+    let(:params) {{
+      :user  => 'custom_consul_user',
+      :group => 'custom_consul_group',
+      :config_mode  => '0600',
+    }}
+    it { should contain_file('consul config.json').with(
+      :owner => 'custom_consul_user',
+      :group => 'custom_consul_group',
+      :mode  => '0600',
+    )}
+  end
+
   context "When consul is reloaded" do
     let (:params) {{
       :services => {
