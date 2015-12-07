@@ -93,7 +93,7 @@ class consul::config(
     group   => $consul::group,
     purge   => $purge,
     recurse => $purge,
-  }
+  }->
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
