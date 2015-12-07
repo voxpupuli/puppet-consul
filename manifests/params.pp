@@ -23,6 +23,7 @@ class consul::params {
       fail("Unsupported kernel architecture: ${::architecture}")
     }
   }
+
   $os = downcase($::kernel)
 
   if $::operatingsystem == 'Ubuntu' {
