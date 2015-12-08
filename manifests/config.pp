@@ -94,6 +94,9 @@ class consul::config(
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
+    owner   => $consul::user,
+    group   => $consul::group,
+    mode    => $consul::config_mode,
     content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
 
