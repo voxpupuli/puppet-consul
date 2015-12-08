@@ -2,10 +2,12 @@
 #
 # Installs consule based in the parameters from init
 #
-class consul::install {
+class consul::install (
+  $data_dir = undef,
+  ){
 
-  if $consul::data_dir {
-    file { $consul::data_dir:
+  if $data_dir {
+    file { $data_dir:
       ensure => 'directory',
       owner  => $consul::user,
       group  => $consul::group,

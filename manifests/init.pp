@@ -163,7 +163,10 @@ class consul (
 
   anchor {'consul_first': }
   ->
-  class { 'consul::install': } ->
+  class { 'consul::install':
+    data_dir => $config_hash_real['data_dir'],
+  }
+  ->
   class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
