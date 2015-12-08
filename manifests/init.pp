@@ -90,8 +90,8 @@ class consul (
   $acls                  = {},
 ) inherits consul::params {
 
-  $real_download_url    = pick($download_url, "${download_url_base}${version}_${os}_${arch}.${download_extension}")
-  $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${version}_web_ui.${ui_download_extension}")
+  $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
+  $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${version}/${package_name}_${version}_web_ui.${ui_download_extension}")
 
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
