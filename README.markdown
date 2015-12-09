@@ -1,27 +1,140 @@
-#puppet-consul
-[![Build Status](https://travis-ci.org/solarkennedy/puppet-consul.png)](https://travis-ci.org/solarkennedy/puppet-consul)
+#puppet-consul-fork
+( Forked from solarkennedy/puppet-consul - https://github.com/solarkennedy/puppet-consul/ This file is also adapted from it.)
+
+Original Doc and module by [Kyle Anderson](https://github.com/solarkennedy)
+
+Modified far too extensively by [TJ Miller jr](https://github.com/MrDuctTape) to add Windows agent-side functionality.
+
+Initial load date: 12/3/2015
 
 ##Installation
+* Download the module and park it in your tenant/repository
+* If you have Linux hosts, insure that [nanliu/staging](https://forge.puppetlabs.com/nanliu/staging) is included on your puppet master (See Dependencies, below)
+* If you have Windows hosts and are using hiera, insure that you use Puppet filepath standards when building the .yaml files (examples below)
+* For Windows use, you will need [NSSM](https://nssm.cc/) (Dependencies, below), and you will want to put the executable (nssm.exe) in *./files/nssm64
+* Refer to Consul [Documentation](https://www.consul.io/docs/index.html) for configuration and parameters.
+* If you use SSL keys (and you should), go get your own and them install them in *./files/agent_ssl/
+
 
 ##Compatibility
-
 Any module release that is tagged with 0.4.* is compatible with the 0.4.x
 versions of consul. Anything tagged with 0.5.* is compatible with consul
 0.5.x, etc.
 
-So, if you are using consul 0.4.1, try to use the lastes tagged release
-on the 4 series. Do *not* pull from master.
 
-###What This Module Affects
-
-* Installs the consul daemon (via url or package)
-  * If installing from zip, you *must* ensure the unzip utility is available.
+###What This Module Does
+* Installs the consul (Server or agent) on Linux, and the agent on Windows (via url or package)
+  * If installing from zip, you *must* ensure the unzip utility is available on the server (unzip, usually).
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
-* Manages the consul service via upstart, sysv, or systemd
-* Optionally installs the Web UI
+* Manages the consul service via upstart, sysv, systemd, or nssm.exe
+* Optionally installs the Web UI (Linux only)
+* Automatically updates/maintains $PATH in Windows (as Windows is picky about how that happens).
+
+##Dependencies
+* (Linux Only): Requires [nanliu/staging](https://forge.puppetlabs.com/nanliu/staging) to perform an installation on a Linux host.
+* (Windows Only): Requires [NSSM](https://nssm.cc/ ) (specifically nssm.exe) to perform an installation on a Windows host.
+* A working JSON gem on the puppet master server, or a modern/recent version of Ruby.
+* If you use the below hiera examples, you will need to construct a means to manage/insert/modify SSL keys in the same directories.
 
 ##Usage
+
+###With Hiera:
+
+####Linux (agent install):
+```
+classes:
+ - consul
+ - staging
+
+# Generic and config entries:
+consul::version: '0.5.2'
+consul::config_dir: "/etc/consul"
+consul::download_url_base: 'https://dl.bintray.com/mitchellh/consul/'
+consul::config_defaults:
+  bind_addr : "%{::ipaddress}"
+  datacenter: "%{::location}"
+  data_dir: '/opt/consul'
+  client_addr: "%{::ipaddress}"
+  node_name: "%{::fqdn}"
+consul::config_hash:
+  retry_join:
+    - '101.102.103.104'
+    - 'some-peer.somedomain.com'
+    - 'another-peer.somedomain.com'
+  encrypt: 'YRblablablablahblahfake0=='
+  ca_file: "/etc/consul/ssl/ca.cert"
+  cert_file: "/etc/consul/ssl/consul.cert"
+  key_file: "/etc/consul/ssl/consul.key"
+  verify_server_hostname: true
+  verify_outgoing: true
+  verify_incoming: true
+  domain: 'dev.consul.somedomain.com'
+  rejoin_after_leave: true
+  log_level: 'INFO'
+  server: false
+  advertise_addr: "%{::ipaddress}"
+
+#consul::services:
+#  "json-formatted config bits"
+#consul::watches:
+#  "json-formatted config bits"
+#consul::checks:
+#  "json-formatted config bits"
+
+```
+
+####Windows:
+
+```
+
+---
+classes:
+ - consul
+#(nanliu/staging not needed here)
+
+# Windows-specific...
+consul::manage_user: false
+consul::manage_group: false
+consul::install_method: 'windows'
+consul::params::package_target: 'C:/Consul'
+
+# Generic and config entries:
+consul::version: '0.5.2'
+consul::config_dir: "C:/Consul/config"
+consul::download_url_base: 'http://dl.bintray.com/mitchellh/consul'
+consul::config_defaults:
+  bind_addr : "%{::ipaddress}"
+  datacenter: "%{::location}"
+  data_dir: 'C:/consul/data'
+  client_addr: "%{::ipaddress}"
+  node_name: "%{::fqdn}"
+consul::config_hash:
+  retry_join:
+    - '101.102.103.104'
+    - 'some-peer.somedomain.com'
+    - 'another-peer.somedomain.com'
+  encrypt: 'ZRblablablablahblahfake0=='
+  ca_file: "C:\keys\ca.cert"
+  cert_file: "C:\keys\consul.cert"
+  key_file: "C:\keys\consul.key"
+  verify_server_hostname: true
+  verify_outgoing: true
+  verify_incoming: true
+  domain: 'dev.consul.somedomain.com'
+  rejoin_after_leave: true
+  log_level: 'INFO'
+  server: false
+  advertise_addr: "%{::ipaddress}"
+
+#consul::services:
+#  "json-formatted config bits"
+#consul::watches:
+#  "json-formatted config bits"
+#consul::checks:
+#  "json-formatted config bits"
+```
+###Without Hiera:
 
 To set up a single consul server, with several agents attached:
 On the server:
@@ -182,7 +295,7 @@ client token with sufficient privileges.
 
 ##Limitations
 
-Depends on the JSON gem, or a modern ruby.
+See Dependencies, above.
 
 ## Consul Template
 
@@ -193,6 +306,6 @@ with values from Consul. This module does not configure consul template. See
 a module that can do that.
 
 ##Development
-Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
-[fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
-[Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
+Open an [issue](https://github.com/MrDuctTape/consul-fork/issues) or
+[fork](https://github.com/MrDuctTape/consul-fork/fork) and open a
+[Pull Request](https://github.com/MrDuctTape/consul-fork/pulls)

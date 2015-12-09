@@ -90,8 +90,8 @@ class consul (
   $acls                  = {},
 ) inherits consul::params {
 
-  $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
-  $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${version}/${package_name}_${version}_web_ui.${ui_download_extension}")
+  $real_download_url    = pick($download_url, "${download_url_base}${package_name}_${version}_${os}_${arch}.${download_extension}")
+  $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${package_name}_${version}_web_ui.${ui_download_extension}")
 
   validate_bool($purge_config_dir)
   validate_bool($manage_user)
@@ -156,20 +156,39 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
-  $notify_service = $restart_on_change ? {
-    true    => Class['consul::run_service'],
-    default => undef,
+# Windows handles services differently, so servies will be too...
+  if $::operatingsystem != 'windows' {
+    $notify_service = $restart_on_change ? {
+      true    => Class['consul::run_service'],
+      default => undef,
+    }
   }
 
-  anchor {'consul_first': }
-  ->
-  class { 'consul::install': } ->
-  class { 'consul::config':
-    config_hash => $config_hash_real,
-    purge       => $purge_config_dir,
-    notify      => $notify_service,
-  } ->
-  class { 'consul::run_service': } ->
-  class { 'consul::reload_service': } ->
-  anchor {'consul_last': }
+# And we'll have to modify a few things here as well:
+  if $::operatingsystem == 'windows' {
+    anchor {'consul_first': } ->
+    class { 'consul::windows_agent':
+    } ->
+    class { 'consul::config':
+      config_hash => $config_hash_real,
+      purge       => $purge_config_dir,
+      notify      => $notify_service,
+    } ->
+    class { 'consul::windows_service':
+      package_target => $consul::params::package_target,
+      service_name   => $consul::params::service_name,
+    } ->
+    anchor {'consul_last': }
+  } else {
+    anchor {'consul_first': } ->
+    class { 'consul::install': } ->
+    class { 'consul::config':
+      config_hash => $config_hash_real,
+      purge       => $purge_config_dir,
+      notify      => $notify_service,
+    } ->
+    class { 'consul::run_service': } ->
+    class { 'consul::reload_service': } ->
+    anchor {'consul_last': }
+  }
 }

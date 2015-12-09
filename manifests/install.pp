@@ -15,17 +15,25 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
-      staging::file { 'consul.zip':
-        source => $consul::real_download_url
+      staging::file { "consul-${consul::version}.${consul::download_extension}":
+        source => $consul::real_download_url,
       } ->
-      staging::extract { 'consul.zip':
-        target  => $consul::bin_dir,
-        creates => "${consul::bin_dir}/consul",
+      file { "${::staging::path}/consul-${consul::version}":
+        ensure => directory,
       } ->
-      file { "${consul::bin_dir}/consul":
-        owner => 'root',
-        group => 0, # 0 instead of root because OS X uses "wheel".
-        mode  => '0555',
+      staging::extract { "consul-${consul::version}.${consul::download_extension}":
+        target  => "${::staging::path}/consul-${consul::version}",
+        creates => "${::staging::path}/consul-${consul::version}/consul",
+      } ->
+      file {
+        "${::staging::path}/consul-${consul::version}/consul":
+          owner => 'root',
+          group => 0, # 0 instead of root because OS X uses "wheel".
+          mode  => '0555';
+        "${consul::bin_dir}/consul":
+          ensure => link,
+          notify => $consul::notify_service,
+          target => "${::staging::path}/consul-${consul::version}/consul";
       }
 
       if ($consul::ui_dir and $consul::data_dir) {
@@ -65,6 +73,9 @@ class consul::install {
       if $consul::data_dir {
         Package[$consul::package_name] -> File[$consul::data_dir]
       }
+    }
+    'windows': {
+      notify { 'This is a Windows computer, so installation will be handled differently...':}
     }
     'none': {}
     default: {

@@ -78,6 +78,9 @@ class consul::config(
           content => template('consul/consul.launchd.erb')
         }
       }
+      'windows' : {
+        notify { 'This is a Windows computer, so the daemon/service will be handled differently...':}
+      }
       default : {
         fail("I don't know how to create an init script for style ${consul::init_style}")
       }
@@ -94,9 +97,6 @@ class consul::config(
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    owner   => $consul::user,
-    group   => $consul::group,
-    mode    => $consul::config_mode,
     content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
 

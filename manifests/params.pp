@@ -15,7 +15,6 @@ class consul::params {
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_download_extension = 'zip'
   $version               = '0.5.2'
-  $config_mode           = '0660'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
@@ -61,6 +60,10 @@ class consul::params {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
     $init_style = 'sysv'
+  } elsif $::operatingsystem == 'windows' {
+    $package_target = "C:/Consul"
+    $service_name = 'Consul'
+    $init_style = 'windows'
   } else {
     $init_style = undef
   }
