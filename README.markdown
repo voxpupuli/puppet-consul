@@ -35,6 +35,7 @@ versions of consul. Anything tagged with 0.5.* is compatible with consul
 * (Linux Only): Requires [nanliu/staging](https://forge.puppetlabs.com/nanliu/staging) to perform an installation on a Linux host.
 * (Windows Only): Requires [NSSM](https://nssm.cc/ ) (specifically nssm.exe) to perform an installation on a Windows host.
 * A working JSON gem on the puppet master server, or a modern/recent version of Ruby.
+* If you use the below hiera examples, you will need to construct a means to manage/insert/modify SSL keys in the same directories.
 
 ##Usage
 
@@ -114,9 +115,9 @@ consul::config_hash:
     - 'some-peer.somedomain.com'
     - 'another-peer.somedomain.com'
   encrypt: 'ZRblablablablahblahfake0=='
-  ca_file: "/etc/consul/ssl/ca.cert"
-  cert_file: "/etc/consul/ssl/consul.cert"
-  key_file: "/etc/consul/ssl/consul.key"
+  ca_file: "C:\keys\ca.cert"
+  cert_file: "C:\keys\consul.cert"
+  key_file: "C:\keys\consul.key"
   verify_server_hostname: true
   verify_outgoing: true
   verify_incoming: true
