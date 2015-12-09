@@ -139,7 +139,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_web_ui.zip') }
     it { should contain_file('/dir1/dir2').that_requires('Staging::Deploy[consul_web_ui.zip]') }
     it { should contain_file('/dir1/dir2').with(:ensure => 'symlink') }
   end
@@ -152,7 +152,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://dl.bintray.com/mitchellh/consul/42_web_ui.zip') }
+    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://releases.hashicorp.com/consul/42/consul_42_web_ui.zip') }
   end
 
   context "When installing UI via URL by with a custom url" do
@@ -321,6 +321,19 @@ describe 'consul' do
     it { should contain_group('custom_consul_group').with(:ensure => :present) }
     it { should contain_file('/etc/init/consul.conf').with_content(/env USER=custom_consul_user/) }
     it { should contain_file('/etc/init/consul.conf').with_content(/env GROUP=custom_consul_group/) }
+  end
+
+  context "Config with custom file mode" do
+    let(:params) {{
+      :user  => 'custom_consul_user',
+      :group => 'custom_consul_group',
+      :config_mode  => '0600',
+    }}
+    it { should contain_file('consul config.json').with(
+      :owner => 'custom_consul_user',
+      :group => 'custom_consul_group',
+      :mode  => '0600',
+    )}
   end
 
   context "When consul is reloaded" do
