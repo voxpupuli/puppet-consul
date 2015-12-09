@@ -32,6 +32,7 @@ class consul::install {
           mode  => '0555';
         "${consul::bin_dir}/consul":
           ensure => link,
+          notify => $consul::notify_service,
           target => "${::staging::path}/consul-${consul::version}/consul";
       }
 

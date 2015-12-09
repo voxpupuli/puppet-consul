@@ -85,6 +85,8 @@ describe 'consul' do
 
   context "When installing via URL by default" do
     it { should contain_staging__file('consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }
+    it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
+    #it { should contain_notify(['Class[consul::run_service]']) }
   end
 
   context "When installing via URL by with a special version" do
@@ -92,6 +94,7 @@ describe 'consul' do
       :version   => '42',
     }}
     it { should contain_staging__file('consul-42.zip').with(:source => 'https://releases.hashicorp.com/consul/42/consul_42_linux_amd64.zip') }
+    it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
   context "When installing via URL by with a custom url" do
@@ -99,6 +102,7 @@ describe 'consul' do
       :download_url   => 'http://myurl',
     }}
     it { should contain_staging__file('consul-0.5.2.zip').with(:source => 'http://myurl') }
+    it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
 
