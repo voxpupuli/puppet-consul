@@ -15,6 +15,7 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
+      include staging
       staging::file { "consul-${consul::version}.${consul::download_extension}":
         source => $consul::real_download_url,
       } ->
