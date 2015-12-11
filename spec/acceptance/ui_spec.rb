@@ -30,7 +30,7 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul/ui') do
-      it { should be_linked_to '/opt/consul/0.5.2_web_ui' }
+      it { should be_linked_to '/opt/consul/0.5.2_web_ui/dist' }
     end
 
     describe service('consul') do

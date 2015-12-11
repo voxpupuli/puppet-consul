@@ -41,3 +41,10 @@ matrix:
     env: PUPPET_VERSION="~> 4.1.0"
   - rvm: 2.0.0
     env: PUPPET_VERSION="~> 4.1.0"
+  include:
+  - rvm: 2.0.0
+    sudo: required
+    services: docker
+    script: bundle exec rake beaker
+    bundler_args:
+    env: BEAKER_set="ubuntu-1404-x64"
