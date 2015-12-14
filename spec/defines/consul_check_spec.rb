@@ -156,6 +156,52 @@ describe 'consul::check' do
         .that_notifies("Class[consul::reload_service]") \
     }
   end
+  describe 'with tcp' do
+    let(:params) {{
+      'tcp'      => 'localhost:80',
+      'interval' => '30s',
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/)
+    }
+  end
+  describe 'with script and service_id' do
+    let(:params) {{
+      'tcp'        => 'localhost:80',
+      'interval'   => '30s',
+      'service_id' => 'my_service'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"service_id" *: *"my_service"/)
+    }
+  end
+  describe 'reload service with script and token' do
+    let(:params) {{
+      'tcp'      => 'localhost:80',
+      'interval' => '30s',
+      'token'    => 'too-cool-for-this-script'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"token" *: *"too-cool-for-this-script"/) \
+        .that_notifies("Class[consul::reload_service]") \
+    }
+  end
   describe 'with both ttl and interval' do
     let(:params) {{
       'ttl' => '30s',

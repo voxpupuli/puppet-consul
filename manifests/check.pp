@@ -23,6 +23,10 @@
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes.
 #
+# [*tcp*]
+#   The IP/hostname and port for the service healthcheck. Should be in
+#   'hostname:port' format.
+#
 # [*interval*]
 #   Value in seconds for the interval between runs of the check
 #
