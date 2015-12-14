@@ -15,14 +15,18 @@ def validate_checks(obj)
           end
         elsif obj.key?("http")
           if (! obj.key?("interval"))
-            raise Puppet::ParseError.new('http must be defined for interval checks')
+            raise Puppet::ParseError.new('interval must be defined for http checks')
+          end
+        elsif obj.key?("tcp")
+          if (! obj.key?("interval"))
+            raise Puppet::ParseError.new('interval must be defined for tcp checks')
           end
         elsif obj.key?("script")
           if (! obj.key?("interval"))
-            raise Puppet::ParseError.new('script must be defined for interval checks')
+            raise Puppet::ParseError.new('interval must be defined for script checks')
           end
         else
-          raise Puppet::ParseError.new('One of ttl, script, or http must be defined.')
+          raise Puppet::ParseError.new('One of http, script, tcp, or ttl must be defined.')
         end
     else
       raise Puppet::ParseError.new("Unable to handle object of type <%s>" % obj.class.to_s)

@@ -53,4 +53,22 @@ describe 'consul_validate_checks' do
       }
     ]).and_raise_error(Exception) }
   end
+
+  describe 'validate tcp check' do
+    it {should run.with_params([
+      {
+        'tcp'      => 'localhost:80',
+        'interval' => '30s',
+      }
+    ])}
+  end
+
+  describe 'validate tcp missing interval' do
+    it {should run.with_params([
+      {
+        'tcp' => 'localhost:80'
+      }
+    ]).and_raise_error(Exception) }
+  end
+
 end

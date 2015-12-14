@@ -23,6 +23,10 @@
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes.
 #
+# [*tcp*]
+#   The IP/hostname and port for the service healthcheck. Should be in
+#   'hostname:port' format.
+#
 # [*interval*]
 #   Value in seconds for the interval between runs of the check
 #
@@ -44,6 +48,7 @@ define consul::check(
   $ttl        = undef,
   $http       = undef,
   $script     = undef,
+  $tcp        = undef,
   $interval   = undef,
   $service_id = undef,
   $timeout    = undef,
@@ -58,6 +63,7 @@ define consul::check(
     'ttl'        => $ttl,
     'http'       => $http,
     'script'     => $script,
+    'tcp'        => $tcp,
     'interval'   => $interval,
     'timeout '   => $timeout,
     'service_id' => $service_id,
