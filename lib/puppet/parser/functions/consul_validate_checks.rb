@@ -26,7 +26,7 @@ def validate_checks(obj)
             raise Puppet::ParseError.new('http and tcp must not be defined for script checks')
           end
         else
-          raise Puppet::ParseError.new('One of ttl, script, tcp, or http must be defined. <%s>' % obj)
+          raise Puppet::ParseError.new('One of ttl, script, tcp, or http must be defined.')
         end
     else
       raise Puppet::ParseError.new("Unable to handle object of type <%s>" % obj.class.to_s)
