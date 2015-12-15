@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.0.4](https://github.com/solarkennedy/puppet-consul/tree/v1.0.4) (2015-12-15)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.3...v1.0.4)
+
+**Merged pull requests:**
+
+- Added support for TCP checks \(available in Consul 0.6.x\) [\#206](https://github.com/solarkennedy/puppet-consul/pull/206) ([split3](https://github.com/split3))
+
 ## [v1.0.3](https://github.com/solarkennedy/puppet-consul/tree/v1.0.3) (2015-12-10)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.2...v1.0.3)
 
