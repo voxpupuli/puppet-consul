@@ -156,40 +156,99 @@ describe 'consul::check' do
         .that_notifies("Class[consul::reload_service]") \
     }
   end
+  describe 'with tcp' do
+    let(:params) {{
+      'tcp'      => 'localhost:80',
+      'interval' => '30s',
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/)
+    }
+  end
+  describe 'with script and service_id' do
+    let(:params) {{
+      'tcp'        => 'localhost:80',
+      'interval'   => '30s',
+      'service_id' => 'my_service'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"check" *: *\{/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"service_id" *: *"my_service"/)
+    }
+  end
+  describe 'reload service with script and token' do
+    let(:params) {{
+      'tcp'      => 'localhost:80',
+      'interval' => '30s',
+      'token'    => 'too-cool-for-this-script'
+    }}
+    it {
+      should contain_file("/etc/consul/check_my_check.json") \
+        .with_content(/"id" *: *"my_check"/) \
+        .with_content(/"name" *: *"my_check"/) \
+        .with_content(/"tcp" *: *"localhost:80"/) \
+        .with_content(/"interval" *: *"30s"/) \
+        .with_content(/"token" *: *"too-cool-for-this-script"/) \
+        .that_notifies("Class[consul::reload_service]") \
+    }
+  end
   describe 'with both ttl and interval' do
     let(:params) {{
       'ttl' => '30s',
       'interval' => '60s'
     }}
     it {
-      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
+      should raise_error(Puppet::Error, /script, http, tcp, and interval must not be defined for ttl checks/)
     }
   end
   describe 'with both ttl and script' do
     let(:params) {{
       'ttl' => '30s',
-      'script' => 'true'
+      'script' => 'true',
+      'interval' => '60s'
     }}
     it {
-      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
+      should raise_error(Puppet::Error, /script, http, tcp, and interval must not be defined for ttl checks/)
     }
   end
   describe 'with both ttl and http' do
     let(:params) {{
       'ttl' => '30s',
       'http' => 'http://localhost/health',
+      'interval' => '60s'
     }}
     it {
-      should raise_error(Puppet::Error, /script or http must not be defined for ttl checks/)
+      should raise_error(Puppet::Error, /script, http, tcp, and interval must not be defined for ttl checks/)
+    }
+  end
+  describe 'with both ttl and tcp' do
+    let(:params) {{
+      'ttl' => '30s',
+      'tcp' => 'localhost',
+      'interval' => '60s'
+    }}
+    it {
+      should raise_error(Puppet::Error, /script, http, tcp, and interval must not be defined for ttl checks/)
     }
   end
   describe 'with both script and http' do
     let(:params) {{
       'script' => 'true',
       'http' => 'http://localhost/health',
+      'interval' => '60s'
     }}
     it {
-      should raise_error(Puppet::Error, /script and http must not be defined together/)
+      should raise_error(Puppet::Error, /script and tcp must not be defined for http checks/)
     }
   end
   describe 'with script but no interval' do
@@ -197,7 +256,7 @@ describe 'consul::check' do
       'script' => 'true',
     }}
     it {
-      should raise_error(Puppet::Error, /script must be defined for interval checks/)
+      should raise_error(Puppet::Error, /interval must be defined for tcp, http, and script checks/)
     }
   end
   describe 'with http but no interval' do
@@ -205,7 +264,15 @@ describe 'consul::check' do
       'http' => 'http://localhost/health',
     }}
     it {
-      should raise_error(Puppet::Error, /http must be defined for interval checks/)
+      should raise_error(Puppet::Error, /interval must be defined for tcp, http, and script checks/)
+    }
+  end
+  describe 'with tcp but no interval' do
+    let(:params) {{
+      'tcp' => 'localhost',
+    }}
+    it {
+      should raise_error(Puppet::Error, /interval must be defined for tcp, http, and script checks/)
     }
   end
   describe 'with a / in the id' do
