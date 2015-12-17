@@ -10,6 +10,8 @@ end
 Facter.add(:consul_version) do
   confine :kernel => 'windows'
   setcode do
-    Facter::Core::Execution.exec('powershell (((& "C:\Program Files\Consul\consul.exe" "--version") | select -First 1).Split(" ",[StringSplitOptions]"RemoveEmptyEntries")[1]).TrimStart("v")')
+    powershell = 'powershell'
+    command = ' (((&\"C:\Program Files\Consul\consul.exe\" --version)[0]).Split(\"Consul v\")[8]).trim() '
+    Facter::Util::Resolution.exec(%Q{#{powershell} -command "#{command}"})
   end
 end
