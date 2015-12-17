@@ -133,7 +133,7 @@ describe 'consul' do
     it { should_not contain_package('consul') }
     it { should_not contain_package('consul_ui') }
     it { should_not contain_staging__file('consul.zip') }
-    it { should_not contain_staging__file('consul_web_ui.zip') }
+    it { should_not contain_staging__file('consul_web_ui-0.5.2.zip') }
   end
 
   context "When installing UI via URL by default" do
@@ -143,20 +143,44 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_web_ui.zip') }
-    it { should contain_file('/dir1/dir2').that_requires('Staging::Deploy[consul_web_ui.zip]') }
+    it { should contain_staging__deploy('consul_web_ui-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_web_ui.zip') }
+    it { should contain_file('/dir1/dir2').that_requires('Staging::Deploy[consul_web_ui-0.5.2.zip]') }
     it { should contain_file('/dir1/dir2').with(:ensure => 'symlink') }
   end
 
-  context "When installing UI via URL by with a special version" do
+  context "When installing UI via URL with a special version" do
     let(:params) {{
-      :version => '42',
+      :version     => '42',
       :config_hash => {
         'data_dir' => '/dir1',
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__file('consul_web_ui.zip').with(:source => 'https://releases.hashicorp.com/consul/42/consul_42_web_ui.zip') }
+    it { should contain_staging__deploy('consul_web_ui-42.zip').with(:source => 'https://releases.hashicorp.com/consul/42/consul_42_web_ui.zip') }
+  end
+
+  context "When installing UI via URL when version < 0.6.0" do
+    let(:params) {{
+      'version'    => '0.5.99',
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_staging__deploy('consul_web_ui-0.5.99.zip').with(:creates => %r{/dist$}) }
+    it { should contain_file('/dir1/dir2').with(:target => %r{/dist$}) }
+  end
+
+  context "When installing UI via URL when version >= 0.6.0" do
+    let(:params) {{
+      'version'    => '0.6.0',
+      :config_hash => {
+        'data_dir' => '/dir1',
+        'ui_dir'   => '/dir1/dir2',
+      },
+    }}
+    it { should contain_staging__deploy('consul_web_ui-0.6.0.zip').with(:creates => %r{/index\.html$}) }
+    it { should contain_file('/dir1/dir2').with(:target => %r{_web_ui$}) }
   end
 
   context "When installing UI via URL by with a custom url" do
@@ -167,7 +191,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_staging__deploy('consul_web_ui.zip').with(:source => 'http://myurl') }
+    it { should contain_staging__deploy('consul_web_ui-0.5.2.zip').with(:source => 'http://myurl') }
   end
 
   context "By default, a user and group should be installed" do
