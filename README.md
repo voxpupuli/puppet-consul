@@ -1,18 +1,19 @@
-#puppet-consul
+# puppet-consul
 [![Build Status](https://travis-ci.org/solarkennedy/puppet-consul.png)](https://travis-ci.org/solarkennedy/puppet-consul)
+[![Puppet Forge](https://img.shields.io/puppetforge/e/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
+[![Puppet Forge](https://img.shields.io/puppetforge/f/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
 
-##Installation
+## Compatibility
 
-##Compatibility
+| Consul Version   | Recommended Puppet Module Version   |
+| ---------------- | ----------------------------------- |
+| >= 0.6.0         | latest                              |
+| 0.5.x            | 1.0.3                               |
+| 0.4.x            | 0.4.6                               |
+| 0.3.x            | 0.3.0                               |
 
-Any module release that is tagged with 0.4.* is compatible with the 0.4.x
-versions of consul. Anything tagged with 0.5.* is compatible with consul
-0.5.x, etc.
-
-So, if you are using consul 0.4.1, try to use the lastes tagged release
-on the 4 series. Do *not* pull from master.
-
-###What This Module Affects
+### What This Module Affects
 
 * Installs the consul daemon (via url or package)
   * If installing from zip, you *must* ensure the unzip utility is available.
@@ -21,7 +22,7 @@ on the 4 series. Do *not* pull from master.
 * Manages the consul service via upstart, sysv, or systemd
 * Optionally installs the Web UI
 
-##Usage
+## Usage
 
 To set up a single consul server, with several agents attached:
 On the server:
@@ -65,7 +66,7 @@ class { '::consul':
 }
 ```
 
-##Web UI
+## Web UI
 
 To install and run the Web UI on the server, include `ui_dir` in the
 `config_hash`. You may also want to change the `client_addr` to `0.0.0.0` from
@@ -180,9 +181,9 @@ ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
 
-##Limitations
+## Limitations
 
-Depends on the JSON gem, or a modern ruby.
+Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
 
 ## Consul Template
 
@@ -192,7 +193,7 @@ with values from Consul. This module does not configure consul template. See
 [gdhbashton/consul_template](https://github.com/gdhbashton/puppet-consul_template) for
 a module that can do that.
 
-##Development
+## Development
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)

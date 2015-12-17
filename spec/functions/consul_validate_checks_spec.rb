@@ -11,6 +11,24 @@ describe 'consul_validate_checks' do
     ]).and_raise_error(Exception) }
   end
 
+  describe 'validate script and tcp' do
+    it {should run.with_params([
+      {
+        'tcp'    => 'localhost',
+        'script' => 'true'
+      }
+    ]).and_raise_error(Exception) }
+  end
+
+  describe 'validate http and tcp' do
+    it {should run.with_params([
+      {
+        'tcp'    => 'localhost',
+        'http' => 'true'
+      }
+    ]).and_raise_error(Exception) }
+  end
+
   describe 'validate script check' do
     it {should run.with_params([
       {
@@ -36,6 +54,14 @@ describe 'consul_validate_checks' do
     ]).and_raise_error(Exception) }
   end
 
+  describe 'validate tcp missing interval' do
+    it {should run.with_params([
+      {
+        'tcp' => 'localhost'
+      }
+    ]).and_raise_error(Exception) }
+  end
+
   describe 'validate script and ttl' do
     it {should run.with_params([
       {
@@ -52,5 +78,23 @@ describe 'consul_validate_checks' do
         'ttl' => 'true'
       }
     ]).and_raise_error(Exception) }
+  end
+
+  describe 'validate tcp and ttl' do
+    it {should run.with_params([
+      {
+        'tcp' => 'localhost',
+        'ttl' => 'true'
+      }
+    ]).and_raise_error(Exception) }
+  end
+
+  describe 'validate tcp check' do
+    it {should run.with_params([
+      {
+        'tcp'      => 'localhost:80',
+        'interval' => '30s',
+      }
+    ])}
   end
 end

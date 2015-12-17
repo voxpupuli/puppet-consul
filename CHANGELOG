@@ -1,8 +1,0 @@
-# Change Log
-All notable changes to this project will be documented in this file.
-
-## [Unreleased][unreleased]
-### Fixed
-- fix bug in Debian SysVinit, which caused starting of consul agent to fail.
-- fix bug in Debian SysVinit, which caused checking for the consul service status to return wrong results.
-
