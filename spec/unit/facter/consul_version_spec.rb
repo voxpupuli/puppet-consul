@@ -8,7 +8,13 @@ describe Facter::Util::Fact do
 
   describe "consul_version" do
     it do
-      expect(Facter.fact(:consul_version).value).to match(/(?:(\d+)\.)?(?:(\d+)\.)?(\d+)/)
+      consul_version_output = <<-EOS
+Consul v0.6.0
+Consul Protocol: 3 (Understands back to: 1)
+      EOS
+      allow(Facter::Util::Resolution).to receive(:exec).with('consul --version').
+        and_return(consul_version_output)
+      expect(Facter.fact(:consul_version).value).to match(/\d+\.\d+\.\d+/)
     end
   end
 
