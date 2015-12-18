@@ -19,19 +19,6 @@ Consul Protocol: 3 (Understands back to: 1)
       expect(Facter.fact(:consul_version).value).to match(/\d+\.\d+\.\d+/)
     end
 
-    context 'Returns consul version on Windows'
-    it do
-      consul_version_output = <<-EOS
-Consul v0.6.0
-Consul Protocol: 3 (Understands back to: 1)
-      EOS
-      allow(Facter.fact(:kernel)).to receive(:value).and_return("windows")
-      allow(Facter::Util::Resolution).to receive(:exec).with('"C:\\Program Files\\Consul\\consul.exe" --version').
-        and_return(consul_version_output)
-      expect(Facter.fact(:consul_version).value).to match(/\d+\.\d+\.\d+/)
-    end
-
-
   end
 
 end
