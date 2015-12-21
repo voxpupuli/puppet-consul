@@ -297,7 +297,7 @@ describe 'consul' do
     it { should contain_file('consul config.json').with_content(/"server": true/) }
     it { should contain_file('consul config.json').with_content(/"http": -1,/) }
     it { should contain_file('consul config.json').with_content(/"https": 8500/) }
-    it { should contain_file('consul config.json').with_content(/"ports": {/) }
+    it { should contain_file('consul config.json').with_content(/"ports": \{/) }
   end
 
   context "When asked not to manage the user" do
@@ -360,7 +360,7 @@ describe 'consul' do
     it { should contain_file('consul config.json').with(
       :owner => 'custom_consul_user',
       :group => 'custom_consul_group',
-      :mode  => '0600',
+      :mode  => '0600'
     )}
   end
 
