@@ -6,11 +6,8 @@ module JSON
 
     def sorted_generate(obj)
       case obj
-        when Fixnum, Float, TrueClass, FalseClass, NilClass
-          return obj.to_json
-        when String
-          # Convert quoted integers (string) to int
-          return (obj.match(/\A[-]?[0-9]+\z/) ? obj.to_i : obj).to_json
+        when NilClass,Fixnum, Float, TrueClass, FalseClass,String
+          return simple_generate(obj)
         when Array
           arrayRet = []
           obj.each do |a|
@@ -34,14 +31,8 @@ module JSON
       indent = " " * indent_len
 
       case obj
-
-        when Fixnum, Float, TrueClass, FalseClass, NilClass
-          return obj.to_json
-
-        when String
-          # Convert quoted integers (string) to int
-          return (obj.match(/\A[-]?[0-9]+\z/) ? obj.to_i : obj).to_json
-
+        when NilClass,Fixnum, Float, TrueClass, FalseClass,String
+          return simple_generate(obj)
         when Array
           arrayRet = []
 
@@ -80,6 +71,20 @@ module JSON
       end
 
     end # end def
+    private
+    # simplify jsonification of standard types
+    def simple_generate(obj)
+      case obj
+        when NilClass
+          'null'
+        when Fixnum, Float, TrueClass, FalseClass
+          "#{obj}"
+        else
+          # Should be a string
+          # keep string integers unquoted
+          (obj =~ /\A[-]?\d+\z/) ? obj : obj.to_json
+      end
+    end
 
   end # end class
 
