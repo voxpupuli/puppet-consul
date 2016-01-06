@@ -55,8 +55,14 @@ class consul::params {
     }
   } elsif $::operatingsystem == 'Archlinux' {
     $init_style = 'systemd'
-  } elsif $::operatingsystem == 'SLES' {
-    $init_style = 'sles'
+  } elsif $::operatingsystem == 'OpenSuSE' {
+    $init_style = 'systemd'
+  } elsif $::operatingsystem =~ /SLE[SD]/ {
+    if versioncmp($::operatingsystemrelease, '12.0') < 0 {
+      $init_style = 'sles'
+    } else {
+      $init_style = 'systemd'
+    }
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {

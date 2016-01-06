@@ -690,6 +690,33 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('debian') }
   end
 
+  context "On opensuse" do
+    let(:facts) {{
+      :operatingsystem => 'OpenSuSE',
+      :operatingsystemrelease => '13.1'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+  end
+
+  context "On SLED" do
+    let(:facts) {{
+      :operatingsystem => 'SLED',
+      :operatingsystemrelease => '11.4'
+    }}
+
+    it { should contain_class('consul').with_init_style('sles') }
+  end
+
+  context "On SLES" do
+    let(:facts) {{
+      :operatingsystem => 'SLES',
+      :operatingsystemrelease => '12.0'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+  end
+
   # Config Stuff
   context "With extra_options" do
     let(:params) {{

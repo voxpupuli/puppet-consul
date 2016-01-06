@@ -77,6 +77,27 @@
         "20",
         "21"
       ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "13.1",
+        "13.2"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11.4",
+        "12.0"
+      ]
+    },
+    {
+      "operatingsystem": "SLED",
+      "operatingsystemrelease": [
+        "11.4",
+        "12.0"
+      ]
     }
   ]
 }
