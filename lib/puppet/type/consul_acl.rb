@@ -40,7 +40,7 @@ Puppet::Type.newtype(:consul_acl) do
 
   newproperty(:port) do
     desc 'consul port'
-    value = 8500 if value.nil?
+    defaultto 8500
     validate do |value|
       raise ArgumentError, "The port number must be a number" if not value.is_a?(Integer)
     end
