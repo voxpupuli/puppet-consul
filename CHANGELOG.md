@@ -1,5 +1,24 @@
 # Change Log
 
+## [v1.0.5](https://github.com/solarkennedy/puppet-consul/tree/v1.0.5) (2016-01-08)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.4...v1.0.5)
+
+**Fixed bugs:**
+
+- umask feature breaks CentOS init scripts [\#107](https://github.com/solarkennedy/puppet-consul/issues/107)
+
+**Closed issues:**
+
+- If $install\_method = 'url', won't upgrade consul [\#103](https://github.com/solarkennedy/puppet-consul/issues/103)
+
+**Merged pull requests:**
+
+- ACL fixes - idempotentcy and port bug. [\#214](https://github.com/solarkennedy/puppet-consul/pull/214) ([sigerber](https://github.com/sigerber))
+- Fix port property [\#213](https://github.com/solarkennedy/puppet-consul/pull/213) ([horsehay](https://github.com/horsehay))
+- Add support of OpenSuSE and SLED [\#212](https://github.com/solarkennedy/puppet-consul/pull/212) ([kscherer](https://github.com/kscherer))
+- Fix web\_ui installation on Consul 0.6.0 and greater [\#208](https://github.com/solarkennedy/puppet-consul/pull/208) ([dbeckham](https://github.com/dbeckham))
+- mitigate .to\_json segfaults on Ruby 1.8.7 [\#205](https://github.com/solarkennedy/puppet-consul/pull/205) ([duritong](https://github.com/duritong))
+
 ## [v1.0.4](https://github.com/solarkennedy/puppet-consul/tree/v1.0.4) (2015-12-15)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.3...v1.0.4)
 
