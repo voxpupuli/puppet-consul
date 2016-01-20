@@ -42,5 +42,9 @@ describe Puppet::Type.type(:consul_acl) do
     it 'should accept a hash of rules' do
       expect(@acl[:rules]).to eq(samplerules)
     end
+
+    it 'should default to http' do
+      expect(@acl[:protocol]).to eq(:http)
+    end
   end
 end
