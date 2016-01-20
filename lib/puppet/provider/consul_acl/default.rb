@@ -10,6 +10,7 @@ Puppet::Type.type(:consul_acl).provide(
     resources.each do |name, resource|
       Puppet.debug("prefetching for #{name}")
       port = resource[:port]
+      protocol = resource[:protocol]
       token = resource[:acl_api_token]
 
       found_acls = list_resources(token, port).select do |acl|
@@ -34,7 +35,7 @@ Puppet::Type.type(:consul_acl).provide(
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    uri = URI("http://localhost:#{port}/v1/acl")
+    uri = URI("#{protocol}://localhost:#{port}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
 
     path=uri.request_uri + "/list?token=#{acl_api_token}"
@@ -68,7 +69,7 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def put_acl(method,body)
-    uri = URI("http://localhost:#{@resource[:port]}/v1/acl")
+    uri = URI("#{@resource[:protocol]}://localhost:#{@resource[:port]}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
