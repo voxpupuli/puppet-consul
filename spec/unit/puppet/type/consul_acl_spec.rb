@@ -39,6 +39,10 @@ describe Puppet::Type.type(:consul_acl) do
       expect(@acl[:type]).to eq(:management)
     end
 
+    it 'should default to localhost' do
+      expect(@acl[:hostname]).to eq('localhost')
+    end
+
     it 'should accept a hash of rules' do
       expect(@acl[:rules]).to eq(samplerules)
     end
