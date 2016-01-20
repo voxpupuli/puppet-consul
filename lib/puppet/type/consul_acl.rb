@@ -46,6 +46,14 @@ Puppet::Type.newtype(:consul_acl) do
     end
   end
 
+  newparam(:hostname) do
+    desc 'consul hostname'
+    validate do |value|
+      raise ArgumentError, "The hostname must be a string" if not value.is_a?(String)
+    end
+    defaultto 'localhost'
+  end
+
   autorequire(:service) do
     ['consul']
   end
