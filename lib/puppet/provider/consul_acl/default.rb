@@ -10,9 +10,10 @@ Puppet::Type.type(:consul_acl).provide(
     resources.each do |name, resource|
       Puppet.debug("prefetching for #{name}")
       port = resource[:port]
+      hostname = resource[:hostname]
       token = resource[:acl_api_token]
 
-      found_acls = list_resources(token, port).select do |acl|
+      found_acls = list_resources(token, port, hostname).select do |acl|
         acl[:name] == name
       end
 
@@ -27,14 +28,14 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port)
+  def self.list_resources(acl_api_token, port, hostname)
     if @acls
       return @acls
     end
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    uri = URI("http://localhost:#{port}/v1/acl")
+    uri = URI("http://#{hostname}:#{port}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
 
     path=uri.request_uri + "/list?token=#{acl_api_token}"
@@ -68,7 +69,7 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def put_acl(method,body)
-    uri = URI("http://localhost:#{@resource[:port]}/v1/acl")
+    uri = URI("http://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
@@ -82,9 +83,9 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def get_resource(name, port)
+  def get_resource(name, port, hostname)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
@@ -117,7 +118,8 @@ Puppet::Type.type(:consul_acl).provide(
     end
     type = @resource[:type]
     port = @resource[:port]
-    acl = self.get_resource(name, port)
+    hostname = @resource[:hostname]
+    acl = self.get_resource(name, port, hostname)
     if acl
       id = acl[:id]
       if @property_flush[:ensure] == :absent
