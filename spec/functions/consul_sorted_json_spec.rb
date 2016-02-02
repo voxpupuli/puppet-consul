@@ -1,5 +1,37 @@
 require 'spec_helper'
 
+RSpec.shared_examples 'handling_simple_types' do |pretty|
+  it 'handles nil' do
+    expect(subject.call([ {'key' => nil }],pretty)).to eql('{"key":null}')
+  end
+  it 'handles true' do
+    expect(subject.call([{'key' => true }],pretty)).to eql('{"key":true}')
+  end
+  it 'handles nil' do
+    expect(subject.call([{'key' => false }],pretty)).to eql('{"key":false}')
+  end
+  it 'handles positive integer' do
+    expect(subject.call([{'key' => 1 }],pretty)).to eql('{"key":1}')
+  end
+  it 'handles negative integer' do
+    expect(subject.call([{'key' => -1 }],pretty)).to eql('{"key":-1}')
+  end
+  it 'handles positive float' do
+    expect(subject.call([{'key' => 1.1 }],pretty)).to eql('{"key":1.1}')
+  end
+  it 'handles negative float' do
+    expect(subject.call([{'key' => -1.1 }],pretty)).to eql('{"key":-1.1}')
+  end
+  it 'handles integer in a string' do
+    expect(subject.call([{'key' => '1' }],pretty)).to eql('{"key":1}')
+  end
+  it 'handles negative integer in a string' do
+    expect(subject.call([{'key' => '-1' }],pretty)).to eql('{"key":-1}')
+  end
+  it 'handles simple string' do
+    expect(subject.call([{'key' => 'aString' }],pretty)).to eql("{\"key\":\"aString\"}")
+  end
+end
 describe 'consul_sorted_json', :type => :puppet_function do
 
   let(:test_hash){ { 'z' => 3, 'a' => '1', 'p' => '2', 's' => '-7' } }
@@ -40,5 +72,13 @@ describe 'consul_sorted_json', :type => :puppet_function do
       expect( @json.index('y') ).to be < @json.index('z')
     end
 
+  end
+  context 'test simple behavior' do
+    context 'sorted' do
+      include_examples 'handling_simple_types', false
+    end
+    context 'sorted pretty' do
+      include_examples 'handling_simple_types', true
+    end
   end
 end

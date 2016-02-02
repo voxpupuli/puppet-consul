@@ -13,7 +13,7 @@ end
 RSpec.configure do |c|
   c.mock_framework = :rspec
   c.before(:each) do
-    Puppet::Indirector::Hiera.stub(:hiera => hiera_stub)
+    allow(Puppet::Indirector::Hiera).to receive(:hiera) { hiera_stub }
   end
 
 end

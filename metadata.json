@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -76,6 +76,27 @@
         "19",
         "20",
         "21"
+      ]
+    },
+    {
+      "operatingsystem": "OpenSuSE",
+      "operatingsystemrelease": [
+        "13.1",
+        "13.2"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "11.4",
+        "12.0"
+      ]
+    },
+    {
+      "operatingsystem": "SLED",
+      "operatingsystemrelease": [
+        "11.4",
+        "12.0"
       ]
     }
   ]

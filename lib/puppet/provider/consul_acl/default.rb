@@ -6,14 +6,36 @@ Puppet::Type.type(:consul_acl).provide(
 ) do
   mk_resource_methods
 
-  def self.list_resources(acl_api_token)
+  def self.prefetch(resources)
+    resources.each do |name, resource|
+      Puppet.debug("prefetching for #{name}")
+      port = resource[:port]
+      hostname = resource[:hostname]
+      token = resource[:acl_api_token]
+
+      found_acls = list_resources(token, port, hostname).select do |acl|
+        acl[:name] == name
+      end
+
+      found_acl = found_acls.first || nil
+      if found_acl
+        Puppet.debug("found #{found_acl}")
+        resource.provider = new(found_acl)
+      else
+        Puppet.debug("found none #{name}")
+        resource.provider = new({:ensure => :absent})
+      end
+    end
+  end
+
+  def self.list_resources(acl_api_token, port, hostname)
     if @acls
       return @acls
     end
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    uri = URI("http://localhost:#{:port}/v1/acl")
+    uri = URI("http://#{hostname}:#{port}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
 
     path=uri.request_uri + "/list?token=#{acl_api_token}"
@@ -47,7 +69,7 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def put_acl(method,body)
-    uri = URI("http://localhost:#{:port}/v1/acl")
+    uri = URI("http://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
@@ -61,17 +83,13 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def get_resource_id(name)
+  def get_resource(name, port, hostname)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
-    if resources.first
-        return resources.first[:id]
-    else
-        return nil
-    end
+    resources.first || nil
   end
 
   def initialize(value={})
@@ -99,8 +117,11 @@ Puppet::Type.type(:consul_acl).provide(
       rules = ""
     end
     type = @resource[:type]
-    id = @resource[:id]
-    if id
+    port = @resource[:port]
+    hostname = @resource[:hostname]
+    acl = self.get_resource(name, port, hostname)
+    if acl
+      id = acl[:id]
       if @property_flush[:ensure] == :absent
         put_acl("destroy/#{id}", nil)
         return
@@ -111,10 +132,11 @@ Puppet::Type.type(:consul_acl).provide(
                           "rules" => "#{rules}" })
 
     else
-      put_acl('create', { "id"    => "#{id}",
+      put_acl('create', { "id"    => "#{@resource[:id]}",
                           "name"  => "#{name}",
                           "type"  => "#{type}",
                           "rules" => "#{rules}" })
     end
+    @property_hash.clear
   end
 end

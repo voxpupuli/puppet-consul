@@ -297,7 +297,7 @@ describe 'consul' do
     it { should contain_file('consul config.json').with_content(/"server": true/) }
     it { should contain_file('consul config.json').with_content(/"http": -1,/) }
     it { should contain_file('consul config.json').with_content(/"https": 8500/) }
-    it { should contain_file('consul config.json').with_content(/"ports": {/) }
+    it { should contain_file('consul config.json').with_content(/"ports": \{/) }
   end
 
   context "When asked not to manage the user" do
@@ -360,7 +360,7 @@ describe 'consul' do
     it { should contain_file('consul config.json').with(
       :owner => 'custom_consul_user',
       :group => 'custom_consul_group',
-      :mode  => '0600',
+      :mode  => '0600'
     )}
   end
 
@@ -688,6 +688,33 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('debian') }
+  end
+
+  context "On opensuse" do
+    let(:facts) {{
+      :operatingsystem => 'OpenSuSE',
+      :operatingsystemrelease => '13.1'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+  end
+
+  context "On SLED" do
+    let(:facts) {{
+      :operatingsystem => 'SLED',
+      :operatingsystemrelease => '11.4'
+    }}
+
+    it { should contain_class('consul').with_init_style('sles') }
+  end
+
+  context "On SLES" do
+    let(:facts) {{
+      :operatingsystem => 'SLES',
+      :operatingsystemrelease => '12.0'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
   end
 
   # Config Stuff
