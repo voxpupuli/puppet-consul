@@ -16,7 +16,7 @@ Consul Protocol: 3 (Understands back to: 1)
       allow(Facter.fact(:kernel)).to receive(:value).and_return("Linux")
       allow(Facter::Util::Resolution).to receive(:exec).with('consul --version').
         and_return(consul_version_output)
-      expect(Facter.fact(:consul_version).value).to match(/\d+\.\d+\.\d+/)
+      expect(Facter.fact(:consul_version).value).to match('0.6.0')
     end
 
   end
