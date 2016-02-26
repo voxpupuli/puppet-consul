@@ -10,7 +10,7 @@ class consul::run_service {
     default   => 'consul',
   }
 
-  if $consul::manage_service == true {
+  if $consul::manage_service == true and $consul::init_style != 'custom' {
     service { 'consul':
       ensure => $consul::service_ensure,
       name   => $init_selector,
