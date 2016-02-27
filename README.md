@@ -123,7 +123,27 @@ configure a health check to monitor its availability.
 See the service.pp docstrings for all available inputs.
 
 You can also use `consul::services` which accepts a hash of services, and makes
-it easy to declare in hiera.
+it easy to declare in hiera. For example:
+
+```puppet
+consul::services:
+  service1:
+    address: "%{::ipaddress}"
+    checks:
+      - http: http://localhost:42/status
+        interval: 5s
+    port: 42
+    tags:
+      - "foo:%{::bar}"
+  service2:
+    address: "%{::ipaddress}"
+    checks:
+      - http: http://localhost:43/status
+        interval: 5s
+    port: 43
+    tags:
+      - "foo:%{::baz}"
+```
 
 ## Watch Definitions
 
