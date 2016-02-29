@@ -78,9 +78,6 @@ class consul::config(
           content => template('consul/consul.launchd.erb')
         }
       }
-      'custom' : {
-        notice("I'm not creating an init script for you as you are going to create one yourself")
-      }
       default : {
         fail("I don't know how to create an init script for style ${consul::init_style}")
       }
