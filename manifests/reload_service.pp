@@ -23,6 +23,7 @@ class consul::reload_service {
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
       command     => "consul reload -rpc-addr=${rpc_addr}:${consul::rpc_port}",
       refreshonly => true,
+      tries       => 3,
     }
   }
 
