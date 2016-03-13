@@ -25,16 +25,19 @@ class consul::install {
       staging::extract { "consul-${consul::version}.${consul::download_extension}":
         target  => "${::staging::path}/consul-${consul::version}",
         creates => "${::staging::path}/consul-${consul::version}/consul",
-      } ->
+      }
+
       file {
         "${::staging::path}/consul-${consul::version}/consul":
-          owner => 'root',
-          group => 0, # 0 instead of root because OS X uses "wheel".
-          mode  => '0555';
+          owner   => 'root',
+          group   => 0, # 0 instead of root because OS X uses "wheel".
+          mode    => '0555',
+          require => Staging::Extract["consul-${consul::version}.${consul::download_extension}"];
         "${consul::bin_dir}/consul":
           ensure => link,
           notify => $consul::notify_service,
-          target => "${::staging::path}/consul-${consul::version}/consul";
+          target => "${::staging::path}/consul-${consul::version}/consul",
+          require => Staging::Extract["consul-${consul::version}.${consul::download_extension}"];
       }
 
       if ($consul::ui_dir and $consul::data_dir) {
