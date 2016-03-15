@@ -38,13 +38,13 @@ class consul::params {
     }
   } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
     if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-      $init_style = 'sysv'
+      $init_style = 'init'
     } else {
       $init_style  = 'systemd'
     }
   } elsif $::operatingsystem == 'Fedora' {
     if versioncmp($::operatingsystemrelease, '12') < 0 {
-      $init_style = 'sysv'
+      $init_style = 'init'
     } else {
       $init_style = 'systemd'
     }
@@ -67,7 +67,7 @@ class consul::params {
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
-    $init_style = 'sysv'
+    $init_style = 'init'
   } else {
     $init_style = undef
   }
