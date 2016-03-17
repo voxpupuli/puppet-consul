@@ -15,50 +15,58 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
-      include staging
-      staging::file { "consul-${consul::version}.${consul::download_extension}":
-        source => $consul::real_download_url,
-      } ->
-      file { "${::staging::path}/consul-${consul::version}":
+      $install_path = '/opt/puppet-archive'
+
+      # only notify if we are installing a new version (work around for switching to archive module)
+      if $::consul_version != $consul::version {
+        $do_notify_service = $consul::notify_service
+      }
+
+      include '::archive'
+      file { [
+        $install_path,
+        "${install_path}/consul-${consul::version}"]:
         ensure => directory,
-      } ->
-      staging::extract { "consul-${consul::version}.${consul::download_extension}":
-        target  => "${::staging::path}/consul-${consul::version}",
-        creates => "${::staging::path}/consul-${consul::version}/consul",
-      } ->
+      }->
+      archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
+        ensure       => present,
+        source       => $consul::real_download_url,
+        extract      => true,
+        extract_path => "${install_path}/consul-${consul::version}",
+        creates      => "${install_path}/consul-${consul::version}/consul",
+      }->
       file {
-        "${::staging::path}/consul-${consul::version}/consul":
+        "${install_path}/consul-${consul::version}/consul":
           owner => 'root',
           group => 0, # 0 instead of root because OS X uses "wheel".
           mode  => '0555';
         "${consul::bin_dir}/consul":
           ensure => link,
-          notify => $consul::notify_service,
-          target => "${::staging::path}/consul-${consul::version}/consul";
+          notify => $do_notify_service,
+          target => "${install_path}/consul-${consul::version}/consul";
       }
 
       if ($consul::ui_dir and $consul::data_dir) {
 
         # The 'dist' dir was removed from the web_ui archive in Consul version 0.6.0
         if (versioncmp($::consul::version, '0.6.0') < 0) {
-          $staging_creates = "${consul::data_dir}/${consul::version}_web_ui/dist"
-          $ui_symlink_target = $staging_creates
+          $archive_creates = "${install_path}/consul-${consul::version}_web_ui/dist"
+          $ui_symlink_target = $archive_creates
         } else {
-          $staging_creates = "${consul::data_dir}/${consul::version}_web_ui/index.html"
-          $ui_symlink_target = "${consul::data_dir}/${consul::version}_web_ui"
+          $archive_creates = "${install_path}/consul-${consul::version}_web_ui/index.html"
+          $ui_symlink_target = "${install_path}/consul-${consul::version}_web_ui"
         }
 
-        file { "${consul::data_dir}/${consul::version}_web_ui":
-          ensure => 'directory',
-          owner  => 'root',
-          group  => 0, # 0 instead of root because OS X uses "wheel".
-          mode   => '0755',
-        } ->
-        staging::deploy { "consul_web_ui-${consul::version}.zip":
-          source  => $consul::real_ui_download_url,
-          target  => "${consul::data_dir}/${consul::version}_web_ui",
-          creates => $staging_creates,
-        } ->
+        file { "${install_path}/consul-${consul::version}_web_ui":
+          ensure => directory,
+        }->
+        archive { "${install_path}/consul_web_ui-${consul::version}.zip":
+          ensure       => present,
+          source       => $consul::real_ui_download_url,
+          extract      => true,
+          extract_path => "${install_path}/consul-${consul::version}_web_ui",
+          creates      => $archive_creates,
+        }->
         file { $consul::ui_dir:
           ensure => 'symlink',
           target => $ui_symlink_target,
