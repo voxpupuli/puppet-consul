@@ -46,12 +46,12 @@ class consul::config(
           refreshonly => true,
         }
       }
-      'sysv' : {
+      'init' : {
         file { '/etc/init.d/consul':
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
-          content => template('consul/consul.sysv.erb')
+          content => template('consul/consul.init.erb')
         }
       }
       'debian' : {
