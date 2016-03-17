@@ -12,7 +12,8 @@ end
 
 group :test do
   gem "json"
-  gem "rake"
+  # Pin for 1.8.7 compatibility for now
+  gem "rake", '< 11.0.0'
   gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.7.0'
   gem "puppet-lint"
 
