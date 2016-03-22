@@ -21,12 +21,31 @@ class consul::params {
     'x86_64', 'amd64': { $arch = 'amd64' }
     'i386':            { $arch = '386'   }
     /^arm.*/:          { $arch = 'arm'   }
+    'x64':             {
+      # 0.6.0 introduced a 64-bit version, so we need to differentiate:
+      if (versioncmp($::consul::version, '0.6.0') < 0) {
+        $arch = '386'
+      } else {
+        $arch = 'amd64'
+      }
+    }
     default:           {
       fail("Unsupported kernel architecture: ${::architecture}")
     }
   }
 
   $os = downcase($::kernel)
+
+  case $::operatingsystem {
+    'windows': {
+      $bin_dir = $::consul_windir
+      $config_dir = "${bin_dir}/config"
+    }
+    default: {
+      $bin_dir = '/usr/local/bin'
+      $config_dir = '/etc/consul'
+    }
+  }
 
   if $::operatingsystem == 'Ubuntu' {
     if versioncmp($::operatingsystemrelease, '8.04') < 1 {
@@ -68,6 +87,8 @@ class consul::params {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
     $init_style = 'init'
+  } elsif $::operatingsystem == 'windows' {
+    $init_style = 'scm'
   } else {
     $init_style = undef
   }

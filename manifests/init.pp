@@ -57,7 +57,7 @@ class consul (
   $purge_config_dir      = true,
   $group                 = 'consul',
   $join_wan              = false,
-  $bin_dir               = '/usr/local/bin',
+  $bin_dir               = $consul::params::bin_dir,
   $arch                  = $consul::params::arch,
   $version               = $consul::params::version,
   $install_method        = $consul::params::install_method,
@@ -72,7 +72,7 @@ class consul (
   $ui_download_extension = $consul::params::ui_download_extension,
   $ui_package_name       = $consul::params::ui_package_name,
   $ui_package_ensure     = $consul::params::ui_package_ensure,
-  $config_dir            = '/etc/consul',
+  $config_dir            = $consul::params::config_dir,
   $extra_options         = '',
   $config_hash           = {},
   $config_defaults       = {},
@@ -137,7 +137,7 @@ class consul (
   } elsif ($config_hash_real['client_addr']) {
     $rpc_addr = $config_hash_real['client_addr']
   } else {
-    $rpc_addr = $::ipaddress_lo
+    $rpc_addr = '127.0.0.1'
   }
 
   if $services {
