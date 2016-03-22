@@ -21,7 +21,7 @@ module JSON
           end
           return "{" << ret.join(",") << "}";
         else
-          raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+          raise Exception.new("Unable to handle object of type <%s>" % obj.class.to_s)
       end
     end
 
@@ -67,7 +67,7 @@ module JSON
 
           return "{\n" << ret.join(",\n") << "\n#{indent * @@loop}}";
         else
-          raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+          raise Exception.new("Unable to handle object of type <%s>" % obj.class.to_s)
       end
 
     end # end def
