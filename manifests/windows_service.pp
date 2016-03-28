@@ -44,7 +44,7 @@ class consul::windows_service(
     logoutput => true,
     provider  => 'powershell',
     notify    => Exec['consul_service_set_parameters']
-  }
+  }->
   file { "${consul::bin_dir}/set_service_parameters.ps1":
     ensure  => 'present',
     content => template('consul/set_service_parameters.ps1.erb'),
