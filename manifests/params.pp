@@ -38,7 +38,7 @@ class consul::params {
     }
   } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
     if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-      $init_style = 'init'
+      $init_style = 'redhat'
     } else {
       $init_style  = 'systemd'
     }
