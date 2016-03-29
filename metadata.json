@@ -14,6 +14,10 @@
       "version_requirement": ">= 4.6.0 <5.0.0"
     },
     {
+      "name": "puppetlabs/powershell",
+      "version_requirement": ">= 1.0.6"
+    },
+    {
       "name": "puppet/archive",
       "version_requirement": ">=0.5.0 <1.0.0"
     }
@@ -97,6 +101,17 @@
       "operatingsystemrelease": [
         "11.4",
         "12.0"
+      ]
+    },
+    {
+      "operatingsystem": "Windows",
+      "operatingsystemrelease": [
+        "Server 2008",
+        "Server 2008 R2",
+        "Server 2012",
+        "Server 2012 R2",
+        "7",
+        "8"
       ]
     }
   ]
