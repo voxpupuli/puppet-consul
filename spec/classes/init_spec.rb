@@ -10,6 +10,7 @@ describe 'consul' do
       :operatingsystemrelease => '10.04',
       :kernel                 => 'Linux',
       :ipaddress_lo           => '127.0.0.1',
+      :consul_version         => 'unknown',
     }
   end
   # Installation Stuff
