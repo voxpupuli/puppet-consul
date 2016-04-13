@@ -1,5 +1,47 @@
 # Change Log
 
+## [v1.0.8](https://github.com/solarkennedy/puppet-consul/tree/v1.0.8) (2016-04-13)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.6...v1.0.8)
+
+**Closed issues:**
+
+- Switch from using staging module to archive [\#242](https://github.com/solarkennedy/puppet-consul/issues/242)
+- Service start is broken on Debian \> 8.0 [\#232](https://github.com/solarkennedy/puppet-consul/issues/232)
+- Services variable not working with hiera hash. Expects an array of hashes it seems. [\#230](https://github.com/solarkennedy/puppet-consul/issues/230)
+- ensure\_packages unzip with 'before' breaks interoperability [\#187](https://github.com/solarkennedy/puppet-consul/issues/187)
+- Setting consul::version in hiera does not change the download\_url [\#129](https://github.com/solarkennedy/puppet-consul/issues/129)
+- add maintenance mode option to init scripts [\#124](https://github.com/solarkennedy/puppet-consul/issues/124)
+- Watches key in config\_hash should expect an array of hashes? [\#83](https://github.com/solarkennedy/puppet-consul/issues/83)
+
+## [v1.0.6](https://github.com/solarkennedy/puppet-consul/tree/v1.0.6) (2016-03-24)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.5...v1.0.6)
+
+**Closed issues:**
+
+- Master broken on EL6 due to "Invalid service provider 'sysv'" [\#240](https://github.com/solarkennedy/puppet-consul/issues/240)
+- Service reload too quick [\#231](https://github.com/solarkennedy/puppet-consul/issues/231)
+- Systemd limits issue [\#225](https://github.com/solarkennedy/puppet-consul/issues/225)
+- Encryption [\#224](https://github.com/solarkennedy/puppet-consul/issues/224)
+- Duplicate declaration: Class\[Staging\] with puppet/mysql mysqltuner [\#223](https://github.com/solarkennedy/puppet-consul/issues/223)
+- Consul reload fails when rpc\_addr is 0.0.0.0 [\#220](https://github.com/solarkennedy/puppet-consul/issues/220)
+- Support creating ACLs while talking to a hostname other than localhost [\#216](https://github.com/solarkennedy/puppet-consul/issues/216)
+- Release version 1.0.5 [\#215](https://github.com/solarkennedy/puppet-consul/issues/215)
+
+**Merged pull requests:**
+
+- Switching from staging to archive module [\#243](https://github.com/solarkennedy/puppet-consul/pull/243) ([split3](https://github.com/split3))
+- EL \< 7 uses init service provider, not sysv.  [\#241](https://github.com/solarkennedy/puppet-consul/pull/241) ([fatmcgav](https://github.com/fatmcgav))
+- Update reload\_service.pp [\#235](https://github.com/solarkennedy/puppet-consul/pull/235) ([nvtkaszpir](https://github.com/nvtkaszpir))
+- add support for arm \(Raspberry pi's ARM here\) architecture [\#234](https://github.com/solarkennedy/puppet-consul/pull/234) ([gibre](https://github.com/gibre))
+- Added custom init style "custom" [\#233](https://github.com/solarkennedy/puppet-consul/pull/233) ([ph0enix49](https://github.com/ph0enix49))
+- lazily return nil when consul client isn't installed [\#227](https://github.com/solarkennedy/puppet-consul/pull/227) ([roobert](https://github.com/roobert))
+- add NOFILE limit to systemd template [\#226](https://github.com/solarkennedy/puppet-consul/pull/226) ([DjxDeaf](https://github.com/DjxDeaf))
+- Debian init script should depend on networking, resolution and syslog [\#222](https://github.com/solarkennedy/puppet-consul/pull/222) ([chrisboulton](https://github.com/chrisboulton))
+- When reloading consul, use 127.0.0.1 as rpc\_addr when rpc\_addr was set to 0.0.0.0 [\#221](https://github.com/solarkennedy/puppet-consul/pull/221) ([danielbenzvi](https://github.com/danielbenzvi))
+- Add hostname proprety for ACL operations, defaults to localhost, like before [\#219](https://github.com/solarkennedy/puppet-consul/pull/219) ([gozer](https://github.com/gozer))
+- Consul Version Fact [\#209](https://github.com/solarkennedy/puppet-consul/pull/209) ([robrankin](https://github.com/robrankin))
+- Set provider on consul service [\#125](https://github.com/solarkennedy/puppet-consul/pull/125) ([albustax](https://github.com/albustax))
+
 ## [v1.0.5](https://github.com/solarkennedy/puppet-consul/tree/v1.0.5) (2016-01-08)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.4...v1.0.5)
 
