@@ -9,6 +9,7 @@ describe 'consul' do
       :osfamily               => 'Debian',
       :operatingsystemrelease => '10.04',
       :kernel                 => 'Linux',
+      :ipaddress_lo           => '127.0.0.1',
     }
   end
   # Installation Stuff
