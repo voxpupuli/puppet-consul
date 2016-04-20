@@ -10,7 +10,7 @@ ExecStart=<%= scope.lookupvar('consul::bin_dir') %>/consul agent \
   -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
-Restart=on-failure
+Restart=always
 RestartSec=42s
 LimitNOFILE=131072
 
