@@ -54,6 +54,7 @@ define consul::check(
   $timeout    = undef,
   $notes      = undef,
   $token      = undef,
+  $status     = undef,
 ) {
   include consul
 
@@ -69,6 +70,7 @@ define consul::check(
     'service_id' => $service_id,
     'notes'      => $notes,
     'token'      => $token,
+    'status'     => $status,
   }
 
   $check_hash = {
