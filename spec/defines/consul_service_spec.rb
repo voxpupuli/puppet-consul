@@ -11,7 +11,8 @@ describe 'consul::service' do
       should contain_file("/etc/consul/service_my_service.json") \
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
-        .with_content(/"name" *: *"my_service"/)
+        .with_content(/"name" *: *"my_service"/) \
+        .with_content(/"enableTagOverride" *: *"false"/)
     }
   end
   describe 'with different ensure' do
@@ -39,6 +40,19 @@ describe 'consul::service' do
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"different_name"/)
+    }
+  end
+  describe 'with enable_tag_override' do
+    let(:params) {{
+      'enable_tag_override' => true,
+    }}
+
+    it {
+      should contain_file("/etc/consul/service_my_service.json") \
+        .with_content(/"service" *: *\{/) \
+        .with_content(/"id" *: *"my_service"/) \
+        .with_content(/"name" *: *"my_service"/) \
+        .with_content(/"enableTagOverride" *: *"true"/)
     }
   end
   describe 'with service name and address' do

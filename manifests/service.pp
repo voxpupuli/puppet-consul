@@ -30,28 +30,33 @@
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# [*enable_tag_override*]
+#   enableTagOverride support for service. Defaults to False.
+#
 define consul::service(
-  $ensure         = present,
-  $service_name   = $title,
-  $id             = $title,
-  $tags           = [],
-  $address        = undef,
-  $port           = undef,
-  $checks         = [],
-  $token          = undef,
+  $ensure              = present,
+  $service_name        = $title,
+  $id                  = $title,
+  $tags                = [],
+  $address             = undef,
+  $port                = undef,
+  $checks              = [],
+  $token               = undef,
+  $enable_tag_override = false,
 ) {
   include consul
 
   consul_validate_checks($checks)
 
   $basic_hash = {
-    'id'      => $id,
-    'name'    => $service_name,
-    'address' => $address,
-    'port'    => $port,
-    'tags'    => $tags,
-    'checks'  => $checks,
-    'token'   => $token,
+    'id'                => $id,
+    'name'              => $service_name,
+    'address'           => $address,
+    'port'              => $port,
+    'tags'              => $tags,
+    'checks'            => $checks,
+    'token'             => $token,
+    'enableTagOverride' => bool2str($enable_tag_override),
   }
 
   $service_hash = {
