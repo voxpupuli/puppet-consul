@@ -42,6 +42,10 @@
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# [*status*]
+#   The default state of the check when it is registered against a consul
+#   agent. Should be either "critical" or "passing"
+#
 define consul::check(
   $ensure     = present,
   $id         = $title,
@@ -54,6 +58,7 @@ define consul::check(
   $timeout    = undef,
   $notes      = undef,
   $token      = undef,
+  $status     = undef,
 ) {
   include consul
 
@@ -69,6 +74,7 @@ define consul::check(
     'service_id' => $service_id,
     'notes'      => $notes,
     'token'      => $token,
+    'status'     => $status,
   }
 
   $check_hash = {
