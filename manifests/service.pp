@@ -44,12 +44,14 @@ define consul::service(
 
   consul_validate_checks($checks)
 
+  $use_tags = delete_undef_values($tags)
+
   $basic_hash = {
     'id'      => $id,
     'name'    => $service_name,
     'address' => $address,
     'port'    => $port,
-    'tags'    => $tags,
+    'tags'    => $use_tags,
     'checks'  => $checks,
     'token'   => $token,
   }
