@@ -92,6 +92,16 @@ describe 'consul' do
     it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
+  context "When installing via URL with a special archive_path" do
+    let(:params) {{
+      :archive_path   => '/usr/share/puppet-archive',
+    }}
+    it { should contain_archive('/usr/share/puppet-archive/consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }
+    it { should contain_file('/usr/share/puppet-archive').with(:ensure => 'directory') }
+    it { should contain_file('/usr/share/puppet-archive/consul-0.5.2').with(:ensure => 'directory') }
+    it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
+  end
+
   context "When installing by archive via URL and current version is already installed" do
     let(:facts) {{ :consul_version => '0.5.2' }}
     it { should contain_archive('/opt/puppet-archive/consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }

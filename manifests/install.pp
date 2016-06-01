@@ -15,7 +15,7 @@ class consul::install {
 
   case $consul::install_method {
     'url': {
-      $install_path = '/opt/puppet-archive'
+      $install_path = $consul::archive_path
 
       # only notify if we are installing a new version (work around for switching to archive module)
       if $::consul_version != $consul::version {
