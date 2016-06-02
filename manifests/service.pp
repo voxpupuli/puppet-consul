@@ -44,7 +44,7 @@ define consul::service(
   $token               = undef,
   $enable_tag_override = false,
 ) {
-  include consul
+  include ::consul
 
   consul_validate_checks($checks)
 
@@ -56,11 +56,11 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
-    'enableTagOverride' => bool2str($enable_tag_override),
+    'enableTagOverride' => $enable_tag_override,
   }
 
   $service_hash = {
-    service => delete_undef_values($basic_hash)
+    service => delete_undef_values($basic_hash),
   }
 
   $escaped_id = regsubst($id,'\/','_','G')
