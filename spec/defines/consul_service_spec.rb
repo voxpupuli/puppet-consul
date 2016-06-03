@@ -12,7 +12,7 @@ describe 'consul::service' do
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
-        .with_content(/"enableTagOverride" *: *"false"/)
+        .with_content(/"enableTagOverride" *: *false/)
     }
   end
   describe 'with different ensure' do
@@ -52,7 +52,7 @@ describe 'consul::service' do
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
-        .with_content(/"enableTagOverride" *: *"true"/)
+        .with_content(/"enableTagOverride" *: *true/)
     }
   end
   describe 'with service name and address' do
