@@ -6,7 +6,7 @@ module JSON
 
     def sorted_generate(obj)
       case obj
-        when NilClass,Fixnum, Float, TrueClass, FalseClass,String
+        when NilClass, :undef, Fixnum, Float, TrueClass, FalseClass, String
           return simple_generate(obj)
         when Array
           arrayRet = []
@@ -21,7 +21,7 @@ module JSON
           end
           return "{" << ret.join(",") << "}";
         else
-          raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+          raise Exception.new("Unable to handle object of type #{obj.class.name} with value #{obj.inspect}")
       end
     end
 
@@ -67,7 +67,7 @@ module JSON
 
           return "{\n" << ret.join(",\n") << "\n#{indent * @@loop}}";
         else
-          raise Exception("Unable to handle object of type <%s>" % obj.class.to_s)
+          raise Exception.new("Unable to handle object of type #{obj.class.name} with value #{obj.inspect}")
       end
 
     end # end def
@@ -75,7 +75,7 @@ module JSON
     # simplify jsonification of standard types
     def simple_generate(obj)
       case obj
-        when NilClass
+        when NilClass, :undef
           'null'
         when Fixnum, Float, TrueClass, FalseClass
           "#{obj}"
@@ -154,8 +154,6 @@ Optionally you can pass 2 additional parameters, pretty generate and indent leng
     unsorted_hash = args[0]      || {}
     pretty        = args[1]      || false
     indent_len    = args[2].to_i || 4
-
-    unsorted_hash.reject! {|key, value| value == :undef }
 
     if pretty
       return JSON.sorted_pretty_generate(unsorted_hash, indent_len) << "\n"

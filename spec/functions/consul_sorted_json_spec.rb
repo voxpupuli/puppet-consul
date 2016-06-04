@@ -4,10 +4,13 @@ RSpec.shared_examples 'handling_simple_types' do |pretty|
   it 'handles nil' do
     expect(subject.call([ {'key' => nil }],pretty)).to eql('{"key":null}')
   end
+  it 'handles :undef' do
+    expect(subject.call([ {'key' => :undef }],pretty)).to eql('{"key":null}')
+  end
   it 'handles true' do
     expect(subject.call([{'key' => true }],pretty)).to eql('{"key":true}')
   end
-  it 'handles nil' do
+  it 'handles false' do
     expect(subject.call([{'key' => false }],pretty)).to eql('{"key":false}')
   end
   it 'handles positive integer' do
@@ -56,6 +59,18 @@ describe 'consul_sorted_json', :type => :puppet_function do
   it "validate ugly json" do
     json = subject.call([test_hash]) # pretty=false by default
     expect(json).to match("{\"a\":1,\"p\":2,\"s\":-7,\"z\":3}")
+  end
+
+  it "handles nested :undef values" do
+    nested_undef_hash = {
+      'key' => 'value',
+      'undef' => :undef,
+      'nested_undef' => {
+        'undef' => :undef
+      }
+    }
+    json = subject.call([nested_undef_hash])
+    expect(json).to match("{\"key\":\"value\",\"nested_undef\":{\"undef\":null},\"undef\":null}")
   end
 
   context 'nesting' do
