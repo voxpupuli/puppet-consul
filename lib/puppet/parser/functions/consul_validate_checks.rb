@@ -21,7 +21,7 @@ def validate_checks(obj)
           if (obj.key?("http") || obj.key?("tcp"))
             raise Puppet::ParseError.new('http and tcp must not be defined for script checks')
           end
-        else
+        elsif (! obj.key?("ttl"))
           raise Puppet::ParseError.new('One of ttl, script, tcp, or http must be defined.')
         end
     else
