@@ -35,7 +35,7 @@ class consul::config(
       }
       'systemd' : {
         file { '/etc/sysconfig/consul':
-          ensure  => directory,
+          ensure  => file,
           mode    => '0644',
           owner   => 'root',
           group   => 'root',
