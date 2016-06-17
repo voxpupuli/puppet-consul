@@ -22,8 +22,9 @@ class consul::windows_service(
 
   $app_dir = regsubst($consul::bin_dir, '\/', '\\', 'G')
   $app_exec = "${app_dir}\\consul.exe"
-  $agent_args = regsubst($consul::config_dir, '\/', '\\', 'G')
-  $app_args = "agent -config-dir=${agent_args}"
+  $configdir_args = regsubst($consul::config_dir, '\/', '\\', 'G')
+  $datadir_args = regsubst($consul::data_dir, '\/', '\\', 'G')
+  $app_args = "agent -config-dir=${configdir_args} -data-dir=${datadir_args}"
   $app_log = "${app_dir}\\logs\\consul.log"
 
   include '::archive'
@@ -39,7 +40,7 @@ class consul::windows_service(
   }->
   exec { 'consul_service_install':
     cwd       => $consul::bin_dir,
-    command   => "${nssm_exec} install Consul ${app_exec}",
+    command   => "${nssm_exec} install Consul \"${app_exec}\"",
     unless    => 'get-service -name consul',
     logoutput => true,
     provider  => 'powershell',
@@ -52,7 +53,7 @@ class consul::windows_service(
   } ->
   exec { 'consul_service_set_parameters':
     cwd         => $consul::bin_dir,
-    command     => "${consul::bin_dir}/set_service_parameters.ps1",
+    command     => "& \"${consul::bin_dir}/set_service_parameters.ps1\"",
     refreshonly => true,
     logoutput   => true,
     provider    => 'powershell',
