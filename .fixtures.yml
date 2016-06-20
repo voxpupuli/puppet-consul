@@ -1,6 +1,8 @@
 fixtures:
   repositories:
     stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
-    archive: "https://github.com/voxpupuli/puppet-archive.git"
+    archive:
+        repo: "https://github.com/voxpupuli/puppet-archive.git"
+        ref: "v0.5.1"
   symlinks:
     consul: "#{source_dir}"
