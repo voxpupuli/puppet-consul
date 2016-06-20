@@ -1,5 +1,35 @@
 # Change Log
 
+## [v1.0.9](https://github.com/solarkennedy/puppet-consul/tree/v1.0.9) (2016-06-20)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.8...v1.0.9)
+
+**Closed issues:**
+
+- enableTagOverride value being written as a quoted string, need to be unquote boolean. [\#261](https://github.com/solarkennedy/puppet-consul/issues/261)
+- /opt/consul/serf/local.keyring is not replaced when changing encryption keys [\#256](https://github.com/solarkennedy/puppet-consul/issues/256)
+- Error depencie archive [\#253](https://github.com/solarkennedy/puppet-consul/issues/253)
+- nanliu-staging dependency  [\#250](https://github.com/solarkennedy/puppet-consul/issues/250)
+- chkconfig init files are not setup for consul on CentOS 6 [\#249](https://github.com/solarkennedy/puppet-consul/issues/249)
+- Failed to start Raft: permission denied [\#237](https://github.com/solarkennedy/puppet-consul/issues/237)
+- Question : Atlas join [\#228](https://github.com/solarkennedy/puppet-consul/issues/228)
+- InitV startup script doesn't deamonize proprely [\#210](https://github.com/solarkennedy/puppet-consul/issues/210)
+- Consul 0.6 support [\#204](https://github.com/solarkennedy/puppet-consul/issues/204)
+- Why is ACL ID read-only? [\#192](https://github.com/solarkennedy/puppet-consul/issues/192)
+
+**Merged pull requests:**
+
+- Fix windows\_service so it works correctly [\#266](https://github.com/solarkennedy/puppet-consul/pull/266) ([lynxman](https://github.com/lynxman))
+- Configure log file for upstart. [\#265](https://github.com/solarkennedy/puppet-consul/pull/265) ([jdavisp3](https://github.com/jdavisp3))
+- Handle nested :undef in consul\_sorted\_json [\#263](https://github.com/solarkennedy/puppet-consul/pull/263) ([mcasper](https://github.com/mcasper))
+- drop bool2str as we need a unquoted true|false [\#262](https://github.com/solarkennedy/puppet-consul/pull/262) ([sjoeboo](https://github.com/sjoeboo))
+- Added a parameter to allow users to change $install\_path [\#260](https://github.com/solarkennedy/puppet-consul/pull/260) ([tfhartmann](https://github.com/tfhartmann))
+- Drop ruby 1.8 support again now that puppet-archive doesn't support it [\#259](https://github.com/solarkennedy/puppet-consul/pull/259) ([solarkennedy](https://github.com/solarkennedy))
+- service EnableTagOverride [\#258](https://github.com/solarkennedy/puppet-consul/pull/258) ([cliles](https://github.com/cliles))
+- adding ability to define the inital status of consul checks [\#257](https://github.com/solarkennedy/puppet-consul/pull/257) ([asgolding](https://github.com/asgolding))
+- Puppet archive install directory will fail if default umask changed [\#255](https://github.com/solarkennedy/puppet-consul/pull/255) ([lynxman](https://github.com/lynxman))
+- in dynamic environment consul-agent should be init [\#254](https://github.com/solarkennedy/puppet-consul/pull/254) ([mcortinas](https://github.com/mcortinas))
+- fix tests [\#251](https://github.com/solarkennedy/puppet-consul/pull/251) ([solarkennedy](https://github.com/solarkennedy))
+
 ## [v1.0.8](https://github.com/solarkennedy/puppet-consul/tree/v1.0.8) (2016-04-13)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.6...v1.0.8)
 
@@ -29,7 +59,7 @@
 
 **Merged pull requests:**
 
-- Switching from staging to archive module [\#243](https://github.com/solarkennedy/puppet-consul/pull/243) ([split3](https://github.com/split3))
+- Switching from staging to archive module [\#243](https://github.com/solarkennedy/puppet-consul/pull/243) ([hopperd](https://github.com/hopperd))
 - EL \< 7 uses init service provider, not sysv.  [\#241](https://github.com/solarkennedy/puppet-consul/pull/241) ([fatmcgav](https://github.com/fatmcgav))
 - Update reload\_service.pp [\#235](https://github.com/solarkennedy/puppet-consul/pull/235) ([nvtkaszpir](https://github.com/nvtkaszpir))
 - add support for arm \(Raspberry pi's ARM here\) architecture [\#234](https://github.com/solarkennedy/puppet-consul/pull/234) ([gibre](https://github.com/gibre))
@@ -66,7 +96,7 @@
 
 **Merged pull requests:**
 
-- Added support for TCP checks \(available in Consul 0.6.x\) [\#206](https://github.com/solarkennedy/puppet-consul/pull/206) ([split3](https://github.com/split3))
+- Added support for TCP checks \(available in Consul 0.6.x\) [\#206](https://github.com/solarkennedy/puppet-consul/pull/206) ([hopperd](https://github.com/hopperd))
 
 ## [v1.0.3](https://github.com/solarkennedy/puppet-consul/tree/v1.0.3) (2015-12-10)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.2...v1.0.3)
@@ -80,8 +110,8 @@
 
 **Merged pull requests:**
 
-- Updating staging file download to use the version and symlink [\#202](https://github.com/solarkennedy/puppet-consul/pull/202) ([split3](https://github.com/split3))
-- Updated download\_urls used to be the new releases.hashicorp.com location [\#201](https://github.com/solarkennedy/puppet-consul/pull/201) ([split3](https://github.com/split3))
+- Updating staging file download to use the version and symlink [\#202](https://github.com/solarkennedy/puppet-consul/pull/202) ([hopperd](https://github.com/hopperd))
+- Updated download\_urls used to be the new releases.hashicorp.com location [\#201](https://github.com/solarkennedy/puppet-consul/pull/201) ([hopperd](https://github.com/hopperd))
 - parameterize config file mode [\#200](https://github.com/solarkennedy/puppet-consul/pull/200) ([aj-jester](https://github.com/aj-jester))
 - Add parameter for setting port to custom acl type [\#197](https://github.com/solarkennedy/puppet-consul/pull/197) ([horsehay](https://github.com/horsehay))
 - Allow ACL ID to be writeable [\#196](https://github.com/solarkennedy/puppet-consul/pull/196) ([robrankin](https://github.com/robrankin))
@@ -178,7 +208,7 @@
 - Allow setting of the umask for the consul daemon. [\#106](https://github.com/solarkennedy/puppet-consul/pull/106) ([EvanKrall](https://github.com/EvanKrall))
 - Respect user and group in launchd. [\#105](https://github.com/solarkennedy/puppet-consul/pull/105) ([EvanKrall](https://github.com/EvanKrall))
 - Anchor the consul install/config/run\_service classes [\#102](https://github.com/solarkennedy/puppet-consul/pull/102) ([koendc](https://github.com/koendc))
-- Added support for consul 0.5.0 features: [\#99](https://github.com/solarkennedy/puppet-consul/pull/99) ([split3](https://github.com/split3))
+- Added support for consul 0.5.0 features: [\#99](https://github.com/solarkennedy/puppet-consul/pull/99) ([hopperd](https://github.com/hopperd))
 - make module work with future parser [\#92](https://github.com/solarkennedy/puppet-consul/pull/92) ([duritong](https://github.com/duritong))
 - Add consul\_acl type and provider [\#91](https://github.com/solarkennedy/puppet-consul/pull/91) ([michaeltchapman](https://github.com/michaeltchapman))
 - Consul expects prefix rather than keyprefix in watch config [\#89](https://github.com/solarkennedy/puppet-consul/pull/89) ([codesplicer](https://github.com/codesplicer))
