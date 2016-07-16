@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.0.10](https://github.com/solarkennedy/puppet-consul/tree/1.0.10) (2016-07-15)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.9...1.0.10)
+
+**Closed issues:**
+
+- Question: URL method downloads the zip file every run? [\#270](https://github.com/solarkennedy/puppet-consul/issues/270)
+- Add proxy support [\#269](https://github.com/solarkennedy/puppet-consul/issues/269)
+
 ## [v1.0.9](https://github.com/solarkennedy/puppet-consul/tree/v1.0.9) (2016-06-20)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.8...v1.0.9)
 
