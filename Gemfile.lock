@@ -302,7 +302,7 @@ DEPENDENCIES
   beaker-rspec (>= 5.1.0)
   hiera
   hiera-puppet-helper
-  json
+  json (~> 1.8.3)
   pry
   puppet (~> 3.7.0)
   puppet-blacksmith
@@ -317,4 +317,4 @@ DEPENDENCIES
   vagrant-wrapper
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
