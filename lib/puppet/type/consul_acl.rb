@@ -38,6 +38,12 @@ Puppet::Type.newtype(:consul_acl) do
     desc 'ID of token'
   end
 
+  newproperty(:protocol) do
+    desc 'consul protocol'
+    newvalues('http', 'https')
+    defaultto 'http'
+  end
+
   newparam(:port) do
     desc 'consul port'
     defaultto 8500
