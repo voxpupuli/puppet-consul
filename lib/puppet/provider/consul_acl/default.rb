@@ -13,8 +13,9 @@ Puppet::Type.type(:consul_acl).provide(
       hostname = resource[:hostname]
       protocol = resource[:protocol]
       token = resource[:acl_api_token]
+      tries = resource[:api_tries]
 
-      found_acls = list_resources(token, port, hostname).select do |acl|
+      found_acls = list_resources(token, port, hostname, tries).select do |acl|
         acl[:name] == name
       end
 
@@ -29,7 +30,7 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port, hostname)
+  def self.list_resources(acl_api_token, port, hostname, tries)
     if @acls
       return @acls
     end
@@ -41,7 +42,12 @@ Puppet::Type.type(:consul_acl).provide(
 
     path=uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
-    res = http.request(req)
+
+    (1..tries).each do |i|
+      sleep i unless i == 1
+      res = http.request(req)
+      retry if res.code != '200'
+    end
 
     if res.code == '200'
       acls = JSON.parse(res.body)
