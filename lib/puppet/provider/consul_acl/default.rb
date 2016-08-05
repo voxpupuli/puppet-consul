@@ -13,8 +13,9 @@ Puppet::Type.type(:consul_acl).provide(
       hostname = resource[:hostname]
       protocol = resource[:protocol]
       token = resource[:acl_api_token]
+      tries = resource[:api_tries]
 
-      found_acls = list_resources(token, port, hostname).select do |acl|
+      found_acls = list_resources(token, port, hostname, protocol, tries).select do |acl|
         acl[:name] == name
       end
 
@@ -29,7 +30,7 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port, hostname)
+  def self.list_resources(acl_api_token, port, hostname, protocol, tries)
     if @acls
       return @acls
     end
@@ -41,7 +42,17 @@ Puppet::Type.type(:consul_acl).provide(
 
     path=uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
-    res = http.request(req)
+    res = nil
+
+    # retry Consul API query for ACLs, in case Consul has just started
+    (1..tries).each do |i|
+      unless i == 1
+        Puppet.debug("retrying Consul API query in #{i} seconds")
+        sleep i
+      end
+      res = http.request(req)
+      break if res.code == '200'
+    end
 
     if res.code == '200'
       acls = JSON.parse(res.body)
@@ -84,9 +95,9 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def get_resource(name, port, hostname)
+  def get_resource(name, port, hostname, protocol, tries)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
@@ -120,7 +131,9 @@ Puppet::Type.type(:consul_acl).provide(
     type = @resource[:type]
     port = @resource[:port]
     hostname = @resource[:hostname]
-    acl = self.get_resource(name, port, hostname)
+    protocol = @resource[:protocol]
+    tries = @resource[:api_tries]
+    acl = self.get_resource(name, port, hostname, protocol, tries)
     if acl
       id = acl[:id]
       if @property_flush[:ensure] == :absent
