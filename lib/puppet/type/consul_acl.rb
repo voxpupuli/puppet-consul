@@ -60,6 +60,14 @@ Puppet::Type.newtype(:consul_acl) do
     defaultto 'localhost'
   end
 
+  newparam(:api_tries) do
+    desc 'number of tries when contacting the Consul REST API'
+    defaultto 3
+    validate do |value|
+      raise ArgumentError, "Number of API tries must be a number" if not value.is_a?(Integer)
+    end
+  end
+
   autorequire(:service) do
     ['consul']
   end
