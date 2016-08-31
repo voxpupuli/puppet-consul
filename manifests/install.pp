@@ -104,21 +104,31 @@ class consul::install {
     }
   }
 
-  if $consul::manage_user {
+  if $consul::manage_user and $consul::manage_group {
     user { $consul::user:
       ensure => 'present',
       system => true,
+      gid    => $consul::group,
       groups => $consul::extra_groups,
     }
-
-    if $consul::manage_group {
-      Group[$consul::group] -> User[$consul::user]
-    }
-  }
-  if $consul::manage_group {
     group { $consul::group:
       ensure => 'present',
       system => true,
+    }
+    Group[$consul::group] -> User[$consul::user]
+  } else {
+    if $consul::manage_user {
+      user { $consul::user:
+        ensure => 'present',
+        system => true,
+        groups => $consul::extra_groups,
+      }
+    }
+    if $consul::manage_group {
+      group { $consul::group:
+        ensure => 'present',
+        system => true,
+      }
     }
   }
 }
