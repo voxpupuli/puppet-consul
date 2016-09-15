@@ -5,17 +5,17 @@
 #
 class consul::params {
 
-  $install_method        = 'url'
-  $package_name          = 'consul'
-  $package_ensure        = 'latest'
-  $download_url_base     = 'https://releases.hashicorp.com/consul/'
-  $download_extension    = 'zip'
-  $ui_package_name       = 'consul_ui'
-  $ui_package_ensure     = 'latest'
-  $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
-  $ui_download_extension = 'zip'
-  $version               = '0.5.2'
   $config_mode           = '0660'
+  $download_extension    = 'zip'
+  $download_url_base     = 'https://releases.hashicorp.com/consul/'
+  $install_method        = 'url'
+  $package_ensure        = 'latest'
+  $package_name          = 'consul'
+  $ui_download_extension = 'zip'
+  $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
+  $ui_package_ensure     = 'latest'
+  $ui_package_name       = 'consul_ui'
+  $version               = '0.5.2'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }

@@ -5,44 +5,44 @@
 #
 # == Parameters
 #
-# [*ensure*]
-#   Define availability of service. Use 'absent' to remove existing services.
-#   Defaults to 'present'
-#
-# [*service_name*]
-#   Name of the service. Defaults to title.
-#
-# [*id*]
-#   The unique ID of the service on the node. Defaults to title.
-#
-# [*tags*]
-#   Array of strings.
-#
 # [*address*]
 #   IP address the service is running at.
-#
-# [*port*]
-#   TCP port the service runs on.
 #
 # [*checks*]
 #   If provided an array of checks that will be added to this service
 #
-# [*token*]
-#   ACL token for interacting with the catalog (must be 'management' type)
-#
 # [*enable_tag_override*]
 #   enableTagOverride support for service. Defaults to False.
 #
+# [*ensure*]
+#   Define availability of service. Use 'absent' to remove existing services.
+#   Defaults to 'present'
+#
+# [*id*]
+#   The unique ID of the service on the node. Defaults to title.
+#
+# [*port*]
+#   TCP port the service runs on.
+#
+# [*service_name*]
+#   Name of the service. Defaults to title.
+#
+# [*tags*]
+#   Array of strings.
+#
+# [*token*]
+#   ACL token for interacting with the catalog (must be 'management' type)
+#
 define consul::service(
-  $ensure              = present,
-  $service_name        = $title,
-  $id                  = $title,
-  $tags                = [],
   $address             = undef,
-  $port                = undef,
   $checks              = [],
-  $token               = undef,
   $enable_tag_override = false,
+  $ensure              = present,
+  $id                  = $title,
+  $port                = undef,
+  $service_name        = $title,
+  $tags                = [],
+  $token               = undef,
 ) {
   include ::consul
 

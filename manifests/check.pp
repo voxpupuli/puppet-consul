@@ -9,56 +9,56 @@
 #   Define availability of check. Use 'absent' to remove existing checks.
 #   Defaults to 'present'
 #
+# [*http*]
+#   HTTP endpoint for the service healthcheck
+#
 # [*id*]
 #   The id for the check (defaults to $title)
 #
-# [*ttl*]
-#   Value in seconds before the http endpoint considers a failing healthcheck
-#   to be "HARD" down.
+# [*interval*]
+#   Value in seconds for the interval between runs of the check
 #
-# [*http*]
-#   HTTP endpoint for the service healthcheck
+# [*notes*]
+#   Human readable description of the check
 #
 # [*script*]
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes.
 #
-# [*tcp*]
-#   The IP/hostname and port for the service healthcheck. Should be in
-#   'hostname:port' format.
-#
-# [*interval*]
-#   Value in seconds for the interval between runs of the check
-#
 # [*service_id*]
 #   An optional service_id to match this check against
-#
-# [*timeout*]
-#   A timeout value for HTTP request only
-#
-# [*notes*]
-#   Human readable description of the check
-#
-# [*token*]
-#   ACL token for interacting with the catalog (must be 'management' type)
 #
 # [*status*]
 #   The default state of the check when it is registered against a consul
 #   agent. Should be either "critical" or "passing"
 #
+# [*tcp*]
+#   The IP/hostname and port for the service healthcheck. Should be in
+#   'hostname:port' format.
+#
+# [*timeout*]
+#   A timeout value for HTTP request only
+#
+# [*token*]
+#   ACL token for interacting with the catalog (must be 'management' type)
+#
+# [*ttl*]
+#   Value in seconds before the http endpoint considers a failing healthcheck
+#   to be "HARD" down.
+#
 define consul::check(
   $ensure     = present,
-  $id         = $title,
-  $ttl        = undef,
   $http       = undef,
-  $script     = undef,
-  $tcp        = undef,
+  $id         = $title,
   $interval   = undef,
-  $service_id = undef,
-  $timeout    = undef,
   $notes      = undef,
-  $token      = undef,
+  $script     = undef,
+  $service_id = undef,
   $status     = undef,
+  $tcp        = undef,
+  $timeout    = undef,
+  $token      = undef,
+  $ttl        = undef,
 ) {
   include consul
 

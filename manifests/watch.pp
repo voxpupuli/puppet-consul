@@ -5,27 +5,27 @@
 #
 # == Parameters
 #
+# [*datacenter*]
+#   String overriding consul's default datacenter.
+#
 # [*ensure*]
 #   Define availability of watch. Use 'absent' to remove existing watches.
 #   Defaults to 'present'
 #
+# [*event_name*]
+#   Name of an event to watch for.
+#
 # [*handler*]
 #   Full path to the script that will be excuted.
-#
-# [*datacenter*]
-#   String overriding consul's default datacenter.
-#
-# [*token*]
-#   String to override the default token.
-#
-# [*type*]
-#   Type of data to watch. (Like key, service, services, nodes)
 #
 # [*key*]
 #   Watch a specific key.
 #
 # [*keyprefix*]
 #   Watch a whole keyprefix
+#
+# [*passingonly*]
+#   Watch only those services that are passing healthchecks.
 #
 # [*service*]
 #   Watch a particular service
@@ -34,28 +34,28 @@
 #   This actually maps to the "tag" param for service watches.
 #   (`tag` is a puppet builtin metaparameter)
 #
-# [*passingonly*]
-#   Watch only those services that are passing healthchecks.
-#
 # [*state*]
 #   Watch a state change on a service healthcheck.
 #
-# [*event_name*]
-#   Name of an event to watch for.
+# [*token*]
+#   String to override the default token.
+#
+# [*type*]
+#   Type of data to watch. (Like key, service, services, nodes)
 #
 define consul::watch(
-  $ensure       = present,
-  $handler      = undef,
   $datacenter   = undef,
-  $token        = undef,
-  $type         = undef,
+  $ensure       = present,
+  $event_name   = undef,
+  $handler      = undef,
   $key          = undef,
   $keyprefix    = undef,
+  $passingonly  = undef,
   $service      = undef,
   $service_tag  = undef,
-  $passingonly  = undef,
   $state        = undef,
-  $event_name   = undef,
+  $token        = undef,
+  $type         = undef,
 ) {
   include consul
   $id = $title
