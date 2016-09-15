@@ -4,18 +4,42 @@
 # It sets variables according to platform
 #
 class consul::params {
-
+  $acls                  = {}
+  $archive_path          = '/opt/puppet-archive'
+  $bin_dir               = '/usr/local/bin'
+  $checks                = {}
+  $config_defaults       = {}
+  $config_dir            = '/etc/consul'
+  $config_hash           = {}
   $config_mode           = '0660'
   $download_extension    = 'zip'
+  $download_url          = undef
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
+  $extra_groups          = []
+  $extra_options         = ''
+  $group                 = 'consul'
   $install_method        = 'url'
+  $join_wan              = false
+  $manage_group          = true
+  $manage_service        = true
+  $manage_user           = true
   $package_ensure        = 'latest'
   $package_name          = 'consul'
+  $pretty_config         = false
+  $pretty_config_indent  = 4
+  $purge_config_dir      = true
+  $restart_on_change     = true
+  $service_enable        = true
+  $service_ensure        = 'running'
+  $services              = {}
   $ui_download_extension = 'zip'
+  $ui_download_url       = undef
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_package_ensure     = 'latest'
   $ui_package_name       = 'consul_ui'
+  $user                  = 'consul'
   $version               = '0.5.2'
+  $watches               = {}
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
