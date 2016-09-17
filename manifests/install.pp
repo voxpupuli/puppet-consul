@@ -4,22 +4,22 @@
 #
 class consul::install {
 
-  if $consul::data_dir {
-    file { $consul::data_dir:
+  if $::consul::data_dir {
+    file { $::consul::data_dir:
       ensure => 'directory',
-      owner  => $consul::user,
-      group  => $consul::group,
+      owner  => $::consul::user,
+      group  => $::consul::group,
       mode   => '0755',
     }
   }
 
-  case $consul::install_method {
+  case $::consul::install_method {
     'url': {
-      $install_path = $consul::archive_path
+      $install_path = $::consul::archive_path
 
       # only notify if we are installing a new version (work around for switching to archive module)
-      if $::consul_version != $consul::version {
-        $do_notify_service = $consul::notify_service
+      if $::consul_version != $::consul::version {
+        $do_notify_service = $::consul::notify_service
       } else {
         $do_notify_service = undef
       }
@@ -35,7 +35,7 @@ class consul::install {
       }->
       archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
-        source       => $consul::real_download_url,
+        source       => $::consul::real_download_url,
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
         creates      => "${install_path}/consul-${consul::version}/consul",
@@ -51,7 +51,7 @@ class consul::install {
           target => "${install_path}/consul-${consul::version}/consul";
       }
 
-      if ($consul::ui_dir and $consul::data_dir) {
+      if ($::consul::ui_dir and $::consul::data_dir) {
 
         # The 'dist' dir was removed from the web_ui archive in Consul version 0.6.0
         if (versioncmp($::consul::version, '0.6.0') < 0) {
@@ -67,35 +67,35 @@ class consul::install {
         }->
         archive { "${install_path}/consul_web_ui-${consul::version}.zip":
           ensure       => present,
-          source       => $consul::real_ui_download_url,
+          source       => $::consul::real_ui_download_url,
           extract      => true,
           extract_path => "${install_path}/consul-${consul::version}_web_ui",
           creates      => $archive_creates,
         }->
-        file { $consul::ui_dir:
+        file { $::consul::ui_dir:
           ensure => 'symlink',
           target => $ui_symlink_target,
         }
       }
     }
     'package': {
-      package { $consul::package_name:
-        ensure => $consul::package_ensure,
+      package { $::consul::package_name:
+        ensure => $::consul::package_ensure,
       }
 
-      if $consul::ui_dir {
-        package { $consul::ui_package_name:
-          ensure  => $consul::ui_package_ensure,
-          require => Package[$consul::package_name]
+      if $::consul::ui_dir {
+        package { $::consul::ui_package_name:
+          ensure  => $::consul::ui_package_ensure,
+          require => Package[$::consul::package_name]
         }
       }
 
-      if $consul::manage_user {
-        User[$consul::user] -> Package[$consul::package_name]
+      if $::consul::manage_user {
+        User[$::consul::user] -> Package[$::consul::package_name]
       }
 
-      if $consul::data_dir {
-        Package[$consul::package_name] -> File[$consul::data_dir]
+      if $::consul::data_dir {
+        Package[$::consul::package_name] -> File[$::consul::data_dir]
       }
     }
     'none': {}
@@ -104,19 +104,19 @@ class consul::install {
     }
   }
 
-  if $consul::manage_user {
-    user { $consul::user:
+  if $::consul::manage_user {
+    user { $::consul::user:
       ensure => 'present',
       system => true,
-      groups => $consul::extra_groups,
+      groups => $::consul::extra_groups,
     }
 
-    if $consul::manage_group {
-      Group[$consul::group] -> User[$consul::user]
+    if $::consul::manage_group {
+      Group[$::consul::group] -> User[$::consul::user]
     }
   }
-  if $consul::manage_group {
-    group { $consul::group:
+  if $::consul::manage_group {
+    group { $::consul::group:
       ensure => 'present',
       system => true,
     }

@@ -15,9 +15,9 @@ class consul::config(
   $purge = true,
 ) {
 
-  if $consul::init_style {
+  if $::consul::init_style {
 
-    case $consul::init_style {
+    case $::consul::init_style {
       'upstart': {
         file { '/etc/init/consul.conf':
           mode    => '0444',
@@ -84,20 +84,20 @@ class consul::config(
     }
   }
 
-  file { $consul::config_dir:
+  file { $::consul::config_dir:
     ensure  => 'directory',
-    owner   => $consul::user,
-    group   => $consul::group,
+    owner   => $::consul::user,
+    group   => $::consul::group,
     purge   => $purge,
     recurse => $purge,
   } ->
   file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    owner   => $consul::user,
-    group   => $consul::group,
-    mode    => $consul::config_mode,
-    content => consul_sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
   }
 
 }
