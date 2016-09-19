@@ -50,7 +50,8 @@
 #   Name of the group that should own the consul configuration files.
 #
 # [*init_style*]
-#   What style of init system your system uses.
+#   What style of init system your system uses. Set to 'unmanaged' to disable
+#   managing init system files for the consul service entirely.
 #
 # [*install_method*]
 #   Valid strings: `package` - install via system package

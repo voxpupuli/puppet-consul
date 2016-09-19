@@ -15,7 +15,7 @@ class consul::config(
   $purge = true,
 ) {
 
-  if $::consul::init_style {
+  if $::consul::init_style != 'unmanaged' {
 
     case $::consul::init_style {
       'upstart': {
