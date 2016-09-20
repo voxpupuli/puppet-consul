@@ -93,9 +93,6 @@ class consul::params {
   } elsif $::operatingsystem == 'Amazon' {
     $init_style = 'init'
   } else {
-    $init_style = undef
-  }
-  if $init_style == undef {
-    fail('Unsupported OS')
+    fail('Cannot determine init_style, unsupported OS')
   }
 }
