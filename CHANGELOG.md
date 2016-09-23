@@ -1,12 +1,30 @@
 # Change Log
 
-## [1.0.10](https://github.com/solarkennedy/puppet-consul/tree/1.0.10) (2016-07-15)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.9...1.0.10)
+## [1.1.0](https://github.com/solarkennedy/puppet-consul/tree/1.1.0) (2016-09-23)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.10...1.1.0)
 
 **Closed issues:**
 
+- Support for puppet-archive \>=1.0.0 [\#275](https://github.com/solarkennedy/puppet-consul/issues/275)
+- Consul service is not starting up [\#273](https://github.com/solarkennedy/puppet-consul/issues/273)
 - Question: URL method downloads the zip file every run? [\#270](https://github.com/solarkennedy/puppet-consul/issues/270)
 - Add proxy support [\#269](https://github.com/solarkennedy/puppet-consul/issues/269)
+- Changelog on Puppetforge not updated for 1.0.9 [\#268](https://github.com/solarkennedy/puppet-consul/issues/268)
+- Support talking to Consul over https for ACL operations [\#217](https://github.com/solarkennedy/puppet-consul/issues/217)
+- consul\_acl makes api call before ACL api is available [\#193](https://github.com/solarkennedy/puppet-consul/issues/193)
+
+**Merged pull requests:**
+
+- Update downloaded version to latest stable \(0.7.0\) [\#280](https://github.com/solarkennedy/puppet-consul/pull/280) ([tdevelioglu](https://github.com/tdevelioglu))
+- Decouple service from init system [\#279](https://github.com/solarkennedy/puppet-consul/pull/279) ([tdevelioglu](https://github.com/tdevelioglu))
+- Polish [\#278](https://github.com/solarkennedy/puppet-consul/pull/278) ([tdevelioglu](https://github.com/tdevelioglu))
+- Require a new version of puppet-archive [\#277](https://github.com/solarkennedy/puppet-consul/pull/277) ([solarkennedy](https://github.com/solarkennedy))
+- Allow for stable versions of puppet/archive [\#276](https://github.com/solarkennedy/puppet-consul/pull/276) ([ghoneycutt](https://github.com/ghoneycutt))
+- add retry logic when contacting the REST API for listing ACL resources [\#274](https://github.com/solarkennedy/puppet-consul/pull/274) ([cjdaniel](https://github.com/cjdaniel))
+- Rebase \#218 [\#271](https://github.com/solarkennedy/puppet-consul/pull/271) ([solarkennedy](https://github.com/solarkennedy))
+
+## [v1.0.10](https://github.com/solarkennedy/puppet-consul/tree/v1.0.10) (2016-06-23)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.9...v1.0.10)
 
 ## [v1.0.9](https://github.com/solarkennedy/puppet-consul/tree/v1.0.9) (2016-06-20)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.8...v1.0.9)

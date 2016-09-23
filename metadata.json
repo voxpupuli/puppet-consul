@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
       "version_requirement": ">= 4.6.0 <5.0.0"
     },
     {
-      "name": "voxpupuli/puppet-archive",
+      "name": "puppet/archive",
       "version_requirement": ">=1.0.0 <2.0.0"
     }
   ],
