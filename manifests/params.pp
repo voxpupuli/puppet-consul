@@ -91,7 +91,7 @@ class consul::params {
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
-    $init_style = 'init'
+    $init_style = 'redhat'
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }

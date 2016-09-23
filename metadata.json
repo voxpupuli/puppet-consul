@@ -20,6 +20,15 @@
   ],
   "operatingsystem_support": [
     {
+      "operatingsystem": "Amazon",
+      "operatingsystemrelease": [
+        "2014.09",
+        "2015.03",
+        "2015.09",
+        "2016.03"
+      ]
+    },
+    {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "5.0",

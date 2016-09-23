@@ -645,7 +645,7 @@ describe 'consul' do
       :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
     }}
 
-    it { should contain_class('consul').with_init_style('init') }
+    it { should contain_class('consul').with_init_style('redhat') }
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
   end
 
