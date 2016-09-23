@@ -86,9 +86,9 @@ describe 'consul' do
   end
 
   context "When installing via URL by default" do
-    it { should contain_archive('/opt/puppet-archive/consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }
+    it { should contain_archive('/opt/puppet-archive/consul-0.7.0.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip') }
     it { should contain_file('/opt/puppet-archive').with(:ensure => 'directory') }
-    it { should contain_file('/opt/puppet-archive/consul-0.5.2').with(:ensure => 'directory') }
+    it { should contain_file('/opt/puppet-archive/consul-0.7.0').with(:ensure => 'directory') }
     it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
@@ -96,15 +96,15 @@ describe 'consul' do
     let(:params) {{
       :archive_path   => '/usr/share/puppet-archive',
     }}
-    it { should contain_archive('/usr/share/puppet-archive/consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }
+    it { should contain_archive('/usr/share/puppet-archive/consul-0.7.0.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip') }
     it { should contain_file('/usr/share/puppet-archive').with(:ensure => 'directory') }
-    it { should contain_file('/usr/share/puppet-archive/consul-0.5.2').with(:ensure => 'directory') }
+    it { should contain_file('/usr/share/puppet-archive/consul-0.7.0').with(:ensure => 'directory') }
     it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
   context "When installing by archive via URL and current version is already installed" do
-    let(:facts) {{ :consul_version => '0.5.2' }}
-    it { should contain_archive('/opt/puppet-archive/consul-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_linux_amd64.zip') }
+    let(:facts) {{ :consul_version => '0.7.0' }}
+    it { should contain_archive('/opt/puppet-archive/consul-0.7.0.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_linux_amd64.zip') }
     it { should contain_file('/usr/local/bin/consul') }
     it { should_not contain_notify(['Class[consul::run_service]']) }
   end
@@ -121,7 +121,7 @@ describe 'consul' do
     let(:params) {{
       :download_url   => 'http://myurl',
     }}
-    it { should contain_archive('/opt/puppet-archive/consul-0.5.2.zip').with(:source => 'http://myurl') }
+    it { should contain_archive('/opt/puppet-archive/consul-0.7.0.zip').with(:source => 'http://myurl') }
     it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
   end
 
@@ -153,7 +153,7 @@ describe 'consul' do
     it { should_not contain_package('consul') }
     it { should_not contain_package('consul_ui') }
     it { should_not contain_staging__file('consul.zip') }
-    it { should_not contain_staging__file('consul_web_ui-0.5.2.zip') }
+    it { should_not contain_staging__file('consul_web_ui-0.7.0.zip') }
   end
 
   context "When installing UI via URL by default" do
@@ -163,8 +163,8 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_archive('/opt/puppet-archive/consul_web_ui-0.5.2.zip').with(:source => 'https://releases.hashicorp.com/consul/0.5.2/consul_0.5.2_web_ui.zip') }
-    it { should contain_file('/dir1/dir2').that_requires('Archive[/opt/puppet-archive/consul_web_ui-0.5.2.zip]') }
+    it { should contain_archive('/opt/puppet-archive/consul_web_ui-0.7.0.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_web_ui.zip') }
+    it { should contain_file('/dir1/dir2').that_requires('Archive[/opt/puppet-archive/consul_web_ui-0.7.0.zip]') }
     it { should contain_file('/dir1/dir2').with(:ensure => 'symlink') }
   end
 
@@ -211,7 +211,7 @@ describe 'consul' do
         'ui_dir'   => '/dir1/dir2',
       },
     }}
-    it { should contain_archive('/opt/puppet-archive/consul_web_ui-0.5.2.zip').with(:source => 'http://myurl') }
+    it { should contain_archive('/opt/puppet-archive/consul_web_ui-0.7.0.zip').with(:source => 'http://myurl') }
   end
 
   context "By default, a user and group should be installed" do
