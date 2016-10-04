@@ -58,7 +58,6 @@ Puppet::Type.type(:consul_acl).provide(
       acls = JSON.parse(res.body)
     else
       Puppet.warning("Cannot retrieve ACLs: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-      $stderr.puts "Cannot retrieve ACLs: invalid return code #{res.code} uri: #{path} body: #{req.body}"
       return {}
     end
 
