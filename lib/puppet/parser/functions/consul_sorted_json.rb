@@ -31,7 +31,7 @@ module JSON
       indent = " " * indent_len
 
       case obj
-        when NilClass,Fixnum, Float, TrueClass, FalseClass,String
+        when NilClass, :undef, Fixnum, Float, TrueClass, FalseClass, String
           return simple_generate(obj)
         when Array
           arrayRet = []
