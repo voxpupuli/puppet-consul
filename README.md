@@ -201,6 +201,22 @@ ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
 
+## Prepared Queries
+
+```puppet
+consul_prepared_query { 'consul':
+  ensure               => 'present',
+  service_name         => 'consul',
+  service_failover_n   => 1,
+  service_failover_dcs => [ 'dc1', 'dc2' ],
+  service_only_passing => true,
+  service_tags         => [ 'tag1', 'tag2' ],
+  ttl                  => 10,
+}
+```
+
+This provider currently only has support for basic prepared queries (not templated queries).
+
 ## Limitations
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
