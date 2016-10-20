@@ -18,6 +18,7 @@ class consul::params {
   $extra_groups          = []
   $extra_options         = ''
   $group                 = 'consul'
+  $log_file              = '/var/log/consul'
   $install_method        = 'url'
   $join_wan              = false
   $manage_group          = true
