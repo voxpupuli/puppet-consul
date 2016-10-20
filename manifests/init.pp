@@ -154,6 +154,7 @@ class consul (
   $extra_groups          = $::consul::params::extra_groups,
   $extra_options         = $::consul::params::extra_options,
   $group                 = $::consul::params::group,
+  $log_file              = $::consul::params::log_file,
   $init_style            = $::consul::params::init_style,
   $install_method        = $::consul::params::install_method,
   $join_wan              = $::consul::params::join_wan,
