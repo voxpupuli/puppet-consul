@@ -39,7 +39,7 @@ Puppet::Type.newtype(:consul_prepared_query) do
     desc 'Failover to the nearest <n> datacenters'
     defaultto 0
     validate do |value|
-      raise ArgumentError, "Nearest failover datacenters must be an integer" if not value.is_a?(Integer)
+      raise ArgumentError, "Nearest <n> failover datacenters must be an integer" if not value.is_a?(Integer)
     end
   end
 
