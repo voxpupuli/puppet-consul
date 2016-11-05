@@ -217,6 +217,18 @@ consul_prepared_query { 'consul':
 
 This provider currently only has support for basic prepared queries (not templated queries).
 
+## Key/Value Objects
+
+```puppet
+consul_key_value { 'key/path':
+  ensure => 'present',
+  value  => 'myvaluestring',
+  flags  => 12345,
+}
+```
+
+This provider allows you to manage key/value pairs.
+
 ## Limitations
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)

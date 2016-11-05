@@ -8,7 +8,7 @@ describe Puppet::Type.type(:consul_prepared_query) do
 
   context 'with query parameters provided' do
     before :each do
-      @acl = Puppet::Type.type(:consul_prepared_query).new(
+      @prepared_query = Puppet::Type.type(:consul_prepared_query).new(
         :name                 => 'testing',
         :token                => '',
         :service_name         => 'testing',
@@ -21,11 +21,11 @@ describe Puppet::Type.type(:consul_prepared_query) do
     end
 
     it 'should default to localhost' do
-      expect(@acl[:hostname]).to eq('localhost')
+      expect(@prepared_query[:hostname]).to eq('localhost')
     end
 
     it 'should default to http' do
-      expect(@acl[:protocol]).to eq(:http)
+      expect(@prepared_query[:protocol]).to eq(:http)
     end
   end
 end
