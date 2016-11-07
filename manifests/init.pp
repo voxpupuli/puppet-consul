@@ -233,19 +233,19 @@ class consul (
   }
 
   if $services {
-    create_resources(consul::service, $services)
+    create_resources(consul::service, hiera_hash('consul::services', $services))
   }
 
   if $watches {
-    create_resources(consul::watch, $watches)
+    create_resources(consul::watch, hiera_hash('consul::watches', $watches)))
   }
 
   if $checks {
-    create_resources(consul::check, $checks)
+    create_resources(consul::check, hiera_hash('consul::checks', $checks))
   }
 
   if $acls {
-    create_resources(consul_acl, $acls)
+    create_resources(consul_acl, hiera_hash('consul::acls', $acls))
   }
 
   $notify_service = $restart_on_change ? {
