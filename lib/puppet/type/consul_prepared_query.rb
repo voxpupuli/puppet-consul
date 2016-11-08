@@ -108,4 +108,18 @@ Puppet::Type.newtype(:consul_prepared_query) do
       raise ArgumentError, "Number of API tries must be a number" if not value.is_a?(Integer)
     end
   end
+
+  newparam(:template_regexp) do
+    desc 'regexp for template'
+    validate do |value|
+      raise ArgumentError, "The template regexp must be a string" if not value.is_a?(String)
+    end
+  end
+
+  newparam(:template_type) do
+    desc 'type for template'
+    validate do |value|
+      raise ArgumentError, "The template type must be a string" if not value.is_a?(String)
+    end
+  end
 end
