@@ -158,6 +158,8 @@ Puppet::Type.type(:consul_prepared_query).provide(
     hostname = @resource[:hostname]
     protocol = @resource[:protocol]
     tries = @resource[:api_tries]
+    template_regexp = @resource[:template_regexp]
+    template_type = @resource[:template_type]
     prepared_query = self.get_resource(name, port, hostname, protocol, tries)
     if prepared_query
       id = prepared_query[:id]
@@ -179,7 +181,12 @@ Puppet::Type.type(:consul_prepared_query).provide(
         },
         "DNS"    => {
           "TTL" => "#{ttl}s"
-        }})
+        },
+        "Template" => {
+          "Type"   => template_type,
+          "Regexp" => template_regexp,
+        }
+      })
 
     else
       create_prepared_query({
@@ -196,7 +203,12 @@ Puppet::Type.type(:consul_prepared_query).provide(
         },
         "DNS"    => {
           "TTL" => "#{ttl}s"
-        }})
+        },
+        "Template" => {
+          "Type"   => template_type,
+          "Regexp" => template_regexp,
+        }
+      })
     end
     @property_hash.clear
   end
