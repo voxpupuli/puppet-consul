@@ -108,6 +108,7 @@ class consul::install {
     user { $::consul::user:
       ensure => 'present',
       system => true,
+      shell  => '/sbin/nologin',
       groups => $::consul::extra_groups,
     }
 
