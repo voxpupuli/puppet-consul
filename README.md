@@ -226,6 +226,7 @@ consul_prepared_query { 'consul':
   service_failover_dcs => [ 'dc1', 'dc2' ],
   service_only_passing => true,
   service_tags         => [ '${match(2)}' ], # lint:ignore:single_quote_string_with_variables
+  template             => true,
   template_regexp      => '^consul-(.*)-(.*)$',
   template_type        => 'name_prefix_match',
 }
