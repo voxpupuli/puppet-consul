@@ -1,3 +1,5 @@
+require 'puppet/parameter/boolean'
+
 Puppet::Type.newtype(:consul_prepared_query) do
 
   desc <<-'EOD'
@@ -109,8 +111,14 @@ Puppet::Type.newtype(:consul_prepared_query) do
     end
   end
 
+  newparam(:template, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    desc 'is template?'
+    defaultto false
+  end
+
   newparam(:template_regexp) do
     desc 'regexp for template'
+    defaultto ''
     validate do |value|
       raise ArgumentError, "The template regexp must be a string" if not value.is_a?(String)
     end
@@ -118,6 +126,7 @@ Puppet::Type.newtype(:consul_prepared_query) do
 
   newparam(:template_type) do
     desc 'type for template'
+    defaultto 'name_prefix_match'
     validate do |value|
       raise ArgumentError, "The template type must be a string" if not value.is_a?(String)
     end

@@ -158,57 +158,44 @@ Puppet::Type.type(:consul_prepared_query).provide(
     hostname = @resource[:hostname]
     protocol = @resource[:protocol]
     tries = @resource[:api_tries]
+    template = @resource[:template]
     template_regexp = @resource[:template_regexp]
     template_type = @resource[:template_type]
     prepared_query = self.get_resource(name, port, hostname, protocol, tries)
+    query_data = {
+      "Name"    => "#{name}",
+      "Token"   => "#{token}",
+      "Service" => {
+        "Service"     => "#{service_name}",
+        "Failover"    => {
+          "NearestN"    => service_failover_n,
+          "Datacenters" => service_failover_dcs,
+        },
+        "OnlyPassing" => service_only_passing,
+        "Tags"        => service_tags,
+      },
+      "DNS"    => {
+        "TTL" => "#{ttl}s"
+      }
+    }
+    if template
+      query_data.merge!({
+        "Template" => {
+          "Type"   => template_type,
+          "Regexp" => template_regexp,
+        }
+      })
+    end
     if prepared_query
       id = prepared_query[:id]
       if @property_flush[:ensure] == :absent
         delete_prepared_query(id)
         return
       end
-      update_prepared_query(id, {
-        "Name"    => "#{name}",
-        "Token"   => "#{token}",
-        "Service" => {
-          "Service"     => "#{service_name}",
-          "Failover"    => {
-            "NearestN"    => service_failover_n,
-            "Datacenters" => service_failover_dcs,
-          },
-          "OnlyPassing" => service_only_passing,
-          "Tags"        => service_tags,
-        },
-        "DNS"    => {
-          "TTL" => "#{ttl}s"
-        },
-        "Template" => {
-          "Type"   => template_type,
-          "Regexp" => template_regexp,
-        }
-      })
+      update_prepared_query(id, query_data)
 
     else
-      create_prepared_query({
-        "Name"    => "#{name}",
-        "Token"   => "#{token}",
-        "Service" => {
-          "Service"     => "#{service_name}",
-          "Failover"    => {
-            "NearestN"    => service_failover_n,
-            "Datacenters" => service_failover_dcs,
-          },
-          "OnlyPassing" => service_only_passing,
-          "Tags"        => service_tags,
-        },
-        "DNS"    => {
-          "TTL" => "#{ttl}s"
-        },
-        "Template" => {
-          "Type"   => template_type,
-          "Regexp" => template_regexp,
-        }
-      })
+      create_prepared_query(query_data)
     end
     @property_hash.clear
   end
