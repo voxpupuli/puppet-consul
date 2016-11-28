@@ -93,6 +93,8 @@ class consul::params {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
     $init_style = 'redhat'
+  } elsif $::operatingsystem == 'FreeBSD' {
+    $init_style = 'freebsd'
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }
