@@ -1,0 +1,15 @@
+# Managed by Puppet
+<% if scope.lookupvar('consul::service_enable') %>
+consul_enable="YES"
+<% else %>
+consul_enable="NO"
+<% end %>
+<% if scope.lookupvar('consul::user') %>
+consul_user="<%= scope.lookupvar('consul::user') %>"
+<% end %>
+<% if scope.lookupvar('consul::group') %>
+consul_group="<%= scope.lookupvar('consul::group') %>"
+<% end %>
+<% if scope.lookupvar('consul::bin_dir') %>
+consul_dir="<%= scope.lookupvar('consul::bin_dir') %>"
+<% end %>
