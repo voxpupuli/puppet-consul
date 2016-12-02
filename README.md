@@ -201,7 +201,7 @@ ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
 
-## Prepared Queries
+## Prepared Queries and Prepared Query Templates
 
 ```puppet
 consul_prepared_query { 'consul':
@@ -215,7 +215,22 @@ consul_prepared_query { 'consul':
 }
 ```
 
-This provider currently only has support for basic prepared queries (not templated queries).
+or a prepared query template:
+
+```puppet
+consul_prepared_query { 'consul':
+  ensure               => 'present',
+  service_name         => 'consul',
+  service_name         => 'consul-${match(1)}' # lint:ignore:single_quote_string_with_variables
+  service_failover_n   => 1,
+  service_failover_dcs => [ 'dc1', 'dc2' ],
+  service_only_passing => true,
+  service_tags         => [ '${match(2)}' ], # lint:ignore:single_quote_string_with_variables
+  template             => true,
+  template_regexp      => '^consul-(.*)-(.*)$',
+  template_type        => 'name_prefix_match',
+}
+```
 
 ## Key/Value Objects
 
