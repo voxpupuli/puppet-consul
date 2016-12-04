@@ -11,7 +11,7 @@ ExecStart=<%= scope.lookupvar('consul::bin_dir') %>/consul agent \
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=always
-RestartSec=42s
+RestartSec=5s
 LimitNOFILE=131072
 
 [Install]
