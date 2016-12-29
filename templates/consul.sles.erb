@@ -22,7 +22,7 @@ rc_reset
 
 CONSUL_BIN=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG_DIR=<%= scope.lookupvar('consul::config_dir') %>
-LOG_FILE=/var/log/consul
+LOG_FILE=<%= scope.lookupvar('consul::log_file') %>
 
 
 # read settings like GOMAXPROCS from "/etc/sysconfig/consul"
