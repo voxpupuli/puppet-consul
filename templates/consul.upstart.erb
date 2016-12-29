@@ -10,7 +10,7 @@ env GROUP=<%= scope.lookupvar('consul::group') %>
 env DEFAULTS=/etc/default/consul
 env RUNDIR=/var/run/consul
 env PID_FILE=/var/run/consul/consul.pid
-env LOG_FILE=/var/log/consul
+env LOG_FILE=<%= scope.lookupvar('consul::log_file') %>
 env RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
 
 pre-start script
