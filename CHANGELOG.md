@@ -1,7 +1,48 @@
 # Change Log
 
-## [1.1.0](https://github.com/solarkennedy/puppet-consul/tree/1.1.0) (2016-09-23)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.10...1.1.0)
+## [2.0.0](https://github.com/solarkennedy/puppet-consul/tree/2.0.0) (2016-12-29)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.1.0...2.0.0)
+
+**Implemented enhancements:**
+
+- Support for prepared queries [\#239](https://github.com/solarkennedy/puppet-consul/issues/239)
+
+**Closed issues:**
+
+- cant use latest consul version as parameter [\#305](https://github.com/solarkennedy/puppet-consul/issues/305)
+- EC2 Join Support [\#302](https://github.com/solarkennedy/puppet-consul/issues/302)
+- Consul user is created with login shell [\#293](https://github.com/solarkennedy/puppet-consul/issues/293)
+- Validate and document all params that could be passed to ::consul [\#170](https://github.com/solarkennedy/puppet-consul/issues/170)
+
+**Merged pull requests:**
+
+- Add support of custom log\_file in sles and upstart init scripts [\#306](https://github.com/solarkennedy/puppet-consul/pull/306) ([AlexLov](https://github.com/AlexLov))
+- More Systemd unit file improvements [\#304](https://github.com/solarkennedy/puppet-consul/pull/304) ([amiryal](https://github.com/amiryal))
+- Check $::consul\_version more correctly [\#303](https://github.com/solarkennedy/puppet-consul/pull/303) ([logic](https://github.com/logic))
+- Cleanup Systemd unit file [\#301](https://github.com/solarkennedy/puppet-consul/pull/301) ([amiryal](https://github.com/amiryal))
+- Fixing init service start/stop messages and locks [\#300](https://github.com/solarkennedy/puppet-consul/pull/300) ([mrwulf](https://github.com/mrwulf))
+- Initial support for FreeBSD platform [\#299](https://github.com/solarkennedy/puppet-consul/pull/299) ([olevole](https://github.com/olevole))
+- Revert "Set login shell for consul user to /sbin/nologin" [\#298](https://github.com/solarkennedy/puppet-consul/pull/298) ([solarkennedy](https://github.com/solarkennedy))
+- Set login shell for consul user to /sbin/nologin [\#297](https://github.com/solarkennedy/puppet-consul/pull/297) ([madAndroid](https://github.com/madAndroid))
+- add support for prepared query templates [\#296](https://github.com/solarkennedy/puppet-consul/pull/296) ([adamcstephens](https://github.com/adamcstephens))
+- KV Provider / Prepared Query Bugfixes [\#294](https://github.com/solarkennedy/puppet-consul/pull/294) ([djtaylor](https://github.com/djtaylor))
+- BREAKING: Change the default 'archive\_path' to '/opt/consul/archives'. [\#292](https://github.com/solarkennedy/puppet-consul/pull/292) ([jmkeyes](https://github.com/jmkeyes))
+- ADD parameter "log\_file" for custom log location [\#289](https://github.com/solarkennedy/puppet-consul/pull/289) ([miso231](https://github.com/miso231))
+- Prepared Queries [\#288](https://github.com/solarkennedy/puppet-consul/pull/288) ([djtaylor](https://github.com/djtaylor))
+- Catch :undef when pretty-printing in consul\_sorted\_json.rb [\#287](https://github.com/solarkennedy/puppet-consul/pull/287) ([tdevelioglu](https://github.com/tdevelioglu))
+- Reduce the travis matrix even more [\#286](https://github.com/solarkennedy/puppet-consul/pull/286) ([solarkennedy](https://github.com/solarkennedy))
+- Remove puppet error when ACLs cannot be retrieved [\#285](https://github.com/solarkennedy/puppet-consul/pull/285) ([thejandroman](https://github.com/thejandroman))
+- Drop pinning for 1.8.7 as there are no tests for it anymore. [\#281](https://github.com/solarkennedy/puppet-consul/pull/281) ([tdevelioglu](https://github.com/tdevelioglu))
+
+## [v1.1.0](https://github.com/solarkennedy/puppet-consul/tree/v1.1.0) (2016-09-23)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.12...v1.1.0)
+
+**Merged pull requests:**
+
+- Update downloaded version to latest stable \(0.7.0\) [\#280](https://github.com/solarkennedy/puppet-consul/pull/280) ([tdevelioglu](https://github.com/tdevelioglu))
+
+## [v1.0.12](https://github.com/solarkennedy/puppet-consul/tree/v1.0.12) (2016-09-23)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.0.10...v1.0.12)
 
 **Closed issues:**
 
@@ -15,7 +56,6 @@
 
 **Merged pull requests:**
 
-- Update downloaded version to latest stable \(0.7.0\) [\#280](https://github.com/solarkennedy/puppet-consul/pull/280) ([tdevelioglu](https://github.com/tdevelioglu))
 - Decouple service from init system [\#279](https://github.com/solarkennedy/puppet-consul/pull/279) ([tdevelioglu](https://github.com/tdevelioglu))
 - Polish [\#278](https://github.com/solarkennedy/puppet-consul/pull/278) ([tdevelioglu](https://github.com/tdevelioglu))
 - Require a new version of puppet-archive [\#277](https://github.com/solarkennedy/puppet-consul/pull/277) ([solarkennedy](https://github.com/solarkennedy))
