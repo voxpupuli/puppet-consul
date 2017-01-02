@@ -5,7 +5,7 @@
 #
 class consul::params {
   $acls                  = {}
-  $archive_path          = '/opt/consul/archives'
+  $archive_path          = ''
   $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}

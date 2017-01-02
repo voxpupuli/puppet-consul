@@ -15,7 +15,8 @@ class consul::install {
 
   case $::consul::install_method {
     'url': {
-      $install_path = $::consul::archive_path
+      $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
+      $install_path = pick($::consul::archive_path, "${install_prefix}/archives")
 
       # only notify if we are installing a new version (work around for switching to archive module)
       if getvar('$::consul_version') != $::consul::version {
