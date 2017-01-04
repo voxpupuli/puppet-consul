@@ -32,6 +32,15 @@ Puppet::Type.newtype(:consul_acl) do
     validate do |value|
       raise ArgumentError, "ACL rules must be provided as a hash" if not value.is_a?(Hash)
     end
+
+    def is_to_s(value)
+      should_to_s(value)
+    end
+
+    def should_to_s(value)
+      require 'pp'
+      value.pretty_inspect
+    end
   end
 
   newproperty(:id) do
