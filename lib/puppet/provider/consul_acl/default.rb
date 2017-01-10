@@ -64,16 +64,16 @@ Puppet::Type.type(:consul_acl).provide(
     nacls = acls.collect do |acl|
       if !acl['Rules'].empty?
         { :name   => acl["Name"],
-             :type   => acl["Type"],
-             :rules  => JSON.parse(acl["Rules"]),
-             :id     => acl["ID"],
-             :ensure => :present}
+          :type   => acl["Type"].intern,
+          :rules  => JSON.parse(acl["Rules"]),
+          :id     => acl["ID"],
+          :ensure => :present}
       else
         { :name   => acl["Name"],
-             :type   => acl["Type"],
-             :rules  => {},
-             :id     => acl["ID"],
-             :ensure => :present}
+          :type   => acl["Type"].intern,
+          :rules  => {},
+          :id     => acl["ID"],
+          :ensure => :present}
       end
     end
 
