@@ -14,8 +14,8 @@ Puppet::Type.newtype(:consul_acl) do
 
   newproperty(:type) do
     desc 'Type of token'
-    newvalues('client', 'management')
-    defaultto 'client'
+    newvalues(:client, :management)
+    defaultto :client
   end
 
   newparam(:acl_api_token) do
@@ -49,8 +49,8 @@ Puppet::Type.newtype(:consul_acl) do
 
   newproperty(:protocol) do
     desc 'consul protocol'
-    newvalues('http', 'https')
-    defaultto 'http'
+    newvalues(:http, :https)
+    defaultto :http
   end
 
   newparam(:port) do
