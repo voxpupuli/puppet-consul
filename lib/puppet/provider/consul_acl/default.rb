@@ -31,8 +31,9 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    if @acls
-      return @acls
+    @acls ||= {}
+    if @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
+      return @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
     end
 
     # this might be configurable by searching /etc/consul.d
@@ -64,20 +65,20 @@ Puppet::Type.type(:consul_acl).provide(
     nacls = acls.collect do |acl|
       if !acl['Rules'].empty?
         { :name   => acl["Name"],
-             :type   => acl["Type"],
-             :rules  => JSON.parse(acl["Rules"]),
-             :id     => acl["ID"],
-             :ensure => :present}
+          :type   => acl["Type"].intern,
+          :rules  => JSON.parse(acl["Rules"]),
+          :id     => acl["ID"],
+          :ensure => :present}
       else
         { :name   => acl["Name"],
-             :type   => acl["Type"],
-             :rules  => {},
-             :id     => acl["ID"],
-             :ensure => :present}
+          :type   => acl["Type"].intern,
+          :rules  => {},
+          :id     => acl["ID"],
+          :ensure => :present}
       end
     end
 
-    @acls = nacls
+    @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nacls
     nacls
   end
 
