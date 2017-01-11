@@ -1,5 +1,6 @@
 require 'json'
 require 'net/http'
+require 'pp'
 require 'uri'
 Puppet::Type.type(:consul_acl).provide(
   :default
@@ -21,7 +22,7 @@ Puppet::Type.type(:consul_acl).provide(
 
       found_acl = found_acls.first || nil
       if found_acl
-        Puppet.debug("found #{found_acl}")
+        Puppet.debug("found #{found_acl.pretty_inspect}")
         resource.provider = new(found_acl)
       else
         Puppet.debug("found none #{name}")
@@ -63,19 +64,18 @@ Puppet::Type.type(:consul_acl).provide(
     end
 
     nacls = acls.collect do |acl|
-      if !acl['Rules'].empty?
-        { :name   => acl["Name"],
-          :type   => acl["Type"].intern,
-          :rules  => JSON.parse(acl["Rules"]),
-          :id     => acl["ID"],
-          :ensure => :present}
-      else
-        { :name   => acl["Name"],
-          :type   => acl["Type"].intern,
-          :rules  => {},
-          :id     => acl["ID"],
-          :ensure => :present}
-      end
+      {
+        :name   => acl["Name"],
+        :type   => acl["Type"].intern,
+        :rules  => acl['Rules'].empty? ? {} : JSON.parse(acl["Rules"]),
+        :id     => acl["ID"],
+        :acl_api_token => acl_api_token,
+        :port => port,
+        :hostname => hostname,
+        :protocol => protocol,
+        :tries => tries,
+        :ensure => :present
+      }
     end
 
     @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nacls
