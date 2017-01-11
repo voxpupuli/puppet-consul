@@ -73,7 +73,7 @@ Puppet::Type.type(:consul_acl).provide(
         :port => port,
         :hostname => hostname,
         :protocol => protocol,
-        :tries => tries,
+        :api_tries => tries,
         :ensure => :present
       }
     end
