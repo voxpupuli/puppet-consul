@@ -1,7 +1,22 @@
 # Change Log
 
-## [2.0.0](https://github.com/solarkennedy/puppet-consul/tree/2.0.0) (2016-12-29)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.1.0...2.0.0)
+## [v2.1.0](https://github.com/solarkennedy/puppet-consul/tree/v2.1.0) (2017-01-12)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.0.0...v2.1.0)
+
+**Closed issues:**
+
+- Annoying "defined 'protocol' as 'http' " for every consul\_acl resource [\#310](https://github.com/solarkennedy/puppet-consul/issues/310)
+- Issues with default data-dir post-\#292 [\#307](https://github.com/solarkennedy/puppet-consul/issues/307)
+
+**Merged pull requests:**
+
+- Actually fix the changes every run problem [\#315](https://github.com/solarkennedy/puppet-consul/pull/315) ([mrwulf](https://github.com/mrwulf))
+- Changes every run [\#312](https://github.com/solarkennedy/puppet-consul/pull/312) ([mrwulf](https://github.com/mrwulf))
+- Better acl rules message [\#309](https://github.com/solarkennedy/puppet-consul/pull/309) ([mrwulf](https://github.com/mrwulf))
+- Use data\_dir as a the root of the archive path. Fixes \#307 [\#308](https://github.com/solarkennedy/puppet-consul/pull/308) ([solarkennedy](https://github.com/solarkennedy))
+
+## [v2.0.0](https://github.com/solarkennedy/puppet-consul/tree/v2.0.0) (2016-12-29)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v1.1.0...v2.0.0)
 
 **Implemented enhancements:**
 
