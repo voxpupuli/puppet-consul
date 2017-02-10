@@ -4,20 +4,23 @@ module JSON
   class << self
     @@loop = 0
 
-    def sorted_generate(obj)
+    def sorted_generate(obj, quoted=false)
       case obj
         when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
-          return simple_generate(obj)
+          return simple_generate(obj, quoted)
         when Array
           arrayRet = []
           obj.each do |a|
-            arrayRet.push(sorted_generate(a))
+            arrayRet.push(sorted_generate(a, quoted))
           end
           return "[" << arrayRet.join(',') << "]";
         when Hash
           ret = []
           obj.keys.sort.each do |k|
-            ret.push(k.to_json << ":" << sorted_generate(obj[k]))
+            if k =~ /\A(node_meta|tags)\z/ then
+              quoted = true
+            end
+            ret.push(k.to_json << ":" << sorted_generate(obj[k], quoted))
           end
           return "{" << ret.join(",") << "}";
         else
@@ -25,14 +28,14 @@ module JSON
       end
     end
 
-    def sorted_pretty_generate(obj, indent_len=4)
+    def sorted_pretty_generate(obj, indent_len=4, quoted=false)
 
       # Indent length
       indent = " " * indent_len
 
       case obj
         when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
-          return simple_generate(obj)
+          return simple_generate(obj, quoted)
         when Array
           arrayRet = []
 
@@ -49,7 +52,7 @@ module JSON
           #
           @@loop += 1
           obj.each do |a|
-            arrayRet.push(sorted_pretty_generate(a, indent_len))
+            arrayRet.push(sorted_pretty_generate(a, indent_len, quoted))
           end
           @@loop -= 1
 
@@ -61,7 +64,7 @@ module JSON
           # This loop works in a similar way to the above
           @@loop += 1
           obj.keys.sort.each do |k|
-            ret.push("#{indent * @@loop}" << k.to_json << ": " << sorted_pretty_generate(obj[k], indent_len))
+            ret.push("#{indent * @@loop}" << k.to_json << ": " << sorted_pretty_generate(obj[k], indent_len, quoted))
           end
           @@loop -= 1
 
@@ -73,7 +76,7 @@ module JSON
     end # end def
     private
     # simplify jsonification of standard types
-    def simple_generate(obj)
+    def simple_generate(obj, quoted=false)
       case obj
         when NilClass, :undef
           'null'
@@ -81,8 +84,8 @@ module JSON
           "#{obj}"
         else
           # Should be a string
-          # keep string integers unquoted
-          (obj =~ /\A[-]?(0|[1-9]\d*)\z/) ? obj : obj.to_json
+          # keep string integers unquoted when quoted == false
+          (obj =~ /\A[-]?(0|[1-9]\d*)\z/ && !quoted) ? obj : obj.to_json
       end
     end
 
