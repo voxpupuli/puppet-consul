@@ -12,14 +12,32 @@ class consul::install {
     ]:
       ensure => 'directory',
     }
+
+    acl { "${consul::bin_dir}/":
+      purge                        => true,
+      inherit_parent_permissions => true,
+    }
+
+    if $consul::data_dir {
+      file { $consul::data_dir:
+        ensure => 'directory',
+      }
+
+      acl { "$consul::data_dir":
+        purge       => true,
+        inherit_parent_permissions => true,
+      }
+    }
   }
 
-  if $consul::data_dir {
-    file { $consul::data_dir:
-      ensure => 'directory',
-      owner  => $consul::user,
-      group  => $consul::group,
-      mode   => '0755',
+  else {
+    if $consul::data_dir {
+      file { $consul::data_dir:
+        ensure => 'directory',
+        owner  => $consul::user,
+        group  => $consul::group,
+        mode   => '0755',
+      }
     }
   }
 
@@ -62,15 +80,19 @@ class consul::install {
         extract_path => "${install_path}/consul-${consul::version}",
         creates      => "${install_path}/consul-${consul::version}/${binary_name}",
       }->
-      file {
-        "${install_path}/consul-${consul::version}/${$binary_name}":
-          owner => $binary_owner,
-          group => $binary_group,
-          mode  => '0555';
-        "${consul::bin_dir}/${$binary_name}":
+      file {  "${consul::bin_dir}/${$binary_name}":
           ensure => link,
           notify => $do_notify_service,
           target => "${install_path}/consul-${consul::version}/${$binary_name}";
+      }
+
+      if $::operatingsystem != 'windows' {
+        file {
+          "${install_path}/consul-${consul::version}/${$binary_name}":
+            owner => $binary_owner,
+            group => $binary_group,
+            mode  => '0555';
+        }
       }
 
       if ($consul::ui_dir and $consul::data_dir) {
