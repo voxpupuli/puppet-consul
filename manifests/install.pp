@@ -19,7 +19,7 @@ class consul::install {
       $install_path = pick($::consul::archive_path, "${install_prefix}/archives")
 
       # only notify if we are installing a new version (work around for switching to archive module)
-      if getvar('$::consul_version') != $::consul::version {
+      if getvar('::consul_version') != $::consul::version {
         $do_notify_service = $::consul::notify_service
       } else {
         $do_notify_service = undef
