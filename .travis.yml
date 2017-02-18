@@ -10,14 +10,11 @@ rvm:
   - 2.1.0
 script: bundle exec rake test
 env:
-  - PUPPET_VERSION="~> 3.3.0"
   - PUPPET_VERSION="~> 3.8.4"
   - PUPPET_VERSION="~> 3.8.4" FUTURE_PARSER=yes STRICT_VARIABLES=yes
   - PUPPET_VERSION="~> 4.1.0"
 matrix:
   exclude:
-  - rvm: 2.1.0
-    env: PUPPET_VERSION="~> 3.3.0"
   - rvm: 2.1.0
     env: PUPPET_VERSION="~> 3.4.0"
   - rvm: 1.9.3
