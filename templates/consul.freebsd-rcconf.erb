@@ -1,0 +1,18 @@
+# Managed by Puppet
+<% if scope.lookupvar('consul::service_enable') %>
+consul_enable="YES"
+<% else %>
+consul_enable="NO"
+<% end %>
+<% if scope.lookupvar('consul::user') %>
+consul_user="<%= scope.lookupvar('consul::user') %>"
+<% end %>
+<% if scope.lookupvar('consul::group') %>
+consul_group="<%= scope.lookupvar('consul::group') %>"
+<% end %>
+<% if scope.lookupvar('consul::data_dir') %>
+consul_dir="<%= scope.lookupvar('consul::data_dir') %>"
+<% end %>
+<% if scope.lookupvar('consul::log_file') %>
+consul_log_file="<%= scope.lookupvar('consul::consul_log_file') %>"
+<% end %>
