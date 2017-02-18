@@ -83,6 +83,12 @@ class consul::config(
           mode    => '0444',
           owner   => 'root',
           group   => 'wheel',
+          content => template('consul/consul.freebsd-rcconf.erb')
+        }
+        file { '/usr/local/etc/rc.d/consul':
+          mode    => '0555',
+          owner   => 'root',
+          group   => 'wheel',
           content => template('consul/consul.freebsd.erb')
         }
       }
