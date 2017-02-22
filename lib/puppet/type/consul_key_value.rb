@@ -37,8 +37,8 @@ Puppet::Type.newtype(:consul_key_value) do
 
   newproperty(:protocol) do
     desc 'consul protocol'
-    newvalues('http', 'https')
-    defaultto 'http'
+    newvalues(:http, :https)
+    defaultto :http
   end
 
   newparam(:port) do
