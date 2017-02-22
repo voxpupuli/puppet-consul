@@ -32,8 +32,9 @@ Puppet::Type.type(:consul_key_value).provide(
   end
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    if @key_values
-      return @key_values
+    @key_values ||= {}
+    if @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
+      return @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
     end
 
     # this might be configurable by searching /etc/consul.d
@@ -68,13 +69,14 @@ Puppet::Type.type(:consul_key_value).provide(
 
     nkey_values = key_values.collect do |key_value|
       {
-        :name    => key_value["Key"],
-        :value   => (key_value["Value"] == nil ? '' : Base64.decode64(key_value["Value"])),
-        :flags   => Integer(key_value["Flags"]),
-        :ensure  => :present,
+        :name     => key_value["Key"],
+        :value    => (key_value["Value"] == nil ? '' : Base64.decode64(key_value["Value"])),
+        :flags    => Integer(key_value["Flags"]),
+        :ensure   => :present,
+        :protocol => protocol,
       }
     end
-    @key_values = nkey_values
+    @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nkey_values
     nkey_values
   end
 
