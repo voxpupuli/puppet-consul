@@ -7,30 +7,25 @@ class consul::install {
   # need to deal with bin_dir creation ahead of download for Windows
   if $::operatingsystem == 'windows' {
     file {[
-      "${consul::bin_dir}/",
-      "${consul::bin_dir}/logs",
-    ]:
+        "${consul::bin_dir}/",
+        "${consul::bin_dir}/logs",
+      ]:
       ensure => 'directory',
     }
-
     acl { "${consul::bin_dir}/":
-      purge                        => true,
+      purge                      => true,
       inherit_parent_permissions => true,
     }
-
     if $consul::data_dir {
       file { $consul::data_dir:
         ensure => 'directory',
       }
-
-      acl { "$consul::data_dir":
-        purge       => true,
+      acl { $consul::data_dir:
+        purge                      => true,
         inherit_parent_permissions => true,
       }
     }
-  }
-
-  else {
+  } else {
     if $consul::data_dir {
       file { $consul::data_dir:
         ensure => 'directory',
@@ -91,7 +86,7 @@ class consul::install {
           "${install_path}/consul-${consul::version}/${$binary_name}":
             owner => $binary_owner,
             group => $binary_group,
-            mode  => '0555';
+            mode  => '0555',
         }
       }
 
