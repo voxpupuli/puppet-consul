@@ -15,7 +15,6 @@ class consul::params {
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_download_extension = 'zip'
   $version               = '0.5.2'
-  $config_mode           = '0660'
 
   case $::architecture {
     'x86_64', 'amd64': { $arch = 'amd64' }
@@ -36,14 +35,21 @@ class consul::params {
 
   $os = downcase($::kernel)
 
+  # Make certain we define here all Windows references
   case $::operatingsystem {
     'windows': {
       $bin_dir = $::consul_windir
       $config_dir = "${bin_dir}/config"
+      $consul_user = undef
+      $consul_group = undef
+      $config_mode = undef
     }
     default: {
       $bin_dir = '/usr/local/bin'
       $config_dir = '/etc/consul'
+      $consul_user = 'consul'
+      $consul_group = 'consul'
+      $config_mode  = '0660'
     }
   }
 
