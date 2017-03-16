@@ -1,5 +1,24 @@
 # Change Log
 
+## [2.1.1](https://github.com/solarkennedy/puppet-consul/tree/2.1.1) (2017-03-15)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.0...2.1.1)
+
+**Closed issues:**
+
+- Curl return code 35 when fetching the consul binary. [\#320](https://github.com/solarkennedy/puppet-consul/issues/320)
+- Consul - Error: Invalid parameter temp\_dir\(:temp\_dir\) [\#317](https://github.com/solarkennedy/puppet-consul/issues/317)
+- Error: Cannot create /opt/consul/archives; parent directory /opt/consul does not exist [\#311](https://github.com/solarkennedy/puppet-consul/issues/311)
+- consul\_acl created on every puppet run [\#211](https://github.com/solarkennedy/puppet-consul/issues/211)
+
+**Merged pull requests:**
+
+- Try pinning more things in fixtures [\#326](https://github.com/solarkennedy/puppet-consul/pull/326) ([solarkennedy](https://github.com/solarkennedy))
+- Remove unnecessary .gitkeep files in lib/ [\#325](https://github.com/solarkennedy/puppet-consul/pull/325) ([cosmopetrich](https://github.com/cosmopetrich))
+- Fix idempotent issue within key\_value runs. [\#323](https://github.com/solarkennedy/puppet-consul/pull/323) ([jrasell](https://github.com/jrasell))
+- Reduce travis matrix [\#322](https://github.com/solarkennedy/puppet-consul/pull/322) ([solarkennedy](https://github.com/solarkennedy))
+- Bump default consul version. Improve FreeBSD support [\#319](https://github.com/solarkennedy/puppet-consul/pull/319) ([olevole](https://github.com/olevole))
+- fix ::consul\_version fact lookup during installation [\#316](https://github.com/solarkennedy/puppet-consul/pull/316) ([wstiern](https://github.com/wstiern))
+
 ## [v2.1.0](https://github.com/solarkennedy/puppet-consul/tree/v2.1.0) (2017-01-12)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.0.0...v2.1.0)
 
