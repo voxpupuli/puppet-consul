@@ -247,6 +247,7 @@ This provider allows you to manage key/value pairs.
 ## Limitations
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
+Depending on the version of puppetserver deployed it may not be new enough (1.8.0 is too old, 2.0.3 is known to work).
 
 ## Consul Template
 
