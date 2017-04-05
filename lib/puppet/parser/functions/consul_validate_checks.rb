@@ -9,11 +9,7 @@ def validate_checks(obj)
           raise Puppet::ParseError.new('interval must be defined for tcp, http, and script checks')
         end
 
-        if obj.key?("ttl")
-          if (obj.key?("http") || obj.key?("script") || obj.key?("tcp") || obj.key?("interval"))
-            raise Puppet::ParseError.new('script, http, tcp, and interval must not be defined for ttl checks')
-          end
-        elsif obj.key?("http")
+        if obj.key?("http")
           if (obj.key?("script") || obj.key?("tcp"))
             raise Puppet::ParseError.new('script and tcp must not be defined for http checks')
           end
@@ -25,7 +21,7 @@ def validate_checks(obj)
           if (obj.key?("http") || obj.key?("tcp"))
             raise Puppet::ParseError.new('http and tcp must not be defined for script checks')
           end
-        else
+        elsif (! obj.key?("ttl"))
           raise Puppet::ParseError.new('One of ttl, script, tcp, or http must be defined.')
         end
     else
