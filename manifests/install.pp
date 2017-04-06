@@ -84,7 +84,7 @@ class consul::install {
         ensure => $::consul::package_ensure,
       }
 
-      if $::consul::ui_dir {
+      if $::consul::ui_dir and $::consul::package_name != $::consul::ui_package_name {
         package { $::consul::ui_package_name:
           ensure  => $::consul::ui_package_ensure,
           require => Package[$::consul::package_name]
