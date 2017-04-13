@@ -110,9 +110,8 @@ Optionally you can pass 2 additional parameters, pretty generate and indent leng
         '192.168.34.62',
       ],
       'ports'       => {
-        'rpc'   => 8567,
         'https' => 8500,
-        'http'  => -1,
+        'http'  => 8567,
       },
     }
 
@@ -123,7 +122,7 @@ Optionally you can pass 2 additional parameters, pretty generate and indent leng
     consul_sorted_json(unsorted_hash)
 
     {"bind_addr":"192.168.34.56","client_addr":"127.0.0.1",
-    "ports":{"http":-1,"https":8500,"rpc":8567},
+    "ports":{"http":8567,"https":8500},
     "start_join":["192.168.34.60","192.168.34.61","192.168.34.62"]}
 
     ------------------------
@@ -137,9 +136,8 @@ Optionally you can pass 2 additional parameters, pretty generate and indent leng
         "bind_addr": "192.168.34.56",
         "client_addr": "127.0.0.1",
         "ports": {
-            "http": -1,
-            "https": 8500,
-            "rpc": 8567
+            "http": 8567,
+            "https": 8500
         },
         "start_join": [
             "192.168.34.60",
