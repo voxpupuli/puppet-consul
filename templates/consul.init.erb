@@ -17,7 +17,7 @@ CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 PID_FILE=/var/run/consul/consul.pid
 LOG_FILE=<%= scope.lookupvar('consul::log_file') %>
-RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
+HTTP_ADDR=-http-addr=<%= scope.lookupvar('consul::http_addr') %>:<%= scope.lookupvar('consul::http_port') %>
 
 [ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
 
@@ -70,7 +70,7 @@ stop() {
         # If consul is not acting as a server, exit gracefully
         # Use SIGINT to create a "leave" event, unless the user has explicitly
         # changed that behavior in the Consul config.
-        if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+        if ("${CONSUL}" info ${HTTP_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
             consul_pid=$(cat $PID_FILE)
             killproc $KILLPROC_OPT $CONSUL -INT
             retcode=$?
@@ -109,7 +109,7 @@ case "$1" in
         stop
         ;;
     status)
-        "$CONSUL" info ${RPC_ADDR}
+        "$CONSUL" info ${HTTP_ADDR}
         ;;
     restart)
         stop
