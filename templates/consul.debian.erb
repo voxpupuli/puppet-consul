@@ -21,7 +21,7 @@ PIDFILE=/var/run/$NAME/$NAME.pid
 DAEMON_ARGS="agent -config-dir <%= scope.lookupvar('consul::config_dir') %> <%= scope.lookupvar('consul::extra_options') %>"
 USER=<%= scope.lookupvar('consul::user') %>
 SCRIPTNAME=/etc/init.d/$NAME
-RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
+HTTP_ADDR=-http-addr=<%= scope.lookupvar('consul::http_addr') %>:<%= scope.lookupvar('consul::http_port') %>
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
@@ -66,7 +66,7 @@ do_start()
             sleep 1
             continue
         fi
-        if "$DAEMON" info ${RPC_ADDR} >/dev/null; then
+        if "$DAEMON" info ${HTTP_ADDR} >/dev/null; then
             return 0
         fi
     done
@@ -80,8 +80,8 @@ do_start()
 do_stop()
 {
     # If consul is not acting as a server, exit gracefully
-    if ("${DAEMON}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
-        "$DAEMON" leave ${RPC_ADDR}
+    if ("${DAEMON}" info ${HTTP_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+        "$DAEMON" leave ${HTTP_ADDR}
     fi
     # Return
     #   0 if daemon has been stopped
