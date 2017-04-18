@@ -39,8 +39,8 @@ class consul::config(
           owner   => 'root',
           group   => 'root',
           content => template('consul/consul.systemd.erb'),
-        }~>
-        exec { 'consul-systemd-reload':
+        }
+        ~> exec { 'consul-systemd-reload':
           command     => 'systemctl daemon-reload',
           path        => [ '/usr/bin', '/bin', '/usr/sbin' ],
           refreshonly => true,
@@ -104,8 +104,8 @@ class consul::config(
     group   => $::consul::group,
     purge   => $purge,
     recurse => $purge,
-  } ->
-  file { 'consul config.json':
+  }
+  -> file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
     owner   => $::consul::user,
