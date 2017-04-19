@@ -6,12 +6,16 @@
 
 ## Compatibility
 
+**WARNING**: Backwards incompatible changes happen in order to more easily support
+new versions of consul. Pin to the version that works for your setup!
+
 | Consul Version   | Recommended Puppet Module Version   |
 | ---------------- | ----------------------------------- |
-| >= 0.6.0         | latest                              |
+| >= 0.8.0         | latest                              |
+| 0.7.0            | <= 2.1.1                            |
+| 0.6.0            | <= 2.1.1                            |
 | 0.5.x            | 1.0.3                               |
 | 0.4.x            | 0.4.6                               |
-| 0.3.x            | 0.3.0                               |
 
 ### What This Module Affects
 

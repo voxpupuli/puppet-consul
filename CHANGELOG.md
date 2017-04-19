@@ -1,7 +1,20 @@
 # Change Log
 
-## [2.1.1](https://github.com/solarkennedy/puppet-consul/tree/2.1.1) (2017-03-15)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.0...2.1.1)
+## [3.0.0](https://github.com/solarkennedy/puppet-consul/tree/3.0.0) (2017-04-19)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.1...3.0.0)
+
+**Closed issues:**
+
+- Execution of 'unzip -o /var/lib/consul/archives/consul-0.7.4.zip' returned 1:  [\#332](https://github.com/solarkennedy/puppet-consul/issues/332)
+- please specify json module version minimum [\#328](https://github.com/solarkennedy/puppet-consul/issues/328)
+- Could not look up qualified variable '$::consul\_version' [\#327](https://github.com/solarkennedy/puppet-consul/issues/327)
+
+**Merged pull requests:**
+
+- BREAKING - Consul 0.8.0 fixes [\#337](https://github.com/solarkennedy/puppet-consul/pull/337) ([lobeck](https://github.com/lobeck))
+
+## [v2.1.1](https://github.com/solarkennedy/puppet-consul/tree/v2.1.1) (2017-03-16)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.0...v2.1.1)
 
 **Closed issues:**
 
