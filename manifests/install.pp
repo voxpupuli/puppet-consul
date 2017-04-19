@@ -33,15 +33,15 @@ class consul::install {
         owner  => 'root',
         group  => 0, # 0 instead of root because OS X uses "wheel".
         mode   => '0555';
-      }->
-      archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
+      }
+      -> archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
         source       => $::consul::real_download_url,
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
         creates      => "${install_path}/consul-${consul::version}/consul",
-      }->
-      file {
+      }
+      -> file {
         "${install_path}/consul-${consul::version}/consul":
           owner => 'root',
           group => 0, # 0 instead of root because OS X uses "wheel".
@@ -65,15 +65,15 @@ class consul::install {
 
         file { "${install_path}/consul-${consul::version}_web_ui":
           ensure => directory,
-        }->
-        archive { "${install_path}/consul_web_ui-${consul::version}.zip":
+        }
+        -> archive { "${install_path}/consul_web_ui-${consul::version}.zip":
           ensure       => present,
           source       => $::consul::real_ui_download_url,
           extract      => true,
           extract_path => "${install_path}/consul-${consul::version}_web_ui",
           creates      => $archive_creates,
-        }->
-        file { $::consul::ui_dir:
+        }
+        ->file { $::consul::ui_dir:
           ensure => 'symlink',
           target => $ui_symlink_target,
         }
