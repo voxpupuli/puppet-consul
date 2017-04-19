@@ -11,7 +11,7 @@ env DEFAULTS=/etc/default/consul
 env RUNDIR=/var/run/consul
 env PID_FILE=/var/run/consul/consul.pid
 env LOG_FILE=<%= scope.lookupvar('consul::log_file') %>
-env RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
+env HTTP_ADDR=-http-addr=<%= scope.lookupvar('consul::http_addr') %>:<%= scope.lookupvar('consul::http_port') %>
 
 pre-start script
   [ -e $DEFAULTS ] && . $DEFAULTS
@@ -32,8 +32,8 @@ end script
 
 pre-stop script
     # Only leave the cluster if running as an agent
-    if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
-        exec "$CONSUL" leave ${RPC_ADDR}
+    if ("${CONSUL}" info ${HTTP_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+        exec "$CONSUL" leave ${HTTP_ADDR}
     fi
 end script
 

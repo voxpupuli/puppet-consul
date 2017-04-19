@@ -218,18 +218,18 @@ class consul (
     warning('data_dir must be set to install consul web ui')
   }
 
-  if ($config_hash_real['ports'] and $config_hash_real['ports']['rpc']) {
-    $rpc_port = $config_hash_real['ports']['rpc']
+  if ($config_hash_real['ports'] and $config_hash_real['ports']['http']) {
+    $http_port = $config_hash_real['ports']['http']
   } else {
-    $rpc_port = 8400
+    $http_port = 8500
   }
 
-  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['rpc']) {
-    $rpc_addr = $config_hash_real['addresses']['rpc']
+  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['http']) {
+    $http_addr = $config_hash_real['addresses']['http']
   } elsif ($config_hash_real['client_addr']) {
-    $rpc_addr = $config_hash_real['client_addr']
+    $http_addr = $config_hash_real['client_addr']
   } else {
-    $rpc_addr = $::ipaddress_lo
+    $http_addr = $::ipaddress_lo
   }
 
   if $services {
@@ -254,14 +254,13 @@ class consul (
   }
 
   anchor {'consul_first': }
-  ->
-  class { 'consul::install': } ->
-  class { 'consul::config':
+  -> class { 'consul::install': }
+  -> class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
     notify      => $notify_service,
-  } ->
-  class { 'consul::run_service': } ->
-  class { 'consul::reload_service': } ->
-  anchor {'consul_last': }
+  }
+  -> class { 'consul::run_service': }
+  -> class { 'consul::reload_service': }
+  -> anchor {'consul_last': }
 }

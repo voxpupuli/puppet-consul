@@ -133,8 +133,8 @@ define consul::watch(
     watches => [delete_undef_values(merge($basic_hash, $type_hash))]
   }
 
-  File[$::consul::config_dir] ->
-  file { "${consul::config_dir}/watch_${id}.json":
+  File[$::consul::config_dir]
+  -> file { "${consul::config_dir}/watch_${id}.json":
     ensure  => $ensure,
     owner   => $::consul::user,
     group   => $::consul::group,
