@@ -75,7 +75,7 @@ describe 'consul' do
     let(:params) {{
       :install_method => 'package'
     }}
-    it { should contain_package('consul').with(:ensure => 'latest') }
+    it { should contain_package('consul').with(:ensure => 'latest').that_notifies('Class[consul::run_service]') }
   end
 
   context 'When requesting to install via a custom package and version' do
