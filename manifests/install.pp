@@ -82,12 +82,14 @@ class consul::install {
     'package': {
       package { $::consul::package_name:
         ensure => $::consul::package_ensure,
+        notify => $::consul::notify_service
       }
 
       if $::consul::ui_dir {
         package { $::consul::ui_package_name:
           ensure  => $::consul::ui_package_ensure,
-          require => Package[$::consul::package_name]
+          require => Package[$::consul::package_name],
+          notify  => $::consul::notify_service
         }
       }
 
