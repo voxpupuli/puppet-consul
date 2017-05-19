@@ -95,6 +95,12 @@ class consul::params {
     $init_style = 'redhat'
   } elsif $::operatingsystem == 'FreeBSD' {
     $init_style = 'freebsd'
+  } elsif $::osfamily == 'RedHat' {
+    if versioncmp($::operatingsystemrelease, '7.0') < 0 {
+      $init_style = 'redhat'
+    } else {
+      $init_style  = 'systemd'
+    }
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }
