@@ -625,6 +625,7 @@ describe 'consul' do
 
   context "On a redhat 6 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'CentOS',
       :operatingsystemrelease => '6.5'
     }}
@@ -644,6 +645,7 @@ describe 'consul' do
 
   context "On an Amazon based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'Amazon',
       :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
     }}
@@ -654,6 +656,7 @@ describe 'consul' do
 
   context "On a redhat 7 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'CentOS',
       :operatingsystemrelease => '7.0'
     }}
@@ -664,6 +667,7 @@ describe 'consul' do
 
   context "On a fedora 20 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'Fedora',
       :operatingsystemrelease => '20'
     }}
