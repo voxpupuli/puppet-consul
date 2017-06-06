@@ -29,6 +29,7 @@ class consul::params {
   $pretty_config         = false
   $pretty_config_indent  = 4
   $purge_config_dir      = true
+  $reload_command        = ''
   $restart_on_change     = true
   $service_enable        = true
   $service_ensure        = 'running'

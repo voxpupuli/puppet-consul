@@ -19,9 +19,15 @@ class consul::reload_service {
       $http_addr = $::consul::http_addr
     }
 
+    if $::consul::reload_command == '' {
+      reload_command = "consul reload -http-addr=${http_addr}:${consul::http_port}"
+    } else {
+      reload_command = $::consul::reload_command
+    }
+
     exec { 'reload consul service':
       path        => [$::consul::bin_dir,'/bin','/usr/bin'],
-      command     => "consul reload -http-addr=${http_addr}:${consul::http_port}",
+      command     => $reload_command,
       refreshonly => true,
       tries       => 3,
     }
