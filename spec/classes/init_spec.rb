@@ -409,10 +409,10 @@ describe 'consul' do
       },
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
@@ -529,10 +529,10 @@ describe 'consul' do
       :init_style => 'init',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
@@ -576,10 +576,10 @@ describe 'consul' do
       :init_style => 'debian',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
@@ -609,10 +609,10 @@ describe 'consul' do
       :init_style => 'upstart',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
