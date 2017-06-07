@@ -398,7 +398,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -http-addr=127.0.0.1:8500')
+        with_command('consul reload -rpc-addr=127.0.0.1:8400')
     }
   end
 
@@ -409,16 +409,16 @@ describe 'consul' do
       },
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -http-addr=consul.example.com:9999')
+        with_command('consul reload -rpc-addr=consul.example.com:9999')
     }
   end
 
@@ -433,7 +433,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -http-addr=192.168.34.56:8500')
+        with_command('consul reload -rpc-addr=192.168.34.56:8400')
     }
   end
 
@@ -520,7 +520,7 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-http-addr=127.0.0.1:8500/)
+        with_content(/-rpc-addr=127.0.0.1:8400/)
     }
   end
 
@@ -529,17 +529,17 @@ describe 'consul' do
       :init_style => 'init',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-http-addr=consul.example.com:9999/)
+        with_content(/-rpc-addr=consul.example.com:9999/)
     }
   end
 
@@ -553,7 +553,7 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-http-addr=192.168.34.56:8500/)
+        with_content(/-rpc-addr=192.168.34.56:8400/)
     }
   end
 
@@ -567,7 +567,7 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('debian') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-http-addr=127.0.0.1:8500/)
+        with_content(/-rpc-addr=127.0.0.1:8400/)
     }
   end
 
@@ -576,17 +576,17 @@ describe 'consul' do
       :init_style => 'debian',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('debian') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-http-addr=consul.example.com:9999/)
+        with_content(/-rpc-addr=consul.example.com:9999/)
     }
   end
 
@@ -600,7 +600,7 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('upstart') }
     it {
       should contain_file('/etc/init/consul.conf').
-        with_content(/-http-addr=127.0.0.1:8500/)
+        with_content(/-rpc-addr=127.0.0.1:8400/)
     }
   end
 
@@ -609,17 +609,17 @@ describe 'consul' do
       :init_style => 'upstart',
       :config_hash => {
         'ports' => {
-          'http' => '9999'
+          'rpc' => '9999'
         },
         'addresses' => {
-          'http' => 'consul.example.com'
+          'rpc' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('upstart') }
     it {
       should contain_file('/etc/init/consul.conf').
-        with_content(/-http-addr=consul.example.com:9999/)
+        with_content(/-rpc-addr=consul.example.com:9999/)
     }
   end
 
