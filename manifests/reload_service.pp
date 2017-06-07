@@ -13,21 +13,15 @@ class consul::reload_service {
 
     # Make sure we don't try to connect to 0.0.0.0, use 127.0.0.1 instead
     # This can happen if the consul agent RPC port is bound to 0.0.0.0
-    if $::consul::http_addr == '0.0.0.0' {
-      $http_addr = '127.0.0.1'
+    if $::consul::rpc_addr == '0.0.0.0' {
+      $rpc_addr = '127.0.0.1'
     } else {
-      $http_addr = $::consul::http_addr
-    }
-
-    if $::consul::reload_command == '' {
-      reload_command = "consul reload -http-addr=${http_addr}:${consul::http_port}"
-    } else {
-      reload_command = $::consul::reload_command
+      $rpc_addr = $::consul::rpc_addr
     }
 
     exec { 'reload consul service':
       path        => [$::consul::bin_dir,'/bin','/usr/bin'],
-      command     => $reload_command,
+      command     => "consul reload -rpc-addr=${rpc_addr}:${consul::rpc_port}",
       refreshonly => true,
       tries       => 3,
     }
