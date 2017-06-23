@@ -149,6 +149,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     name = @resource[:name]
     token = @resource[:token]
     service_name = @resource[:service_name]
+    service_near = @resource[:service_near]
     service_failover_n = @resource[:service_failover_n]
     service_failover_dcs = @resource[:service_failover_dcs]
     service_only_passing = @resource[:service_only_passing]
@@ -167,6 +168,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
       "Token"   => "#{token}",
       "Service" => {
         "Service"     => "#{service_name}",
+        "Near"        => "#{service_near}",
         "Failover"    => {
           "NearestN"    => service_failover_n,
           "Datacenters" => service_failover_dcs,
