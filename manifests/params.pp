@@ -28,6 +28,7 @@ class consul::params {
   $package_name          = 'consul'
   $pretty_config         = false
   $pretty_config_indent  = 4
+  $proxy_server          = undef
   $purge_config_dir      = true
   $restart_on_change     = true
   $service_enable        = true
