@@ -18,7 +18,7 @@ class consul::params {
   $config_mode           = '0660'
 
   case $::architecture {
-    'x86_64', 'amd64': { $arch = 'amd64' }
+    'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
     'i386':            { $arch = '386'   }
     /^arm.*/:          { $arch = 'arm'   }
     default:           {
@@ -68,6 +68,8 @@ class consul::params {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
     $init_style = 'init'
+  } elsif $::operatingsystem == 'windows' {
+    $init_style = 'scm'
   } else {
     $init_style = undef
   }

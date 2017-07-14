@@ -13,6 +13,19 @@ class consul::install {
     }
   }
 
+  case $::operatingsystem {
+    'windows': {
+      $binary_name = 'consul.exe'
+      $binary_mode = '0775'
+    }
+    default: {
+      $binary_name = 'consul'
+      $binary_mode = '0555'
+      # 0 instead of root because OS X uses "wheel".
+      $binary_group = 0
+    }
+  }
+
   case $consul::install_method {
     'url': {
       $install_path = $consul::archive_path
@@ -29,26 +42,26 @@ class consul::install {
         $install_path,
         "${install_path}/consul-${consul::version}"]:
         ensure => directory,
-        owner  => 'root',
-        group  => 0, # 0 instead of root because OS X uses "wheel".
-        mode   => '0555';
+        owner  => $consul::user,
+        group  => $consul::group,
+        mode   => $binary_mode;
       }->
       archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
         source       => $consul::real_download_url,
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
-        creates      => "${install_path}/consul-${consul::version}/consul",
+        creates      => "${install_path}/consul-${consul::version}/${binary_name}",
       }->
       file {
-        "${install_path}/consul-${consul::version}/consul":
-          owner => 'root',
-          group => 0, # 0 instead of root because OS X uses "wheel".
-          mode  => '0555';
-        "${consul::bin_dir}/consul":
+        "${install_path}/consul-${consul::version}/${binary_name}":
+          owner  =>  $consul::user,
+          group  => $consul::group,
+          mode  => $binary_mode;
+        "${consul::bin_dir}/${binary_name}":
           ensure => link,
           notify => $do_notify_service,
-          target => "${install_path}/consul-${consul::version}/consul";
+          target => "${install_path}/consul-${consul::version}/${binary_name}";
       }
 
       if ($consul::ui_dir and $consul::data_dir) {

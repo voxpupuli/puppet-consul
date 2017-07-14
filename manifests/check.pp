@@ -9,7 +9,6 @@
 #   Define availability of check. Use 'absent' to remove existing checks.
 #   Defaults to 'present'
 #
-
 # [*id*]
 #   The id for the check (defaults to $title)
 #

@@ -10,12 +10,23 @@ class consul::run_service {
     default   => 'consul',
   }
 
+  $init_provider = $consul::init_style ? {
+    'scm'   => undef,
+    default => $consul::init_style,
+  }
+
   if $consul::manage_service == true and $consul::init_style {
+    if $::operatingsystem == 'windows' {
+      class { 'consul::windows_service':
+        before => Service['consul'],
+      }
+    }
+
     service { 'consul':
       ensure   => $consul::service_ensure,
       name     => $init_selector,
       enable   => $consul::service_enable,
-      provider => $consul::init_style,
+      provider => $init_provider,
     }
   }
 
