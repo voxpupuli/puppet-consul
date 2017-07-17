@@ -4,25 +4,27 @@
 #
 class consul::install {
 
+  case $::operatingsystem {
+    'windows': {
+      $binary_name = 'consul.exe'
+      $binary_mode = '0775'
+      $data_dir_mode = '0775'
+    }
+    default: {
+      $binary_name = 'consul'
+      $binary_mode = '0555'
+      $data_dir_mode = '0755'
+      # 0 instead of root because OS X uses "wheel".
+      $binary_group = 0
+    }
+  }
+
   if $::consul::data_dir {
     file { $::consul::data_dir:
       ensure => 'directory',
       owner  => $::consul::user,
       group  => $::consul::group,
-      mode   => '0755',
-    }
-  }
-
-  case $::operatingsystem {
-    'windows': {
-      $binary_name = 'consul.exe'
-      $binary_mode = '0775'
-    }
-    default: {
-      $binary_name = 'consul'
-      $binary_mode = '0555'
-      # 0 instead of root because OS X uses "wheel".
-      $binary_group = 0
+      mode   => $data_dir_mode,
     }
   }
 
