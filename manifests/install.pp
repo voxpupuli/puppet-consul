@@ -57,8 +57,8 @@ class consul::install {
       }
       -> file {
         "${install_path}/consul-${consul::version}/${binary_name}":
-          owner  =>  $consul::user,
-          group  => $consul::group,
+          owner =>  $consul::user,
+          group => $consul::group,
           mode  => $binary_mode;
         "${consul::bin_dir}/${binary_name}":
           ensure => link,
