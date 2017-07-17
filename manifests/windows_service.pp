@@ -27,7 +27,7 @@ class consul::windows_service(
   $app_log_path = "${app_dir}\\logs"
   $app_log_file = "consul.log"
   $app_log = "$app_log_path//$app_log_file"
- 
+
   include '::archive'
 
   file { $app_log_path:
@@ -71,5 +71,4 @@ class consul::windows_service(
     logoutput   => true,
     provider    => 'powershell',
   }
-
 }
