@@ -7,6 +7,6 @@ beaker:
 	curl -sLo - http://j.mp/install-travis-docker | UML_DOCKERCOMPOSE=0 UML_FIG=0 sh -e
 	./run 'bundle exec rake beaker'
 
-release:
-	github_changelog_generator --future-release 1.0.10
+minor_release:
+	github_changelog_generator --future-release $$(bundle exec rake module:version:next)
 	bundle exec rake module:release

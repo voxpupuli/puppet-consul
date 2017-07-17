@@ -35,7 +35,7 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul/ui') do
-      it { should be_linked_to '/opt/puppet-archive/consul-0.6.4_web_ui' }
+      it { should be_linked_to '/opt/consul/archives/consul-0.6.4_web_ui' }
     end
 
     describe service('consul') do

@@ -4,18 +4,44 @@
 # It sets variables according to platform
 #
 class consul::params {
-
-  $install_method        = 'url'
-  $package_name          = 'consul'
-  $package_ensure        = 'latest'
-  $download_url_base     = 'https://releases.hashicorp.com/consul/'
-  $download_extension    = 'zip'
-  $ui_package_name       = 'consul_ui'
-  $ui_package_ensure     = 'latest'
-  $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
-  $ui_download_extension = 'zip'
-  $version               = '0.5.2'
+  $acls                  = {}
+  $archive_path          = ''
+  $bin_dir               = '/usr/local/bin'
+  $checks                = {}
+  $config_defaults       = {}
+  $config_dir            = '/etc/consul'
+  $config_hash           = {}
   $config_mode           = '0660'
+  $download_extension    = 'zip'
+  $download_url          = undef
+  $download_url_base     = 'https://releases.hashicorp.com/consul/'
+  $extra_groups          = []
+  $extra_options         = ''
+  $group                 = 'consul'
+  $log_file              = '/var/log/consul'
+  $install_method        = 'url'
+  $join_wan              = false
+  $manage_group          = true
+  $manage_service        = true
+  $manage_user           = true
+  $package_ensure        = 'latest'
+  $package_name          = 'consul'
+  $pretty_config         = false
+  $pretty_config_indent  = 4
+  $proxy_server          = undef
+  $purge_config_dir      = true
+  $restart_on_change     = true
+  $service_enable        = true
+  $service_ensure        = 'running'
+  $services              = {}
+  $ui_download_extension = 'zip'
+  $ui_download_url       = undef
+  $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
+  $ui_package_ensure     = 'latest'
+  $ui_package_name       = 'consul_ui'
+  $user                  = 'consul'
+  $version               = '0.7.4'
+  $watches               = {}
 
   case $::architecture {
     'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
@@ -67,13 +93,12 @@ class consul::params {
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'Amazon' {
-    $init_style = 'init'
+    $init_style = 'redhat'
+  } elsif $::operatingsystem == 'FreeBSD' {
+    $init_style = 'freebsd'
   } elsif $::operatingsystem == 'windows' {
     $init_style = 'scm'
   } else {
-    $init_style = undef
-  }
-  if $init_style == undef {
-    fail('Unsupported OS')
+    fail('Cannot determine init_style, unsupported OS')
   }
 }
