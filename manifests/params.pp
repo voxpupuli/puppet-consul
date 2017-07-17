@@ -97,7 +97,7 @@ class consul::params {
   } elsif $::operatingsystem == 'FreeBSD' {
     $init_style = 'freebsd'
   } elsif $::operatingsystem == 'windows' {
-    $init_style = 'scm'
+    $init_style = 'unmanaged'
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }

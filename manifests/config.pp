@@ -78,8 +78,6 @@ class consul::config(
           content => template('consul/consul.launchd.erb')
         }
       }
-      'scm':{
-      }
       'freebsd': {
         file { '/etc/rc.conf.d/consul':
           mode    => '0444',
