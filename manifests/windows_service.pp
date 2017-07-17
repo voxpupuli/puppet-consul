@@ -47,9 +47,9 @@ class consul::windows_service(
     ]
   }->
     file { "$nssm_exec":
-    owner  => $consul::user,
-    group  => $consul::group,
-    mode   => '0775',
+    owner => $consul::user,
+    group => $consul::group,
+    mode  => '0775',
   }->
   exec { 'consul_service_install':
     cwd       => $consul::bin_dir,
