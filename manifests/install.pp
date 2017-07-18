@@ -7,7 +7,7 @@ class consul::install {
   case $::operatingsystem {
     'windows': {
       $binary_name = 'consul.exe'
-      $binary_mode = '0775'
+      $binary_mode = '0755'
       $data_dir_mode = '0775'
     }
     default: {
