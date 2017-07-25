@@ -7,11 +7,13 @@ class consul::install {
   case $::operatingsystem {
     'windows': {
       $binary_name = 'consul.exe'
-      $binary_mode = '0755'
+      $binary_mode = '0775'
+      $data_dir_mode = '775'
     }
     default: {
       $binary_name = 'consul'
       $binary_mode = '0555'
+      $data_dir_mode = '755'
       # 0 instead of root because OS X uses "wheel".
       $binary_group = 0
     }
@@ -22,7 +24,7 @@ class consul::install {
       ensure => 'directory',
       owner  => $::consul::user,
       group  => $::consul::group,
-      mode   => '0755',
+      mode   => $data_dir_mode,
     }
   }
 
