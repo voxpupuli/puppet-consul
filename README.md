@@ -205,6 +205,10 @@ ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
 
+**NOTE:** This module currently cannot parse ACL tokens generated through means
+other than this module. Don't mix Puppet and Non-puppet ACLs for best results!
+(pull requests welcome to allow it to co-exist with ACLs generated with normal HCL)
+
 ## Prepared Queries and Prepared Query Templates
 
 ```puppet
