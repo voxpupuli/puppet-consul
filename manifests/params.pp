@@ -62,17 +62,25 @@ class consul::params {
     } else {
       $init_style = 'systemd'
     }
-  } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
-    if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-      $init_style = 'redhat'
-    } else {
-      $init_style  = 'systemd'
-    }
-  } elsif $::operatingsystem == 'Fedora' {
-    if versioncmp($::operatingsystemrelease, '12') < 0 {
-      $init_style = 'init'
-    } else {
-      $init_style = 'systemd'
+  } elsif $::osfamily == 'RedHat' {
+    case $::operatingsystem {
+      'Fedora': {
+        if versioncmp($::operatingsystemrelease, '12') < 0 {
+          $init_style = 'init'
+        } else {
+          $init_style = 'systemd'
+        }
+      }
+      'Amazon': {
+          $init_style = 'redhat'
+      }
+      default: {
+        if versioncmp($::operatingsystemrelease, '7.0') < 0 {
+          $init_style = 'redhat'
+        } else {
+          $init_style  = 'systemd'
+        }
+      }
     }
   } elsif $::operatingsystem == 'Debian' {
     if versioncmp($::operatingsystemrelease, '8.0') < 0 {
@@ -92,8 +100,6 @@ class consul::params {
     }
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
-  } elsif $::operatingsystem == 'Amazon' {
-    $init_style = 'redhat'
   } elsif $::operatingsystem == 'FreeBSD' {
     $init_style = 'freebsd'
   } else {
