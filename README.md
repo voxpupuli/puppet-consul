@@ -204,6 +204,7 @@ Optionally, you may supply an `acl_api_token`.  This will allow you to create
 ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
+### NOTE. If you're already using ACL tokens you should consider not to use HCL due to library using JSON.parse function to create/update tokens
 
 **NOTE:** This module currently cannot parse ACL tokens generated through means
 other than this module. Don't mix Puppet and Non-puppet ACLs for best results!
