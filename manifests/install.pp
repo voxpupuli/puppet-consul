@@ -15,9 +15,14 @@ class consul::install {
 
   case $selected_install_method {
     'docker': {
+
+      $retry_join = pick($::consul::config_hash[retry_join], '/opt/consul')
+      $server_mode = pick($::consul::config_hash[server], false)
+      $client_addr = pick($::consul::config_hash[client_addr], $consul::http_addr)
+
       if $server_mode {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server -bind=${::ipaddress} -retry-join=${retry_join} -dns-port=53 -client=${::ipaddress} -bootstrap-expect=3"
+        $command = "agent -server -bind=${::ipaddress} -retry-join=${retry_join} -dns-port=53 -client=${client_addr} -bootstrap-expect=3"
       }
       else {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
