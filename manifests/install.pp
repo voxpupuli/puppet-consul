@@ -13,7 +13,25 @@ class consul::install {
     }
   }
 
-  case $::consul::install_method {
+  case $selected_install_method {
+    'docker': {
+      if $server_mode {
+        $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
+        $command = "agent -server -bind=${::ipaddress} -retry-join=${retry_join} -dns-port=53 -client=${::ipaddress} -bootstrap-expect=3"
+      }
+      else {
+        $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
+        $command = "agent -bind=${::ipaddress} -retry-join=${retry_join}"
+      }
+
+      # Docker Install
+      docker::run { 'consul' :
+        image   => "${consul::docker_image}:${consul::version}",
+        net     => 'host',
+        env     => $env,
+        command => $command
+      }
+    }
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
       $install_path = pick($::consul::archive_path, "${install_prefix}/archives")
@@ -109,18 +127,18 @@ class consul::install {
     }
   }
 
-  if $::consul::manage_user {
+  if ($::consul::manage_user) and ($selected_install_method != 'docker' ) {
     user { $::consul::user:
       ensure => 'present',
       system => true,
       groups => $::consul::extra_groups,
     }
 
-    if $::consul::manage_group {
+    if ($::consul::manage_group) and ($selected_install_method != 'docker' ) {
       Group[$::consul::group] -> User[$::consul::user]
     }
   }
-  if $::consul::manage_group {
+  if ($::consul::manage_group) and ($selected_install_method != 'docker' ) {
     group { $::consul::group:
       ensure => 'present',
       system => true,
