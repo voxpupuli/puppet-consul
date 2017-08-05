@@ -12,6 +12,7 @@ class consul::params {
   $config_dir            = '/etc/consul'
   $config_hash           = {}
   $config_mode           = '0660'
+  $docker_image          = 'consul'
   $download_extension    = 'zip'
   $download_url          = undef
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
@@ -19,7 +20,7 @@ class consul::params {
   $extra_options         = ''
   $group                 = 'consul'
   $log_file              = '/var/log/consul'
-  $install_method        = 'url'
+  $install_method        = 'auto'
   $join_wan              = false
   $manage_group          = true
   $manage_service        = true
@@ -40,7 +41,7 @@ class consul::params {
   $ui_package_ensure     = 'latest'
   $ui_package_name       = 'consul_ui'
   $user                  = 'consul'
-  $version               = '0.7.4'
+  $version               = '0.9.0'
   $watches               = {}
 
   case $::architecture {

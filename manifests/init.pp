@@ -31,6 +31,9 @@
 # [*config_mode*]
 #   Use this to set the JSON config file mode for consul.
 #
+# [*docker_image*]
+#   Only valid when the install_method == docker. Defaults to `consul`.
+#
 # [*download_extension*]
 #   The extension of the archive file containing the consul binary to download.
 #
@@ -54,7 +57,9 @@
 #   managing init system files for the consul service entirely.
 #
 # [*install_method*]
-#   Valid strings: `package` - install via system package
+#   Valid strings: `auto`    - use docker if available, fallback to url if not
+#                  `docker`  - install via docker container
+#                  `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
 #                  `none`    - disable install.
 #
@@ -151,6 +156,7 @@ class consul (
   $config_dir            = $::consul::params::config_dir,
   $config_hash           = $::consul::params::config_hash,
   $config_mode           = $::consul::params::config_mode,
+  $docker_image          = $::consul::params::docker_image,
   $download_extension    = $::consul::params::download_extension,
   $download_url          = $::consul::params::download_url,
   $download_url_base     = $::consul::params::download_url_base,
@@ -250,6 +256,18 @@ class consul (
 
   if $acls {
     create_resources(consul_acl, $acls)
+  }
+
+  if $install_method == 'auto' {
+    if $facts['networking']['interfaces']['docker0'] {
+      $selected_install_method = 'docker'
+    }
+    else {
+      $selected_install_method = 'url'
+    }
+  }
+  else {
+    $selected_install_method = $install_method
   }
 
   $notify_service = $restart_on_change ? {
