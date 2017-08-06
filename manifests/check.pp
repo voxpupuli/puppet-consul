@@ -85,11 +85,22 @@ define consul::check(
 
   $escaped_id = regsubst($id,'\/','_','G')
   File[$::consul::config_dir]
-  -> file { "${consul::config_dir}/check_${escaped_id}.json":
+  -> file { "check_${escaped_id} with consul accounts":
+    path    => "${consul::config_dir}/check_${escaped_id}.json",
     ensure  => $ensure,
     owner   => $::consul::user,
     group   => $::consul::group,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+    unless  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
+  -> file { "check_${escaped_id} without consul accounts":
+    path    => "${consul::config_dir}/check_${escaped_id}.json",
+    ensure  => $ensure,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    notify  => Class['consul::reload_service'],
+    onlyif => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
 }

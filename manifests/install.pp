@@ -15,18 +15,39 @@ class consul::install (
     }
   }
 
+  if $selected_install_method == 'docker' {
+    file { $::consul::config_dir:
+      ensure  => 'directory',
+      purge   => $purge,
+      recurse => $purge,
+    }
+  }
+  else {
+    file { $::consul::config_dir:
+      ensure  => 'directory',
+      owner   => $::consul::user,
+      group   => $::consul::group,
+      purge   => $purge,
+      recurse => $purge,
+    }
+  }
+
   case $selected_install_method {
     'docker': {
-
+      if $::consul::http_addr == '0.0.0.0' {
+        $http_addr = '127.0.0.1'
+      } else {
+        $http_addr = $::consul::http_addr
+      }
       $server_mode = pick($::consul::config_hash[server], false)
-
+      
       if $server_mode {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server"
+        $command = "agent -server -http-addr=${http_addr}:${consul::http_port}"
       }
       else {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent"
+        $command = "agent -http-addr=${http_addr}:${consul::http_port}"
       }
 
       # Docker Install

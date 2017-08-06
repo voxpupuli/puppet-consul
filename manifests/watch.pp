@@ -134,11 +134,23 @@ define consul::watch(
   }
 
   File[$::consul::config_dir]
-  -> file { "${consul::config_dir}/watch_${id}.json":
+  -> file { "watch_${id} with consul users":
+    path    => "${consul::config_dir}/watch_${id}.json",
     ensure  => $ensure,
     owner   => $::consul::user,
     group   => $::consul::group,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+    unless  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
+  -> file { "watch_${id} without consul users":
+    path    => "${consul::config_dir}/watch_${id}.json",
+    ensure  => $ensure,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    notify  => Class['consul::reload_service'],
+    onlyif  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
+
 }

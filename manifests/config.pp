@@ -101,36 +101,36 @@ class consul::config(
   }
   
   if $selected_install_method == 'docker' {
-    file { $::consul::config_dir:
-      ensure  => 'directory',
-      purge   => $purge,
-      recurse => $purge,
-    }
-
-    -> file { 'consul config.json':
+    file { 'consul config.json' :
       ensure  => present,
       path    => "${consul::config_dir}/config.json",
       mode    => $::consul::config_mode,
       content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+      require => File[$::consul::config_dir],
     }
 
   }
   else {
-    file { $::consul::config_dir:
-      ensure  => 'directory',
-      owner   => $::consul::user,
-      group   => $::consul::group,
-      purge   => $purge,
-      recurse => $purge,
-    }
-
-    -> file { 'consul config.json':
+    file { 'consul config.json' :
       ensure  => present,
       path    => "${consul::config_dir}/config.json",
       owner   => $::consul::user,
       group   => $::consul::group,
       mode    => $::consul::config_mode,
       content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+      require => File[$::consul::config_dir],
     }
   }
+
+  if $selected_install_method == 'docker' {
+    $docker_ensure = 'present'
+  }
+  else {
+    $docker_ensure = 'absent'
+  }
+  file { 'docker_used':
+      ensure  => $docker_ensure,
+      path    => "${consul::config_dir}/docker_used",
+      content => '# This file was created by puppet-consul to track if docker is being used to manage services',
+    }
 }
