@@ -2,9 +2,11 @@
 #
 # Installs consul based on the parameters from init
 #
-class consul::install {
+class consul::install (
+  $selected_install_method,
+) {
 
-  if $::consul::data_dir {
+  if ($::consul::data_dir) and ($selected_install_method != 'docker') {
     file { $::consul::data_dir:
       ensure => 'directory',
       owner  => $::consul::user,
@@ -16,26 +18,26 @@ class consul::install {
   case $selected_install_method {
     'docker': {
 
-      $retry_join = pick($::consul::config_hash[retry_join], '/opt/consul')
       $server_mode = pick($::consul::config_hash[server], false)
-      $client_addr = pick($::consul::config_hash[client_addr], $consul::http_addr)
 
       if $server_mode {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server -bind=${::ipaddress} -retry-join=${retry_join} -dns-port=53 -client=${client_addr} -bootstrap-expect=3"
+        $command = "agent -server"
       }
       else {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent -bind=${::ipaddress} -retry-join=${retry_join}"
+        $command = "agent"
       }
 
       # Docker Install
       docker::run { 'consul' :
         image   => "${consul::docker_image}:${consul::version}",
         net     => 'host',
+        volumes => [ "${::consul::config_dir}:/consul/config" ],
         env     => $env,
         command => $command
       }
+
     }
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
