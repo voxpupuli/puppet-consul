@@ -71,5 +71,16 @@ define consul::service(
     mode    => $::consul::config_mode,
     content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require => File[$::consul::config_dir],
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+    unless  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
+  
+  file { "${consul::config_dir}/service_${escaped_id}.json":
+    ensure  => $ensure,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    require => File[$::consul::config_dir],
+    notify  => Class['consul::reload_service'],
+    onlyif  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  }
 }

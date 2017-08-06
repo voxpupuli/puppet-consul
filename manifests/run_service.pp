@@ -21,6 +21,7 @@ class consul::run_service {
       name     => $service_name,
       enable   => $::consul::service_enable,
       provider => $service_provider,
+      unless   => "/usr/bin/test -e ${consul::config_dir}/docker_used",
     }
   }
 
@@ -29,6 +30,7 @@ class consul::run_service {
       cwd       => $::consul::config_dir,
       path      => [$::consul::bin_dir,'/bin','/usr/bin'],
       command   => "consul join -wan ${consul::join_wan}",
+      onlyif    => "/usr/bin/test ! -e ${consul::config_dir}/docker_used",
       unless    => "consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'",
       subscribe => Service['consul'],
     }
