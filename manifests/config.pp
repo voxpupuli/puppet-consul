@@ -13,11 +13,13 @@
 class consul::config(
   $config_hash,
   $purge = true,
+  $init_style,
+  $selected_install_method,
 ) {
 
-  if $::consul::init_style != 'unmanaged' {
+  if $init_style != 'unmanaged' {
 
-    case $::consul::init_style {
+    case $init_style {
       'upstart': {
         file { '/etc/init/consul.conf':
           mode    => '0444',
@@ -97,21 +99,38 @@ class consul::config(
       }
     }
   }
+  
+  if $selected_install_method == 'docker' {
+    file { $::consul::config_dir:
+      ensure  => 'directory',
+      purge   => $purge,
+      recurse => $purge,
+    }
 
-  file { $::consul::config_dir:
-    ensure  => 'directory',
-    owner   => $::consul::user,
-    group   => $::consul::group,
-    purge   => $purge,
-    recurse => $purge,
-  }
-  -> file { 'consul config.json':
-    ensure  => present,
-    path    => "${consul::config_dir}/config.json",
-    owner   => $::consul::user,
-    group   => $::consul::group,
-    mode    => $::consul::config_mode,
-    content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-  }
+    -> file { 'consul config.json':
+      ensure  => present,
+      path    => "${consul::config_dir}/config.json",
+      mode    => $::consul::config_mode,
+      content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    }
 
+  }
+  else {
+    file { $::consul::config_dir:
+      ensure  => 'directory',
+      owner   => $::consul::user,
+      group   => $::consul::group,
+      purge   => $purge,
+      recurse => $purge,
+    }
+
+    -> file { 'consul config.json':
+      ensure  => present,
+      path    => "${consul::config_dir}/config.json",
+      owner   => $::consul::user,
+      group   => $::consul::group,
+      mode    => $::consul::config_mode,
+      content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    }
+  }
 }

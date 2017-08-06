@@ -55,6 +55,7 @@
 # [*init_style*]
 #   What style of init system your system uses. Set to 'unmanaged' to disable
 #   managing init system files for the consul service entirely.
+#   This is ignored when install_method == 'docker'
 #
 # [*install_method*]
 #   Valid strings: `auto`    - use docker if available, fallback to url if not
@@ -263,11 +264,15 @@ class consul (
       $selected_install_method = 'docker'
     }
     else {
-      $selected_install_method = 'url'
+      $selected_install_method = 'package'
     }
   }
   else {
     $selected_install_method = $install_method
+  }
+
+  if $selected_install_method == 'docker' {
+    $init_style = 'unmanaged'
   }
 
   $notify_service = $restart_on_change ? {
@@ -276,11 +281,15 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { 'consul::install': }
+  -> class { 'consul::install':
+    selected_install_method => $selected_install_method,
+  }
   -> class { 'consul::config':
-    config_hash => $config_hash_real,
-    purge       => $purge_config_dir,
-    notify      => $notify_service,
+    config_hash             => $config_hash_real,
+    purge                   => $purge_config_dir,
+    init_style              => $init_style,
+    selected_install_method => $selected_install_method,
+    notify                  => $notify_service,
   }
   -> class { 'consul::run_service': }
   -> class { 'consul::reload_service': }

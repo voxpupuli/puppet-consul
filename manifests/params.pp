@@ -20,7 +20,7 @@ class consul::params {
   $extra_options         = ''
   $group                 = 'consul'
   $log_file              = '/var/log/consul'
-  $install_method        = 'auto'
+  $install_method        = 'package'
   $join_wan              = false
   $manage_group          = true
   $manage_service        = true
