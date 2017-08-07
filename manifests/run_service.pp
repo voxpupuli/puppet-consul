@@ -15,13 +15,12 @@ class consul::run_service {
     default     => $::consul::init_style,
   }
 
-  if $::consul::manage_service == true {
+  if ($::consul::manage_service == true) and ($::consul::selected_install_method != 'docker') {
     service { 'consul':
       ensure   => $::consul::service_ensure,
       name     => $service_name,
       enable   => $::consul::service_enable,
       provider => $service_provider,
-      unless   => "/usr/bin/test -e ${consul::config_dir}/docker_used",
     }
   }
 
