@@ -13,12 +13,11 @@
 class consul::config(
   $config_hash,
   $purge = true,
-  $init_style,
 ) {
 
-  if $init_style != 'unmanaged' {
+  if ($::consul::init_style != 'unmanaged') and ($::consul::selected_install_method != 'docker') {
 
-    case $init_style {
+    case $::consul::init_style {
       'upstart': {
         file { '/etc/init/consul.conf':
           mode    => '0444',
