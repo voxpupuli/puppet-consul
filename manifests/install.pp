@@ -32,20 +32,15 @@ class consul::install {
 
   case $::consul::selected_install_method {
     'docker': {
-      if $::consul::http_addr == '0.0.0.0' {
-        $http_addr = '127.0.0.1'
-      } else {
-        $http_addr = $::consul::http_addr
-      }
       $server_mode = pick($::consul::config_hash[server], false)
       
       if $server_mode {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server -client=${http_addr}:${consul::http_port}"
+        $command = "agent -server"
       }
       else {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent -client=${http_addr}:${consul::http_port}"
+        $command = "agent"
       }
 
       # Docker Install
