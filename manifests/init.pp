@@ -271,10 +271,6 @@ class consul (
     $selected_install_method = $install_method
   }
 
-  if $selected_install_method == 'docker' {
-    $init_style = 'unmanaged'
-  }
-
   $notify_service = $restart_on_change ? {
     true    => Class['consul::run_service'],
     default => undef,
@@ -285,7 +281,6 @@ class consul (
   -> class { 'consul::config':
     config_hash             => $config_hash_real,
     purge                   => $purge_config_dir,
-    init_style              => $init_style,
     notify                  => $notify_service,
   }
   -> class { 'consul::run_service': }
