@@ -33,6 +33,16 @@ class consul::run_service {
       unless    => "consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'",
       subscribe => Service['consul'],
     }
+
+    exec { 'join consul wan docker':
+      cwd       => $::consul::config_dir,
+      path      => [$::consul::bin_dir,'/bin','/usr/bin'],
+      command   => "docker exec -t consul consul join -wan ${consul::join_wan}",
+      onlyif    => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+      unless    => "docker exec -t consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'",
+      subscribe => Service['consul'],
+    }
+
   }
 
 }
