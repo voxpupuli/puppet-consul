@@ -2,11 +2,9 @@
 #
 # Installs consul based on the parameters from init
 #
-class consul::install (
-  $selected_install_method,
-) {
+class consul::install {
 
-  if ($::consul::data_dir) and ($selected_install_method != 'docker') {
+  if ($::consul::data_dir) and ($::consul::selected_install_method != 'docker') {
     file { $::consul::data_dir:
       ensure => 'directory',
       owner  => $::consul::user,
@@ -15,7 +13,7 @@ class consul::install (
     }
   }
 
-  if $selected_install_method == 'docker' {
+  if $::consul::selected_install_method == 'docker' {
     file { $::consul::config_dir:
       ensure  => 'directory',
       purge   => $purge,
@@ -32,7 +30,7 @@ class consul::install (
     }
   }
 
-  case $selected_install_method {
+  case $::consul::selected_install_method {
     'docker': {
       if $::consul::http_addr == '0.0.0.0' {
         $http_addr = '127.0.0.1'
@@ -155,18 +153,18 @@ class consul::install (
     }
   }
 
-  if ($::consul::manage_user) and ($selected_install_method != 'docker' ) {
+  if ($::consul::manage_user) and ($::consul::selected_install_method != 'docker' ) {
     user { $::consul::user:
       ensure => 'present',
       system => true,
       groups => $::consul::extra_groups,
     }
 
-    if ($::consul::manage_group) and ($selected_install_method != 'docker' ) {
+    if ($::consul::manage_group) and ($::consul::selected_install_method != 'docker' ) {
       Group[$::consul::group] -> User[$::consul::user]
     }
   }
-  if ($::consul::manage_group) and ($selected_install_method != 'docker' ) {
+  if ($::consul::manage_group) and ($::consul::selected_install_method != 'docker' ) {
     group { $::consul::group:
       ensure => 'present',
       system => true,
