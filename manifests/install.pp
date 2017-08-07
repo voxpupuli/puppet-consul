@@ -41,11 +41,11 @@ class consul::install {
       
       if $server_mode {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server -http-addr=${http_addr}:${consul::http_port}"
+        $command = "agent -server -client=${http_addr}:${consul::http_port}"
       }
       else {
         $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent -http-addr=${http_addr}:${consul::http_port}"
+        $command = "agent -client=${http_addr}:${consul::http_port}"
       }
 
       # Docker Install
