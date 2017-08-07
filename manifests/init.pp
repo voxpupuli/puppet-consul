@@ -264,7 +264,7 @@ class consul (
       $selected_install_method = 'docker'
     }
     else {
-      $selected_install_method = 'package'
+      $selected_install_method = 'url'
     }
   }
   else {
@@ -281,14 +281,11 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { 'consul::install':
-    selected_install_method => $selected_install_method,
-  }
+  -> class { 'consul::install': }
   -> class { 'consul::config':
     config_hash             => $config_hash_real,
     purge                   => $purge_config_dir,
     init_style              => $init_style,
-    selected_install_method => $selected_install_method,
     notify                  => $notify_service,
   }
   -> class { 'consul::run_service': }

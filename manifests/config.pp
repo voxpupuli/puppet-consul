@@ -14,7 +14,6 @@ class consul::config(
   $config_hash,
   $purge = true,
   $init_style,
-  $selected_install_method,
 ) {
 
   if $init_style != 'unmanaged' {
@@ -100,7 +99,7 @@ class consul::config(
     }
   }
   
-  if $selected_install_method == 'docker' {
+  if $::consul::selected_install_method == 'docker' {
     file { 'consul config.json' :
       ensure  => present,
       path    => "${consul::config_dir}/config.json",
@@ -122,7 +121,7 @@ class consul::config(
     }
   }
 
-  if $selected_install_method == 'docker' {
+  if $::consul::selected_install_method == 'docker' {
     $docker_ensure = 'present'
   }
   else {
