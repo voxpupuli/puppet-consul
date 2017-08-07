@@ -11,7 +11,7 @@ class consul::params {
   $config_defaults       = {}
   $config_dir            = '/etc/consul'
   $config_hash           = {}
-  $config_mode           = '0660'
+  $config_mode           = '0664'
   $docker_image          = 'consul'
   $download_extension    = 'zip'
   $download_url          = undef
