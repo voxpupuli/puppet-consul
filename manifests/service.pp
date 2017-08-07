@@ -64,23 +64,25 @@ define consul::service(
   }
 
   $escaped_id = regsubst($id,'\/','_','G')
-  file { "${consul::config_dir}/service_${escaped_id}.json":
-    ensure  => $ensure,
-    owner   => $::consul::user,
-    group   => $::consul::group,
-    mode    => $::consul::config_mode,
-    content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-    require => File[$::consul::config_dir],
-    notify  => Class['consul::reload_service'],
-    unless  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+
+  if $::consul::selected_install_method != 'docker' {
+    file { "${consul::config_dir}/service_${escaped_id}.json":
+      ensure  => $ensure,
+      owner   => $::consul::user,
+      group   => $::consul::group,
+      mode    => $::consul::config_mode,
+      content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+      require => File[$::consul::config_dir],
+      notify  => Class['consul::reload_service'],
+    }
   }
-  
-  file { "${consul::config_dir}/service_${escaped_id}.json":
-    ensure  => $ensure,
-    mode    => $::consul::config_mode,
-    content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-    require => File[$::consul::config_dir],
-    notify  => Class['consul::reload_service'],
-    onlyif  => "/usr/bin/test -e ${consul::config_dir}/docker_used",
+  else {
+    file { "${consul::config_dir}/service_${escaped_id}.json":
+      ensure  => $ensure,
+      mode    => $::consul::config_mode,
+      content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+      require => File[$::consul::config_dir],
+      notify  => Class['consul::reload_service'],
+    }
   }
 }
