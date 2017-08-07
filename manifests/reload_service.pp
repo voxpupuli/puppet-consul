@@ -29,7 +29,7 @@ class consul::reload_service {
 
     exec { 'reload consul service docker':
       path        => [$::consul::bin_dir,'/bin','/usr/bin'],
-      command     => "docker exec -t consul consul reload -http-addr=${http_addr}:${consul::http_port}",
+      command     => "docker restart consul",
       refreshonly => true,
       tries       => 3,
       onlyif      => "/usr/bin/test -e ${consul::config_dir}/docker_used",
