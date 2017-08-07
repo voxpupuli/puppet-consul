@@ -105,6 +105,7 @@ class consul::config(
       mode    => $::consul::config_mode,
       content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
       require => File[$::consul::config_dir],
+      notify  => Class['consul::reload_service'],
     }
 
   }
