@@ -32,26 +32,7 @@ class consul::install {
 
   case $::consul::selected_install_method {
     'docker': {
-      $server_mode = pick($::consul::config_hash[server], false)
-      
-      if $server_mode {
-        $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server"
-      }
-      else {
-        $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent"
-      }
-
-      # Docker Install
-      docker::run { 'consul' :
-        image   => "${consul::docker_image}:${consul::version}",
-        net     => 'host',
-        volumes => [ "${::consul::config_dir}:/consul/config" ],
-        env     => $env,
-        command => $command
-      }
-
+      # Do nothing as the container is pulled automatically during the docker run.
     }
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
