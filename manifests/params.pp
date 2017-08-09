@@ -53,6 +53,8 @@ class consul::params {
     }
   }
 
+  $os = downcase($::kernel)
+
   if $::operatingsystem == 'Ubuntu' {
     if versioncmp($::operatingsystemrelease, '8.04') < 1 {
       $init_style = 'debian'
