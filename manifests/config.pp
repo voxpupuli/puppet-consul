@@ -15,7 +15,7 @@ class consul::config(
   $purge = true,
 ) {
 
-  if ($::consul::init_style != 'unmanaged') and ($::consul::selected_install_method != 'docker') {
+  if ($::consul::init_style != 'unmanaged') {
 
     case $::consul::init_style {
       'upstart': {
@@ -97,39 +97,15 @@ class consul::config(
       }
     }
   }
-  
-  if $::consul::selected_install_method == 'docker' {
-    file { 'consul config.json' :
-      ensure  => present,
-      path    => "${consul::config_dir}/config.json",
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      require => File[$::consul::config_dir],
-      notify  => Class['consul::reload_service'],
-    }
 
-  }
-  else {
-    file { 'consul config.json' :
-      ensure  => present,
-      path    => "${consul::config_dir}/config.json",
-      owner   => $::consul::user,
-      group   => $::consul::group,
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      require => File[$::consul::config_dir],
-    }
+  file { 'consul config.json' :
+    ensure  => present,
+    path    => "${consul::config_dir}/config.json",
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    require => File[$::consul::config_dir],
   }
 
-  if $::consul::selected_install_method == 'docker' {
-    $docker_ensure = 'present'
-  }
-  else {
-    $docker_ensure = 'absent'
-  }
-  file { 'docker_used':
-      ensure  => $docker_ensure,
-      path    => "${consul::config_dir}/docker_used",
-      content => '# This file was created by puppet-consul to track if docker is being used to manage services',
-    }
 }

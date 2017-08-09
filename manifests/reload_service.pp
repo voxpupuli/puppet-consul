@@ -19,22 +19,16 @@ class consul::reload_service {
       $http_addr = $::consul::http_addr
     }
 
+    case $::consul::install_method {
+      'docker': { $command = "docker exec -t consul consul reload -http-addr=${http_addr}:${consul::http_port}" }
+      default: { $command = "consul reload -http-addr=${http_addr}:${consul::http_port}" }
+    }
+
     exec { 'reload consul service':
       path        => [$::consul::bin_dir,'/bin','/usr/bin'],
-      command     => "consul reload -http-addr=${http_addr}:${consul::http_port}",
+      command     => $command,
       refreshonly => true,
       tries       => 3,
-      unless      => "/usr/bin/test -e ${consul::config_dir}/docker_used",
     }
-
-    exec { 'reload consul service docker':
-      path        => [$::consul::bin_dir,'/bin','/usr/bin'],
-      command     => "docker restart consul",
-      refreshonly => true,
-      tries       => 3,
-      onlyif      => "/usr/bin/test -e ${consul::config_dir}/docker_used",
-    }
-
   }
-
 }

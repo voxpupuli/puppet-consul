@@ -133,26 +133,15 @@ define consul::watch(
     watches => [delete_undef_values(merge($basic_hash, $type_hash))]
   }
 
-  if $::consul::selected_install_method != 'docker' {
-    file { "watch_${id} with consul users" :
-      path    => "${consul::config_dir}/watch_${id}.json",
-      ensure  => $ensure,
-      owner   => $::consul::user,
-      group   => $::consul::group,
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      notify  => Class['consul::reload_service'],
-      require => File[$::consul::config_dir],
-    }
+  file { "watch_${id} with consul users" :
+    path    => "${consul::config_dir}/watch_${id}.json",
+    ensure  => $ensure,
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    notify  => Class['consul::reload_service'],
+    require => File[$::consul::config_dir],
   }
-  else {
-    file { "watch_${id} without consul users" :
-      path    => "${consul::config_dir}/watch_${id}.json",
-      ensure  => $ensure,
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      notify  => Class['consul::reload_service'],
-      require => File[$::consul::config_dir],
-    }
-  }
+
 }
