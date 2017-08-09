@@ -58,8 +58,7 @@
 #   This is ignored when install_method == 'docker'
 #
 # [*install_method*]
-#   Valid strings: `auto`    - use docker if available, fallback to url if not
-#                  `docker`  - install via docker container
+#   Valid strings: `docker`  - install via docker container
 #                  `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
 #                  `none`    - disable install.
@@ -257,18 +256,6 @@ class consul (
 
   if $acls {
     create_resources(consul_acl, $acls)
-  }
-
-  if $install_method == 'auto' {
-    if $facts['networking']['interfaces']['docker0'] {
-      $selected_install_method = 'docker'
-    }
-    else {
-      $selected_install_method = 'url'
-    }
-  }
-  else {
-    $selected_install_method = $install_method
   }
 
   $notify_service = $restart_on_change ? {

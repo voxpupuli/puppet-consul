@@ -18,12 +18,10 @@ class consul::params {
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
   $extra_options         = ''
-  $group                 = 'consul'
   $log_file              = '/var/log/consul'
   $install_method        = 'package'
   $join_wan              = false
   $manage_group          = true
-  $manage_service        = true
   $manage_user           = true
   $package_ensure        = 'latest'
   $package_name          = 'consul'
@@ -40,7 +38,6 @@ class consul::params {
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_package_ensure     = 'latest'
   $ui_package_name       = 'consul_ui'
-  $user                  = 'consul'
   $version               = '0.9.0'
   $watches               = {}
 
@@ -53,9 +50,23 @@ class consul::params {
     }
   }
 
+  if $::consul::install_method == 'docker' {
+    $user = undef
+    $group = undef
+    $manage_service = false
+  }
+  else {
+    $user = 'consul'
+    $group = 'consul'
+    $manage_service = true
+  }
+
   $os = downcase($::kernel)
 
-  if $::operatingsystem == 'Ubuntu' {
+  if $::consul::install_method == 'docker' {
+    $init_style = 'unmanaged'
+  }
+  elsif $::operatingsystem == 'Ubuntu' {
     if versioncmp($::operatingsystemrelease, '8.04') < 1 {
       $init_style = 'debian'
     } elsif versioncmp($::operatingsystemrelease, '15.04') < 0 {

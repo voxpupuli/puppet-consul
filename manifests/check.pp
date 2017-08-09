@@ -85,26 +85,15 @@ define consul::check(
 
   $escaped_id = regsubst($id,'\/','_','G')
   
-  if $::consul::selected_install_method != 'docker' {
-    file { "check_${escaped_id} with consul accounts" :
-      path    => "${consul::config_dir}/check_${escaped_id}.json",
-      ensure  => $ensure,
-      owner   => $::consul::user,
-      group   => $::consul::group,
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      notify  => Class['consul::reload_service'],
-      require => File[$::consul::config_dir],
-    }
+  file { "check_${escaped_id} with consul accounts" :
+    path    => "${consul::config_dir}/check_${escaped_id}.json",
+    ensure  => $ensure,
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    mode    => $::consul::config_mode,
+    content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    notify  => Class['consul::reload_service'],
+    require => File[$::consul::config_dir],
   }
-  else {
-    file { "check_${escaped_id} without consul accounts" :
-      path    => "${consul::config_dir}/check_${escaped_id}.json",
-      ensure  => $ensure,
-      mode    => $::consul::config_mode,
-      content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-      notify  => Class['consul::reload_service'],
-      require => File[$::consul::config_dir],
-    }
-  }
+
 }

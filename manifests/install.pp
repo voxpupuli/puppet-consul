@@ -4,8 +4,8 @@
 #
 class consul::install {
 
-  if ($::consul::data_dir) and ($::consul::selected_install_method != 'docker') {
-    file { $::consul::data_dir:
+  if ($::consul::data_dir) and ($::consul::install_method != 'docker') {
+    file { $::consul::data_dir :
       ensure => 'directory',
       owner  => $::consul::user,
       group  => $::consul::group,
@@ -13,45 +13,17 @@ class consul::install {
     }
   }
 
-  if $::consul::selected_install_method == 'docker' {
-    file { $::consul::config_dir:
-      ensure  => 'directory',
-      purge   => $purge,
-      recurse => $purge,
-    }
-  }
-  else {
-    file { $::consul::config_dir:
-      ensure  => 'directory',
-      owner   => $::consul::user,
-      group   => $::consul::group,
-      purge   => $purge,
-      recurse => $purge,
-    }
+  file { $::consul::config_dir :
+    ensure  => 'directory',
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    purge   => $purge,
+    recurse => $purge,
   }
 
-  case $::consul::selected_install_method {
+  case $::consul::install_method {
     'docker': {
-      $server_mode = pick($::consul::config_hash[server], false)
-      
-      if $server_mode {
-        $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-        $command = "agent -server"
-      }
-      else {
-        $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-        $command = "agent"
-      }
-
-      # Docker Install
-      docker::run { 'consul' :
-        image   => "${consul::docker_image}:${consul::version}",
-        net     => 'host',
-        volumes => [ "${::consul::config_dir}:/consul/config" ],
-        env     => $env,
-        command => $command
-      }
-
+      # Do nothing as docker will install when run
     }
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
@@ -148,18 +120,18 @@ class consul::install {
     }
   }
 
-  if ($::consul::manage_user) and ($::consul::selected_install_method != 'docker' ) {
+  if ($::consul::manage_user) and ($::consul::install_method != 'docker' ) {
     user { $::consul::user:
       ensure => 'present',
       system => true,
       groups => $::consul::extra_groups,
     }
 
-    if ($::consul::manage_group) and ($::consul::selected_install_method != 'docker' ) {
+    if ($::consul::manage_group) and ($::consul::install_method != 'docker' ) {
       Group[$::consul::group] -> User[$::consul::user]
     }
   }
-  if ($::consul::manage_group) and ($::consul::selected_install_method != 'docker' ) {
+  if ($::consul::manage_group) and ($::consul::install_method != 'docker' ) {
     group { $::consul::group:
       ensure => 'present',
       system => true,
