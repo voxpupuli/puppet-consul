@@ -15,9 +15,9 @@ class consul::config(
   $purge = true,
 ) {
 
-  if ($::consul::init_style != 'unmanaged') {
+  if ($::consul::init_style_real != 'unmanaged') {
 
-    case $::consul::init_style {
+    case $::consul::init_style_real {
       'upstart': {
         file { '/etc/init/consul.conf':
           mode    => '0444',
@@ -93,7 +93,7 @@ class consul::config(
         }
       }
       default: {
-        fail("I don't know how to create an init script for style ${consul::init_style}")
+        fail("I don't know how to create an init script for style ${consul::init_style_real}")
       }
     }
   }
@@ -101,8 +101,8 @@ class consul::config(
   file { 'consul config.json' :
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    owner   => $::consul::user,
-    group   => $::consul::group,
+    owner   => $::consul::user_real,
+    group   => $::consul::group_real,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require => File[$::consul::config_dir],

@@ -136,8 +136,8 @@ define consul::watch(
   file { "watch_${id} with consul users" :
     path    => "${consul::config_dir}/watch_${id}.json",
     ensure  => $ensure,
-    owner   => $::consul::user,
-    group   => $::consul::group,
+    owner   => $::consul::user_real,
+    group   => $::consul::group_real,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     notify  => Class['consul::reload_service'],

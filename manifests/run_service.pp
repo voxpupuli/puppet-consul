@@ -5,17 +5,17 @@
 #
 class consul::run_service {
 
-  $service_name = $::consul::init_style ? {
+  $service_name = $::consul::init_style_real ? {
     'launchd' => 'io.consul.daemon',
     default   => 'consul',
   }
 
-  $service_provider = $::consul::init_style ? {
+  $service_provider = $::consul::init_style_real ? {
     'unmanaged' => undef,
-    default     => $::consul::init_style,
+    default     => $::consul::init_style_real,
   }
 
-  if $::consul::manage_service == true {
+  if $::consul::manage_service_real == true {
     service { 'consul':
       ensure   => $::consul::service_ensure,
       name     => $service_name,
