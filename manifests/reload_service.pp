@@ -9,7 +9,7 @@ class consul::reload_service {
 
   # Don't attempt to reload if we're not supposed to be running.
   # This can happen during pre-provisioning of a node.
-  if $::consul::manage_service == true and $::consul::service_ensure == 'running' {
+  if $::consul::manage_service_real == true and $::consul::service_ensure == 'running' {
 
     # Make sure we don't try to connect to 0.0.0.0, use 127.0.0.1 instead
     # This can happen if the consul agent RPC port is bound to 0.0.0.0
