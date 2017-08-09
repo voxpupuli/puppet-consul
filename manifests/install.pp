@@ -2,7 +2,9 @@
 #
 # Installs consul based on the parameters from init
 #
-class consul::install {
+class consul::install (
+  $purge = true,
+) {
 
   if ($::consul::data_dir) and ($::consul::install_method != 'docker') {
     file { $::consul::data_dir :

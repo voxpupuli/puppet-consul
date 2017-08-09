@@ -134,8 +134,8 @@ define consul::watch(
   }
 
   file { "watch_${id} with consul users" :
-    path    => "${consul::config_dir}/watch_${id}.json",
     ensure  => $ensure,
+    path    => "${consul::config_dir}/watch_${id}.json",
     owner   => $::consul::user_real,
     group   => $::consul::group_real,
     mode    => $::consul::config_mode,
