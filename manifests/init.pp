@@ -277,11 +277,13 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { 'consul::install': }
+  -> class { 'consul::install': 
+    purge => $purge_config_dir,
+  }
   -> class { 'consul::config':
-    config_hash             => $config_hash_real,
-    purge                   => $purge_config_dir,
-    notify                  => $notify_service,
+    config_hash => $config_hash_real,
+    purge       => $purge_config_dir,
+    notify      => $notify_service,
   }
   -> class { 'consul::run_service': }
   -> class { 'consul::reload_service': }

@@ -25,16 +25,16 @@ class consul::run_service {
   }
 
   if $::consul::install_method == 'docker' {
-    
+
     $server_mode = pick($::consul::config_hash[server], false)
-      
+
     if $server_mode {
       $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
-      $docker_command = "agent -server"
+      $docker_command = 'agent -server'
     }
     else {
       $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
-      $docker_command = "agent"
+      $docker_command = 'agent'
     }
 
     # Docker Install
@@ -48,11 +48,11 @@ class consul::run_service {
   }
 
   case $::consul::install_method {
-    'docker': { 
+    'docker': {
       $wan_command = "docker exec -t consul consul join -wan ${consul::join_wan}"
       $wan_unless = "docker exec -t consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
     }
-    default: { 
+    default: {
       $wan_command = "consul join -wan ${consul::join_wan}"
       $wan_unless = "consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
     }
