@@ -98,7 +98,14 @@ class consul::config(
     }
   }
 
-  file { 'consul config.json' :
+  file { $::consul::config_dir:
+    ensure  => 'directory',
+    owner   => $::consul::user,
+    group   => $::consul::group,
+    purge   => $purge,
+    recurse => $purge,
+  }
+  -> file { 'consul config.json' :
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
     owner   => $::consul::user_real,
