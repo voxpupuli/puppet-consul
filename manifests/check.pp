@@ -84,16 +84,13 @@ define consul::check(
   consul_validate_checks($check_hash[check])
 
   $escaped_id = regsubst($id,'\/','_','G')
-
-  file { "check_${escaped_id} with consul accounts" :
+  File[$::consul::config_dir]
+  -> file { "${consul::config_dir}/check_${escaped_id}.json" :
     ensure  => $ensure,
-    path    => "${consul::config_dir}/check_${escaped_id}.json",
     owner   => $::consul::user_real,
     group   => $::consul::group_real,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($check_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-    notify  => Class['consul::reload_service'],
-    require => File[$::consul::config_dir],
-  }
+  } ~> Class['consul::reload_service']
 
 }

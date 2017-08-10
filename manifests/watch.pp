@@ -133,15 +133,13 @@ define consul::watch(
     watches => [delete_undef_values(merge($basic_hash, $type_hash))]
   }
 
-  file { "watch_${id} with consul users" :
+  File[$::consul::config_dir]
+  -> file { "${consul::config_dir}/watch_${id}.json" :
     ensure  => $ensure,
-    path    => "${consul::config_dir}/watch_${id}.json",
     owner   => $::consul::user_real,
     group   => $::consul::group_real,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-    notify  => Class['consul::reload_service'],
-    require => File[$::consul::config_dir],
-  }
+  } ~> Class['consul::reload_service']
 
 }

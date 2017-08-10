@@ -71,6 +71,5 @@ define consul::service(
     mode    => $::consul::config_mode,
     content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require => File[$::consul::config_dir],
-    notify  => Class['consul::reload_service'],
-  }
+  } ~> Class['consul::reload_service']
 }
