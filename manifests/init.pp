@@ -277,9 +277,7 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { 'consul::install':
-    purge => $purge_config_dir,
-  }
+  -> class { 'consul::install': }
   -> class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,

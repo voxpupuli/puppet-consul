@@ -2,9 +2,7 @@
 #
 # Installs consul based on the parameters from init
 #
-class consul::install (
-  $purge = true,
-) {
+class consul::install {
 
   if ($::consul::data_dir) and ($::consul::install_method != 'docker') {
     file { $::consul::data_dir :
@@ -13,14 +11,6 @@ class consul::install (
       group  => $::consul::group_real,
       mode   => '0755',
     }
-  }
-
-  file { $::consul::config_dir :
-    ensure  => 'directory',
-    owner   => $::consul::user_real,
-    group   => $::consul::group_real,
-    purge   => $purge,
-    recurse => $purge,
   }
 
   case $::consul::install_method {
