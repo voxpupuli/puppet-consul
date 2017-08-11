@@ -29,11 +29,11 @@ class consul::run_service {
     $server_mode = pick($::consul::config_hash[server], false)
 
     if $server_mode {
-      $env = [ '\'CONSUL_LOCAL_CONFIG={"skip_leave_on_interrupt": true}\'', '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
+      $env = [ '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'' ]
       $docker_command = 'agent -server'
     }
     else {
-      $env = [ '\'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}\'' ]
+      $env = undef
       $docker_command = 'agent'
     }
 
