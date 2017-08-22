@@ -15,7 +15,7 @@ class consul::run_service {
     default     => $::consul::init_style_real,
   }
 
-  if $::consul::manage_service_real == true {
+  if $::consul::manage_service == true and $::consul::install_method != 'docker' {
     service { 'consul':
       ensure   => $::consul::service_ensure,
       name     => $service_name,
@@ -48,8 +48,8 @@ class consul::run_service {
 
   case $::consul::install_method {
     'docker': {
-      $wan_command = "docker exec -t consul consul join -wan ${consul::join_wan}"
-      $wan_unless = "docker exec -t consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
+      $wan_command = "docker exec consul consul join -wan ${consul::join_wan}"
+      $wan_unless = "docker exec consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
     }
     default: {
       $wan_command = "consul join -wan ${consul::join_wan}"

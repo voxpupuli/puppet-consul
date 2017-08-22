@@ -216,13 +216,11 @@ class consul (
     $user_real = undef
     $group_real = undef
     $init_style_real = 'unmanaged'
-    $manage_service_real = false
   }
   else {
     $user_real = $user
     $group_real = $group
     $init_style_real = $init_style
-    $manage_service_real = $manage_service
   }
 
   if $config_hash_real['data_dir'] {
