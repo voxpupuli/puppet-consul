@@ -37,7 +37,6 @@ class consul::run_service {
       $docker_command = 'agent'
     }
 
-    # Docker Install
     docker::run { 'consul':
       image   => "${consul::docker_image}:${consul::version}",
       net     => 'host',
