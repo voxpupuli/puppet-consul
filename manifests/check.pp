@@ -85,7 +85,7 @@ define consul::check(
 
   $escaped_id = regsubst($id,'\/','_','G')
   File[$::consul::config_dir]
-  -> file { "${consul::config_dir}/check_${escaped_id}.json" :
+  -> file { "${consul::config_dir}/check_${escaped_id}.json":
     ensure  => $ensure,
     owner   => $::consul::user_real,
     group   => $::consul::group_real,
