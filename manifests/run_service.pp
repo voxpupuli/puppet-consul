@@ -38,10 +38,10 @@ class consul::run_service {
     }
 
     # Docker Install
-    docker::run { 'consul' :
+    docker::run { 'consul':
       image   => "${consul::docker_image}:${consul::version}",
       net     => 'host',
-      volumes => [ "${::consul::config_dir}:/consul/config" ],
+      volumes => [ "${::consul::config_dir}:/consul/config", "${::consul::data_dir}:/consul/data" ],
       env     => $env,
       command => $docker_command
     }
