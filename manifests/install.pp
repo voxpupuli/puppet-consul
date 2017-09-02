@@ -4,16 +4,31 @@
 #
 class consul::install {
 
+  case $::operatingsystem {
+    'windows': {
+      $binary_name = 'consul.exe'
+      $binary_mode = '0775'
+      $data_dir_mode = '775'
+    }
+    default: {
+      $binary_name = 'consul'
+      $binary_mode = '0555'
+      $data_dir_mode = '755'
+      # 0 instead of root because OS X uses "wheel".
+      $binary_group = 0
+    }
+  }
+
   if $::consul::data_dir {
     file { $::consul::data_dir:
       ensure => 'directory',
       owner  => $::consul::user,
       group  => $::consul::group,
-      mode   => '0755',
+      mode   => $data_dir_mode,
     }
   }
 
-  case $::consul::install_method {
+  case $consul::install_method {
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
       $install_path = pick($::consul::archive_path, "${install_prefix}/archives")
@@ -30,9 +45,9 @@ class consul::install {
         $install_path,
         "${install_path}/consul-${consul::version}"]:
         ensure => directory,
-        owner  => 'root',
-        group  => 0, # 0 instead of root because OS X uses "wheel".
-        mode   => '0555';
+        owner  => $consul::user,
+        group  => $consul::group,
+        mode   => $binary_mode;
       }
       -> archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
@@ -40,17 +55,17 @@ class consul::install {
         proxy_server => $::consul::proxy_server,
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
-        creates      => "${install_path}/consul-${consul::version}/consul",
+        creates      => "${install_path}/consul-${consul::version}/${binary_name}",
       }
       -> file {
-        "${install_path}/consul-${consul::version}/consul":
-          owner => 'root',
-          group => 0, # 0 instead of root because OS X uses "wheel".
-          mode  => '0555';
-        "${consul::bin_dir}/consul":
+        "${install_path}/consul-${consul::version}/${binary_name}":
+          owner =>  $consul::user,
+          group => $consul::group,
+          mode  => $binary_mode;
+        "${consul::bin_dir}/${binary_name}":
           ensure => link,
           notify => $do_notify_service,
-          target => "${install_path}/consul-${consul::version}/consul";
+          target => "${install_path}/consul-${consul::version}/${binary_name}";
       }
 
       if ($::consul::ui_dir and $::consul::data_dir) {

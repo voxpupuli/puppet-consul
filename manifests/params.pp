@@ -44,7 +44,7 @@ class consul::params {
   $watches               = {}
 
   case $::architecture {
-    'x86_64', 'amd64': { $arch = 'amd64' }
+    'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
     'i386':            { $arch = '386'   }
     /^arm.*/:          { $arch = 'arm'   }
     default:           {
@@ -102,6 +102,8 @@ class consul::params {
     $init_style = 'launchd'
   } elsif $::operatingsystem == 'FreeBSD' {
     $init_style = 'freebsd'
+  } elsif $::operatingsystem == 'windows' {
+    $init_style = 'unmanaged'
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }
