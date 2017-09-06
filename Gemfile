@@ -27,4 +27,5 @@ group :test do
   gem "puppetlabs_spec_helper"
   gem "hiera"
   gem "hiera-puppet-helper"
+  gem "webmock", "~> 2.3.0"
 end
