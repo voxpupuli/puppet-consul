@@ -16,7 +16,7 @@ group :test do
   gem "json_pure", '~> 1.8.3'
 
   gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.7.0'
+  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.8.4'
   gem "puppet-lint"
 
   gem "rspec"
@@ -28,4 +28,6 @@ group :test do
   gem "hiera"
   gem "hiera-puppet-helper"
   gem "webmock", "~> 2.3.0"
+  #pin for 1.9.3 compatability for now
+  gem "public_suffix", '~> 1.4.6'
 end
