@@ -245,13 +245,31 @@ consul_prepared_query { 'consul':
 
 ```puppet
 consul_key_value { 'key/path':
-  ensure => 'present',
-  value  => 'myvaluestring',
-  flags  => 12345,
+  ensure     => 'present',
+  value      => 'myvaluestring',
+  flags      => 12345,
+  datacenter => 'dc1'
 }
 ```
 
-This provider allows you to manage key/value pairs.
+This provider allows you to manage key/value pairs. It tries to be smart in two ways:
+
+1. It caches the data accessible from the kv store with the specified acl token.
+2. It does not update the key if the value & flag are allready correct.
+
+Allowed parameters for this type and their default values:
+
+Name         | Default value | Comments
+------------ | ------------- | ------
+name | value of :title | Name of the key/value object. Path in key/value store.
+flags | 0 | an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application.
+value |  | value of this key. Must be specified.
+acl\_api_token | '' | Token for accessing the ACL API
+datacenter | '' | Name of the datacenter to query. If unspecified, the query will default to the datacenter of the Consul agent at the HTTP address.
+protocol | http | consul protocol: http or https.
+port | 8500 | consul port
+hostname | localhost | consul hostname
+api_tries | 3 | number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout allready takes long.
 
 ## Limitations
 
