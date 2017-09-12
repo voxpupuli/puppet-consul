@@ -203,8 +203,47 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
       end
     end
 
-    context "when key does exist, with same value" do
+    context "when key does exist, with different flag" do
       it "it should write to consul" do
+        kv_content = [
+          {"LockIndex" => 0,
+          "Key" => "sample/key",
+          "Flags" => 1,
+          "Value" => "c2FtcGxlVmFsdWU=", #sampleValue
+          "CreateIndex" => 1350503,
+          "ModifyIndex" => 1350503}
+        ]
+
+        resource = Puppet::Type.type(:consul_key_value).new(
+          {
+            :name          => "sample/key",
+            :value         => 'sampleValue',
+            :flags         => 2,
+            :acl_api_token => 'sampleToken',
+            :datacenter    => 'dc1',
+          }
+        )
+        resources = { 'sample/key' => resource }
+
+        stub_request(:get, "http://localhost:8500/v1/kv/?dc=dc1&recurse&token=sampleToken").
+          with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
+          to_return(:status => 200, :body => JSON.dump(kv_content), :headers => {})
+
+        stub_request(:put, "http://localhost:8500/v1/kv/sample/key?dc=dc1&flags=2&token=sampleToken").
+          with(:body => "sampleValue",
+              :headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
+          to_return(:status => 200, :body => "", :headers => {})
+
+          described_class.reset
+          described_class.prefetch( resources )
+          resource.provider.create
+          resource.provider.flush
+      end
+    end
+
+
+    context "when key does exist, with same value and flag" do
+      it "it should not write to consul" do
         kv_content = [
           {"LockIndex" => 0,
           "Key" => "sample/key",
@@ -218,11 +257,7 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
           with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
           to_return(:status => 200, :body => JSON.dump(kv_content), :headers => {})
 
-        stub_request(:put, "http://localhost:8500/v1/kv/sample/key?dc=dc1&flags=0&token=sampleToken").
-          with(:body => "sampleValue",
-              :headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
-          to_return(:status => 200, :body => "", :headers => {})
-
+        described_class.reset
         described_class.prefetch( resources )
         resource.provider.create
         resource.provider.flush
@@ -233,7 +268,7 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
       it "should raise Puppet::Error on failed create" do
         kv_content = [
           {"LockIndex" => 0,
-          "Key" => "sample/key",
+          "Key" => "sample/different-key",
           "Flags" => 0,
           "Value" => "c2FtcGxlVmFsdWU=", #sampleValue
           "CreateIndex" => 1350503,
@@ -249,6 +284,7 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
               :headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
           to_return(:status => 400, :body => "", :headers => {})
 
+        described_class.reset
         described_class.prefetch( resources )
         resource.provider.create
         expect { resource.provider.flush }.to raise_error(Puppet::Error, /Session sample\/key create\/update: invalid return code 400 uri:/)
