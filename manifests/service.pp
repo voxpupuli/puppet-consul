@@ -66,8 +66,8 @@ define consul::service(
   $escaped_id = regsubst($id,'\/','_','G')
   file { "${consul::config_dir}/service_${escaped_id}.json":
     ensure  => $ensure,
-    owner   => $::consul::user,
-    group   => $::consul::group,
+    owner   => $::consul::user_real,
+    group   => $::consul::group_real,
     mode    => $::consul::config_mode,
     content => consul_sorted_json($service_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require => File[$::consul::config_dir],

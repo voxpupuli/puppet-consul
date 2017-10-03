@@ -7,13 +7,16 @@ class consul::install {
   if $::consul::data_dir {
     file { $::consul::data_dir:
       ensure => 'directory',
-      owner  => $::consul::user,
-      group  => $::consul::group,
+      owner  => $::consul::user_real,
+      group  => $::consul::group_real,
       mode   => '0755',
     }
   }
 
   case $::consul::install_method {
+    'docker': {
+      # Do nothing as docker will install when run
+    }
     'url': {
       $install_prefix = pick($::consul::config_hash[data_dir], '/opt/consul')
       $install_path = pick($::consul::archive_path, "${install_prefix}/archives")
@@ -96,7 +99,7 @@ class consul::install {
       }
 
       if $::consul::manage_user {
-        User[$::consul::user] -> Package[$::consul::package_name]
+        User[$::consul::user_real] -> Package[$::consul::package_name]
       }
 
       if $::consul::data_dir {
@@ -109,19 +112,19 @@ class consul::install {
     }
   }
 
-  if $::consul::manage_user {
-    user { $::consul::user:
+  if ($::consul::manage_user) and ($::consul::install_method != 'docker' ) {
+    user { $::consul::user_real:
       ensure => 'present',
       system => true,
       groups => $::consul::extra_groups,
     }
 
-    if $::consul::manage_group {
-      Group[$::consul::group] -> User[$::consul::user]
+    if ($::consul::manage_group) and ($::consul::install_method != 'docker' ) {
+      Group[$::consul::group_real] -> User[$::consul::user_real]
     }
   }
-  if $::consul::manage_group {
-    group { $::consul::group:
+  if ($::consul::manage_group) and ($::consul::install_method != 'docker' ) {
+    group { $::consul::group_real:
       ensure => 'present',
       system => true,
     }
