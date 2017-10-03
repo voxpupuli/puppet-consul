@@ -21,6 +21,7 @@ new versions of consul. Pin to the version that works for your setup!
 
 * Installs the consul daemon (via url or package)
   * If installing from zip, you *must* ensure the unzip utility is available.
+  * If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
 * Manages the consul service via upstart, sysv, or systemd

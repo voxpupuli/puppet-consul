@@ -31,6 +31,9 @@
 # [*config_mode*]
 #   Use this to set the JSON config file mode for consul.
 #
+# [*docker_image*]
+#   Only valid when the install_method == docker. Defaults to `consul`.
+#
 # [*download_extension*]
 #   The extension of the archive file containing the consul binary to download.
 #
@@ -52,9 +55,11 @@
 # [*init_style*]
 #   What style of init system your system uses. Set to 'unmanaged' to disable
 #   managing init system files for the consul service entirely.
+#   This is ignored when install_method == 'docker'
 #
 # [*install_method*]
-#   Valid strings: `package` - install via system package
+#   Valid strings: `docker`  - install via docker container
+#                  `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
 #                  `none`    - disable install.
 #
@@ -151,6 +156,7 @@ class consul (
   $config_dir            = $::consul::params::config_dir,
   $config_hash           = $::consul::params::config_hash,
   $config_mode           = $::consul::params::config_mode,
+  $docker_image          = $::consul::params::docker_image,
   $download_extension    = $::consul::params::download_extension,
   $download_url          = $::consul::params::download_url,
   $download_url_base     = $::consul::params::download_url_base,
@@ -205,6 +211,17 @@ class consul (
   validate_hash($acls)
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
+
+  if $install_method == 'docker' {
+    $user_real = undef
+    $group_real = undef
+    $init_style_real = 'unmanaged'
+  }
+  else {
+    $user_real = $user
+    $group_real = $group
+    $init_style_real = $init_style
+  }
 
   if $config_hash_real['data_dir'] {
     $data_dir = $config_hash_real['data_dir']
