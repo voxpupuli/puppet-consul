@@ -243,6 +243,8 @@ consul_prepared_query { 'consul':
 
 ## Key/Value Objects
 
+Example:
+
 ```puppet
 consul_key_value { 'key/path':
   ensure     => 'present',
@@ -255,21 +257,23 @@ consul_key_value { 'key/path':
 This provider allows you to manage key/value pairs. It tries to be smart in two ways:
 
 1. It caches the data accessible from the kv store with the specified acl token.
-2. It does not update the key if the value & flag are allready correct.
+2. It does not update the key if the value & flag are already correct.
 
-Allowed parameters for this type and their default values:
 
-Name         | Default value | Comments
------------- | ------------- | ------
-name | value of :title | Name of the key/value object. Path in key/value store.
-flags | 0 | an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application.
-value |  | value of this key. Must be specified.
-acl\_api_token | '' | Token for accessing the ACL API
-datacenter | '' | Name of the datacenter to query. If unspecified, the query will default to the datacenter of the Consul agent at the HTTP address.
-protocol | http | consul protocol: http or https.
-port | 8500 | consul port
-hostname | localhost | consul hostname
-api_tries | 3 | number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout allready takes long.
+These parameters are mandatory when using `consul_key_value`:
+
+* `name` Name of the key/value object. Path in key/value store.
+* `value` value of the key. 
+
+The optional parameters only need to be specified if you require changes from default behaviour.
+
+* `flags` {Integer} an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application. Default is `0`.
+* `acl\_api_token` {String} Token for accessing the ACL API. Default is `''`.
+* `datacenter` {String} Use the key/value store in specified datacenter. If `''` (default) it will use the datacenter of the Consul agent at the HTTP address.
+* `protocol` {String} protocol to use. Either `'http'` (default) or `'https'`.
+* `port` {Integer} consul port. Defaults to `8500`.
+* `hostname` {String} consul hostname. Defaults to `'localhost'`.
+* `api_tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
 
 ## Limitations
 
