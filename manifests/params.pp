@@ -22,6 +22,7 @@ class consul::params {
   $log_file              = '/var/log/consul'
   $install_method        = 'url'
   $join_wan              = false
+  $manage_config         = true
   $manage_group          = true
   $manage_service        = true
   $manage_user           = true
