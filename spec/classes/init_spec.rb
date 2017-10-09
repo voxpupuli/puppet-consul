@@ -640,7 +640,7 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On an Amazon based OS" do
@@ -662,7 +662,7 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On a fedora 20 based OS" do
@@ -673,7 +673,7 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On hardy" do
@@ -698,14 +698,14 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "When asked not to manage the init system" do
     let(:params) {{ :init_style => 'unmanaged' }}
     it { should contain_class('consul').with_init_style('unmanaged') }
     it { should_not contain_file("/etc/init.d/consul") }
-    it { should_not contain_file("/lib/systemd/system/consul.service") }
+    it { should_not contain_file("/etc/systemd/system/consul.service") }
   end
 
   context "On squeeze" do

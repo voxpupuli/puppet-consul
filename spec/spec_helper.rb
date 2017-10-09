@@ -2,6 +2,9 @@ require 'puppetlabs_spec_helper/module_spec_helper'
 require 'hiera-puppet-helper/rspec'
 require 'hiera'
 require 'puppet/indirector/hiera'
+require 'webmock/rspec'
+
+WebMock.disable_net_connect!()
 
 # config hiera to work with let(:hiera_data)
 def hiera_stub

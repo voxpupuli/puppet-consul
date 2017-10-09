@@ -34,7 +34,7 @@ class consul::config(
         }
       }
       'systemd': {
-        file { '/lib/systemd/system/consul.service':
+        file { '/etc/systemd/system/consul.service':
           mode    => '0644',
           owner   => 'root',
           group   => 'root',
