@@ -50,7 +50,7 @@ module Facter::Util::Consul
 
   def self.get_healthy_nodes_for_service(service_name)
     nodes_health = get_request("/health/service/#{service_name}")
-    healthy_node_ips = nodes_health.map do |node_info|
+    healthy_nodes = nodes_health.map do |node_info|
       health_check_statuses = node_info['Checks'].map {|cur_check| cur_check['Status']}
       if health_check_statuses.uniq == ['passing']
          "#{node_info['Node']['Address']}:#{node_info['Service']['Port']}"
@@ -59,7 +59,8 @@ module Facter::Util::Consul
       end
     end
     {
-      "ips" => healthy_node_ips.compact,
+      "nodes" => healthy_nodes.compact,
+      "nodes_string" => healthy_nodes.compact.join(','),
       # "leader" => get_leader_for_service(service_name),
       "is_current_node_leader" => is_current_node_leader(service_name)
     }
