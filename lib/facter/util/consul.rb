@@ -60,7 +60,7 @@ module Facter::Util::Consul
     end
     {
       "ips" => healthy_node_ips.compact,
-      "leader" => get_leader_for_service(service_name),
+      # "leader" => get_leader_for_service(service_name),
       "is_current_node_leader" => is_current_node_leader(service_name)
     }
   end
