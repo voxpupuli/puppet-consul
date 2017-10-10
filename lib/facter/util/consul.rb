@@ -7,6 +7,10 @@ module Facter::Util::Consul
 
   def self.get_request(api_end_point)
     res = Net::HTTP.get_response(URI.parse("#{CONSUL_URL}#{api_end_point}"))
+    # for key request we could get a 404 response for invalid keys
+    if res.response.code == '404'
+      return nil if (api_end_point =~ /\/kv\//) != nil
+    end
     if res.response.code != "200"
       $stderr.puts 'http request failed'
       return nil
@@ -62,7 +66,7 @@ module Facter::Util::Consul
   end
 
   def self.list_services()
-    if not get_request('/status/leader')
+    if not get_request('/status/peers')
       $stderr.puts 'consul agent not responding'
       return nil
     end
