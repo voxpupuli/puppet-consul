@@ -13,6 +13,6 @@ Facter.add(:consul_services) do
   end
 
   setcode do
-	  Facter::Util::Consul.list_services
-	end
+    Facter::Util::Consul.list_services
+  end
 end
