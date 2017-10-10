@@ -8,7 +8,7 @@ module Facter::Util::Consul
   def self.get_request(api_end_point)
     res = Net::HTTP.get_response(URI.parse("#{CONSUL_URL}#{api_end_point}"))
     if res.response.code != "200"
-      puts.$stderr 'http request failed'
+      $stderr.puts 'http request failed'
       return nil
     end
     JSON.parse(res.body)
@@ -63,7 +63,7 @@ module Facter::Util::Consul
 
   def self.list_services()
     if not get_request('/status/leader')
-      puts.$stderr 'consul agent not responding'
+      $stderr.puts 'consul agent not responding'
       return nil
     end
     services = {}
