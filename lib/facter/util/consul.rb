@@ -26,7 +26,7 @@ module Facter::Util::Consul
 
   def self.get_leader_for_service(service_name)
     leader_info_meta = get_request("/kv/service/#{service_name}/leader")
-    return nil if leader_info_meta.size == 0
+    return nil if leader_info_meta == nil or leader_info_meta.size == 0
     return nil if leader_info_meta[0]['Session'] == nil #no session for key means no leader
     leader_info = get_request("/kv/service/#{service_name}/leader?raw")
     "#{leader_info['Address']}:#{leader_info['Port']}"
@@ -40,7 +40,7 @@ module Facter::Util::Consul
 
   def self.is_current_node_leader(service_name)
     leader_info_meta = get_request("/kv/service/#{service_name}/leader")
-    return false if leader_info_meta.size == 0
+    return false if leader_info_meta == nil or leader_info_meta.size == 0
     return false if leader_info_meta[0]['Session'] == nil #no session for key means no leader
     leader_info = get_request("/session/info/#{leader_info_meta[0]['Session']}")
     return false if leader_info == {}
