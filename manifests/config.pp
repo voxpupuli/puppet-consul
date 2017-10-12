@@ -105,7 +105,7 @@ class consul::config(
     purge   => $purge,
     recurse => $purge,
   }
-  if ($::consul::manage_config == true) { 
+  if ($::consul::manage_config == true) {
     file { 'consul config.json':
       ensure  => present,
       path    => "${consul::config_dir}/config.json",
