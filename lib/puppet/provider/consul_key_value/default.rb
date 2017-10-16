@@ -1,171 +1,93 @@
-require 'json'
 require 'net/http'
 require 'uri'
-require 'base64'
+require 'puppet/provider/consulbase'
+require 'puppet_x/consul/consul'
+
 Puppet::Type.type(:consul_key_value).provide(
-  :default
+  :default, :parent => Puppet::Provider::ConsulBase
 ) do
   mk_resource_methods
 
-  def self.prefetch(resources)
-    resources.each do |name, resource|
-      Puppet.debug("prefetching for #{name}")
-      port = resource[:port]
-      hostname = resource[:hostname]
-      protocol = resource[:protocol]
-      token = resource[:acl_api_token]
-      tries = resource[:api_tries]
-      datacenter = resource[:datacenter]
-
-      found_key_values = list_resources(token, port, hostname, protocol, tries, datacenter).select do |key_value|
-        key_value[:name] == name
-      end
-
-      found_key_value = found_key_values.first || nil
-      if found_key_value
-        Puppet.debug("found #{found_key_value}")
-        resource.provider = new(found_key_value)
-      else
-        Puppet.debug("found none #{name}")
-        resource.provider = new({:ensure => :absent})
-      end
-    end
+  def self.get_cache_key(opts = {})
+    port = opts[:port]
+    hostname = opts[:hostname]
+    protocol = opts[:protocol]
+    token = opts[:acl_api_token]
+    tries = opts[:api_tries]
+    datacenter = opts[:datacenter]
+    "#{token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"
   end
 
-  def self.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter)
-    @key_values ||= {}
-    if @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ]
-      return @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ]
-    end
-
+  # Fetches a list of resources on the system.
+  # returns a list of Hashes
+  def self.fetch_resources(opts = {})
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    consul_url = "#{protocol}://#{hostname}:#{port}/v1/kv/?dc=#{datacenter}&recurse&token=#{acl_api_token}"
 
-    uri = URI(consul_url)
-    res = nil
+    # TODO: extract library options from type
+    client_opts = {}
+    client_opts[:use_ssl] = (opts[:protocol] == :https)
+    client_opts[:retry_period] = opts[:retry_period]
 
-    # retry Consul API query for ACLs, in case Consul has just started
-    (1..tries).each do |i|
-      unless i == 1
-        Puppet.debug("retrying Consul API query in #{i} seconds")
-        sleep i
-      end
-      res = Net::HTTP.get_response(uri)
-      break if res.code == '200'
+    consulclient = PuppetX::Consul::Consul.new(opts[:hostname], opts[:acl_api_token], opts[:port], client_opts)
+
+    key_values = consulclient.get_kv('/', 'recurse' => true, 'dc' => opts[:datacenter])
+    return [] if key_values.nil?
+
+    nkey_values = key_values.collect do |kv|
+      val = process_single_remote_resource(kv)
+      val
     end
-
-    if res.code == '200'
-      key_values = JSON.parse(res.body)
-
-    # No keys exists yet in this datacenter
-    elsif res.code == '404'
-      return []
-    else
-      Puppet.warning("Cannot retrieve key_values: invalid return code #{res.code} uri: #{uri.request_uri}")
-      return {}
-    end
-
-    nkey_values = key_values.collect do |key_value|
-      {
-        :name     => key_value["Key"],
-        :value    => (key_value["Value"] == nil ? '' : Base64.decode64(key_value["Value"])),
-        :flags    => Integer(key_value["Flags"]),
-        :ensure   => :present,
-        :protocol => protocol,
-      }
-    end
-    @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ] = nkey_values
     nkey_values
   end
 
-  # Reset the state of the provider between tests.
-  def self.reset()
-    @key_values = {}
+  def self.process_single_remote_resource(key_value)
+    {
+      :name     => key_value['Key'],
+      :value    => key_value['Value'] || '',
+      :flags    => Integer(key_value['Flags']),
+      :ensure   => :present
+    }
   end
 
-  def get_path(name)
-    uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}&token=#{@resource[:acl_api_token]}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    acl_api_token = @resource[:acl_api_token]
-    return uri.request_uri, http
-  end
+  def get_client
+    if defined?(@client).nil?
+      # TODO: extract library options from type
+      client_opts = {}
+      client_opts[:use_ssl] = (@resource[:protocol] == :https)
+      client_opts[:retry_period] = @resource[:retry_period]
 
-  def create_or_update_key_value(name, value, flags)
-    path, http = get_path(name)
-    req = Net::HTTP::Put.new(path + "&flags=#{flags}")
-    req.body = value
-    res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error,"Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      @client = PuppetX::Consul::Consul.new(@resource[:hostname], @resource[:acl_api_token], @resource[:port], client_opts)
     end
+    @client
   end
 
-  def delete_key_value(name)
-    path, http = get_path(name)
-    req = Net::HTTP::Delete.new(path)
-    res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error,"Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+  def create_remote_resource
+    consul_client = get_client
+
+    path = "/v1/kv/#{name}"
+    body = @resource[:value]
+    consul_client.put(path, body, :dc => @resource[:datacenter], :flags => @resource[:flags])
   end
 
-  def get_resource(name, port, hostname, protocol, tries, datacenter)
-    acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter).select do |res|
-      res[:name] == name
-    end
-    # if the user creates multiple with the same name this will do odd things
-    resources.first || nil
+  def update_remote_resource(remote_resource)
+    consul_client = get_client
+
+    path = "/v1/kv/#{remote_resource[:name]}"
+    body = @resource[:value]
+    consul_client.put(path, body, :dc => @resource[:datacenter], :flags => @resource[:flags])
   end
 
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
+  def delete_remote_resource(remote_resource)
+    consul_client = get_client
+
+    path = "/v1/kv/#{remote_resource[:name]}"
+    consul_client.delete(path, nil, :dc => @resource[:datacenter])
   end
 
-  def exists?
-    @property_hash[:ensure] == :present
-  end
-
-  def create
-    @property_flush[:ensure] = :present
-  end
-
-  def destroy
-    @property_flush[:ensure] = :absent
-  end
-
-  def flush
-    name = @resource[:name]
-    flags = @resource[:flags]
-    value = @resource[:value]
-    port = @resource[:port]
-    hostname = @resource[:hostname]
-    protocol = @resource[:protocol]
-    tries = @resource[:api_tries]
-    datacenter = @resource[:datacenter]
-    key_value = self.get_resource(name, port, hostname, protocol, tries, datacenter)
-
-    if @property_flush[:ensure] == :absent
-      if key_value
-        #key actually exists in the kv, delete it.
-        delete_key_value(name)
-        return
-      end
-    elsif @property_flush[:ensure] == :present
-      if key_value
-        if key_value[:value] == value and key_value[:flags] == flags
-          # the key exists in the kv and has the right value and flag.
-          # return without updating the key.
-          return
-        end
-      end
-      create_or_update_key_value(name, value, flags)
-    else
-      raise(Puppet::Error,"ensure attribute is set to unexpected value: #{@property_flush[:ensure]}")
-    end
-
-    @property_hash.clear
+  def remote_requires_update?(remote_resource)
+    return true if @resource[:value] != remote_resource[:value]
+    return true if @resource[:flags] != remote_resource[:flags]
+    false
   end
 end

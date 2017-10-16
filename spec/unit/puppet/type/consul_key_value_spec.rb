@@ -1,5 +1,6 @@
-describe Puppet::Type.type(:consul_key_value) do
+require 'spec_helper'
 
+describe Puppet::Type.type(:consul_key_value) do
   it 'should fail if no name is provided' do
     expect do
       Puppet::Type.type(:consul_key_value).new(:type => 'client')
@@ -11,7 +12,7 @@ describe Puppet::Type.type(:consul_key_value) do
       @key_value = Puppet::Type.type(:consul_key_value).new(
         :name  => 'sample/key',
         :value => 'sampleValue',
-        :flags => 1,
+        :flags => 1
       )
     end
 

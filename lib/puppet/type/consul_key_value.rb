@@ -1,21 +1,20 @@
 Puppet::Type.newtype(:consul_key_value) do
-
-  desc <<-'EOD'
+  desc <<-'DESCRIPTION'
   Manage a consul key value object.
-  EOD
+  DESCRIPTION
   ensurable
 
   newparam(:name, :namevar => true) do
     desc 'Name of the key/value object'
     validate do |value|
-      raise ArgumentError, "Key/value object name must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'Key/value object name must be a string' unless value.is_a?(String)
     end
   end
 
   newparam(:flags) do
     desc 'Flags integer'
     validate do |value|
-      raise ArgumentError, "The flags value must be an integer" if not value.is_a?(Integer)
+      raise ArgumentError, 'The flags value must be an integer' unless value.is_a?(Integer)
     end
     defaultto 0
   end
@@ -23,14 +22,14 @@ Puppet::Type.newtype(:consul_key_value) do
   newproperty(:value) do
     desc 'The key value string'
     validate do |value|
-      raise ArgumentError, "The key value must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'The key value must be a string' unless value.is_a?(String)
     end
   end
 
   newparam(:acl_api_token) do
     desc 'Token for accessing the ACL API'
     validate do |value|
-      raise ArgumentError, "ACL API token must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'ACL API token must be a string' unless value.is_a?(String)
     end
     defaultto ''
   end
@@ -38,7 +37,7 @@ Puppet::Type.newtype(:consul_key_value) do
   newparam(:datacenter) do
     desc 'Name of the datacenter to query. If unspecified, the query will default to the datacenter of the Consul agent at the HTTP address.'
     validate do |value|
-      raise ArgumentError, "Datacenter must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'Datacenter must be a string' unless value.is_a?(String)
     end
     defaultto ''
   end
@@ -53,14 +52,14 @@ Puppet::Type.newtype(:consul_key_value) do
     desc 'consul port'
     defaultto 8500
     validate do |value|
-      raise ArgumentError, "The port number must be a number" if not value.is_a?(Integer)
+      raise ArgumentError, 'The port number must be a number' unless value.is_a?(Integer)
     end
   end
 
   newparam(:hostname) do
     desc 'consul hostname'
     validate do |value|
-      raise ArgumentError, "The hostname must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'The hostname must be a string' unless value.is_a?(String)
     end
     defaultto 'localhost'
   end
@@ -69,7 +68,15 @@ Puppet::Type.newtype(:consul_key_value) do
     desc 'number of tries when contacting the Consul REST API'
     defaultto 3
     validate do |value|
-      raise ArgumentError, "Number of API tries must be a number" if not value.is_a?(Integer)
+      raise ArgumentError, 'Number of API tries must be a number' unless value.is_a?(Integer)
+    end
+  end
+
+  newparam(:retry_period) do
+    desc 'How long to sleep between retries in seconds (1)'
+    defaultto 1
+    validate do |value|
+      raise ArgumentError, 'retry_period must be a number' unless value.is_a?(Integer)
     end
   end
 end
