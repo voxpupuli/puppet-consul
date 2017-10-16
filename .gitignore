@@ -7,3 +7,5 @@ log/
 vendor/
 .bundle/
 .DS_Store
+.vscode/
+bin/
