@@ -18,5 +18,4 @@ RSpec.configure do |c|
   c.before(:each) do
     allow(Puppet::Indirector::Hiera).to receive(:hiera) { hiera_stub }
   end
-
 end
