@@ -34,7 +34,7 @@ module PuppetX
       # @option opts [String] :ssl_ca_cert Specify location of the CA certificate
       # @option opts [String] :ssl_cert Specify location of the ssl certificate
       # @option opts [String] :ssl_key Specify location of the ssl key
-      # @option opts [Bool] :use_auth When set to true, enable basic auth
+      # @option opts [Bool] :use_auth (false) When set to true, enable basic auth
       # @option opts [String] :auth_user The user for basic auth
       # @option opts [Bool] :auth_pass The password for basic auth
       #
@@ -227,8 +227,8 @@ module PuppetX
         real_params = {}
         params.each do |key, value|
           real_params[key.to_s] = nil if key.to_sym == :recurse && value
-          real_params[key.to_s] = value if key.to_sym == :dc
-          real_params[key.to_s] = value if key.to_sym == :flags
+          real_params[key.to_s] = value if key.to_sym == :dc && !value.nil?
+          real_params[key.to_s] = value if key.to_sym == :flags && !value.nil?
         end
 
         encoded_params = URI.encode_www_form(real_params)

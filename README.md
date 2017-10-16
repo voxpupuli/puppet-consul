@@ -275,6 +275,190 @@ The optional parameters only need to be specified if you require changes from de
 * `hostname` {String} consul hostname. Defaults to `'localhost'`.
 * `api_tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
 
+
+## Hiera Backend
+Explicit and Recusive searches are supported in consul 
+
+### Literal Search
+A literal search on consul resolves to a single key/value entry. 
+There are two variants of this:
+1. The __KEY__ is encoded in the path, the raw result is returned.
+2. The path does not contain __KEY__, the result is decoded and the `key` is searched in the result. 
+
+#### __KEY__ in path
+The value of the entry is then decoded and searched for the lookup key. 
+
+hiera.yaml
+
+    :hierarchy:
+    - name: 'consul lookup'
+      lookup_key: hiera_consul
+      uris: 
+        - "http://localhost:8500/v1/kv/hiera/foo/__KEY__"
+
+Consul data: 
+
+    > curl http://127.0.0.1:8500/v1/kv/hiera/foo/baz
+    [
+        {
+            "CreateIndex": 2,
+            "Flags": 0,
+            "Key": "hiera/foo/baz",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": "---\\nbaz: 44"
+        }
+    ]
+
+Will return an answer:
+
+    > puppet lookup baz
+    ---
+    baz: 44
+
+#### No __KEY__ in path
+
+hiera.yaml:
+
+    :hierarchy:
+    - name: 'consul lookup'
+      lookup_key: hiera_consul
+      uris: 
+        - "http://localhost:8500/v1/kv/hiera/foo/Common"
+
+consul data:
+
+    > curl http://127.0.0.1:8500/v1/kv/hiera/foo/Common
+    [
+        {
+            "CreateIndex": 2,
+            "Flags": 0,
+            "Key": "hiera/foo/Common",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": "---\\nbaz: 44"
+        }
+    ]
+
+Will return an answer:
+
+    > puppet lookup baz
+    44
+
+
+### Recursive Search
+Recursive search asks consul to return all keys matching the path prefix. The value of each key/value entry is decoded and merged into a single hash result. 
+Example (values have been base64 decoded for clarity):
+
+hiera.yaml:
+
+    :hierarchy:
+    - name: 'consul lookup'
+      lookup_key: hiera_consul
+      uris: 
+        - "http://localhost:8500/v1/kv/hiera/foo?recurse"
+
+consul data:
+
+    > curl http://127.0.0.1:8500/v1/kv/hiera/foo?recurse
+    [
+        {
+            "CreateIndex": 1,
+            "Flags": 0,
+            "Key": "hiera/foo/",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": null
+        },
+        {
+            "CreateIndex": 2,
+            "Flags": 0,
+            "Key": "hiera/foo/bar",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": "42"
+        },
+        {
+            "CreateIndex": 3,
+            "Flags": 0,
+            "Key": "hiera/foo/baz/qux",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": "44"
+        },
+        {
+            "CreateIndex": 4,
+            "Flags": 0,
+            "Key": "hiera/foo2/bak/snok",
+            "LockIndex": 0,
+            "ModifyIndex": 305244,
+            "Value": "hello"
+        }
+    ]
+
+Will return an answer:
+
+    > puppet lookup foo
+    {
+      "foo" => {
+        "bar" => "42",
+        "baz" => {
+          "qux" => "44"
+        },
+      },
+      "foo2" => {
+        "bak" => {
+          "snok" => "hello"
+        }
+      }
+    }
+
+**NOTE:** In this implementation only the child nodes can hold a value. 
+The parent nodes should not exist or have a null value. If hiera/foo would have held an value, 
+it would not have been visible in the result. 
+
+
+### Configure hiera backend
+
+The following section in the hierarchy in hiera.yaml (version 5), should get you started.
+
+   - name: 'consul lookup'
+     lookup_key: hiera_consul
+     uris:
+       - "http://localhost:8500/v1/kv/hiera/Common"  # A yaml file in this key, as you would expect in hiera
+       - "http://localhost:8500/v1/kv/hiera/keys/__KEY__" # Just the value in this key. 
+       - "http://localhost:8500/v1/kv/hiera/recursive/__KEY__?recurse" # build a hash from all nodes in this subtree
+       - "http://localhost:8500/v1/kv/hiera/recursive/__KEY__?recurse&dc=2" # build a hash from all nodes in this subtree using a different datacenter.
+       - "http://localhost:8500/v1/kv/hiera/%{::clientcert}" # A yaml file in this key, as you would expect in hiera
+     options:
+       confine_to_keys: ['key-a', 'key-b']
+       document: yaml
+
+This assumes that consul is running on localhost port 8500 and no access token is required. 
+Available configuration options:
+
+* `document` {String} (raw) the format of the document found in the key-value content. possible values:  `yaml`, `json`, `raw`
+* `flags` {Integer} an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application. Default is `0`.
+* `acl\_api_token` {String} Token for accessing the ACL API. Default is `''`.
+* `datacenter` {String} Use the key/value store in specified datacenter. If `''` (default) it will use the datacenter of the Consul agent at the HTTP address.
+* `protocol` {String} protocol to use. Either `'http'` (default) or `'https'`.
+* `port` {Integer} consul port. Defaults to `8500`.
+* `hostname` {String} consul hostname. Defaults to `'localhost'`.
+
+* `tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
+* `retry_period` {Integer} (1) The time in seconds to wait between retries. 
+* `read_timeout` {Integer} (3) read timeout for http library
+* `connect_timeout` {Integer} (3) connect timeout for http library
+* `use_ssl` {Bool} (false) use an ssl connection
+* `ssl_verify` {Bool} (false) verify the certificate of the ssl connection
+* `ssl_ca_cert` {String} Specify location of the CA certificate
+* `ssl_cert` {String} Specify location of the ssl certificate
+* `ssl_key` {String} Specify location of the ssl key
+* `use_auth` {String} (false) When set to true, enable basic auth
+* `auth_pass` {String} The user for basic auth
+* `auth_user` {String} The password for basic auth
+
+
 ## Limitations
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
