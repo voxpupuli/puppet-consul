@@ -1,0 +1,24 @@
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+  AutoCorrect: true
+  DisplayCopNames: true
+  TargetRubyVersion: 1.9.3
+  
+Style/HashSyntax:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
