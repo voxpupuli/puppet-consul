@@ -1,5 +1,4 @@
 describe Puppet::Type.type(:consul_acl) do
-
   samplerules = {
     'key' => {
       'test' => {

@@ -2,157 +2,111 @@ require 'json'
 require 'net/http'
 require 'pp'
 require 'uri'
+require 'puppet/provider/consulbase'
+require 'puppet_x/consul/consul'
+
 Puppet::Type.type(:consul_acl).provide(
-  :default
+  :default, :parent => Puppet::Provider::ConsulBase
 ) do
   mk_resource_methods
 
-  def self.prefetch(resources)
-    resources.each do |name, resource|
-      Puppet.debug("prefetching for #{name}")
-      port = resource[:port]
-      hostname = resource[:hostname]
-      protocol = resource[:protocol]
-      token = resource[:acl_api_token]
-      tries = resource[:api_tries]
-
-      found_acls = list_resources(token, port, hostname, protocol, tries).select do |acl|
-        acl[:name] == name
-      end
-
-      found_acl = found_acls.first || nil
-      if found_acl
-        Puppet.debug("found #{found_acl.pretty_inspect}")
-        resource.provider = new(found_acl)
-      else
-        Puppet.debug("found none #{name}")
-        resource.provider = new({:ensure => :absent})
-      end
-    end
+  def self.get_cache_key(opts = {})
+    port = opts[:port]
+    hostname = opts[:hostname]
+    protocol = opts[:protocol]
+    token = opts[:acl_api_token]
+    tries = opts[:api_tries].to_s
+    "#{token}#{port}#{hostname}#{protocol}#{tries}"
   end
 
-  def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    @acls ||= {}
-    if @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
-      return @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
-    end
-
+  # Fetches a list of resources on the system.
+  # returns a list of Hashes
+  def self.fetch_resources(opts = {})
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
-    http = Net::HTTP.new(uri.host, uri.port)
 
-    path=uri.request_uri + "/list?token=#{acl_api_token}"
-    req = Net::HTTP::Get.new(path)
-    res = nil
+    # TODO: extract library options from type
+    client_opts = {}
+    client_opts[:use_ssl] = (opts[:protocol] == :https)
+    client_opts[:retry_period] = opts[:retry_period]
 
-    # retry Consul API query for ACLs, in case Consul has just started
-    (1..tries).each do |i|
-      unless i == 1
-        Puppet.debug("retrying Consul API query in #{i} seconds")
-        sleep i
-      end
-      res = http.request(req)
-      break if res.code == '200'
+    consulclient = PuppetX::Consul::Consul.new(opts[:hostname], opts[:acl_api_token], opts[:port], client_opts)
+    acls = consulclient.get_safe('/v1/acl/list')
+
+    nacls = acls.collect do |item|
+      val = process_single_remote_resource(item)
+      val
     end
-
-    if res.code == '200'
-      acls = JSON.parse(res.body)
-    else
-      Puppet.warning("Cannot retrieve ACLs: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-      return {}
-    end
-
-    nacls = acls.collect do |acl|
-      {
-        :name   => acl["Name"],
-        :type   => acl["Type"].intern,
-        :rules  => acl['Rules'].empty? ? {} : JSON.parse(acl["Rules"]),
-        :id     => acl["ID"],
-        :acl_api_token => acl_api_token,
-        :port => port,
-        :hostname => hostname,
-        :protocol => protocol,
-        :api_tries => tries,
-        :ensure => :present
-      }
-    end
-
-    @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nacls
     nacls
   end
 
-  def put_acl(method,body)
-    uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
-    http = Net::HTTP.new(uri.host, uri.port)
-    acl_api_token = @resource[:acl_api_token]
-    path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
-    req = Net::HTTP::Put.new(path)
-    if body
-      req.body = body.to_json
+  def self.process_single_remote_resource(acl)
+    {
+      :name   => acl['Name'],
+      :type   => acl['Type'].intern,
+      :rules  => acl['Rules'].empty? ? {} : JSON.parse(acl['Rules']),
+      :id     => acl['ID'],
+      :ensure => :present
+    }
+  end
+
+  def get_client
+    if defined?(@client).nil?
+      # TODO: extract library options from type
+
+      client_opts = {}
+      client_opts[:use_ssl] = (@resource[:protocol] == :https)
+      client_opts[:retry_period] = @resource[:retry_period]
+
+      @client = PuppetX::Consul::Consul.new(@resource[:hostname], @resource[:acl_api_token], @resource[:port], client_opts)
     end
-    res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error,"Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    @client
   end
 
-  def get_resource(name, port, hostname, protocol, tries)
-    acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries).select do |res|
-      res[:name] == name
-    end
-    # if the user creates multiple with the same name this will do odd things
-    resources.first || nil
+  def create_remote_resource
+    consul_client = get_client
+
+    path = '/v1/acl/create'
+    body = fetch_api_resource_body
+    consul_client.put(path, body, {})
   end
 
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
+  def update_remote_resource(remote_resource)
+    consul_client = get_client
+
+    path = '/v1/acl/update'
+    body = fetch_api_resource_body(remote_resource[:id])
+
+    consul_client.put(path, body, {})
   end
 
-  def exists?
-    @property_hash[:ensure] == :present
+  def delete_remote_resource(remote_resource)
+    consul_client = get_client
+
+    path = "/v1/acl/destroy/#{remote_resource[:id]}"
+
+    consul_client.put(path, nil, {})
   end
 
-  def create
-    @property_flush[:ensure] = :present
+  def remote_requires_update?(remote_resource)
+    return true if @resource[:type] != remote_resource[:type]
+    return true if @resource[:rules] != remote_resource[:rules]
+    false
   end
 
-  def destroy
-    @property_flush[:ensure] = :absent
-  end
-
-  def flush
+  def fetch_api_resource_body(id = '')
     name = @resource[:name]
-    if @resource[:rules]
-      rules = @resource[:rules].to_json
-    else
-      rules = ""
-    end
+    rules = @resource[:rules]
     type = @resource[:type]
-    port = @resource[:port]
-    hostname = @resource[:hostname]
-    protocol = @resource[:protocol]
-    tries = @resource[:api_tries]
-    acl = self.get_resource(name, port, hostname, protocol, tries)
-    if acl
-      id = acl[:id]
-      if @property_flush[:ensure] == :absent
-        put_acl("destroy/#{id}", nil)
-        return
-      end
-      put_acl('update', { "id"    => "#{id}",
-                          "name"  => "#{name}",
-                          "type"  => "#{type}",
-                          "rules" => "#{rules}" })
 
-    else
-      put_acl('create', { "id"    => "#{@resource[:id]}",
-                          "name"  => "#{name}",
-                          "type"  => "#{type}",
-                          "rules" => "#{rules}" })
-    end
-    @property_hash.clear
+    rules_json = ''
+    rules_json = @resource[:rules].to_json if @resource[:rules]
+
+    res = {}
+    res = { 'ID' => id } unless id == ''
+    res = res.merge!('Name' => name.to_s,
+                     'Type'  => type.to_s,
+                     'Rules' => rules_json.to_s)
+    res
   end
 end
