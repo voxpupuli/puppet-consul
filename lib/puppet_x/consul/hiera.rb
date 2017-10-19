@@ -19,8 +19,8 @@ module PuppetX::Consul::Hiera
       raise Puppet::DataBinding::LookupError, "hiera_consul failed could not parse #{options['document']} document for key: #{key} on uri: #{options['uri']}"
     end
 
-    if data.empty?
-      context.explain { "no data found for #{key} on #{options['uri']}" }
+    if data.nil? || data.empty?
+      context.explain { "no data found for #{key} on #{uri}" }
       context.not_found
       return
     end
@@ -71,7 +71,7 @@ module PuppetX::Consul::Hiera
       raise ArgumentError, "only key value lookups are supported. path should start with `/v1/kv/`: #{path}"
     end
 
-    uri.path.sub! %r{/v1/kv/}, ''
+    uri.path.sub! %r{v1/kv/}, ''
     uri.path.gsub! '__KEY__', key
 
     recurse = !uri.query.nil? && uri.query.include?('recurse')

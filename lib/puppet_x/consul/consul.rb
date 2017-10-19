@@ -76,6 +76,8 @@ module PuppetX
         else
           @http.use_ssl = false
         end
+
+        Puppet.debug("options: #{@config}")
       end
 
       def put(path, body, opts={})
@@ -140,7 +142,7 @@ module PuppetX
 
         with_consul_token(httpreq)
         with_auth(httpreq)
-
+        
         httpres = retry_request(httpreq)
 
         unless httpres
@@ -173,7 +175,9 @@ module PuppetX
       # @option opts [Integer] :recurse (false) Specifies if the lookup should be recursive and key treated as a prefix instead of a literal match.
       def get_kv(path, opts = {})
         path = '' if path == '/'
-        res = get("/v1/kv/#{path}", opts)
+        path = "/v1/kv/#{path}"
+        path.sub! %r{//}, '/' #avoid any double slashes. consul is picky.
+        res = get(path, opts)
         return nil unless res
 
         if res.is_a?(Net::HTTPNotFound)
