@@ -31,7 +31,7 @@ Puppet::Type.type(:consul_key_value).provide(
 
     consulclient = PuppetX::Consul::Consul.new(opts[:hostname], opts[:acl_api_token], opts[:port], client_opts)
 
-    key_values = consulclient.get_kv('/', 'recurse' => true, 'dc' => opts[:datacenter])
+    key_values, _ = consulclient.get_kv('/', 'recurse' => true, 'dc' => opts[:datacenter])
     return [] if key_values.nil?
 
     nkey_values = key_values.collect do |kv|

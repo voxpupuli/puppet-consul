@@ -77,7 +77,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new
         response = consulclient.get_kv('sample/key')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 1_350_503])
       end
 
       it 'recursively' do
@@ -99,7 +99,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new
         response = consulclient.get_kv('sample', 'recurse' => true)
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 48_846_061])
       end
 
       it 'cannot find anything' do
@@ -135,7 +135,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new
         response = consulclient.get_kv('sample/key', 'dc' => 'dc2')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 1_350_503])
       end
 
       it 'with recurse and dc' do
@@ -157,7 +157,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new
         response = consulclient.get_kv('sample', 'recurse' => true, 'dc' => 'dc2')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 48846061])
       end
 
       it 'should parse yaml in value' do
@@ -184,7 +184,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new('localhost', '', 8500, document: 'YAML')
         response = consulclient.get_kv('sample/key')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 1_350_503])
       end
 
       it 'should parse json in value' do
@@ -211,7 +211,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new('localhost', '', 8500, document: 'JSON')
         response = consulclient.get_kv('sample/key')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 1_350_503])
       end
 
       it 'should return raw data in value' do
@@ -238,7 +238,7 @@ describe PuppetX::Consul::Consul do
 
         consulclient = described_class.new('localhost', '', 8500, document: 'raw')
         response = consulclient.get_kv('sample/key')
-        expect(response).to eql(kv_content_expected)
+        expect(response).to eql([kv_content_expected, 1_350_503] )
       end
 
       it 'should Error on invalid yaml data' do

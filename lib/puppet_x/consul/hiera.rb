@@ -1,6 +1,8 @@
 require 'pathname'
 require Pathname.new(__FILE__).dirname.expand_path
 require 'puppet_x/consul/consul'
+require 'puppet_x/consul/cache'
+
 require 'cgi'
 
 # PupppetX::Consul::Hiera implements all logic for the hiera_consul backend.
@@ -12,11 +14,30 @@ module PuppetX::Consul::Hiera
       return
     end
 
+    cache ||= PuppetX::Consul::Cache.new(options['cache_dir'])
+    cache_key = get_cache_key(key, options)
+
     uri, key_replaced, recurse = process_path(key, options)
-    begin
-      data = key_value_lookup(key, uri, options, context)
-    rescue PuppetX::Consul::ConsulValueError
-      raise Puppet::DataBinding::LookupError, "hiera_consul failed could not parse #{options['document']} document for key: #{key} on uri: #{options['uri']}"
+
+    data = nil?
+    if context.cache_has_key(uri.path)
+      data = context.cached_value(uri.path)
+    else
+      begin
+        data, idx = key_value_lookup(key, uri, options, context)
+
+        # update the caches.
+        context.cache(cache_key, data)
+        cache.store_cache(cache_key, idx, data)
+      rescue PuppetX::Consul::ConsulValueError
+        raise Puppet::DataBinding::LookupError, "hiera_consul failed could not parse #{options['document']} document for key: #{key} on uri: #{options['uri']}"
+      rescue Puppet::Error, Net::OpenTimeout => exc
+        Puppet::warning("hiera-consul: Could not reach consul: #{exc}")
+        cache_key = get_cache_key(key, options)
+        data = cache.retrieve_cache(cache_key)
+        raise exc if data.nil?
+        context.cache(cache_key, data)
+      end
     end
 
     if data.nil? || data.empty?
@@ -24,7 +45,7 @@ module PuppetX::Consul::Hiera
       context.not_found
       return
     end
- 
+
     if recurse
       # Recursive lookup, build hash
       process_recursive_result(key, uri.path, data)
@@ -38,23 +59,23 @@ module PuppetX::Consul::Hiera
   end
 
   # process_literal_result takes a value and determines
-  # how best to process it. 
+  # how best to process it.
   # The rules in order:
   # 1. If we used __KEY__ in the path, then return the value as is.
   # 2. If it is a Hash (was either json or yaml), return value[key] if it exists.
   # 3. return not_found
   def self.process_literal_result(value, key, key_replaced)
-      # if __KEY__ was in the path, we just return the value of the key.
-      return value if key_replaced
-      # else we will lookup `key` in the data before returning.
-      if value.is_a?(Hash)
-        # For paths like /Common where the key is not in the path.
-        # we can only return data if the document decodes into a hash.
-        return value[key] if value.key?(key)
-      end
+    # if __KEY__ was in the path, we just return the value of the key.
+    return value if key_replaced
+    # else we will lookup `key` in the data before returning.
+    if value.is_a?(Hash)
+      # For paths like /Common where the key is not in the path.
+      # we can only return data if the document decodes into a hash.
+      return value[key] if value.key?(key)
+    end
 
-      context.explain { "no data found for #{key} on #{options['uri']}" }
-      context.not_found
+    context.explain { "no data found for #{key} on #{options['uri']}" }
+    context.not_found
   end
 
   # process_path takes the key and uri (from options)
@@ -78,27 +99,23 @@ module PuppetX::Consul::Hiera
     [uri, key_replaced, recurse]
   end
 
-  # key_value_lookup calls the consul client and leverages the cache 
+  # key_value_lookup calls the consul client and leverages the cache
   # in context, to avoid making the same api call multiple times during
   # the same catalog compilation.
-  def self.key_value_lookup(_key, uri, options, context)
+  def self.key_value_lookup(_key, uri, options, _context)
     # deconstruct real_uri into arguments for the consul library.
     # uri = URI.parse(options['uri'])
     host = uri.host
     port = uri.port
     path = uri.path
 
-    return context.cached_value(uri.path) if context.cache_has_key(uri.path)
-
     consul_options = create_option_hash(options)
     client = PuppetX::Consul::Consul.new(host, '', port, consul_options)
 
     par = {}
-    par = CGI::parse(uri.query) unless uri.query.nil?
+    par = CGI.parse(uri.query) unless uri.query.nil?
 
-    data = client.get_kv(path, recurse: par.has_key?('recurse'), dc: par.fetch('dc', nil))
-    context.cache(uri.path, data)
-    data
+    return client.get_kv(path, recurse: par.key?('recurse'), dc: par.fetch('dc', nil))
   end
 
   def self.create_option_hash(options)
@@ -138,7 +155,7 @@ module PuppetX::Consul::Hiera
     result_hash = {}
     data.each do |el|
       path = el['Key'].split('/')
-      
+
       # If the searched kvpath is /bar/foo
       # then we will remove this from the Key before
       # using it to build a single document.
@@ -169,14 +186,16 @@ module PuppetX::Consul::Hiera
     end
 
     kvpath_el = kvpath.split('/')
-    kvpath_el.each {|el|
-      if result_hash.keys.size != 1
-        break
-      end
-      
+    kvpath_el.each do |el|
+      break if result_hash.keys.size != 1
+
       result_top_key = result_hash.keys.first
       result_hash = result_hash[el] if el == result_top_key
-    }    
+    end
     result_hash
+  end
+
+  def self.get_cache_key(key, options)
+    "#{key}:#{options['uri']}:#{options['token']}"
   end
 end

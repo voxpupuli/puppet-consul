@@ -7,6 +7,8 @@ module PuppetX
   module Consul
     class ConsulValueError < StandardError
     end
+    class ConsulLookupError < StandardError
+    end
 
     class Consul
       @@option_defaults = {
@@ -131,7 +133,6 @@ module PuppetX
         raise(Puppet::Error, "Session post: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
       end
 
-
       # @param [Hash] opts the options for a consul api connection
       # @option opts [String] :dc ('') Specifies the datacenter for the request
       # @option opts [Integer] :recurse (false) Specifies if the lookup should
@@ -192,7 +193,7 @@ module PuppetX
 
         data = JSON.parse(res.body)
         begin
-          decode_kv_values(data)
+          return decode_kv_values(data), get_biggest_modified_index(data)
         rescue JSON::ParserError
           raise ConsulValueError, "could not parse json value at: #{path}"
         rescue Psych::SyntaxError
@@ -201,6 +202,16 @@ module PuppetX
       end
 
       private
+
+      def get_biggest_modified_index(data)
+        index = 0 
+        data.each do |item|
+          if index < item['ModifyIndex'].to_i
+            index = item['ModifyIndex']
+          end
+        end
+        return index
+      end
 
       # decode_kv_values decodes the base64 and yaml or json if specified.
       def decode_kv_values(kv_data)
@@ -244,7 +255,11 @@ module PuppetX
       # 2. Retries the request if the http status code is unexpected (not 200 or 404)
       def retry_request(req)
         httpres = nil
+        stored_exc = nil
         (1..@config[:tries]).each do |i|
+          #reset on every loop
+          stored_exc = nil
+
           unless i == 1
             Puppet.debug("retrying Consul API query in #{i} seconds")
             sleep @config[:retry_period]
@@ -254,11 +269,13 @@ module PuppetX
             httpres = @http.request(req)
           rescue Errno::EINVAL, Errno::ECONNRESET, EOFError,
                  Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => exc
+            stored_exc = exc
             Puppet.debug("Error while query'ing consul: #{exc}")
           end
           break if httpres.is_a?(Net::HTTPSuccess)
           break if httpres.is_a?(Net::HTTPNotFound)
         end
+        raise Puppet::Error, "Session failed request. #{req.path} exception: #{stored_exc}" unless stored_exc.nil?
         httpres
       end
 
@@ -268,7 +285,7 @@ module PuppetX
           return httpres
         rescue Errno::EINVAL, Errno::ECONNRESET, EOFError,
                Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => exc
-          raise Puppet::Error, "Session failed request. #{req.path} exception: ${exc}"
+          raise Puppet::Error, "Session failed request. #{req.path} exception: #{exc}"
         end
       end
     end
