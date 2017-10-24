@@ -1,7 +1,35 @@
 # Change Log
 
-## [3.0.0](https://github.com/solarkennedy/puppet-consul/tree/3.0.0) (2017-04-19)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.1...3.0.0)
+## [3.1.1](https://github.com/solarkennedy/puppet-consul/tree/3.1.1) (2017-10-23)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.0.0...3.1.1)
+
+**Closed issues:**
+
+- what ACL rights required for consul\_acl part to run? [\#373](https://github.com/solarkennedy/puppet-consul/issues/373)
+- Consul k/v does not update to new value [\#363](https://github.com/solarkennedy/puppet-consul/issues/363)
+- How do you ensure unzip is installed? [\#356](https://github.com/solarkennedy/puppet-consul/issues/356)
+- changes to systemd template [\#354](https://github.com/solarkennedy/puppet-consul/issues/354)
+- Support for cloud -join switches [\#350](https://github.com/solarkennedy/puppet-consul/issues/350)
+- Switch from `%{linenumber}` to `%{line}` in v2 branch [\#346](https://github.com/solarkennedy/puppet-consul/issues/346)
+- 3.0.0 not tagged? [\#343](https://github.com/solarkennedy/puppet-consul/issues/343)
+
+**Merged pull requests:**
+
+- Validate config file before deploying [\#372](https://github.com/solarkennedy/puppet-consul/pull/372) ([kasimon](https://github.com/kasimon))
+- use proper systemd custom .service directory [\#366](https://github.com/solarkennedy/puppet-consul/pull/366) ([foxxx0](https://github.com/foxxx0))
+- \(\#359\) Datacenter support to consul\_key\_value [\#365](https://github.com/solarkennedy/puppet-consul/pull/365) ([houtmanj](https://github.com/houtmanj))
+- Don't pin so hard on ruby versions on travis [\#362](https://github.com/solarkennedy/puppet-consul/pull/362) ([solarkennedy](https://github.com/solarkennedy))
+- Fix issue with init script [\#361](https://github.com/solarkennedy/puppet-consul/pull/361) ([brandonrdn](https://github.com/brandonrdn))
+- added docker support [\#357](https://github.com/solarkennedy/puppet-consul/pull/357) ([Justin-DynamicD](https://github.com/Justin-DynamicD))
+- allow to specify a proxy server for package downloads [\#351](https://github.com/solarkennedy/puppet-consul/pull/351) ([xavvo](https://github.com/xavvo))
+- Support "Near" parameter in prepared queries [\#348](https://github.com/solarkennedy/puppet-consul/pull/348) ([tlevi](https://github.com/tlevi))
+- support other unspecified RedHat variants [\#341](https://github.com/solarkennedy/puppet-consul/pull/341) ([cspargo](https://github.com/cspargo))
+- Notify the service when package is updated [\#340](https://github.com/solarkennedy/puppet-consul/pull/340) ([jaxxstorm](https://github.com/jaxxstorm))
+- Test changes for property [\#334](https://github.com/solarkennedy/puppet-consul/pull/334) ([jk2l](https://github.com/jk2l))
+- Ensure /usr/local/bin is in the path for consul binary [\#313](https://github.com/solarkennedy/puppet-consul/pull/313) ([mspaulding06](https://github.com/mspaulding06))
+
+## [v3.0.0](https://github.com/solarkennedy/puppet-consul/tree/v3.0.0) (2017-04-19)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v2.1.1...v3.0.0)
 
 **Closed issues:**
 
@@ -374,8 +402,8 @@
 - Adding "status" to the debian init script [\#64](https://github.com/solarkennedy/puppet-consul/pull/64) ([paulhamby](https://github.com/paulhamby))
 - Allow hash keys to be set to undef [\#60](https://github.com/solarkennedy/puppet-consul/pull/60) ([bodepd](https://github.com/bodepd))
 - Add config\_defaults hash parameter [\#54](https://github.com/solarkennedy/puppet-consul/pull/54) ([michaeltchapman](https://github.com/michaeltchapman))
-- Make init\_style can be disabled [\#53](https://github.com/solarkennedy/puppet-consul/pull/53) ([TieWei](https://github.com/TieWei))
-- Make rake spec running [\#52](https://github.com/solarkennedy/puppet-consul/pull/52) ([TieWei](https://github.com/TieWei))
+- Make init\_style can be disabled [\#53](https://github.com/solarkennedy/puppet-consul/pull/53) ([tiewei](https://github.com/tiewei))
+- Make rake spec running [\#52](https://github.com/solarkennedy/puppet-consul/pull/52) ([tiewei](https://github.com/tiewei))
 - use versioncmp to compare versions [\#49](https://github.com/solarkennedy/puppet-consul/pull/49) ([jfroche](https://github.com/jfroche))
 - Allow overriding a service's name [\#47](https://github.com/solarkennedy/puppet-consul/pull/47) ([jsok](https://github.com/jsok))
 - Make puppet-consul install on OS X [\#44](https://github.com/solarkennedy/puppet-consul/pull/44) ([EvanKrall](https://github.com/EvanKrall))
