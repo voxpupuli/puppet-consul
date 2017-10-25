@@ -319,12 +319,12 @@ describe PuppetX::Consul::Hiera.method(:lookup_key) do
       stub_request(:get, 'http://localhost:8500/v1/kv/hiera/Common')
         .to_timeout
 
-      expect{ subject.call('bar', options, context) }.to raise_error(Net::OpenTimeout)
+      expect{ subject.call('bar', options, context) }.to raise_error(Puppet::Error)
     end
 
-    it 'should raise error if there is no caching' do
+    it 'should raise error if a timeout occurs without cache' do
       context = instance_double('Puppet::LookupContext')
-      options = { 'confine_to_keys' => %w[zoo bar], 'uri' => 'http://localhost:8500/v1/kv/hiera/Common', 'document' => 'yaml' }
+      options = { 'confine_to_keys' => %w[zoo bar], 'uri' => 'http://localhost:8500/v1/kv/hiera/Common', 'document' => 'yaml', 'cache_dir' => tmpdir }
       key_value_data = [{
         'LockIndex' => 0,
         'Key' => 'hiera/Common',
@@ -339,7 +339,27 @@ describe PuppetX::Consul::Hiera.method(:lookup_key) do
       stub_request(:get, 'http://localhost:8500/v1/kv/hiera/Common')
         .to_timeout
 
-      expect{ subject.call('bar', options, context) }.to raise_error(Net::OpenTimeout)
+      expect{ subject.call('bar', options, context) }.to raise_error(Puppet::Error)
+    end
+
+    it 'should raise error on connection trouble without cache' do
+      context = instance_double('Puppet::LookupContext')
+      options = { 'confine_to_keys' => %w[zoo bar], 'uri' => 'http://localhost:8500/v1/kv/hiera/Common', 'document' => 'yaml' }
+      key_value_data = [{
+        'LockIndex' => 0,
+        'Key' => 'hiera/Common',
+        'Flags' => 0,
+        'Value' => 'LS0tIA0KYmFyOiAidGVzdCB2YWx1ZSINCg==',
+        'CreateIndex' => 893,
+        'ModifyIndex' => 893
+      }]
+
+      expect(context).to receive(:cache_has_key).at_least(:once)
+
+      stub_request(:get, 'http://localhost:8500/v1/kv/hiera/Common')
+        .to_raise(Errno::ECONNRESET)
+
+      expect{ subject.call('bar', options, context) }.to raise_error(Puppet::Error)
     end
   end
 end

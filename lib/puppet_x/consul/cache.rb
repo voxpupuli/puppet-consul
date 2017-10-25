@@ -229,6 +229,7 @@ module PuppetX
       def self.fetch_last_cache_file_and_delete_rest(key)
         # See what cache files exist
         md5 = key_hash(key)
+        Puppet.debug("searching for consul cache at: #{@@directory}/#{md5}-*.cache")
         list_of_cache_files = Dir.glob("#{@@directory}/#{md5}-*.cache")
         return nil if list_of_cache_files.length.zero?
         return list_of_cache_files[0] if list_of_cache_files.length == 1

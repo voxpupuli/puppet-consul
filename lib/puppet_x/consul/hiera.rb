@@ -23,6 +23,14 @@ module PuppetX::Consul::Hiera
     if context.cache_has_key(uri.path)
       data = context.cached_value(uri.path)
     else
+
+      exceptions = [Timeout ]
+
+      if RUBY_VERSION > '2.0'
+        #pre ruby 2.0 does not have the OpenTimeout exception.
+        exceptions << Net::OpenTimeout
+      end
+
       begin
         data, idx = key_value_lookup(key, uri, options, context)
 
@@ -31,11 +39,17 @@ module PuppetX::Consul::Hiera
         cache.store_cache(cache_key, idx, data)
       rescue PuppetX::Consul::ConsulValueError
         raise Puppet::DataBinding::LookupError, "hiera_consul failed could not parse #{options['document']} document for key: #{key} on uri: #{options['uri']}"
-      rescue Puppet::Error, Net::OpenTimeout => exc
-        Puppet::warning("hiera-consul: Could not reach consul: #{exc}")
+      rescue Puppet::Error => exc
+        Puppet.warning("hiera-consul: Could not reach consul: #{exc}")
         cache_key = get_cache_key(key, options)
         data = cache.retrieve_cache(cache_key)
         raise exc if data.nil?
+        context.cache(cache_key, data)
+      rescue *exceptions => exc
+        Puppet.warning("hiera-consul: Could not reach consul: #{exc}")
+        cache_key = get_cache_key(key, options)
+        data = cache.retrieve_cache(cache_key)
+        raise Puppet::Error, exc.to_s if data.nil?
         context.cache(cache_key, data)
       end
     end

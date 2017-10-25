@@ -79,7 +79,7 @@ module PuppetX
           @http.use_ssl = false
         end
 
-        Puppet.debug("options: #{@config}")
+        Puppet.debug("initialized with options: #{@config}")
       end
 
       def put(path, body, opts={})

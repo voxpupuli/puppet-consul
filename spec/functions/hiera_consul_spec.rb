@@ -18,7 +18,6 @@ describe 'FakeFunction', :if => Puppet.version.to_f >= 4.0 do
   describe '#lookup_key' do
     context 'Should run' do
       it 'should call shared library' do
-        # Puppet
         context = instance_double('Puppet::LookupContext')
         options = {}
 
