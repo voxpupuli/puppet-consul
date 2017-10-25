@@ -17,6 +17,10 @@ new versions of consul. Pin to the version that works for your setup!
 | 0.5.x            | 1.0.3                               |
 | 0.4.x            | 0.4.6                               |
 
+**WARNING**: The re-use of code does not play nice with puppet environments and changes to the 
+the providers of these modules need to rolled out to all environments at once. More specifically: 
+the puppetX namespace does not play well with puppet environments and the code is loaded globally.
+
 ### What This Module Affects
 
 * Installs the consul daemon (via url or package)
@@ -457,7 +461,10 @@ Available configuration options:
 * `use_auth` {String} (false) When set to true, enable basic auth
 * `auth_pass` {String} The user for basic auth
 * `auth_user` {String} The password for basic auth
+* `cache_dir` {String} Directory that is to be used to store a on-system file cache, that is queries when consul is unavailable.
 
+### Failure scenario's
+The implementation keeps an in-memory cache to guard against consul trouble. If you want this cache to survive restarts of the puppet server then you should configure `cache_dir`.
 
 ## Limitations
 
