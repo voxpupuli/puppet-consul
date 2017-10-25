@@ -24,7 +24,7 @@ module PuppetX::Consul::Hiera
       data = context.cached_value(uri.path)
     else
 
-      exceptions = [Timeout ]
+      exceptions = [Timeout::Error ]
 
       if RUBY_VERSION > '2.0'
         #pre ruby 2.0 does not have the OpenTimeout exception.

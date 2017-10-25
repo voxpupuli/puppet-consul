@@ -220,7 +220,7 @@ module PuppetX
 
           decoded = Base64.decode64(x['Value'])
 
-          decoded = YAML.safe_load(decoded) if @config[:document].casecmp('yaml').zero?
+          decoded = YAML.load(decoded) if @config[:document].casecmp('yaml').zero?
 
           decoded = JSON.parse(decoded) if @config[:document].casecmp('json').zero?
 

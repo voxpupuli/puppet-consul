@@ -14,6 +14,7 @@ group :test do
   # Pin for 1.9.3 compatibility for now
   gem "json", '~> 1.8.3'
   gem "json_pure", '~> 1.8.3'
+  gem "jwt", '~> 1.5.6'
 
   gem "rake"
   gem "puppet", ENV['PUPPET_VERSION'] || '~> 4.1.0'
