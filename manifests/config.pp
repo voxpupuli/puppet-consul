@@ -113,7 +113,7 @@ class consul::config(
     mode         => $::consul::config_mode,
     content      => consul_sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require      => File[$::consul::config_dir],
-    validate_cmd => "${::consul::bin_dir}/consul validate % > /dev/null",
+    validate_cmd => "${::consul::bin_dir}/consul configtest -config-file % > /dev/null",
   }
 
 }
