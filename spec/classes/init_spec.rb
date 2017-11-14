@@ -2,44 +2,17 @@ require 'spec_helper'
 
 describe 'consul' do
 
-  RSpec.configure do |c|
-    c.default_facts = {
-      :architecture           => 'x86_64',
-      :operatingsystem        => 'Ubuntu',
-      :osfamily               => 'Debian',
-      :operatingsystemrelease => '10.04',
-      :kernel                 => 'Linux',
-      :ipaddress_lo           => '127.0.0.1',
-      :consul_version         => 'unknown',
-    }
-  end
-  Puppet::Util::Log.level = :debug
-  Puppet::Util::Log.newdestination(:console)
   # Installation Stuff
   context 'On an unsupported arch' do
     let(:facts) {{ :architecture => 'bogus' }}
     let(:params) {{
       :install_method => 'package'
     }}
-    it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
+    it { expect { catalogue }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
   context 'When not specifying whether to purge config' do
     it { should contain_file('/etc/consul').with(:purge => true,:recurse => true) }
-  end
-
-  context 'When passing a non-bool as purge_config_dir' do
-    let(:params) {{
-      :purge_config_dir => 'hello'
-    }}
-    it { expect { should compile }.to raise_error(/is not a boolean/) }
-  end
-
-  context 'When passing a non-bool as manage_service' do
-    let(:params) {{
-      :manage_service => 'hello'
-    }}
-    it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
 
   context 'When disable config purging' do

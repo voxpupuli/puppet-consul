@@ -14,7 +14,6 @@ class consul::params {
   $config_mode           = '0664'
   $docker_image          = 'consul'
   $download_extension    = 'zip'
-  $download_url          = undef
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
   $extra_options         = ''
@@ -29,14 +28,12 @@ class consul::params {
   $package_name          = 'consul'
   $pretty_config         = false
   $pretty_config_indent  = 4
-  $proxy_server          = undef
   $purge_config_dir      = true
   $restart_on_change     = true
   $service_enable        = true
   $service_ensure        = 'running'
   $services              = {}
   $ui_download_extension = 'zip'
-  $ui_download_url       = undef
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_package_ensure     = 'latest'
   $ui_package_name       = 'consul_ui'
