@@ -147,68 +147,54 @@
 #    }
 #
 class consul (
-  $acls                  = $::consul::params::acls,
-  $arch                  = $::consul::params::arch,
-  $archive_path          = $::consul::params::archive_path,
-  $bin_dir               = $::consul::params::bin_dir,
-  $checks                = $::consul::params::checks,
-  $config_defaults       = $::consul::params::config_defaults,
-  $config_dir            = $::consul::params::config_dir,
-  $config_hash           = $::consul::params::config_hash,
-  $config_mode           = $::consul::params::config_mode,
-  $docker_image          = $::consul::params::docker_image,
-  $download_extension    = $::consul::params::download_extension,
-  $download_url          = $::consul::params::download_url,
-  $download_url_base     = $::consul::params::download_url_base,
-  $extra_groups          = $::consul::params::extra_groups,
-  $extra_options         = $::consul::params::extra_options,
-  $group                 = $::consul::params::group,
-  $log_file              = $::consul::params::log_file,
-  $init_style            = $::consul::params::init_style,
-  $install_method        = $::consul::params::install_method,
-  $join_wan              = $::consul::params::join_wan,
-  $manage_group          = $::consul::params::manage_group,
-  $manage_service        = $::consul::params::manage_service,
-  $manage_user           = $::consul::params::manage_user,
-  $os                    = $::consul::params::os,
-  $package_ensure        = $::consul::params::package_ensure,
-  $package_name          = $::consul::params::package_name,
-  $pretty_config         = $::consul::params::pretty_config,
-  $pretty_config_indent  = $::consul::params::pretty_config_indent,
-  $proxy_server          = $::consul::params::proxy_server,
-  $purge_config_dir      = $::consul::params::purge_config_dir,
-  $restart_on_change     = $::consul::params::restart_on_change,
-  $service_enable        = $::consul::params::service_enable,
-  $service_ensure        = $::consul::params::service_ensure,
-  $services              = $::consul::params::services,
-  $ui_download_extension = $::consul::params::ui_download_extension,
-  $ui_download_url       = $::consul::params::ui_download_url,
-  $ui_download_url_base  = $::consul::params::ui_download_url_base,
-  $ui_package_ensure     = $::consul::params::ui_package_ensure,
-  $ui_package_name       = $::consul::params::ui_package_name,
-  $user                  = $::consul::params::user,
-  $version               = $::consul::params::version,
-  $watches               = $::consul::params::watches,
+  Hash $acls                                 = $consul::params::acls,
+  $arch                                      = $consul::params::arch,
+  $archive_path                              = $consul::params::archive_path,
+  $bin_dir                                   = $consul::params::bin_dir,
+  Hash $checks                               = $consul::params::checks,
+  Hash $config_defaults                      = $consul::params::config_defaults,
+  $config_dir                                = $consul::params::config_dir,
+  Hash $config_hash                          = $consul::params::config_hash,
+  $config_mode                               = $consul::params::config_mode,
+  $docker_image                              = $consul::params::docker_image,
+  $download_extension                        = $consul::params::download_extension,
+  Optional[Stdlib::HTTPUrl] $download_url    = undef,
+  $download_url_base                         = $consul::params::download_url_base,
+  Array $extra_groups                        = $consul::params::extra_groups,
+  $extra_options                             = $consul::params::extra_options,
+  $group                                     = $consul::params::group,
+  $log_file                                  = $consul::params::log_file,
+  $init_style                                = $consul::params::init_style,
+  $install_method                            = $consul::params::install_method,
+  $join_wan                                  = $consul::params::join_wan,
+  Boolean $manage_group                      = $consul::params::manage_group,
+  Boolean $manage_service                    = $consul::params::manage_service,
+  Boolean $manage_user                       = $consul::params::manage_user,
+  $os                                        = $consul::params::os,
+  $package_ensure                            = $consul::params::package_ensure,
+  $package_name                              = $consul::params::package_name,
+  Boolean $pretty_config                     = $consul::params::pretty_config,
+  Integer $pretty_config_indent              = $consul::params::pretty_config_indent,
+  Optional[Stdlib::HTTPUrl] $proxy_server    = undef,
+  Boolean $purge_config_dir                  = $consul::params::purge_config_dir,
+  Boolean $restart_on_change                 = $consul::params::restart_on_change,
+  Boolean $service_enable                    = $consul::params::service_enable,
+  Enum['stopped', 'running'] $service_ensure = $consul::params::service_ensure,
+  Hash $services                             = $consul::params::services,
+  $ui_download_extension                     = $consul::params::ui_download_extension,
+  Optional[Stdlib::HTTPUrl] $ui_download_url = undef,
+  Stdlib::HTTPUrl $ui_download_url_base      = $consul::params::ui_download_url_base,
+  $ui_package_ensure                         = $consul::params::ui_package_ensure,
+  $ui_package_name                           = $consul::params::ui_package_name,
+  $user                                      = $consul::params::user,
+  $version                                   = $consul::params::version,
+  Hash $watches                              = $consul::params::watches,
 ) inherits consul::params {
 
   # lint:ignore:140chars
   $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
   $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${version}/${package_name}_${version}_web_ui.${ui_download_extension}")
   # lint:endignore
-
-  validate_bool($purge_config_dir)
-  validate_bool($manage_user)
-  validate_array($extra_groups)
-  validate_bool($manage_service)
-  validate_bool($restart_on_change)
-  validate_hash($config_hash)
-  validate_hash($config_defaults)
-  validate_bool($pretty_config)
-  validate_integer($pretty_config_indent)
-  validate_hash($services)
-  validate_hash($watches)
-  validate_hash($checks)
-  validate_hash($acls)
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 

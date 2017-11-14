@@ -5,28 +5,28 @@
 #
 class consul::run_service {
 
-  $service_name = $::consul::init_style_real ? {
+  $service_name = $consul::init_style_real ? {
     'launchd' => 'io.consul.daemon',
     default   => 'consul',
   }
 
-  $service_provider = $::consul::init_style_real ? {
+  $service_provider = $consul::init_style_real ? {
     'unmanaged' => undef,
-    default     => $::consul::init_style_real,
+    default     => $consul::init_style_real,
   }
 
-  if $::consul::manage_service == true and $::consul::install_method != 'docker' {
+  if $consul::manage_service == true and $consul::install_method != 'docker' {
     service { 'consul':
-      ensure   => $::consul::service_ensure,
+      ensure   => $consul::service_ensure,
       name     => $service_name,
-      enable   => $::consul::service_enable,
+      enable   => $consul::service_enable,
       provider => $service_provider,
     }
   }
 
-  if $::consul::install_method == 'docker' {
+  if $consul::install_method == 'docker' {
 
-    $server_mode = pick($::consul::config_hash[server], false)
+    $server_mode = pick($consul::config_hash[server], false)
 
     if $server_mode {
       $env = [ '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'' ]
@@ -46,7 +46,7 @@ class consul::run_service {
     }
   }
 
-  case $::consul::install_method {
+  case $consul::install_method {
     'docker': {
       $wan_command = "docker exec consul consul join -wan ${consul::join_wan}"
       $wan_unless = "docker exec consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
@@ -57,10 +57,10 @@ class consul::run_service {
     }
   }
 
-  if $::consul::join_wan {
+  if $consul::join_wan {
     exec { 'join consul wan':
-      cwd       => $::consul::config_dir,
-      path      => [$::consul::bin_dir,'/bin','/usr/bin'],
+      cwd       => $consul::config_dir,
+      path      => [$consul::bin_dir,'/bin','/usr/bin'],
       command   => $wan_command,
       unless    => $wan_unless,
       subscribe => Service['consul'],
