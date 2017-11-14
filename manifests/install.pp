@@ -4,8 +4,9 @@
 #
 class consul::install {
 
-  if $::consul::data_dir {
-    file { $::consul::data_dir:
+  if $::consul::install_method != 'docker' {
+    $cfg_dir = pick($::consul::config_hash[data_dir], '/opt/consul')
+    file { $cfg_dir:
       ensure => 'directory',
       owner  => $::consul::user_real,
       group  => $::consul::group_real,
