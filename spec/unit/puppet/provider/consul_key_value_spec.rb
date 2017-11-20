@@ -241,29 +241,6 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
       end
     end
 
-
-    context "when key does exist, with same value and flag" do
-      it "it should not write to consul" do
-        kv_content = [
-          {"LockIndex" => 0,
-          "Key" => "sample/key",
-          "Flags" => 0,
-          "Value" => "c2FtcGxlVmFsdWU=", #sampleValue
-          "CreateIndex" => 1350503,
-          "ModifyIndex" => 1350503}
-        ]
-
-        stub_request(:get, "http://localhost:8500/v1/kv/?dc=dc1&recurse&token=sampleToken").
-          with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
-          to_return(:status => 200, :body => JSON.dump(kv_content), :headers => {})
-
-        described_class.reset
-        described_class.prefetch( resources )
-        resource.provider.create
-        resource.provider.flush
-      end
-    end
-
     context "when consul returns an error" do
       it "should raise Puppet::Error on failed create" do
         kv_content = [

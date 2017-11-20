@@ -137,6 +137,10 @@ Puppet::Type.type(:consul_key_value).provide(
   end
 
   def flush
+    # flush is only called when something really needs to change.
+    # a property has a different value or maybe the resource needs to be created or destroyed.
+    # http://garylarizza.com/blog/2013/12/15/seriously-what-is-this-provider-doing/
+
     name = @resource[:name]
     flags = @resource[:flags]
     value = @resource[:value]
@@ -148,24 +152,12 @@ Puppet::Type.type(:consul_key_value).provide(
     key_value = self.get_resource(name, port, hostname, protocol, tries, datacenter)
 
     if @property_flush[:ensure] == :absent
-      if key_value
-        #key actually exists in the kv, delete it.
-        delete_key_value(name)
-        return
-      end
-    elsif @property_flush[:ensure] == :present
-      if key_value
-        if key_value[:value] == value and key_value[:flags] == flags
-          # the key exists in the kv and has the right value and flag.
-          # return without updating the key.
-          return
-        end
-      end
-      create_or_update_key_value(name, value, flags)
+      #key exists in the kv, but must be deleted. 
+      delete_key_value(name)
     else
-      raise(Puppet::Error,"ensure attribute is set to unexpected value: #{@property_flush[:ensure]}")
+      #something changed, otherwise the flush method would not have been called.
+      create_or_update_key_value(name, value, flags)
     end
-
     @property_hash.clear
   end
 end
