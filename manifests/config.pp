@@ -15,9 +15,9 @@ class consul::config(
   $purge = true,
 ) {
 
-  if ($::consul::init_style_real != 'unmanaged') {
+  if ($consul::init_style_real != 'unmanaged') {
 
-    case $::consul::init_style_real {
+    case $consul::init_style_real {
       'upstart': {
         file { '/etc/init/consul.conf':
           mode    => '0444',
@@ -98,10 +98,10 @@ class consul::config(
     }
   }
 
-  file { $::consul::config_dir:
+  file { $consul::config_dir:
     ensure  => 'directory',
-    owner   => $::consul::user_real,
-    group   => $::consul::group_real,
+    owner   => $consul::user_real,
+    group   => $consul::group_real,
     purge   => $purge,
     recurse => $purge,
   }
