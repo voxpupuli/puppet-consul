@@ -1,22 +1,20 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
-require 'hiera-puppet-helper/rspec'
-require 'hiera'
-require 'puppet/indirector/hiera'
 require 'webmock/rspec'
 
 WebMock.disable_net_connect!()
 
-# config hiera to work with let(:hiera_data)
-def hiera_stub
-  config = Hiera::Config.load(hiera_config)
-  config[:logger] = 'puppet'
-  Hiera.new(:config => config)
-end
-
 RSpec.configure do |c|
   c.mock_framework = :rspec
-  c.before(:each) do
-    allow(Puppet::Indirector::Hiera).to receive(:hiera) { hiera_stub }
-  end
-
+  c.default_facts = {
+    :architecture           => 'x86_64',
+    :operatingsystem        => 'Ubuntu',
+    :osfamily               => 'Debian',
+    :operatingsystemrelease => '14.04',
+    :os                     => {
+      'family'  => 'Debian',
+    },
+    :kernel                 => 'Linux',
+    :ipaddress_lo           => '127.0.0.1',
+    :consul_version         => 'unknown',
+  }
 end

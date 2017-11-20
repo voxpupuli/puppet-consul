@@ -6,7 +6,7 @@ module JSON
 
     def sorted_generate(obj)
       case obj
-        when NilClass, :undef, Fixnum, Float, TrueClass, FalseClass, String
+        when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
           return simple_generate(obj)
         when Array
           arrayRet = []
@@ -31,7 +31,7 @@ module JSON
       indent = " " * indent_len
 
       case obj
-        when NilClass, :undef, Fixnum, Float, TrueClass, FalseClass, String
+        when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
           return simple_generate(obj)
         when Array
           arrayRet = []
@@ -77,7 +77,7 @@ module JSON
       case obj
         when NilClass, :undef
           'null'
-        when Fixnum, Float, TrueClass, FalseClass
+        when Integer, Float, TrueClass, FalseClass
           "#{obj}"
         else
           # Should be a string
