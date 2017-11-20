@@ -1,7 +1,24 @@
 # Change Log
 
-## [3.1.1](https://github.com/solarkennedy/puppet-consul/tree/3.1.1) (2017-10-23)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.0.0...3.1.1)
+## [3.2.0](https://github.com/solarkennedy/puppet-consul/tree/3.2.0) (2017-11-20)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.1.2...3.2.0)
+
+**Closed issues:**
+
+- Validate command for config files doesn't work [\#376](https://github.com/solarkennedy/puppet-consul/issues/376)
+
+**Merged pull requests:**
+
+- Removing the consul config check [\#380](https://github.com/solarkennedy/puppet-consul/pull/380) ([Faffnir](https://github.com/Faffnir))
+- \[issue/376\] [\#379](https://github.com/solarkennedy/puppet-consul/pull/379) ([khdevel](https://github.com/khdevel))
+- Fix updating of Consul KV store [\#378](https://github.com/solarkennedy/puppet-consul/pull/378) ([dannytrigo](https://github.com/dannytrigo))
+- Fix validate command for config files in consul 1.0.0 [\#377](https://github.com/solarkennedy/puppet-consul/pull/377) ([Faffnir](https://github.com/Faffnir))
+
+## [v3.1.2](https://github.com/solarkennedy/puppet-consul/tree/v3.1.2) (2017-10-26)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.1.1...v3.1.2)
+
+## [v3.1.1](https://github.com/solarkennedy/puppet-consul/tree/v3.1.1) (2017-10-24)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.0.0...v3.1.1)
 
 **Closed issues:**
 
