@@ -5,19 +5,19 @@
 #
 class consul::params {
   $acls                  = {}
-  $archive_path          = '/opt/puppet-archive'
+  $archive_path          = ''
   $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}
-  $config_dir            = '/etc/consul'
   $config_hash           = {}
-  $config_mode           = '0660'
+  $config_mode           = '0664'
+  $docker_image          = 'consul'
   $download_extension    = 'zip'
-  $download_url          = undef
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
   $extra_options         = ''
   $group                 = 'consul'
+  $log_file              = '/var/log/consul'
   $install_method        = 'url'
   $join_wan              = false
   $manage_group          = true
@@ -33,12 +33,11 @@ class consul::params {
   $service_ensure        = 'running'
   $services              = {}
   $ui_download_extension = 'zip'
-  $ui_download_url       = undef
   $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
   $ui_package_ensure     = 'latest'
   $ui_package_name       = 'consul_ui'
   $user                  = 'consul'
-  $version               = '0.7.0'
+  $version               = '0.7.4'
   $watches               = {}
 
   case $::architecture {
@@ -48,6 +47,11 @@ class consul::params {
     default:           {
       fail("Unsupported kernel architecture: ${::architecture}")
     }
+  }
+
+  $config_dir = $::osfamily ? {
+    'FreeBSD' => '/usr/local/etc/consul.d',
+    default   => '/etc/consul'
   }
 
   $os = downcase($::kernel)
@@ -60,17 +64,25 @@ class consul::params {
     } else {
       $init_style = 'systemd'
     }
-  } elsif $::operatingsystem =~ /Scientific|CentOS|RedHat|OracleLinux/ {
-    if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-      $init_style = 'redhat'
-    } else {
-      $init_style  = 'systemd'
-    }
-  } elsif $::operatingsystem == 'Fedora' {
-    if versioncmp($::operatingsystemrelease, '12') < 0 {
-      $init_style = 'init'
-    } else {
-      $init_style = 'systemd'
+  } elsif $::osfamily == 'RedHat' {
+    case $::operatingsystem {
+      'Fedora': {
+        if versioncmp($::operatingsystemrelease, '12') < 0 {
+          $init_style = 'init'
+        } else {
+          $init_style = 'systemd'
+        }
+      }
+      'Amazon': {
+          $init_style = 'redhat'
+      }
+      default: {
+        if versioncmp($::operatingsystemrelease, '7.0') < 0 {
+          $init_style = 'redhat'
+        } else {
+          $init_style  = 'systemd'
+        }
+      }
     }
   } elsif $::operatingsystem == 'Debian' {
     if versioncmp($::operatingsystemrelease, '8.0') < 0 {
@@ -90,8 +102,8 @@ class consul::params {
     }
   } elsif $::operatingsystem == 'Darwin' {
     $init_style = 'launchd'
-  } elsif $::operatingsystem == 'Amazon' {
-    $init_style = 'redhat'
+  } elsif $::operatingsystem == 'FreeBSD' {
+    $init_style = 'freebsd'
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }

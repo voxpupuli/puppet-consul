@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "1.1.0",
+  "version": "3.2.1",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -8,14 +8,20 @@
   "project_page": "https://github.com/solarkennedy/puppet-consul",
   "issues_url": "https://github.com/solarkennedy/puppet-consul/issues",
   "description": "Configures Consul by Hashicorp",
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.7.1 < 6.0.0"
+    }
+  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.6.0 <5.0.0"
+      "version_requirement": ">= 4.13.1 < 5.0.0"
     },
     {
       "name": "puppet/archive",
-      "version_requirement": ">=1.0.0 <2.0.0"
+      "version_requirement": ">= 2.0.0 < 3.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -106,6 +112,14 @@
       "operatingsystemrelease": [
         "11.4",
         "12.0"
+      ]
+    },
+    {
+      "operatingsystem": "FreeBSD",
+      "operatingsystemrelease": [
+        "10",
+        "11",
+        "12"
       ]
     }
   ]
