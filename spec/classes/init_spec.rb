@@ -717,6 +717,17 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('systemd') }
   end
 
+
+  context "On FreeBSD" do
+    let(:facts) {{
+      :operatingsystem => 'FreeBSD',
+      :operatingsystemrelease => '10.3',
+      :osfamily => 'FreeBSD'
+    }}
+
+    it { should contain_file('/usr/local/etc/consul.d').with(:purge => true,:recurse => true) }
+  end
+
   # Config Stuff
   context "With extra_options" do
     let(:params) {{
