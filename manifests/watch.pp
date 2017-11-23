@@ -44,18 +44,18 @@
 #   Type of data to watch. (Like key, service, services, nodes)
 #
 define consul::watch(
-  $datacenter   = undef,
-  $ensure       = present,
-  $event_name   = undef,
-  $handler      = undef,
-  $key          = undef,
-  $keyprefix    = undef,
-  $passingonly  = undef,
-  $service      = undef,
-  $service_tag  = undef,
-  $state        = undef,
-  $token        = undef,
-  $type         = undef,
+  $datacenter                    = undef,
+  $ensure                        = present,
+  $event_name                    = undef,
+  $handler                       = undef,
+  $key                           = undef,
+  $keyprefix                     = undef,
+  Optional[Boolean] $passingonly = undef,
+  $service                       = undef,
+  $service_tag                   = undef,
+  $state                         = undef,
+  $token                         = undef,
+  $type                          = undef,
 ) {
   include consul
   $id = $title
@@ -67,7 +67,7 @@ define consul::watch(
     'token'      => $token,
   }
 
-  if (versioncmp($::consul::version, '0.4.0') < 0) {
+  if (versioncmp($consul::version, '0.4.0') < 0) {
     fail ('Watches are only supported in Consul 0.4.0 and above')
   }
 
@@ -77,10 +77,6 @@ define consul::watch(
 
   if (! $type ) {
     fail ('All watch conditions must have a type defined')
-  }
-
-  if ($passingonly ) {
-    validate_bool($passingonly)
   }
 
   case $type {
@@ -133,12 +129,13 @@ define consul::watch(
     watches => [delete_undef_values(merge($basic_hash, $type_hash))]
   }
 
-  File[$::consul::config_dir] ->
-  file { "${consul::config_dir}/watch_${id}.json":
+  File[$consul::config_dir]
+  -> file { "${consul::config_dir}/watch_${id}.json":
     ensure  => $ensure,
-    owner   => $::consul::user,
-    group   => $::consul::group,
-    mode    => $::consul::config_mode,
-    content => consul_sorted_json($watch_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
+    owner   => $consul::user_real,
+    group   => $consul::group_real,
+    mode    => $consul::config_mode,
+    content => consul_sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
   } ~> Class['consul::reload_service']
+
 }

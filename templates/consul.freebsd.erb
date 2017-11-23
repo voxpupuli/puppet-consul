@@ -34,11 +34,12 @@ load_rc_config $name
 : ${consul_dir:="/var/tmp/consul"}
 : ${consul_env:=""}
 : ${consul_log_file:="/dev/null"}
+: ${consul_config_dir:="<%= scope.lookupvar('consul::config_dir') %>"}
 
 pidfile=/var/run/consul.pid
 procname="/usr/local/bin/consul"
 command="/usr/sbin/daemon"
-command_args="-p ${pidfile} /usr/bin/env ${consul_env} ${procname} agent -data-dir=${consul_dir} -config-dir=/usr/local/etc/consul.d ${consul_args} >> ${consul_log_file}"
+command_args="-p ${pidfile} /usr/bin/env ${consul_env} ${procname} agent -data-dir=${consul_dir} -config-dir=${consul_config_dir} ${consul_args} >> ${consul_log_file}"
 
 start_precmd=consul_startprecmd
 

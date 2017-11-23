@@ -6,17 +6,22 @@
 
 ## Compatibility
 
+**WARNING**: Backwards incompatible changes happen in order to more easily support
+new versions of consul. Pin to the version that works for your setup!
+
 | Consul Version   | Recommended Puppet Module Version   |
 | ---------------- | ----------------------------------- |
-| >= 0.6.0         | latest                              |
+| >= 0.8.0         | latest                              |
+| 0.7.0            | <= 2.1.1                            |
+| 0.6.0            | <= 2.1.1                            |
 | 0.5.x            | 1.0.3                               |
 | 0.4.x            | 0.4.6                               |
-| 0.3.x            | 0.3.0                               |
 
 ### What This Module Affects
 
 * Installs the consul daemon (via url or package)
   * If installing from zip, you *must* ensure the unzip utility is available.
+  * If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
 * Manages the consul service via upstart, sysv, or systemd
@@ -201,6 +206,10 @@ ACLs if the anonymous token doesn't permit ACL changes (which is likely).
 The api token may be the master token, another management token, or any
 client token with sufficient privileges.
 
+**NOTE:** This module currently cannot parse ACL tokens generated through means
+other than this module. Don't mix Puppet and Non-puppet ACLs for best results!
+(pull requests welcome to allow it to co-exist with ACLs generated with normal HCL)
+
 ## Prepared Queries and Prepared Query Templates
 
 ```puppet
@@ -234,15 +243,37 @@ consul_prepared_query { 'consul':
 
 ## Key/Value Objects
 
+Example:
+
 ```puppet
 consul_key_value { 'key/path':
-  ensure => 'present',
-  value  => 'myvaluestring',
-  flags  => 12345,
+  ensure     => 'present',
+  value      => 'myvaluestring',
+  flags      => 12345,
+  datacenter => 'dc1'
 }
 ```
 
-This provider allows you to manage key/value pairs.
+This provider allows you to manage key/value pairs. It tries to be smart in two ways:
+
+1. It caches the data accessible from the kv store with the specified acl token.
+2. It does not update the key if the value & flag are already correct.
+
+
+These parameters are mandatory when using `consul_key_value`:
+
+* `name` Name of the key/value object. Path in key/value store.
+* `value` value of the key. 
+
+The optional parameters only need to be specified if you require changes from default behaviour.
+
+* `flags` {Integer} an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application. Default is `0`.
+* `acl\_api_token` {String} Token for accessing the ACL API. Default is `''`.
+* `datacenter` {String} Use the key/value store in specified datacenter. If `''` (default) it will use the datacenter of the Consul agent at the HTTP address.
+* `protocol` {String} protocol to use. Either `'http'` (default) or `'https'`.
+* `port` {Integer} consul port. Defaults to `8500`.
+* `hostname` {String} consul hostname. Defaults to `'localhost'`.
+* `api_tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
 
 ## Limitations
 

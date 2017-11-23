@@ -2,44 +2,17 @@ require 'spec_helper'
 
 describe 'consul' do
 
-  RSpec.configure do |c|
-    c.default_facts = {
-      :architecture           => 'x86_64',
-      :operatingsystem        => 'Ubuntu',
-      :osfamily               => 'Debian',
-      :operatingsystemrelease => '10.04',
-      :kernel                 => 'Linux',
-      :ipaddress_lo           => '127.0.0.1',
-      :consul_version         => 'unknown',
-    }
-  end
-  Puppet::Util::Log.level = :debug
-  Puppet::Util::Log.newdestination(:console)
   # Installation Stuff
   context 'On an unsupported arch' do
     let(:facts) {{ :architecture => 'bogus' }}
     let(:params) {{
       :install_method => 'package'
     }}
-    it { expect { should compile }.to raise_error(/Unsupported kernel architecture:/) }
+    it { expect { catalogue }.to raise_error(/Unsupported kernel architecture:/) }
   end
 
   context 'When not specifying whether to purge config' do
     it { should contain_file('/etc/consul').with(:purge => true,:recurse => true) }
-  end
-
-  context 'When passing a non-bool as purge_config_dir' do
-    let(:params) {{
-      :purge_config_dir => 'hello'
-    }}
-    it { expect { should compile }.to raise_error(/is not a boolean/) }
-  end
-
-  context 'When passing a non-bool as manage_service' do
-    let(:params) {{
-      :manage_service => 'hello'
-    }}
-    it { expect { should compile }.to raise_error(/is not a boolean/) }
   end
 
   context 'When disable config purging' do
@@ -75,7 +48,7 @@ describe 'consul' do
     let(:params) {{
       :install_method => 'package'
     }}
-    it { should contain_package('consul').with(:ensure => 'latest') }
+    it { should contain_package('consul').with(:ensure => 'latest').that_notifies('Class[consul::run_service]') }
   end
 
   context 'When requesting to install via a custom package and version' do
@@ -285,7 +258,7 @@ describe 'consul' do
           'server' => false,
           'ports' => {
             'http' => 1,
-            'rpc'  => '8300',
+            'https' => '8300',
           },
       },
       :config_hash => {
@@ -293,7 +266,7 @@ describe 'consul' do
           'server' => true,
           'ports' => {
             'http'  => -1,
-            'https' => 8500,
+            'https' => '8500',
           },
       }
     }}
@@ -302,7 +275,6 @@ describe 'consul' do
     it { should contain_file('consul config.json').with_content(/"server":true/) }
     it { should contain_file('consul config.json').with_content(/"http":-1/) }
     it { should contain_file('consul config.json').with_content(/"https":8500/) }
-    it { should contain_file('consul config.json').with_content(/"rpc":8300/) }
   end
 
   context 'When pretty config is true' do
@@ -399,7 +371,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -rpc-addr=127.0.0.1:8400')
+        with_command('consul reload -http-addr=127.0.0.1:8500')
     }
   end
 
@@ -410,16 +382,16 @@ describe 'consul' do
       },
       :config_hash => {
         'ports' => {
-          'rpc' => '9999'
+          'http' => '9999'
         },
         'addresses' => {
-          'rpc' => 'consul.example.com'
+          'http' => 'consul.example.com'
         }
       }
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -rpc-addr=consul.example.com:9999')
+        with_command('consul reload -http-addr=consul.example.com:9999')
     }
   end
 
@@ -434,7 +406,7 @@ describe 'consul' do
     }}
     it {
       should contain_exec('reload consul service').
-        with_command('consul reload -rpc-addr=192.168.34.56:8400')
+        with_command('consul reload -http-addr=192.168.34.56:8500')
     }
   end
 
@@ -521,30 +493,30 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-rpc-addr=127.0.0.1:8400/)
+        with_content(/-http-addr=127.0.0.1:8500/)
     }
   end
 
-  context "When overriding default rpc port on init" do
+  context "When overriding default http port on init" do
     let (:params) {{
       :init_style => 'init',
       :config_hash => {
         'ports' => {
-          'rpc' => '9999'
+          'http' => '9999'
         },
         'addresses' => {
-          'rpc' => 'consul.example.com'
+          'http' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-rpc-addr=consul.example.com:9999/)
+        with_content(/-http-addr=consul.example.com:9999/)
     }
   end
 
-  context "When rpc_addr defaults to client_addr on init" do
+  context "When http_addr defaults to client_addr on init" do
     let (:params) {{
       :init_style => 'init',
       :config_hash => {
@@ -554,7 +526,7 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('init') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-rpc-addr=192.168.34.56:8400/)
+        with_content(/-http-addr=192.168.34.56:8500/)
     }
   end
 
@@ -568,26 +540,26 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('debian') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-rpc-addr=127.0.0.1:8400/)
+        with_content(/-http-addr=127.0.0.1:8500/)
     }
   end
 
-  context "When overriding default rpc port on debian" do
+  context "When overriding default http port on debian" do
     let (:params) {{
       :init_style => 'debian',
       :config_hash => {
         'ports' => {
-          'rpc' => '9999'
+          'http' => '9999'
         },
         'addresses' => {
-          'rpc' => 'consul.example.com'
+          'http' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('debian') }
     it {
       should contain_file('/etc/init.d/consul').
-        with_content(/-rpc-addr=consul.example.com:9999/)
+        with_content(/-http-addr=consul.example.com:9999/)
     }
   end
 
@@ -601,31 +573,32 @@ describe 'consul' do
     it { should contain_class('consul').with_init_style('upstart') }
     it {
       should contain_file('/etc/init/consul.conf').
-        with_content(/-rpc-addr=127.0.0.1:8400/)
+        with_content(/-http-addr=127.0.0.1:8500/)
     }
   end
 
-  context "When overriding default rpc port on upstart" do
+  context "When overriding default http port on upstart" do
     let (:params) {{
       :init_style => 'upstart',
       :config_hash => {
         'ports' => {
-          'rpc' => '9999'
+          'http' => '9999'
         },
         'addresses' => {
-          'rpc' => 'consul.example.com'
+          'http' => 'consul.example.com'
         }
       }
     }}
     it { should contain_class('consul').with_init_style('upstart') }
     it {
       should contain_file('/etc/init/consul.conf').
-        with_content(/-rpc-addr=consul.example.com:9999/)
+        with_content(/-http-addr=consul.example.com:9999/)
     }
   end
 
   context "On a redhat 6 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'CentOS',
       :operatingsystemrelease => '6.5'
     }}
@@ -640,11 +613,12 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On an Amazon based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'Amazon',
       :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
     }}
@@ -655,22 +629,24 @@ describe 'consul' do
 
   context "On a redhat 7 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'CentOS',
       :operatingsystemrelease => '7.0'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On a fedora 20 based OS" do
     let(:facts) {{
+      :osfamily => 'RedHat',
       :operatingsystem => 'Fedora',
       :operatingsystemrelease => '20'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "On hardy" do
@@ -695,14 +671,14 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
-    it { should contain_file('/lib/systemd/system/consul.service').with_content(/consul agent/) }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
   end
 
   context "When asked not to manage the init system" do
     let(:params) {{ :init_style => 'unmanaged' }}
     it { should contain_class('consul').with_init_style('unmanaged') }
     it { should_not contain_file("/etc/init.d/consul") }
-    it { should_not contain_file("/lib/systemd/system/consul.service") }
+    it { should_not contain_file("/etc/systemd/system/consul.service") }
   end
 
   context "On squeeze" do
@@ -739,6 +715,17 @@ describe 'consul' do
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
+  end
+
+
+  context "On FreeBSD" do
+    let(:facts) {{
+      :operatingsystem => 'FreeBSD',
+      :operatingsystemrelease => '10.3',
+      :osfamily => 'FreeBSD'
+    }}
+
+    it { should contain_file('/usr/local/etc/consul.d').with(:purge => true,:recurse => true) }
   end
 
   # Config Stuff
