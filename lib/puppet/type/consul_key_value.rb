@@ -1,21 +1,30 @@
-Puppet::Type.newtype(:consul_acl) do
+Puppet::Type.newtype(:consul_key_value) do
 
   desc <<-'EOD'
-  Manage a consul token and its ACLs.
+  Manage a consul key value object.
   EOD
   ensurable
 
   newparam(:name, :namevar => true) do
-    desc 'Name of the token'
+    desc 'Name of the key/value object'
     validate do |value|
-      raise ArgumentError, "ACL name must be a string" if not value.is_a?(String)
+      raise ArgumentError, "Key/value object name must be a string" if not value.is_a?(String)
     end
   end
 
-  newproperty(:type) do
-    desc 'Type of token'
-    newvalues(:client, :management)
-    defaultto :client
+  newparam(:flags) do
+    desc 'Flags integer'
+    validate do |value|
+      raise ArgumentError, "The flags value must be an integer" if not value.is_a?(Integer)
+    end
+    defaultto 0
+  end
+
+  newproperty(:value) do
+    desc 'The key value string'
+    validate do |value|
+      raise ArgumentError, "The key value must be a string" if not value.is_a?(String)
+    end
   end
 
   newparam(:acl_api_token) do
@@ -26,28 +35,15 @@ Puppet::Type.newtype(:consul_acl) do
     defaultto ''
   end
 
-  newproperty(:rules) do
-    desc 'hash of ACL rules for this token'
-    defaultto {}
+  newparam(:datacenter) do
+    desc 'Name of the datacenter to query. If unspecified, the query will default to the datacenter of the Consul agent at the HTTP address.'
     validate do |value|
-      raise ArgumentError, "ACL rules must be provided as a hash" if not value.is_a?(Hash)
+      raise ArgumentError, "Datacenter must be a string" if not value.is_a?(String)
     end
-
-    def is_to_s(value)
-      should_to_s(value)
-    end
-
-    def should_to_s(value)
-      require 'pp'
-      value.pretty_inspect
-    end
+    defaultto ''
   end
 
-  newproperty(:id) do
-    desc 'ID of token'
-  end
-
-  newproperty(:protocol) do
+  newparam(:protocol) do
     desc 'consul protocol'
     newvalues(:http, :https)
     defaultto :http
@@ -75,9 +71,5 @@ Puppet::Type.newtype(:consul_acl) do
     validate do |value|
       raise ArgumentError, "Number of API tries must be a number" if not value.is_a?(Integer)
     end
-  end
-
-  autorequire(:service) do
-    ['consul']
   end
 end

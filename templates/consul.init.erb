@@ -16,8 +16,8 @@
 CONSUL=<%= scope.lookupvar('consul::bin_dir') %>/consul
 CONFIG=<%= scope.lookupvar('consul::config_dir') %>
 PID_FILE=/var/run/consul/consul.pid
-LOG_FILE=/var/log/consul
-RPC_ADDR=-rpc-addr=<%= scope.lookupvar('consul::rpc_addr') %>:<%= scope.lookupvar('consul::rpc_port') %>
+LOG_FILE=<%= scope.lookupvar('consul::log_file') %>
+HTTP_ADDR=-http-addr=<%= scope.lookupvar('consul::http_addr') %>:<%= scope.lookupvar('consul::http_port') %>
 
 [ -e /etc/sysconfig/consul ] && . /etc/sysconfig/consul
 
@@ -54,9 +54,10 @@ start() {
         [ -f $PID_FILE ] && rm $PID_FILE
         daemon --user=<%= scope.lookupvar('consul::user') %> \
             --pidfile="$PID_FILE" \
-            "$CONSUL" agent -pid-file "${PID_FILE}" -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &
+            $("$CONSUL" agent -pid-file "${PID_FILE}" -config-dir "$CONFIG" <%= scope.lookupvar('consul::extra_options') %> >> "$LOG_FILE" &)
         retcode=$?
-        touch /var/lock/subsys/consul
+        echo
+        [ $retcode = 0 ] && touch /var/lock/subsys/consul
         return $retcode
 }
 
@@ -69,7 +70,7 @@ stop() {
         # If consul is not acting as a server, exit gracefully
         # Use SIGINT to create a "leave" event, unless the user has explicitly
         # changed that behavior in the Consul config.
-        if ("${CONSUL}" info ${RPC_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
+        if ("${CONSUL}" info ${HTTP_ADDR} 2>/dev/null | grep -q 'server = false' 2>/dev/null) ; then
             consul_pid=$(cat $PID_FILE)
             killproc $KILLPROC_OPT $CONSUL -INT
             retcode=$?
@@ -95,9 +96,17 @@ stop() {
         # killproc with no arguments uses TERM, then escalates to KILL.
         killproc $KILLPROC_OPT $CONSUL
         retcode=$?
-
-        rm -f /var/lock/subsys/consul $PID_FILE
+        echo
+        [ $retcode = 0 ] && rm -f /var/lock/subsys/consul $PID_FILE
         return $retcode
+}
+
+status() {
+        "$CONSUL" info ${HTTP_ADDR}
+        consul_pid=$(cat $PID_FILE)
+        checkpid $consul_pid
+        retcode=$?
+        exit $retcode
 }
 
 case "$1" in
@@ -108,7 +117,7 @@ case "$1" in
         stop
         ;;
     status)
-        "$CONSUL" info ${RPC_ADDR}
+        status
         ;;
     restart)
         stop
