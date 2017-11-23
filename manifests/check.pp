@@ -70,7 +70,7 @@ define consul::check(
     'script'     => $script,
     'tcp'        => $tcp,
     'interval'   => $interval,
-    'timeout '   => $timeout,
+    'timeout'   => $timeout,
     'service_id' => $service_id,
     'notes'      => $notes,
     'token'      => $token,
