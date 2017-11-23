@@ -45,6 +45,7 @@ Puppet::Type.type(:consul_acl).provide(
     path=uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
     res = nil
+    res_code = nil
 
     # retry Consul API query for ACLs, in case Consul has just started
     (1..tries).each do |i|
@@ -52,14 +53,21 @@ Puppet::Type.type(:consul_acl).provide(
         Puppet.debug("retrying Consul API query in #{i} seconds")
         sleep i
       end
-      res = http.request(req)
-      break if res.code == '200'
+
+      begin
+        res = http.request(req)
+        res_code = res.code
+        break if res_code == '200'
+      rescue Errno::ECONNREFUSED => exc
+        Puppet.debug("#{uri}/list?token=<redacted> #{exc.class} #{exc.message}")
+        res_code = exc.class.to_s
+      end
     end
 
-    if res.code == '200'
+    if res_code == '200'
       acls = JSON.parse(res.body)
     else
-      Puppet.warning("Cannot retrieve ACLs: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      Puppet.warning("Cannot retrieve ACLs: invalid return code #{res_code} uri: #{path} body: #{req.body}")
       return {}
     end
 
