@@ -53,6 +53,14 @@ Puppet::Type.newtype(:consul_prepared_query) do
     end
   end
 
+  newparam(:service_near) do
+    desc 'Resurn results in ascending order of estimated RTT from given node name, or _agent special value'
+    defaultto ''
+    validate do |value|
+      raise ArgumentError, "Near parameter must be a string" if not value.is_a?(String)
+    end
+  end
+
   newparam(:service_only_passing) do
     desc 'Only return services in the passing state'
     defaultto false
