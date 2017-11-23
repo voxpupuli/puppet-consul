@@ -9,7 +9,6 @@ class consul::params {
   $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}
-  $config_dir            = '/etc/consul'
   $config_hash           = {}
   $config_mode           = '0664'
   $docker_image          = 'consul'
@@ -48,6 +47,11 @@ class consul::params {
     default:           {
       fail("Unsupported kernel architecture: ${::architecture}")
     }
+  }
+
+  $config_dir = $::osfamily ? {
+    'FreeBSD' => '/usr/local/etc/consul.d',
+    default   => '/etc/consul'
   }
 
   $os = downcase($::kernel)
