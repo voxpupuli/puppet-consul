@@ -134,6 +134,8 @@
 # [*watches*]
 #   Hash of consul::watch resources to create.
 #
+# [*shell*]
+#   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
 # === Examples
 #
 #  @example
@@ -189,6 +191,7 @@ class consul (
   $user                                      = $consul::params::user,
   $version                                   = $consul::params::version,
   Hash $watches                              = $consul::params::watches,
+  Optional[String] $shell                    = $consul::params::shell,
 ) inherits consul::params {
 
   # lint:ignore:140chars
