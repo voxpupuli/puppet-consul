@@ -610,6 +610,7 @@ describe 'consul' do
   context "On an Archlinux based OS" do
     let(:facts) {{
       :operatingsystem => 'Archlinux',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -631,7 +632,8 @@ describe 'consul' do
     let(:facts) {{
       :osfamily => 'RedHat',
       :operatingsystem => 'CentOS',
-      :operatingsystemrelease => '7.0'
+      :operatingsystemrelease => '7.0',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -642,7 +644,8 @@ describe 'consul' do
     let(:facts) {{
       :osfamily => 'RedHat',
       :operatingsystem => 'Fedora',
-      :operatingsystemrelease => '20'
+      :operatingsystemrelease => '20',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -667,7 +670,8 @@ describe 'consul' do
   context "On a Ubuntu Vivid 15.04 based OS" do
     let(:facts) {{
       :operatingsystem => 'Ubuntu',
-      :operatingsystemrelease => '15.04'
+      :operatingsystemrelease => '15.04',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -693,7 +697,8 @@ describe 'consul' do
   context "On opensuse" do
     let(:facts) {{
       :operatingsystem => 'OpenSuSE',
-      :operatingsystemrelease => '13.1'
+      :operatingsystemrelease => '13.1',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
@@ -711,7 +716,8 @@ describe 'consul' do
   context "On SLES" do
     let(:facts) {{
       :operatingsystem => 'SLES',
-      :operatingsystemrelease => '12.0'
+      :operatingsystemrelease => '12.0',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }

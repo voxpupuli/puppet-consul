@@ -22,6 +22,10 @@
     {
       "name": "puppet/archive",
       "version_requirement": ">= 2.0.0 < 3.0.0"
+    },
+    {
+      "name": "puppet-systemd",
+      "version_requirement": ">= 1.1.1 < 2.0.0"
     }
   ],
   "operatingsystem_support": [
