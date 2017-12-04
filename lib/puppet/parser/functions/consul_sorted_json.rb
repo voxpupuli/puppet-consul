@@ -82,7 +82,7 @@ module JSON
         else
           # Should be a string
           # keep string integers unquoted
-          (obj =~ /\A[-]?\d+\z/) ? obj : obj.to_json
+          (obj =~ /\A[-]?[1-9]\d*\z/) ? obj : obj.to_json
       end
     end
 
