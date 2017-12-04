@@ -6,5 +6,6 @@ fixtures:
     archive:
       repo: "https://github.com/voxpupuli/puppet-archive.git"
       ref: "v2.1.0"
+    systemd: "https://github.com/camptocamp/puppet-systemd.git"
   symlinks:
     consul: "#{source_dir}"
