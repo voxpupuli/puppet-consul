@@ -34,16 +34,8 @@ class consul::config(
         }
       }
       'systemd': {
-        file { '/etc/systemd/system/consul.service':
-          mode    => '0644',
-          owner   => 'root',
-          group   => 'root',
+        ::systemd::unit_file{'consul.service':
           content => template('consul/consul.systemd.erb'),
-        }
-        ~> exec { 'consul-systemd-reload':
-          command     => 'systemctl daemon-reload',
-          path        => [ '/usr/bin', '/bin', '/usr/sbin' ],
-          refreshonly => true,
         }
       }
       'init','redhat': {
