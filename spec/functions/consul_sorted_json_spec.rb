@@ -28,6 +28,12 @@ RSpec.shared_examples 'handling_simple_types' do |pretty|
   it 'handles integer in a string' do
     expect(subject.call([{'key' => '1' }],pretty)).to eql('{"key":1}')
   end
+  it 'handles zero in a string' do
+    expect(subject.call([{'key' => '0' }],pretty)).to eql('{"key":0}')
+  end
+  it 'handles integers with a leading zero in a string' do
+    expect(subject.call([{'key' => '0640' }],pretty)).to eql('{"key":"0640"}')
+  end
   it 'handles negative integer in a string' do
     expect(subject.call([{'key' => '-1' }],pretty)).to eql('{"key":-1}')
   end
