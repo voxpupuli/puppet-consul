@@ -1,7 +1,40 @@
 # Change Log
 
-## [3.2.0](https://github.com/solarkennedy/puppet-consul/tree/3.2.0) (2017-11-20)
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.1.2...3.2.0)
+## [v3.2.4](https://github.com/solarkennedy/puppet-consul/tree/v3.2.4) (2017-12-05)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.2.3...v3.2.4)
+
+## [v3.2.3](https://github.com/solarkennedy/puppet-consul/tree/v3.2.3) (2017-12-05)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.2.2...v3.2.3)
+
+**Merged pull requests:**
+
+- set correct namespace for systemd dependency [\#393](https://github.com/solarkennedy/puppet-consul/pull/393) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v3.2.2](https://github.com/solarkennedy/puppet-consul/tree/v3.2.2) (2017-12-05)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.2.0...v3.2.2)
+
+**Closed issues:**
+
+- consul\_sorted\_json for octal notation of file modes [\#389](https://github.com/solarkennedy/puppet-consul/issues/389)
+- Add hiera wrapper for ACL entries. [\#385](https://github.com/solarkennedy/puppet-consul/issues/385)
+- Config validation failed [\#383](https://github.com/solarkennedy/puppet-consul/issues/383)
+- default config\_dir broken on FreeBSD [\#360](https://github.com/solarkennedy/puppet-consul/issues/360)
+- Consul 0.8.0 is out! and it breaks a few things... [\#331](https://github.com/solarkennedy/puppet-consul/issues/331)
+
+**Merged pull requests:**
+
+- simplify systemd setup by using camptocamp/systemd [\#392](https://github.com/solarkennedy/puppet-consul/pull/392) ([bastelfreak](https://github.com/bastelfreak))
+- Do not unquote integers with a starting zero [\#391](https://github.com/solarkennedy/puppet-consul/pull/391) ([phaer](https://github.com/phaer))
+- replace fedora versions with current supported ones [\#390](https://github.com/solarkennedy/puppet-consul/pull/390) ([bastelfreak](https://github.com/bastelfreak))
+- set sane default shell for consul user [\#388](https://github.com/solarkennedy/puppet-consul/pull/388) ([bastelfreak](https://github.com/bastelfreak))
+- fix typo in check timeout [\#387](https://github.com/solarkennedy/puppet-consul/pull/387) ([lobeck](https://github.com/lobeck))
+- Fixes \#360 by setting config\_dir under FreeBSD [\#386](https://github.com/solarkennedy/puppet-consul/pull/386) ([madelaney](https://github.com/madelaney))
+- allow "args" and "script" for consul check config [\#382](https://github.com/solarkennedy/puppet-consul/pull/382) ([zg](https://github.com/zg))
+- Breaking: Update Puppet version to 4.7.1 and add data types [\#381](https://github.com/solarkennedy/puppet-consul/pull/381) ([wyardley](https://github.com/wyardley))
+- Handle consul\_acl connection refused as a retry-able error [\#336](https://github.com/solarkennedy/puppet-consul/pull/336) ([kpaulisse](https://github.com/kpaulisse))
+
+## [v3.2.0](https://github.com/solarkennedy/puppet-consul/tree/v3.2.0) (2017-11-20)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.1.2...v3.2.0)
 
 **Closed issues:**
 
