@@ -76,7 +76,11 @@ class consul::params {
         }
       }
       'Amazon': {
+        if versioncmp($::operatingsystemrelease, '2010') < 0{
+          $init_style = 'systemd'
+        } else {
           $init_style = 'redhat'
+        }
       }
       default: {
         if versioncmp($::operatingsystemrelease, '7.0') < 0 {
