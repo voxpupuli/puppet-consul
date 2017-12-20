@@ -632,7 +632,8 @@ describe 'consul' do
     let(:facts) {{
       :osfamily => 'RedHat',
       :operatingsystem => 'Amazon',
-      :operatingsystemrelease => '2.0'
+      :operatingsystemrelease => '2.0',
+      :path => '/bin:/usr/bin'
     }}
 
     it { should contain_class('consul').with_init_style('systemd') }
