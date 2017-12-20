@@ -621,7 +621,7 @@ describe 'consul' do
     let(:facts) {{
       :osfamily => 'RedHat',
       :operatingsystem => 'Amazon',
-      :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
+      :operatingsystemrelease => '2016.09'
     }}
 
     it { should contain_class('consul').with_init_style('redhat') }
