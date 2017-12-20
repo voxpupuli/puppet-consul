@@ -628,6 +628,17 @@ describe 'consul' do
     it { should contain_file('/etc/init.d/consul').with_content(/daemon --user=consul/) }
   end
 
+  context "On an Amazon 2 based OS" do
+    let(:facts) {{
+      :osfamily => 'RedHat',
+      :operatingsystem => 'Amazon',
+      :operatingsystemrelease => '3.10.34-37.137.amzn1.x86_64'
+    }}
+
+    it { should contain_class('consul').with_init_style('systemd') }
+    it { should contain_file('/etc/systemd/system/consul.service').with_content(/consul agent/) }
+  end
+
   context "On a redhat 7 based OS" do
     let(:facts) {{
       :osfamily => 'RedHat',
