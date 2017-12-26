@@ -12,12 +12,11 @@ describe 'consul class' do
         package { 'zip': ensure => present } ->
         # Don't manage the service as it doesn't work well in docker
         class { 'consul':
-          version        => '0.8.5',
+          version        => '1.0.1',
           manage_service => false,
           config_hash    => {
               'datacenter' => 'east-aws',
               'data_dir'   => '/opt/consul',
-              'ui_dir'     => '/opt/consul/ui',
               'log_level'  => 'INFO',
               'node_name'  => 'foobar',
               'server'     => true,
@@ -34,16 +33,12 @@ describe 'consul class' do
       it { should be_directory }
     end
 
-    describe file('/opt/consul/ui') do
-      it { should be_linked_to '/opt/consul/archives/consul-0.8.5_web_ui' }
-    end
-
     describe service('consul') do
       it { should be_enabled }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match /Consul v0\.8\.5/ }
+      its(:stdout) { should match /Consul v1\.0\.1/ }
     end
 
   end

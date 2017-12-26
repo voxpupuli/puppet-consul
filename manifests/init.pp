@@ -110,20 +110,9 @@
 # [*services*]
 #   Hash of consul::service resources to create.
 #
-# [*ui_download_extension*]
-#   The extension of the archive file containing the consul ui to download.
-#
-# [*ui_download_url*]
-#   Fully qualified url to the location of the archive file containing the consul ui.
-#
-# [*ui_download_url_base*]
-#   Base url to the location of the archive file containing the consul ui.
-#
-# [*ui_package_ensure*]
-#   Only valid when the install_method == package. Defaults to `latest`.
-#
-# [*ui_package_name*]
-#   Only valid when the install_method == package. Defaults to `consul_ui`.
+# [*ui*]
+#   Whether to start UI server.
+#   Defaults to `false`.
 #
 # [*user*]
 #   Name of the user that should own the consul configuration files.
@@ -183,11 +172,7 @@ class consul (
   Boolean $service_enable                    = $consul::params::service_enable,
   Enum['stopped', 'running'] $service_ensure = $consul::params::service_ensure,
   Hash $services                             = $consul::params::services,
-  $ui_download_extension                     = $consul::params::ui_download_extension,
-  Optional[Stdlib::HTTPUrl] $ui_download_url = undef,
-  Stdlib::HTTPUrl $ui_download_url_base      = $consul::params::ui_download_url_base,
-  $ui_package_ensure                         = $consul::params::ui_package_ensure,
-  $ui_package_name                           = $consul::params::ui_package_name,
+  $ui                                        = $consul::params::ui,
   $user                                      = $consul::params::user,
   $version                                   = $consul::params::version,
   Hash $watches                              = $consul::params::watches,
@@ -196,7 +181,6 @@ class consul (
 
   # lint:ignore:140chars
   $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
-  $real_ui_download_url = pick($ui_download_url, "${ui_download_url_base}${version}/${package_name}_${version}_web_ui.${ui_download_extension}")
   # lint:endignore
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
@@ -216,16 +200,6 @@ class consul (
     $data_dir = $config_hash_real['data_dir']
   } else {
     $data_dir = undef
-  }
-
-  if $config_hash_real['ui_dir'] {
-    $ui_dir = $config_hash_real['ui_dir']
-  } else {
-    $ui_dir = undef
-  }
-
-  if ($ui_dir and ! $data_dir) {
-    warning('data_dir must be set to install consul web ui')
   }
 
   if ($config_hash_real['ports'] and $config_hash_real['ports']['http']) {

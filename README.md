@@ -11,7 +11,8 @@ new versions of consul. Pin to the version that works for your setup!
 
 | Consul Version   | Recommended Puppet Module Version   |
 | ---------------- | ----------------------------------- |
-| >= 0.8.0         | latest                              |
+| >= 0.9.0         | latest                              |
+| 0.8.x            | <= 3.2.4                            |
 | 0.7.0            | <= 2.1.1                            |
 | 0.6.0            | <= 2.1.1                            |
 | 0.5.x            | 1.0.3                               |
@@ -73,7 +74,7 @@ class { '::consul':
 
 ## Web UI
 
-To install and run the Web UI on the server, include `ui_dir` in the
+To install and run the Web UI on the server, include `ui => true` in the
 `config_hash`. You may also want to change the `client_addr` to `0.0.0.0` from
 the default `127.0.0.1`, for example:
 ```puppet
@@ -86,7 +87,7 @@ class { '::consul':
     'log_level'        => 'INFO',
     'node_name'        => 'server',
     'server'           => true,
-    'ui_dir'           => '/opt/consul/ui',
+    'ui'               => true,
   }
 }
 ```
