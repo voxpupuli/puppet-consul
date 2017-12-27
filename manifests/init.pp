@@ -110,10 +110,6 @@
 # [*services*]
 #   Hash of consul::service resources to create.
 #
-# [*ui*]
-#   Whether to start UI server.
-#   Defaults to `false`.
-#
 # [*user*]
 #   Name of the user that should own the consul configuration files.
 #
@@ -172,7 +168,6 @@ class consul (
   Boolean $service_enable                    = $consul::params::service_enable,
   Enum['stopped', 'running'] $service_ensure = $consul::params::service_ensure,
   Hash $services                             = $consul::params::services,
-  $ui                                        = $consul::params::ui,
   $user                                      = $consul::params::user,
   $version                                   = $consul::params::version,
   Hash $watches                              = $consul::params::watches,
