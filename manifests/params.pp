@@ -32,10 +32,6 @@ class consul::params {
   $service_enable        = true
   $service_ensure        = 'running'
   $services              = {}
-  $ui_download_extension = 'zip'
-  $ui_download_url_base  = 'https://releases.hashicorp.com/consul/'
-  $ui_package_ensure     = 'latest'
-  $ui_package_name       = 'consul_ui'
   $user                  = 'consul'
   $version               = '0.7.4'
   $watches               = {}

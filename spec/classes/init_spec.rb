@@ -108,85 +108,28 @@ describe 'consul' do
     it { should contain_package('consul').with(:ensure => 'latest') }
   end
 
-  context 'When requesting to install UI via a custom package and version' do
-    let(:params) {{
-      :install_method    => 'package',
-      :ui_package_ensure => 'specific_ui_release',
-      :ui_package_name   => 'custom_consul_ui_package',
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_package('custom_consul_ui_package').with(:ensure => 'specific_ui_release') }
-  end
-
   context 'When requesting to not to install' do
     let(:params) {{
       :install_method => 'none'
     }}
     it { should_not contain_package('consul') }
-    it { should_not contain_package('consul_ui') }
     it { should_not contain_staging__file('consul.zip') }
-    it { should_not contain_staging__file('consul_web_ui-0.7.4.zip') }
   end
 
-  context "When installing UI via URL by default" do
+  context "When installing UI" do
     let(:params) {{
       :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
+        'ui' => true
       },
     }}
-    it { should contain_archive('/dir1/archives/consul_web_ui-0.7.4.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_web_ui.zip') }
-    it { should contain_file('/dir1/dir2').that_requires('Archive[/dir1/archives/consul_web_ui-0.7.4.zip]') }
-    it { should contain_file('/dir1/dir2').with(:ensure => 'symlink') }
+    it { should contain_file('consul config.json').with_content(/"ui":true/) }
   end
 
-  context "When installing UI via URL with a special version" do
+  context "When not installing UI" do
     let(:params) {{
-      :version     => '42',
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
+      :config_hash => { },
     }}
-    it { should contain_archive('/dir1/archives/consul_web_ui-42.zip').with(:source => 'https://releases.hashicorp.com/consul/42/consul_42_web_ui.zip') }
-  end
-
-  context "When installing UI via URL when version < 0.6.0" do
-    let(:params) {{
-      'version'    => '0.5.99',
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_archive('/dir1/archives/consul_web_ui-0.5.99.zip').with(:creates => %r{/dist$}) }
-    it { should contain_file('/dir1/dir2').with(:target => %r{/dist$}) }
-  end
-
-  context "When installing UI via URL when version >= 0.6.0" do
-    let(:params) {{
-      'version'    => '0.6.0',
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_archive('/dir1/archives/consul_web_ui-0.6.0.zip').with(:creates => %r{/index\.html$}) }
-    it { should contain_file('/dir1/dir2').with(:target => %r{_web_ui$}) }
-  end
-
-  context "When installing UI via URL by with a custom url" do
-    let(:params) {{
-      :ui_download_url => 'http://myurl',
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_archive('/dir1/archives/consul_web_ui-0.7.4.zip').with(:source => 'http://myurl') }
+    it { should_not contain_file('consul config.json').with_content(/"ui":true/) }
   end
 
   context "By default, a user and group should be installed" do
@@ -207,26 +150,6 @@ describe 'consul' do
   context "When data_dir not provided" do
     it { should_not contain_file('/dir1').with(:ensure => :directory) }
     it { should contain_file('/opt/consul/archives').with(:ensure => :directory) }
-  end
-
-  context "When ui_dir is provided but not data_dir" do
-    let(:params) {{
-      :config_hash => {
-        'ui_dir' => '/dir1/dir2',
-      },
-    }}
-    it { should_not contain_file('/dir1/dir2') }
-  end
-
-  context "When ui_dir and data_dir is provided" do
-    let(:params) {{
-      :config_hash => {
-        'data_dir' => '/dir1',
-        'ui_dir'   => '/dir1/dir2',
-      },
-    }}
-    it { should contain_file('/dir1') }
-    it { should contain_file('/dir1/dir2') }
   end
 
   context 'The bootstrap_expect in config_hash is an int' do
