@@ -55,47 +55,11 @@ class consul::install {
           notify => $do_notify_service,
           target => "${install_path}/consul-${consul::version}/consul";
       }
-
-      if ($consul::ui_dir and $consul::data_dir) {
-
-        # The 'dist' dir was removed from the web_ui archive in Consul version 0.6.0
-        if (versioncmp($consul::version, '0.6.0') < 0) {
-          $archive_creates = "${install_path}/consul-${consul::version}_web_ui/dist"
-          $ui_symlink_target = $archive_creates
-        } else {
-          $archive_creates = "${install_path}/consul-${consul::version}_web_ui/index.html"
-          $ui_symlink_target = "${install_path}/consul-${consul::version}_web_ui"
-        }
-
-        file { "${install_path}/consul-${consul::version}_web_ui":
-          ensure => directory,
-        }
-        -> archive { "${install_path}/consul_web_ui-${consul::version}.zip":
-          ensure       => present,
-          source       => $consul::real_ui_download_url,
-          proxy_server => $consul::proxy_server,
-          extract      => true,
-          extract_path => "${install_path}/consul-${consul::version}_web_ui",
-          creates      => $archive_creates,
-        }
-        ->file { $consul::ui_dir:
-          ensure => 'symlink',
-          target => $ui_symlink_target,
-        }
-      }
     }
     'package': {
       package { $consul::package_name:
         ensure => $consul::package_ensure,
         notify => $consul::notify_service
-      }
-
-      if $consul::ui_dir {
-        package { $consul::ui_package_name:
-          ensure  => $consul::ui_package_ensure,
-          require => Package[$consul::package_name],
-          notify  => $consul::notify_service
-        }
       }
 
       if $consul::manage_user {
