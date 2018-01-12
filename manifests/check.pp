@@ -23,7 +23,11 @@
 #
 # [*script*]
 #   Full path to the location of the healthcheck script. Must be nagios
-#   compliant with regards to the return codes.
+#   compliant with regards to the return codes. This parameter is deprecated
+#   in Consul 1.0.0, see https://github.com/hashicorp/consul/issues/3509.
+#
+# [*args*]
+#   Arguments to be `exec`ed for the healthcheck script.
 #
 # [*service_id*]
 #   An optional service_id to match this check against
@@ -53,6 +57,7 @@ define consul::check(
   $interval   = undef,
   $notes      = undef,
   $script     = undef,
+  $args       = undef,
   $service_id = undef,
   $status     = undef,
   $tcp        = undef,
@@ -68,9 +73,10 @@ define consul::check(
     'ttl'        => $ttl,
     'http'       => $http,
     'script'     => $script,
+    'args'       => $args,
     'tcp'        => $tcp,
     'interval'   => $interval,
-    'timeout'   => $timeout,
+    'timeout'    => $timeout,
     'service_id' => $service_id,
     'notes'      => $notes,
     'token'      => $token,
