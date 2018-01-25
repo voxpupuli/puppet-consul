@@ -65,9 +65,9 @@ class consul::install {
       }
       -> file {
         "${install_path}/consul-${consul::version}/${binary_name}":
-          owner  => $binary_owner,
-          group  => $binary_group,
-          mode   => $binary_mode;
+          owner => $binary_owner,
+          group => $binary_group,
+          mode  => $binary_mode;
         "${consul::bin_dir}/${binary_name}":
           ensure => link,
           notify => $do_notify_service,
