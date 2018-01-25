@@ -37,16 +37,17 @@ class consul::params {
   $watches               = {}
 
   case $::architecture {
-    'x86_64', 'amd64': { $arch = 'amd64' }
-    'i386':            { $arch = '386'   }
-    /^arm.*/:          { $arch = 'arm'   }
-    default:           {
+    'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
+    'i386':                   { $arch = '386'   }
+    /^arm.*/:                 { $arch = 'arm'   }
+    default:                  {
       fail("Unsupported kernel architecture: ${::architecture}")
     }
   }
 
   $config_dir = $::osfamily ? {
     'FreeBSD' => '/usr/local/etc/consul.d',
+    'windows' => 'c:/Consul/config',
     default   => '/etc/consul'
   }
 
@@ -112,6 +113,9 @@ class consul::params {
   } elsif $::operatingsystem == 'FreeBSD' {
     $init_style = 'freebsd'
     $shell = '/usr/sbin/nologin'
+  } elsif $::operatingsystem == 'windows' {
+    $init_style = 'unmanaged'
+    $shell = undef
   } else {
     fail('Cannot determine init_style, unsupported OS')
   }

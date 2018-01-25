@@ -1,0 +1,14 @@
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppParameters "<%= @app_args %>"
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppDirectory "<%= @app_dir %>"
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppStopMethodConsole 15000
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppStopMethodSkip 2
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppStopMethodSkip 4
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppStderr "<%= @app_log %>"
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppStdout "<%= @app_log %>"
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppRotateFiles 1
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppRotateOnline 0
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppRotateBytes 1024000
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppRestartDelay 0
+& '<%= scope['consul::nssm_exec'] %>' set Consul AppExit Default Exit
+& '<%= scope['consul::nssm_exec'] %>' set Consul Start SERVICE_AUTO_START
+exit 0
