@@ -25,7 +25,7 @@ new versions of consul. Pin to the version that works for your setup!
   * If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
 * Optionally installs a user to run it under
 * Installs a configuration file (/etc/consul/config.json)
-* Manages the consul service via upstart, sysv, or systemd
+* Manages the consul service via upstart, sysv, systemd, or nssm.
 * Optionally installs the Web UI
 
 ## Usage
@@ -280,6 +280,30 @@ The optional parameters only need to be specified if you require changes from de
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
 Depending on the version of puppetserver deployed it may not be new enough (1.8.0 is too old, 2.0.3 is known to work).
+
+## Windows Experimental Support
+
+Windows service support is provided by [NSSM](https://nssm.cc), which is expected to be installed separately. The following caveats apply:
+
+ * The user and group parameter must be different (Administrator/Administrators recommended).
+ * The NSSM executable must be passed as a parameter like in the following example:
+
+```puppet
+class { '::consul':
+  nssm_exec   => 'C:/Program Files/nssm/nssm-2.24/win64/nssm.exe',
+  bin_dir     => 'C:/Consul',
+  user        => 'Administrator',
+  group       => 'Administrators',
+  config_hash => {
+    'bootstrap_expect' => 1,
+    'data_dir'         => 'C:/Consul',
+    'datacenter'       => 'dc1',
+    'log_level'        => 'INFO',
+    'node_name'        => 'server',
+    'server'           => true,
+  }
+}
+```
 
 ## Consul Template
 
