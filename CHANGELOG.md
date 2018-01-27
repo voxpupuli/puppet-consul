@@ -1,5 +1,24 @@
 # Change Log
 
+## [3.3.0](https://github.com/solarkennedy/puppet-consul/tree/3.3.0) (2018-01-26)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.2.4...3.3.0)
+
+**Closed issues:**
+
+- module errors on posix systems without unzip [\#402](https://github.com/solarkennedy/puppet-consul/issues/402)
+- Support for Amazon 2 OS  [\#396](https://github.com/solarkennedy/puppet-consul/issues/396)
+- Latest version doesn't work with Puppet 3.x \(breaking change?\) [\#394](https://github.com/solarkennedy/puppet-consul/issues/394)
+- Changing Consul kv values doesn't seem to have an effect [\#374](https://github.com/solarkennedy/puppet-consul/issues/374)
+- Clean out fixtures prior to uploading to forge [\#349](https://github.com/solarkennedy/puppet-consul/issues/349)
+
+**Merged pull requests:**
+
+- Added experimental Windows support [\#403](https://github.com/solarkennedy/puppet-consul/pull/403) ([iwagnerclgx](https://github.com/iwagnerclgx))
+- Removed command substitution in init script [\#401](https://github.com/solarkennedy/puppet-consul/pull/401) ([tooooots](https://github.com/tooooots))
+- Add `args` parameter to `consul::check` [\#400](https://github.com/solarkennedy/puppet-consul/pull/400) ([joshuaspence](https://github.com/joshuaspence))
+- Added the ui parameter and removed ui\_\* ones [\#398](https://github.com/solarkennedy/puppet-consul/pull/398) ([rawleto](https://github.com/rawleto))
+- support Amazon Linux 2 [\#397](https://github.com/solarkennedy/puppet-consul/pull/397) ([vchan2002](https://github.com/vchan2002))
+
 ## [v3.2.4](https://github.com/solarkennedy/puppet-consul/tree/v3.2.4) (2017-12-05)
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.2.3...v3.2.4)
 
@@ -24,7 +43,7 @@
 **Merged pull requests:**
 
 - simplify systemd setup by using camptocamp/systemd [\#392](https://github.com/solarkennedy/puppet-consul/pull/392) ([bastelfreak](https://github.com/bastelfreak))
-- Do not unquote integers with a starting zero [\#391](https://github.com/solarkennedy/puppet-consul/pull/391) ([phaer](https://github.com/phaer))
+- Do not unquote integers with a leading zero [\#391](https://github.com/solarkennedy/puppet-consul/pull/391) ([phaer](https://github.com/phaer))
 - replace fedora versions with current supported ones [\#390](https://github.com/solarkennedy/puppet-consul/pull/390) ([bastelfreak](https://github.com/bastelfreak))
 - set sane default shell for consul user [\#388](https://github.com/solarkennedy/puppet-consul/pull/388) ([bastelfreak](https://github.com/bastelfreak))
 - fix typo in check timeout [\#387](https://github.com/solarkennedy/puppet-consul/pull/387) ([lobeck](https://github.com/lobeck))
