@@ -53,6 +53,29 @@ describe 'consul::watch' do
     }
   end
 
+  describe 'with valid type and args' do
+    let(:params) {{
+      'type' => 'nodes',
+      'args' => ['sh', '-c', 'true'],
+    }}
+    it {
+      should contain_file('/etc/consul/watch_my_watch.json') \
+          .with_content(/"args" *: *\[ *"sh", *"-c", *"true" *\]/) \
+          .with_content(/"type" *: *"nodes"/)
+    }
+  end
+
+  describe 'with both args and handler' do
+    let(:params) {{
+      'type' => 'nodes',
+      'handler' => 'handler_path',
+      'args' => ['sh', '-c', 'true'],
+    }}
+    it {
+      expect { should raise_error(Puppet::Error)}
+    }
+  end
+
   describe 'global attributes' do
     let (:params) {{
       'type' => 'nodes',
