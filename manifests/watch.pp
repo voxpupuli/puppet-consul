@@ -16,7 +16,11 @@
 #   Name of an event to watch for.
 #
 # [*handler*]
-#   Full path to the script that will be excuted.
+#   Full path to the script that will be excuted. This parameter is deprecated
+#   in Consul 1.0.0, see https://github.com/hashicorp/consul/issues/3509.
+#
+# [*args*]
+#   Arguments to be `exec`ed for the watch.
 #
 # [*key*]
 #   Watch a specific key.
@@ -44,6 +48,7 @@
 #   Type of data to watch. (Like key, service, services, nodes)
 #
 define consul::watch(
+  $args                          = undef,
   $datacenter                    = undef,
   $ensure                        = present,
   $event_name                    = undef,
@@ -62,6 +67,7 @@ define consul::watch(
 
   $basic_hash = {
     'type'       => $type,
+    'args'       => $args,
     'handler'    => $handler,
     'datacenter' => $datacenter,
     'token'      => $token,
@@ -71,8 +77,12 @@ define consul::watch(
     fail ('Watches are only supported in Consul 0.4.0 and above')
   }
 
-  if (! $handler ) {
-    fail ('All watch conditions must have a handler defined')
+  if (! $handler and ! $args) {
+    fail ('All watch conditions must have a handler or args list defined')
+  }
+
+  if ($handler and $args) {
+    fail ('Watch conditions cannot have both a handler and args list defined')
   }
 
   if (! $type ) {
