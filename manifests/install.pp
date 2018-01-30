@@ -13,12 +13,16 @@ class consul::install {
       $binary_group = 'Administrators'
     }
     default: {
+      if ($consul::manage_group) and ($consul::install_method != 'docker' ) {
+        $binary_group = $consul::group_real
+      } else {
+        $binary_group = 0
+      }
       $binary_name = 'consul'
-      $binary_mode = '0555'
-      $data_dir_mode = '755'
+      $binary_mode = '0750'
+      $data_dir_mode = '0750'
       # 0 instead of root because OS X uses "wheel".
       $binary_owner = 'root'
-      $binary_group = 0
     }
   }
 
