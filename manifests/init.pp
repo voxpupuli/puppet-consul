@@ -208,7 +208,7 @@ class consul (
   }
 
   if ($config_hash_real['addresses'] and $config_hash_real['addresses']['http']) {
-    $http_addr = $config_hash_real['addresses']['http']
+    $http_addr = split($config_hash_real['addresses']['http'], ' ')[0]
   } elsif ($config_hash_real['client_addr']) {
     $http_addr = $config_hash_real['client_addr']
   } else {
