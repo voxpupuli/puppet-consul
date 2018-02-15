@@ -13,12 +13,11 @@ class consul::install {
       $binary_group = 'Administrators'
     }
     default: {
-      $binary_name = 'consul'
-      $binary_mode = '0555'
-      $data_dir_mode = '755'
-      # 0 instead of root because OS X uses "wheel".
-      $binary_owner = 'root'
-      $binary_group = 0
+      $binary_name = $consul::binary_name
+      $binary_mode = $consul::binary_mode
+      $data_dir_mode = $consul::data_dir_mode
+      $binary_owner = $consul::binary_owner
+      $binary_group = $consul::binary_group
     }
   }
 

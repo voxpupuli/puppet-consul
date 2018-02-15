@@ -7,10 +7,16 @@ class consul::params {
   $acls                  = {}
   $archive_path          = ''
   $bin_dir               = '/usr/local/bin'
+  # 0 instead of root because OS X uses "wheel".
+  $binary_group          = 0
+  $binary_mode           = '0555'
+  $binary_name           = 'consul'
+  $binary_owner          = 'root'
   $checks                = {}
   $config_defaults       = {}
   $config_hash           = {}
   $config_mode           = '0664'
+  $data_dir_mode         = '755'
   $docker_image          = 'consul'
   $download_extension    = 'zip'
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
