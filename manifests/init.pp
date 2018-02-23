@@ -16,6 +16,18 @@
 # [*bin_dir*]
 #   Directory to create the symlink to the consul binary in.
 #
+# [*binary_group*]
+#   The group that the file belongs to.
+#
+# [*binary_mode*]
+#   Permissions mode for the file.
+#
+# [*binary_name*]
+#   The binary name file.
+#
+# [*binary_owner*]
+#   The user that owns the file.
+#
 # [*checks*]
 #   Hash of consul::check resources to create.
 #
@@ -141,6 +153,10 @@ class consul (
   $arch                                      = $consul::params::arch,
   $archive_path                              = $consul::params::archive_path,
   $bin_dir                                   = $consul::params::bin_dir,
+  $binary_group                              = $consul::params::binary_group,
+  $binary_mode                               = $consul::params::binary_mode,
+  $binary_name                               = $consul::params::binary_name,
+  $binary_owner                              = $consul::params::binary_owner,
   Hash $checks                               = $consul::params::checks,
   Hash $config_defaults                      = $consul::params::config_defaults,
   $config_dir                                = $consul::params::config_dir,

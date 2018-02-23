@@ -53,6 +53,22 @@ class consul::params {
 
   $os = downcase($::kernel)
 
+  case $::operatingsystem {
+    'windows': {
+      $binary_group = 'Administrators'
+      $binary_mode = '0755'
+      $binary_name = 'consul.exe'
+      $binary_owner = 'Administrator'
+    }
+    default: {
+      # 0 instead of root because OS X uses "wheel".
+      $binary_group = 0
+      $binary_mode = '0555'
+      $binary_name = 'consul'
+      $binary_owner = 'root'
+    }
+  }
+
   if $::operatingsystem == 'Ubuntu' {
     $shell = '/usr/sbin/nologin'
     if versioncmp($::operatingsystemrelease, '8.04') < 1 {
