@@ -30,6 +30,7 @@ class consul::install {
 
       include archive
       file { [
+        $install_prefix,
         $install_path,
         "${install_path}/consul-${consul::version}"]:
         ensure => directory,
