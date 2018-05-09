@@ -8,8 +8,8 @@ describe 'consul class' do
         package { 'zip': ensure => present } ->
         # Don't manage the service as it doesn't work well in docker
         class { 'consul':
-          version        => '1.0.1',
-          manage_service => false,
+          version        => '1.0.5',
+          manage_service => true,
           config_hash    => {
               'datacenter' => 'east-aws',
               'data_dir'   => '/opt/consul',
@@ -34,7 +34,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.0.1} }
+      its(:stdout) { should match %r{Consul v1.0.5} }
     end
 
   end
