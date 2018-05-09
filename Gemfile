@@ -17,7 +17,7 @@ group :test do
   gem "json_pure", '~> 1.8.3'
 
   gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 4.0'
+  gem "puppet", ENV['PUPPET_VERSION'] || '~> 5.0'
   gem "puppet-lint"
 
   gem "rspec"
