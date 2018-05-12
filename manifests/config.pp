@@ -13,6 +13,7 @@
 class consul::config(
   $config_hash,
   $purge = true,
+  $enable_beta_ui = $consul::enable_beta_ui,
 ) {
 
   if ($consul::init_style_real != 'unmanaged') {
