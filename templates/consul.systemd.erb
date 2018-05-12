@@ -3,6 +3,9 @@ Description=Consul Agent
 After=network.target
 
 [Service]
+<% if @enable_beta_ui == true -%>
+Environment=CONSUL_UI_BETA=true
+<% end -%>
 User=<%= scope.lookupvar('consul::user') %>
 Group=<%= scope.lookupvar('consul::group') %>
 ExecStart=<%= scope.lookupvar('consul::bin_dir') %>/consul agent \
