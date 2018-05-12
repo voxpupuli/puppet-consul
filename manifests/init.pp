@@ -136,6 +136,8 @@
 #
 # [*shell*]
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
+# [*enable_beta_ui*]
+#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. You can enable it by setting this variable to true. Defaults to false
 # === Examples
 #
 #  @example
@@ -192,6 +194,7 @@ class consul (
   $version                                   = $consul::params::version,
   Hash $watches                              = $consul::params::watches,
   Optional[String] $shell                    = $consul::params::shell,
+  Boolean $enable_beta_ui                    = false,
 ) inherits consul::params {
 
   # lint:ignore:140chars
