@@ -12,7 +12,7 @@
 #   If provided an array of checks that will be added to this service
 #
 # [*enable_tag_override*]
-#   enableTagOverride support for service. Defaults to False.
+#   enable_tag_override support for service. Defaults to False.
 #
 # [*ensure*]
 #   Define availability of service. Use 'absent' to remove existing services.
@@ -48,6 +48,12 @@ define consul::service(
 
   consul_validate_checks($checks)
 
+  if versioncmp(getvar('::consul_version'), '1.1.0') >= 0 {
+    $override_key = 'enable_tag_override'
+  } else {
+    $override_key = 'enableTagOverride'
+  }
+
   $basic_hash = {
     'id'                => $id,
     'name'              => $service_name,
@@ -56,7 +62,7 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
-    'enableTagOverride' => $enable_tag_override,
+    $override_key       => $enable_tag_override,
   }
 
   $service_hash = {
