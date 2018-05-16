@@ -11,19 +11,20 @@ describe 'consul::service' do
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
-        .with_content(/"enable_tag_override" *: *false/)
+        .with_content(/"enableTagOverride" *: *false/)
     }
   end
-  describe 'with no args ( consul version less than 1.1.0 )' do
-    let(:params) {{}}
-    let(:facts) {{ :consul_version => '1.0.1' }}
+  describe 'with no args ( consul version not less than 1.1.0 )' do
+    let(:pre_condition) {
+      'class { "consul": version => "1.1.0" }'
+    }
 
     it {
       should contain_file("/etc/consul/service_my_service.json") \
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
-        .with_content(/"enableTagOverride" *: *false/)
+        .with_content(/"enable_tag_override" *: *false/)
     }
   end
   describe 'with different ensure' do
@@ -63,7 +64,7 @@ describe 'consul::service' do
         .with_content(/"service" *: *\{/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
-        .with_content(/"enable_tag_override" *: *true/)
+        .with_content(/"enableTagOverride" *: *true/)
     }
   end
   describe 'with service name and address' do

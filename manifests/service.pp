@@ -48,7 +48,7 @@ define consul::service(
 
   consul_validate_checks($checks)
 
-  if versioncmp(getvar('::consul_version'), '1.1.0') >= 0 {
+  if versioncmp($consul::version, '1.1.0') >= 0 {
     $override_key = 'enable_tag_override'
   } else {
     $override_key = 'enableTagOverride'
