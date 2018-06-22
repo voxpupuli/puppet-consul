@@ -29,6 +29,7 @@ describe 'consul class' do
 
     describe service('consul') do
       it { should be_enabled }
+      it { should be_running }
     end
 
     describe command('consul version') do
@@ -65,6 +66,7 @@ describe 'consul class' do
 
     describe service('consul') do
       it { should be_enabled }
+      it { should be_running }
     end
 
     describe command('consul version') do
