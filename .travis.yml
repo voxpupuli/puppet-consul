@@ -33,3 +33,8 @@ matrix:
     env: PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=ubuntu1604-64{hypervisor=docker} CHECK=beaker
     services: docker
     sudo: required
+  - rvm: 2.5.1
+    dist: trusty
+    env: BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=centos7-64{hypervisor=docker} CHECK=beaker
+    services: docker
+    sudo: required
