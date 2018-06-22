@@ -5,10 +5,12 @@ group :development do
   gem "beaker-rspec", ">= 5.1.0"
   gem "beaker-puppet_install_helper"
   gem "beaker-module_install_helper"
+  gem "beaker-hostgenerator"
   gem "pry"
   gem "puppet-blacksmith"
   gem "serverspec"
   gem "vagrant-wrapper"
+  gem "fog-openstack", "0.1.25" if RUBY_VERSION < '2.2.2'
 end
 
 group :test do
@@ -17,7 +19,7 @@ group :test do
   gem "json_pure", '~> 1.8.3'
 
   gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 4.0'
+  gem "puppet", ENV['PUPPET_VERSION'] || '~> 5.0'
   gem "puppet-lint"
 
   gem "rspec"
