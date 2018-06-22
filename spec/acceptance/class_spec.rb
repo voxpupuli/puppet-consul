@@ -11,6 +11,7 @@ describe 'consul class' do
           version        => '1.0.5',
           manage_service => true,
           config_hash    => {
+              'data_dir'   => '/opt/consul',
               'datacenter' => 'east-aws',
               'node_name'  => 'foobar',
               'server'     => true,
