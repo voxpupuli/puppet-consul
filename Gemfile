@@ -10,6 +10,7 @@ group :development do
   gem "puppet-blacksmith"
   gem "serverspec"
   gem "vagrant-wrapper"
+  gem "fog-openstack", "0.1.25" if RUBY_VERSION < '2.2.2'
 end
 
 group :test do
