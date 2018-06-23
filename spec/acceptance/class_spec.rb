@@ -5,7 +5,7 @@ describe 'consul class' do
   context 'default parameters' do
     it 'should work with no errors based on the example' do
       pp = <<-EOS
-        package { 'zip': ensure => present } ->
+        package { 'unzip': ensure => present } ->
         # Don't manage the service as it doesn't work well in docker
         class { 'consul':
           version        => '1.0.5',
@@ -41,7 +41,7 @@ describe 'consul class' do
   context 'default parameters' do
     it 'should work with no errors based on the example' do
       pp = <<-EOS
-        package { 'zip': ensure => present } ->
+        package { 'unzip': ensure => present } ->
         # Don't manage the service as it doesn't work well in docker
         class { 'consul':
           version        => '1.1.0',
