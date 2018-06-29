@@ -3,6 +3,9 @@ Description=Consul Agent
 After=network.target
 
 [Service]
+<% if @allow_binding_to_root_ports == true -%>
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+<% end -%>
 <% if @enable_beta_ui == true -%>
 Environment=CONSUL_UI_BETA=true
 <% end -%>
