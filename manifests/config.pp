@@ -14,6 +14,7 @@ class consul::config(
   $config_hash,
   $purge = true,
   $enable_beta_ui = $consul::enable_beta_ui,
+  $allow_binding_to_root_ports = $consul::allow_binding_to_root_ports,
 ) {
 
   if ($consul::init_style_real != 'unmanaged') {
