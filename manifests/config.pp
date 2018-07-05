@@ -14,7 +14,14 @@ class consul::config(
   $config_hash,
   $purge = true,
   $enable_beta_ui = $consul::enable_beta_ui,
+  Boolean $allow_binding_to_root_ports = $consul::allow_binding_to_root_ports,
+  Boolean $restart_on_change = $consul::restart_on_change,
 ) {
+
+  $notify_service = $restart_on_change ? {
+    true    => Class['consul::run_service'],
+    default => undef,
+  }
 
   if ($consul::init_style_real != 'unmanaged') {
 
@@ -35,8 +42,9 @@ class consul::config(
         }
       }
       'systemd': {
-        ::systemd::unit_file{'consul.service':
+        systemd::unit_file{'consul.service':
           content => template('consul/consul.systemd.erb'),
+          notify  => $notify_service,
         }
       }
       'init','redhat': {
