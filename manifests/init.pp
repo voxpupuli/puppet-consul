@@ -138,6 +138,8 @@
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
 # [*enable_beta_ui*]
 #   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. You can enable it by setting this variable to true. Defaults to false
+# [*allow_binding_to_root_ports*]
+#   Boolean, enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
 # === Examples
 #
 #  @example
@@ -195,6 +197,7 @@ class consul (
   Hash $watches                              = $consul::params::watches,
   Optional[String] $shell                    = $consul::params::shell,
   Boolean $enable_beta_ui                    = false,
+  Boolean $allow_binding_to_root_ports       = false,
 ) inherits consul::params {
 
   # lint:ignore:140chars
