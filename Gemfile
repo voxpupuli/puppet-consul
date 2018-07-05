@@ -7,7 +7,6 @@ group :development do
   gem "beaker-module_install_helper"
   gem "beaker-hostgenerator"
   gem "pry"
-  gem "puppet-blacksmith"
   gem "serverspec"
   gem "vagrant-wrapper"
   gem "fog-openstack", "0.1.25" if RUBY_VERSION < '2.2.2'
@@ -31,4 +30,10 @@ group :test do
   gem "hiera"
   gem "webmock", "~> 2.3.0"
   gem "public_suffix"
+end
+
+group :release do
+  gem 'github_changelog_generator',  :require => false, :git => 'https://github.com/skywinder/github-changelog-generator' if RUBY_VERSION >= '2.2.2'
+  gem 'puppet-blacksmith',           :require => false
+  gem 'voxpupuli-release',           :require => false, :git => 'https://github.com/voxpupuli/voxpupuli-release-gem'
 end
