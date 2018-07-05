@@ -89,7 +89,7 @@ Puppet::Type.newtype(:consul_prepared_query) do
     desc 'ID of prepared query'
   end
 
-  newproperty(:protocol) do
+  newparam(:protocol) do
     desc 'consul protocol'
     newvalues('http', 'https')
     defaultto 'http'
