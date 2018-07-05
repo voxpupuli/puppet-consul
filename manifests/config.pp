@@ -11,9 +11,9 @@
 #   Bool. If set will make puppet remove stale config files.
 #
 class consul::config(
-  $config_hash,
-  $purge = true,
-  $enable_beta_ui = $consul::enable_beta_ui,
+  Hash $config_hash,
+  Boolean $purge = true,
+  Boolean $enable_beta_ui = $consul::enable_beta_ui,
   Boolean $allow_binding_to_root_ports = $consul::allow_binding_to_root_ports,
   Boolean $restart_on_change = $consul::restart_on_change,
 ) {
