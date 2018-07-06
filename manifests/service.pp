@@ -49,14 +49,14 @@ define consul::service(
   consul_validate_checks($checks)
 
   $basic_hash = {
-    'id'                => $id,
-    'name'              => $service_name,
-    'address'           => $address,
-    'port'              => $port,
-    'tags'              => $tags,
-    'checks'            => $checks,
-    'token'             => $token,
-    'enableTagOverride' => $enable_tag_override,
+    'id'                  => $id,
+    'name'                => $service_name,
+    'address'             => $address,
+    'port'                => $port,
+    'tags'                => $tags,
+    'checks'              => $checks,
+    'token'               => $token,
+    'enable_tag_override' => $enable_tag_override,
   }
 
   $service_hash = {
