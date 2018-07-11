@@ -305,6 +305,63 @@ class { '::consul':
 }
 ```
 
+##Telemetry
+The Consul agent collects various runtime metrics about the performance of different libraries and subsystems. These metrics are aggregated on a ten second interval and are retained for one minute.
+
+To view this data, you must send a signal to the Consul process: on Unix, this is USR1 while on Windows it is BREAK. Once Consul receives the signal, it will dump the current telemetry information to the agent's stderr.
+
+This telemetry information can be used for debugging or otherwise getting a better view of what Consul is doing.
+
+##Usage
+```puppet
+class { '::consul':
+  config_hash => {
+    'bootstrap_expect' => 1,
+    'data_dir'         => '/opt/consul',
+    'datacenter'       => 'east-aws',
+    'log_level'        => 'INFO',
+    'node_name'        => 'server',
+    'server'           => true,
+    'telemetry' => {
+       'statsd_address' => 'localhost:9125',
+       'prefix_filter' => [
+           '+consul.client.rpc',
+           '+consul.client.rpc.exceeded',
+           '+consul.acl.cache_hit',
+           '+consul.acl.cache_miss',
+           '+consul.dns.stale_queries',
+           '+consul.raft.state.leader',
+           '+consul.raft.state.candidate',
+           '+consul.raft.apply',
+           '+consul.raft.commitTime',
+           '+consul.raft.leader.dispatchLog',
+           '+consul.raft.replication.appendEntries',
+           '+consul.raft.leader.lastContact',
+           '+consul.rpc.accept_conn',
+           '+consul.catalog.register',
+           '+consul.catalog.deregister',
+           '+consul.kvs.apply',
+           '+consul.leader.barrier',
+           '+consul.leader.reconcile',
+           '+consul.leader.reconcileMember',
+           '+consul.leader.reapTombstones',
+           '+consul.rpc.raft_handoff',
+           '+consul.rpc.request_error',
+           '+consul.rpc.request',
+           '+consul.rpc.query',
+           '+consul.rpc.consistentRead',
+           '+consul.memberlist.msg.suspect',
+           '+consul.serf.member.flap',
+           '+consul.serf.events',
+           '+consul.session_ttl.active',
+           ]
+        }
+    }
+}
+```
+The metrics for the consul system you can look them in the Official Consul Site with all the description for every metric.
+Url: https://www.consul.io/docs/agent/telemetry.html
+
 ## Consul Template
 
 [Consul Template](https://github.com/hashicorp/consul-template) is a piece of
@@ -317,3 +374,5 @@ a module that can do that.
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
+
+
