@@ -31,8 +31,9 @@ Puppet::Type.type(:consul_prepared_query).provide(
   end
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    if @prepared_queries
-      return @prepared_queries
+    @prepared_queries ||= {}
+    if @prepared_queries[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
+      return @prepared_queries[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
     end
 
     # this might be configurable by searching /etc/consul.d
@@ -63,17 +64,18 @@ Puppet::Type.type(:consul_prepared_query).provide(
 
     nprepared_queries = prepared_queries.collect do |prepared_query|
       {
-        :name    => prepared_query["Name"],
-        :id      => prepared_query["ID"],
-        :session => prepared_query["Session"],
-        :token   => prepared_query["Token"],
-        :service => prepared_query["Service"],
-        :dns     => prepared_query["DNS"],
-        :ensure  => :present,
+        :name     => prepared_query["Name"],
+        :id       => prepared_query["ID"],
+        :session  => prepared_query["Session"],
+        :token    => prepared_query["Token"],
+        :service  => prepared_query["Service"],
+        :dns      => prepared_query["DNS"],
+        :protocol => protocol,
+        :ensure   => :present,
       }
     end
 
-    @prepared_queries = nprepared_queries
+    @prepared_queries[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nprepared_queries
     nprepared_queries
   end
 
