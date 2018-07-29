@@ -72,68 +72,26 @@ class consul::params {
 
   if $::operatingsystem == 'Ubuntu' {
     $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '8.04') < 1 {
-      $init_style = 'debian'
-    } elsif versioncmp($::operatingsystemrelease, '15.04') < 0 {
-      $init_style = 'upstart'
-    } else {
-      $init_style = 'systemd'
-    }
   } elsif $::osfamily == 'RedHat' {
     $shell = '/sbin/nologin'
-    case $::operatingsystem {
-      'Fedora': {
-        if versioncmp($::operatingsystemrelease, '12') < 0 {
-          $init_style = 'init'
-        } else {
-          $init_style = 'systemd'
-        }
-      }
-      'Amazon': {
-        if versioncmp($::operatingsystemrelease, '2010') < 0{
-          $init_style = 'systemd'
-        } else {
-          $init_style = 'redhat'
-        }
-      }
-      default: {
-        if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-          $init_style = 'redhat'
-        } else {
-          $init_style  = 'systemd'
-        }
-      }
-    }
   } elsif $::operatingsystem == 'Debian' {
     $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '8.0') < 0 {
-      $init_style = 'debian'
-    } else {
-      $init_style = 'systemd'
-    }
   } elsif $::operatingsystem == 'Archlinux' {
     $shell = '/sbin/nologin'
-    $init_style = 'systemd'
   } elsif $::operatingsystem == 'OpenSuSE' {
     $shell = '/usr/sbin/nologin'
-    $init_style = 'systemd'
   } elsif $::operatingsystem =~ /SLE[SD]/ {
     $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '12.0') < 0 {
-      $init_style = 'sles'
-    } else {
-      $init_style = 'systemd'
-    }
   } elsif $::operatingsystem == 'Darwin' {
     $shell = undef
-    $init_style = 'launchd'
   } elsif $::operatingsystem == 'FreeBSD' {
-    $init_style = 'freebsd'
-    $shell = '/usr/sbin/nologin'
   } elsif $::operatingsystem == 'windows' {
-    $init_style = 'unmanaged'
     $shell = undef
+  }
+
+  if $facts['operatingsystem'] == 'windows' {
+    $init_style = 'unmanaged'
   } else {
-    fail('Cannot determine init_style, unsupported OS')
+    $init_style = $facts['service_provider']
   }
 }
