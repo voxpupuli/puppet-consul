@@ -13,10 +13,6 @@ group :development do
 end
 
 group :test do
-  # Pin for 1.9.3 compatibility for now
-  gem "json", '~> 1.8.3'
-  gem "json_pure", '~> 1.8.3'
-
   gem "rake"
   gem "puppet", ENV['PUPPET_VERSION'] || '~> 5.0'
   gem "puppet-lint"
