@@ -37,16 +37,16 @@
 #   Service meta tags
 #
 define consul::service(
-  $address             = undef,
-  $checks              = [],
-  $enable_tag_override = false,
-  $ensure              = present,
-  $id                  = $title,
-  $port                = undef,
-  $service_name        = $title,
-  $tags                = [],
-  $token               = undef,
-  $meta                = {},
+  $address                   = undef,
+  $checks                    = [],
+  $enable_tag_override       = false,
+  $ensure                    = present,
+  $id                        = $title,
+  $port                      = undef,
+  $service_name              = $title,
+  $tags                      = [],
+  $token                     = undef,
+  Hash[String, String] $meta = {},
 ) {
   include consul
 
