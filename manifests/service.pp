@@ -33,6 +33,9 @@
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# [*meta*]
+#   Service meta tags
+#
 define consul::service(
   $address             = undef,
   $checks              = [],
@@ -43,6 +46,7 @@ define consul::service(
   $service_name        = $title,
   $tags                = [],
   $token               = undef,
+  $meta                = {},
 ) {
   include consul
 
@@ -62,6 +66,7 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
+    'meta'              => $meta,
     $override_key       => $enable_tag_override,
   }
 

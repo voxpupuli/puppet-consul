@@ -9,6 +9,7 @@ describe 'consul::service' do
     it {
       should contain_file("/etc/consul/service_my_service.json") \
         .with_content(/"service" *: *\{/) \
+        .with_content(/"meta" *: *\{\}/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
         .with_content(/"enableTagOverride" *: *false/)
@@ -22,6 +23,7 @@ describe 'consul::service' do
     it {
       should contain_file("/etc/consul/service_my_service.json") \
         .with_content(/"service" *: *\{/) \
+        .with_content(/"meta" *: *\{\}/) \
         .with_content(/"id" *: *"my_service"/) \
         .with_content(/"name" *: *"my_service"/) \
         .with_content(/"enable_tag_override" *: *false/)
@@ -254,6 +256,19 @@ describe 'consul::service' do
     it {
       should contain_file("/etc/consul/service_my_service.json") \
         .with_content(/"token" *: *"too-cool-for-this-service"/)
+    }
+  end
+  describe 'with meta' do
+    let(:params) {{
+      'meta' => {
+        'foo' => 'bar',
+      },
+    }}
+
+    it {
+      should contain_file("/etc/consul/service_my_service.json") \
+        .with_content(/"meta" *: *\{/) \
+        .with_content(/"foo" *: *"bar"/)
     }
   end
 end
