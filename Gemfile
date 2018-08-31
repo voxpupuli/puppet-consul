@@ -29,6 +29,7 @@ group :test do
   gem "webmock", ">= 2.3.0"
   gem "public_suffix"
   gem 'rspec-puppet-facts'
+  gem "parallel_tests"
 end
 
 group :release do
