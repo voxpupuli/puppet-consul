@@ -28,6 +28,7 @@ group :test do
   gem "hiera"
   gem "webmock", ">= 2.3.0"
   gem "public_suffix"
+  gem 'rspec-puppet-facts'
 end
 
 group :release do
