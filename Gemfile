@@ -6,6 +6,8 @@ group :development do
   gem "beaker-puppet_install_helper"
   gem "beaker-module_install_helper"
   gem "beaker-hostgenerator"
+  gem "beaker-docker"
+  gem "beaker-puppet"
   gem "pry"
   gem "serverspec"
   gem "vagrant-wrapper"
