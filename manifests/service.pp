@@ -43,6 +43,7 @@ define consul::service(
   $service_name        = $title,
   $tags                = [],
   $token               = undef,
+  $meta                = {},
 ) {
   include consul
 
@@ -62,6 +63,8 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
+    'meta'              => $meta,
+    
     $override_key       => $enable_tag_override,
   }
 
