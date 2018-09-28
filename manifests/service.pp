@@ -64,7 +64,7 @@ define consul::service(
     'checks'            => $checks,
     'token'             => $token,
     'meta'              => $meta,
-    
+
     $override_key       => $enable_tag_override,
   }
 
