@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Puppet::Type.type(:consul_prepared_query) do
 
   it 'should fail if no name is provided' do
