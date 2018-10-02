@@ -6,6 +6,8 @@ group :development do
   gem "beaker-puppet_install_helper"
   gem "beaker-module_install_helper"
   gem "beaker-hostgenerator"
+  gem "beaker-docker"
+  gem "beaker-puppet"
   gem "pry"
   gem "serverspec"
   gem "vagrant-wrapper"
@@ -13,10 +15,6 @@ group :development do
 end
 
 group :test do
-  # Pin for 1.9.3 compatibility for now
-  gem "json", '~> 1.8.3'
-  gem "json_pure", '~> 1.8.3'
-
   gem "rake"
   gem "puppet", ENV['PUPPET_VERSION'] || '~> 5.0'
   gem "puppet-lint"
@@ -28,8 +26,10 @@ group :test do
   gem "puppet-syntax"
   gem "puppetlabs_spec_helper"
   gem "hiera"
-  gem "webmock", "~> 2.3.0"
+  gem "webmock", ">= 2.3.0"
   gem "public_suffix"
+  gem 'rspec-puppet-facts'
+  gem "parallel_tests"
 end
 
 group :release do

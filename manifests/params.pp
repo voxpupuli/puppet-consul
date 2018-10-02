@@ -36,25 +36,25 @@ class consul::params {
   $version               = '0.7.4'
   $watches               = {}
 
-  case $::architecture {
+  case $facts['architecture'] {
     'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
     'i386':                   { $arch = '386'   }
     'aarch64':                { $arch = 'arm64' }
     /^arm.*/:                 { $arch = 'arm'   }
     default:                  {
-      fail("Unsupported kernel architecture: ${::architecture}")
+      fail("Unsupported kernel architecture: ${facts['architecture']}")
     }
   }
 
-  $config_dir = $::osfamily ? {
+  $config_dir = $facts['os']['family'] ? {
     'FreeBSD' => '/usr/local/etc/consul.d',
     'windows' => 'c:/Consul/config',
     default   => '/etc/consul'
   }
 
-  $os = downcase($::kernel)
+  $os = downcase($facts['kernel'])
 
-  case $::operatingsystem {
+  case $facts['os']['name'] {
     'windows': {
       $binary_group = 'Administrators'
       $binary_mode = '0755'
@@ -70,70 +70,36 @@ class consul::params {
     }
   }
 
-  if $::operatingsystem == 'Ubuntu' {
-    $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '8.04') < 1 {
-      $init_style = 'debian'
-    } elsif versioncmp($::operatingsystemrelease, '15.04') < 0 {
-      $init_style = 'upstart'
-    } else {
-      $init_style = 'systemd'
+  case $facts['os']['name'] {
+    'Ubuntu': {
+      $shell = '/usr/sbin/nologin'
     }
-  } elsif $::osfamily == 'RedHat' {
-    $shell = '/sbin/nologin'
-    case $::operatingsystem {
-      'Fedora': {
-        if versioncmp($::operatingsystemrelease, '12') < 0 {
-          $init_style = 'init'
-        } else {
-          $init_style = 'systemd'
-        }
-      }
-      'Amazon': {
-        if versioncmp($::operatingsystemrelease, '2010') < 0{
-          $init_style = 'systemd'
-        } else {
-          $init_style = 'redhat'
-        }
-      }
-      default: {
-        if versioncmp($::operatingsystemrelease, '7.0') < 0 {
-          $init_style = 'redhat'
-        } else {
-          $init_style  = 'systemd'
-        }
-      }
+    'RedHat': {
+      $shell = '/sbin/nologin'
     }
-  } elsif $::operatingsystem == 'Debian' {
-    $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '8.0') < 0 {
-      $init_style = 'debian'
-    } else {
-      $init_style = 'systemd'
+    'Debian': {
+      $shell = '/usr/sbin/nologin'
     }
-  } elsif $::operatingsystem == 'Archlinux' {
-    $shell = '/sbin/nologin'
-    $init_style = 'systemd'
-  } elsif $::operatingsystem == 'OpenSuSE' {
-    $shell = '/usr/sbin/nologin'
-    $init_style = 'systemd'
-  } elsif $::operatingsystem =~ /SLE[SD]/ {
-    $shell = '/usr/sbin/nologin'
-    if versioncmp($::operatingsystemrelease, '12.0') < 0 {
-      $init_style = 'sles'
-    } else {
-      $init_style = 'systemd'
+    'Archlinux': {
+      $shell = '/sbin/nologin'
     }
-  } elsif $::operatingsystem == 'Darwin' {
-    $shell = undef
-    $init_style = 'launchd'
-  } elsif $::operatingsystem == 'FreeBSD' {
-    $init_style = 'freebsd'
-    $shell = '/usr/sbin/nologin'
-  } elsif $::operatingsystem == 'windows' {
+    'OpenSuSE': {
+      $shell = '/usr/sbin/nologin'
+    }
+    /SLE[SD]/: {
+      $shell = '/usr/sbin/nologin'
+    }
+    default: {
+      $shell = undef
+    }
+  }
+
+  if $facts['operatingsystem'] == 'windows' {
     $init_style = 'unmanaged'
-    $shell = undef
   } else {
-    fail('Cannot determine init_style, unsupported OS')
+    $init_style = $facts['service_provider'] ? {
+      undef   => 'systemd',
+      default => $facts['service_provider']
+    }
   }
 }
