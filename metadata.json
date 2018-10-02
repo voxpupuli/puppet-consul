@@ -46,33 +46,33 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "5.0",
-        "6.0",
-        "7.0"
+        "5",
+        "6",
+        "7"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "5.0",
-        "6.0",
-        "7.0"
+        "5",
+        "6",
+        "7"
       ]
     },
     {
-      "operatingsystem": "Scientific Linux",
+      "operatingsystem": "Scientific",
       "operatingsystemrelease": [
-        "5.0",
-        "6.0",
-        "7.0"
+        "5",
+        "6",
+        "7"
       ]
     },
     {
-      "operatingsystem": "Oracle Linux",
+      "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "5.0",
-        "6.0",
-        "7.0"
+        "5",
+        "6",
+        "7"
       ]
     },
     {

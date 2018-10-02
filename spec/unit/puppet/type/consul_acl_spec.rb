@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Puppet::Type.type(:consul_acl) do
 
   samplerules = {
