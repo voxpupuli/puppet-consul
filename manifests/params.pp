@@ -33,7 +33,7 @@ class consul::params {
   $service_ensure        = 'running'
   $services              = {}
   $user                  = 'consul'
-  $version               = '0.7.4'
+  $version               = '1.2.3'
   $watches               = {}
 
   case $facts['architecture'] {
