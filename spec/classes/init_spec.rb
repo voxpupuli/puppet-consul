@@ -94,9 +94,9 @@ describe 'consul' do
       end
 
       context "When installing via URL by default" do
-        it { should contain_archive('/opt/consul/archives/consul-0.7.4.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip') }
+        it { should contain_archive('/opt/consul/archives/consul-1.2.3.zip').with(:source => 'https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip') }
         it { should contain_file('/opt/consul/archives').with(:ensure => 'directory') }
-        it { should contain_file('/opt/consul/archives/consul-0.7.4').with(:ensure => 'directory') }
+        it { should contain_file('/opt/consul/archives/consul-1.2.3').with(:ensure => 'directory') }
         it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 
@@ -104,19 +104,19 @@ describe 'consul' do
         let(:params) {{
           :archive_path   => '/usr/share/puppet-archive',
         }}
-        it { should contain_archive('/usr/share/puppet-archive/consul-0.7.4.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip') }
+        it { should contain_archive('/usr/share/puppet-archive/consul-1.2.3.zip').with(:source => 'https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip') }
         it { should contain_file('/usr/share/puppet-archive').with(:ensure => 'directory') }
-        it { should contain_file('/usr/share/puppet-archive/consul-0.7.4').with(:ensure => 'directory') }
+        it { should contain_file('/usr/share/puppet-archive/consul-1.2.3').with(:ensure => 'directory') }
         it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 
       context "When installing by archive via URL and current version is already installed" do
         let(:facts) do
           facts.merge({
-            :consul_version => '0.7.4'
+            :consul_version => '1.2.3'
           })
         end
-        it { should contain_archive('/opt/consul/archives/consul-0.7.4.zip').with(:source => 'https://releases.hashicorp.com/consul/0.7.4/consul_0.7.4_linux_amd64.zip') }
+        it { should contain_archive('/opt/consul/archives/consul-1.2.3.zip').with(:source => 'https://releases.hashicorp.com/consul/1.2.3/consul_1.2.3_linux_amd64.zip') }
         it { should contain_file('/usr/local/bin/consul') }
         it { should_not contain_notify(['Class[consul::run_service]']) }
       end
@@ -133,7 +133,7 @@ describe 'consul' do
         let(:params) {{
           :download_url   => 'http://myurl',
         }}
-        it { should contain_archive('/opt/consul/archives/consul-0.7.4.zip').with(:source => 'http://myurl') }
+        it { should contain_archive('/opt/consul/archives/consul-1.2.3.zip').with(:source => 'http://myurl') }
         it { should contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 

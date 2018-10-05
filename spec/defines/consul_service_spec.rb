@@ -16,7 +16,7 @@ describe 'consul::service' do
             .with_content(/"service" *: *\{/) \
             .with_content(/"id" *: *"my_service"/) \
             .with_content(/"name" *: *"my_service"/) \
-            .with_content(/"enableTagOverride" *: *false/)
+            .with_content(/"enable_tag_override" *: *false/)
         }
       end
       describe 'with no args ( consul version not less than 1.1.0 )' do
@@ -69,7 +69,7 @@ describe 'consul::service' do
             .with_content(/"service" *: *\{/) \
             .with_content(/"id" *: *"my_service"/) \
             .with_content(/"name" *: *"my_service"/) \
-            .with_content(/"enableTagOverride" *: *true/)
+            .with_content(/"enable_tag_override" *: *true/)
         }
       end
       describe 'with service name and address' do
