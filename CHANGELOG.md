@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.0.0](https://github.com/solarkennedy/puppet-consul/tree/4.0.0) (2018-10-04)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.4.2...4.0.0)
+
+**Breaking changes:**
+
+- bump default consul version from 0.7.4 to 1.2.3 [\#443](https://github.com/solarkennedy/puppet-consul/pull/443) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v3.4.2](https://github.com/solarkennedy/puppet-consul/tree/v3.4.2) (2018-10-03)
 
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.4.1...v3.4.2)
