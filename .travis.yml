@@ -17,6 +17,9 @@ matrix:
     env: PUPPET_VERSION="~> 5.0" CHECK=test
     bundler_args: --without development
   - rvm: 2.5.1
+    env: PUPPET_VERSION="~> 6.0" CHECK=test
+    bundler_args: --without development
+  - rvm: 2.5.1
     dist: trusty
     env: BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=debian8-64{hypervisor=docker} CHECK=beaker
     services: docker
