@@ -1,51 +1,59 @@
 require 'spec_helper'
 
-RSpec.shared_examples 'handling_simple_types' do |pretty|
-  it 'handles nil' do
-    expect(subject.call([ {'key' => nil }],pretty)).to eql('{"key":null}')
-  end
-  it 'handles :undef' do
-    expect(subject.call([ {'key' => :undef }],pretty)).to eql('{"key":null}')
-  end
-  it 'handles true' do
-    expect(subject.call([{'key' => true }],pretty)).to eql('{"key":true}')
-  end
-  it 'handles false' do
-    expect(subject.call([{'key' => false }],pretty)).to eql('{"key":false}')
-  end
-  it 'handles positive integer' do
-    expect(subject.call([{'key' => 1 }],pretty)).to eql('{"key":1}')
-  end
-  it 'handles negative integer' do
-    expect(subject.call([{'key' => -1 }],pretty)).to eql('{"key":-1}')
-  end
-  it 'handles positive float' do
-    expect(subject.call([{'key' => 1.1 }],pretty)).to eql('{"key":1.1}')
-  end
-  it 'handles negative float' do
-    expect(subject.call([{'key' => -1.1 }],pretty)).to eql('{"key":-1.1}')
-  end
-  it 'handles integer in a string' do
-    expect(subject.call([{'key' => '1' }],pretty)).to eql('{"key":1}')
-  end
-  it 'handles zero in a string' do
-    expect(subject.call([{'key' => '0' }],pretty)).to eql('{"key":0}')
-  end
-  it 'handles integers with a leading zero in a string' do
-    expect(subject.call([{'key' => '0640' }],pretty)).to eql('{"key":"0640"}')
-  end
-  it 'handles negative integer in a string' do
-    expect(subject.call([{'key' => '-1' }],pretty)).to eql('{"key":-1}')
-  end
-  it 'handles simple string' do
-    expect(subject.call([{'key' => 'aString' }],pretty)).to eql("{\"key\":\"aString\"}")
+def deprettyfy(string, leave_pretty)
+  if leave_pretty
+    return string
+  else
+    return string.gsub(/[[:space:]]/, '')
   end
 end
-describe 'consul_sorted_json', :type => :puppet_function do
+
+RSpec.shared_examples 'handling_simple_types' do |pretty|
+  it 'handles nil' do
+    is_expected.to run.with_params({'key' => nil },pretty).and_return(deprettyfy("{\n    \"key\": null\n}\n",pretty))
+  end
+  it 'handles :undef' do
+    is_expected.to run.with_params({'key' => :undef },pretty).and_return(deprettyfy("{\n    \"key\": null\n}\n",pretty))
+  end
+  it 'handles true' do
+    is_expected.to run.with_params({'key' => true },pretty).and_return(deprettyfy("{\n    \"key\": true\n}\n",pretty))
+  end
+  it 'handles false' do
+    is_expected.to run.with_params({'key' => false },pretty).and_return(deprettyfy("{\n    \"key\": false\n}\n",pretty))
+  end
+  it 'handles positive integer' do
+    is_expected.to run.with_params({'key' => 1 },pretty).and_return(deprettyfy("{\n    \"key\": 1\n}\n",pretty))
+  end
+  it 'handles negative integer' do
+    is_expected.to run.with_params({'key' => -1 },pretty).and_return(deprettyfy("{\n    \"key\": -1\n}\n",pretty))
+  end
+  it 'handles positive float' do
+    is_expected.to run.with_params({'key' => 1.1 },pretty).and_return(deprettyfy("{\n    \"key\": 1.1\n}\n",pretty))
+  end
+  it 'handles negative float' do
+    is_expected.to run.with_params({'key' => -1.1 },pretty).and_return(deprettyfy("{\n    \"key\": -1.1\n}\n",pretty))
+  end
+  it 'handles integer in a string' do
+    is_expected.to run.with_params({'key' => '1' },pretty).and_return(deprettyfy("{\n    \"key\": 1\n}\n",pretty))
+  end
+  it 'handles zero in a string' do
+    is_expected.to run.with_params({'key' => '0' },pretty).and_return(deprettyfy("{\n    \"key\": 0\n}\n",pretty))
+  end
+  it 'handles integers with a leading zero in a string' do
+    is_expected.to run.with_params({'key' => '0640' },pretty).and_return(deprettyfy("{\n    \"key\": \"0640\"\n}\n",pretty))
+  end
+  it 'handles negative integer in a string' do
+    is_expected.to run.with_params({'key' => '-1' },pretty).and_return(deprettyfy("{\n    \"key\": -1\n}\n",pretty))
+  end
+  it 'handles simple string' do
+    is_expected.to run.with_params({'key' => 'aString' },pretty).and_return(deprettyfy("{\n    \"key\": \"aString\"\n}\n",pretty))
+  end
+end
+describe 'consul::sorted_json', :type => :puppet_function do
 
   let(:test_hash){ { 'z' => 3, 'a' => '1', 'p' => '2', 's' => '-7' } }
   before do
-    @json = subject.call([test_hash, true])
+    @json = subject.execute(test_hash, true)
   end
   it "sorts keys" do
     expect( @json.index('a') ).to be < @json.index('p')
@@ -58,12 +66,12 @@ describe 'consul_sorted_json', :type => :puppet_function do
   end
 
   it "prints ugly json" do
-    json = subject.call([test_hash]) # pretty=false by default
+    json = subject.execute(test_hash) # pretty=false by default
     expect(json.split("\n").size).to eql(1)
   end
 
   it "validate ugly json" do
-    json = subject.call([test_hash]) # pretty=false by default
+    json = subject.execute(test_hash) # pretty=false by default
     expect(json).to match("{\"a\":1,\"p\":2,\"s\":-7,\"z\":3}")
   end
 
@@ -75,7 +83,7 @@ describe 'consul_sorted_json', :type => :puppet_function do
         'undef' => :undef
       }
     }
-    json = subject.call([nested_undef_hash])
+    json = subject.execute(nested_undef_hash)
     expect(json).to match("{\"key\":\"value\",\"nested_undef\":{\"undef\":null},\"undef\":null}")
   end
 
@@ -85,7 +93,7 @@ describe 'consul_sorted_json', :type => :puppet_function do
                               'a' => {'z' => '3', 'x' => '1', 'y' => '2'},
                               'p' => [ '9','8','7'] } }
     before do
-      @json = subject.call([nested_test_hash, true])
+      @json = subject.execute(nested_test_hash, true)
     end
 
     it "sorts nested hashes" do
