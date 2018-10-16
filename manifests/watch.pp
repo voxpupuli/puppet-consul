@@ -145,7 +145,7 @@ define consul::watch(
     owner   => $consul::user_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
-    content => consul_sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    content => consul::sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
   } ~> Class['consul::reload_service']
 
 }
