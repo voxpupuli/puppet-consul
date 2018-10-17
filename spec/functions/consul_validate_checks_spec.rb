@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'consul_validate_checks' do
+describe 'consul::validate_checks' do
 
   describe 'validate script and http' do
     it {should run.with_params([
