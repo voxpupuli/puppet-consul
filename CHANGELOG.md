@@ -1,8 +1,31 @@
 # Changelog
 
-## [4.0.0](https://github.com/solarkennedy/puppet-consul/tree/4.0.0) (2018-10-04)
+All notable changes to this project will be documented in this file.
+Each new release typically also includes the latest modulesync defaults.
+These should not affect the functionality of the module.
 
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.4.2...4.0.0)
+## [v5.0.0](https://github.com/solarkennedy/puppet-consul/tree/v5.0.0) (2018-10-30)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v4.0.0...v5.0.0)
+
+**Breaking changes:**
+
+- Puppet 6 support [\#444](https://github.com/solarkennedy/puppet-consul/pull/444) ([l-lotz](https://github.com/l-lotz))
+
+**Fixed bugs:**
+
+- undefined method `validate\_checks` on puppet 5.5.7/6.0.3 [\#448](https://github.com/solarkennedy/puppet-consul/issues/448)
+- Wrong init provider on Ubuntu 14.04 [\#438](https://github.com/solarkennedy/puppet-consul/issues/438)
+- Change "enableTagOverride" to "enable\_tag\_override" in version 1.0.0 and … [\#447](https://github.com/solarkennedy/puppet-consul/pull/447) ([wenzhengjiang](https://github.com/wenzhengjiang))
+
+**Closed issues:**
+
+- Version 4.0.0 is missing in git [\#445](https://github.com/solarkennedy/puppet-consul/issues/445)
+- Wrong dependencies in Puppet Forge [\#442](https://github.com/solarkennedy/puppet-consul/issues/442)
+
+## [v4.0.0](https://github.com/solarkennedy/puppet-consul/tree/v4.0.0) (2018-10-05)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v3.4.2...v4.0.0)
 
 **Breaking changes:**
 
