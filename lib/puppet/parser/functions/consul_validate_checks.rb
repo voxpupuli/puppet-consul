@@ -5,28 +5,28 @@ def validate_checks(obj)
         validate_checks(c)
       end
     when Hash
-        if ( (obj.key?("http") || obj.key?("script") || obj.key?("tcp")) && (! obj.key?("interval")) )
-          raise Puppet::ParseError.new('interval must be defined for tcp, http, and script checks')
+        if ( (obj.key?("http") || obj.key?("args") || obj.key?("tcp")) && (! obj.key?("interval")) )
+          raise Puppet::ParseError.new('interval must be defined for tcp, http, and args checks')
         end
 
         if obj.key?("ttl")
-          if (obj.key?("http") || obj.key?("script") || obj.key?("tcp") || obj.key?("interval"))
-            raise Puppet::ParseError.new('script, http, tcp, and interval must not be defined for ttl checks')
+          if (obj.key?("http") || obj.key?("args") || obj.key?("tcp") || obj.key?("interval"))
+            raise Puppet::ParseError.new('args, http, tcp, and interval must not be defined for ttl checks')
           end
         elsif obj.key?("http")
-          if (obj.key?("script") || obj.key?("tcp"))
-            raise Puppet::ParseError.new('script and tcp must not be defined for http checks')
+          if (obj.key?("args") || obj.key?("tcp"))
+            raise Puppet::ParseError.new('args and tcp must not be defined for http checks')
           end
         elsif obj.key?("tcp")
-          if (obj.key?("http") || obj.key?("script"))
-            raise Puppet::ParseError.new('script and http must not be defined for tcp checks')
+          if (obj.key?("http") || obj.key?("args"))
+            raise Puppet::ParseError.new('args and http must not be defined for tcp checks')
           end
-        elsif obj.key?("script")
+        elsif obj.key?("args")
           if (obj.key?("http") || obj.key?("tcp"))
-            raise Puppet::ParseError.new('http and tcp must not be defined for script checks')
+            raise Puppet::ParseError.new('http and tcp must not be defined for args checks')
           end
         else
-          raise Puppet::ParseError.new('One of ttl, script, tcp, or http must be defined.')
+          raise Puppet::ParseError.new('One of ttl, args, tcp, or http must be defined.')
         end
     else
       raise Puppet::ParseError.new("Unable to handle object of type <%s>" % obj.class.to_s)
