@@ -105,6 +105,7 @@ class consul::config(
     group   => $consul::group_real,
     purge   => $purge,
     recurse => $purge,
+    notify  => Class['consul::reload_service'],
   }
   -> file { 'consul config.json':
     ensure  => present,
@@ -114,6 +115,7 @@ class consul::config(
     mode    => $::consul::config_mode,
     content => consul::sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
     require => File[$::consul::config_dir],
+    notify  => $notify_service,
   }
 
 }

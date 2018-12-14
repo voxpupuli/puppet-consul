@@ -263,7 +263,6 @@ class consul (
   -> class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
-    notify      => $notify_service,
   }
   -> class { 'consul::run_service': }
   -> class { 'consul::reload_service': }

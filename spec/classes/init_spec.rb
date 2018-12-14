@@ -55,10 +55,6 @@ describe 'consul' do
         it { should contain_class('consul::config').with(purge: false) }
       end
 
-      context 'consul::config should notify consul::run_service' do
-        it { should contain_class('consul::config').that_notifies(['Class[consul::run_service]']) }
-      end
-
       context 'consul::config should not notify consul::run_service on config change' do
         let(:params) {{
           :restart_on_change => false
