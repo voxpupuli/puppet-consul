@@ -17,7 +17,7 @@ class consul::windows_service {
   $app_dir = regsubst($consul::bin_dir, '\/', '\\', 'G')
   $app_exec = "${app_dir}\\consul.exe"
   $agent_args = regsubst($consul::config_dir, '\/', '\\', 'G')
-  $app_args = "agent -config-dir=${agent_args}"
+  $app_args = "agent -config-dir='${agent_args}' ${consul::extra_options}"
   $app_log_path = "${app_dir}\\logs"
   $app_log_file = 'consul.log'
   $app_log = "${app_log_path}//${app_log_file}"
@@ -45,7 +45,7 @@ class consul::windows_service {
   }
   -> exec { 'consul_service_set_parameters':
     cwd         => $consul::bin_dir,
-    command     => "${consul::bin_dir}/set_service_parameters.ps1",
+    command     => "& '${consul::bin_dir}/set_service_parameters.ps1'",
     refreshonly => true,
     logoutput   => true,
     provider    => 'powershell',
