@@ -32,6 +32,7 @@ class consul::params {
   $service_enable        = true
   $service_ensure        = 'running'
   $services              = {}
+  $service_config_hash   = {}
   $user                  = 'consul'
   $version               = '1.2.3'
   $watches               = {}
