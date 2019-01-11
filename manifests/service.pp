@@ -65,7 +65,7 @@ define consul::service(
   $id                  = $title,
   $port                = undef,
   $service_name        = $title,
-  $service_config_hash = [],
+  Hash $service_config_hash = {},
   $tags                = [],
   $token               = undef,
 ) {
