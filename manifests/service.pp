@@ -58,17 +58,18 @@
 #  }
 #
 define consul::service(
-  $address             = undef,
-  $checks              = [],
-  $enable_tag_override = false,
-  $ensure              = present,
-  $id                  = $title,
-  $port                = undef,
-  $service_name        = $title,
+  $address                  = undef,
+  $checks                   = [],
+  $enable_tag_override      = false,
+  $ensure                   = present,
+  $id                       = $title,
+  $port                     = undef,
+  $service_name             = $title,
   Hash $service_config_hash = {},
-  $tags                = [],
-  $token               = undef,
+  $tags                     = [],
+  $token                    = undef,
 ) {
+
   include consul
 
   consul::validate_checks($checks)
