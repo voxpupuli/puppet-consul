@@ -27,23 +27,49 @@
 # [*service_name*]
 #   Name of the service. Defaults to title.
 #
+# [*service_config_hash*]
+#   Use this to populate the basic service params for each of the services
+#
 # [*tags*]
 #   Array of strings.
 #
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# === Examples
+# @example
+#   ::consul::service { 'my_db':
+#    port                => 3306,
+#    tags                => ['db','mysql'],
+#    address             => '1.2.3.4',
+#    token               => 'xxxxxxxxxx',
+#    service_config_hash =>  {
+#      'connect' => {
+#        'sidecar_service' => {},
+#      },
+#    },
+#    checks              => [
+#      {
+#        name     => 'MySQL Port',
+#        tcp      => 'localhost:3306',
+#        interval => '10s',
+#      },
+#    ],
+#  }
+#
 define consul::service(
-  $address             = undef,
-  $checks              = [],
-  $enable_tag_override = false,
-  $ensure              = present,
-  $id                  = $title,
-  $port                = undef,
-  $service_name        = $title,
-  $tags                = [],
-  $token               = undef,
+  $address                  = undef,
+  $checks                   = [],
+  $enable_tag_override      = false,
+  $ensure                   = present,
+  $id                       = $title,
+  $port                     = undef,
+  $service_name             = $title,
+  Hash $service_config_hash = {},
+  $tags                     = [],
+  $token                    = undef,
 ) {
+
   include consul
 
   consul::validate_checks($checks)
@@ -54,7 +80,7 @@ define consul::service(
     $override_key = 'enableTagOverride'
   }
 
-  $basic_hash = {
+  $default_config_hash = {
     'id'                => $id,
     'name'              => $service_name,
     'address'           => $address,
@@ -64,6 +90,8 @@ define consul::service(
     'token'             => $token,
     $override_key       => $enable_tag_override,
   }
+
+  $basic_hash = $default_config_hash + $service_config_hash
 
   $service_hash = {
     service => delete_undef_values($basic_hash),
