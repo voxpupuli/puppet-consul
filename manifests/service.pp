@@ -97,8 +97,8 @@ define consul::service(
     service => delete_undef_values($basic_hash),
   }
 
-  $escaped_id = regsubst($id,'\/','_','G')
-  file { "${consul::config_dir}/service_${escaped_id}.json":
+  $escaped_name = regsubst($service_name,'\/','_','G')
+  file { "${consul::config_dir}/service_${escaped_name}.json":
     ensure  => $ensure,
     owner   => $consul::user_real,
     group   => $consul::group_real,
