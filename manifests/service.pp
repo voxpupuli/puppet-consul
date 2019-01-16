@@ -70,7 +70,7 @@ define consul::service(
   $token                    = undef,
 ) {
 
-  include consul
+  include ::consul
 
   consul::validate_checks($checks)
 

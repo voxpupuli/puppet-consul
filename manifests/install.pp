@@ -28,14 +28,14 @@ class consul::install {
         $do_notify_service = undef
       }
 
-      include archive
+      include ::archive
       file { [
-        $install_path,
+          $install_path,
         "${install_path}/consul-${consul::version}"]:
-        ensure => directory,
-        owner  => $consul::binary_owner,
-        group  => $consul::binary_group,
-        mode   => $consul::binary_mode,
+          ensure => directory,
+          owner  => $consul::binary_owner,
+          group  => $consul::binary_group,
+          mode   => $consul::binary_mode,
       }
       -> archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
@@ -59,7 +59,7 @@ class consul::install {
     'package': {
       package { $consul::package_name:
         ensure => $consul::package_ensure,
-        notify => $consul::notify_service
+        notify => $consul::notify_service,
       }
 
       if $consul::manage_user {
