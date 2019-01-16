@@ -136,10 +136,17 @@
 #
 # [*shell*]
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
+#
 # [*enable_beta_ui*]
-#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. You can enable it by setting this variable to true. Defaults to false
+#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. 
+#   You can enable it by setting this variable to true. Defaults to false
+#
 # [*allow_binding_to_root_ports*]
 #   Boolean, enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
+#
+# [*log_file*]
+#   String, where should the log file be located
+#
 # === Examples
 #
 #  @example
@@ -259,13 +266,13 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { 'consul::install': }
-  -> class { 'consul::config':
+  -> class { '::consul::install': }
+  -> class { '::consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
     notify      => $notify_service,
   }
-  -> class { 'consul::run_service': }
-  -> class { 'consul::reload_service': }
+  -> class { '::consul::run_service': }
+  -> class { '::consul::reload_service': }
   -> anchor {'consul_last': }
 }
