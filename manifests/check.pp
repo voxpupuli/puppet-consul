@@ -65,7 +65,7 @@ define consul::check(
   $token      = undef,
   $ttl        = undef,
 ) {
-  include consul
+  include ::consul
 
   $basic_hash = {
     'id'         => $id,
@@ -84,7 +84,7 @@ define consul::check(
   }
 
   $check_hash = {
-    check => delete_undef_values($basic_hash)
+    check => delete_undef_values($basic_hash),
   }
 
   consul::validate_checks($check_hash[check])

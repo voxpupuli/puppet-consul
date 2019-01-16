@@ -10,6 +10,15 @@
 # [*purge*]
 #   Bool. If set will make puppet remove stale config files.
 #
+# [*enable_beta_ui*]
+#   Bool. Should the UI be enabled
+#
+# [*allow_binding_to_root_ports*]
+#   Bool. Should binding to specified ports be allowed
+#
+# [*restart_on_change*]
+#   Bool. Should the service be restarted on changes
+#
 class consul::config(
   Hash $config_hash,
   Boolean $purge = true,
@@ -52,7 +61,7 @@ class consul::config(
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
-          content => template('consul/consul.init.erb')
+          content => template('consul/consul.init.erb'),
         }
       }
       'debian': {
@@ -60,7 +69,7 @@ class consul::config(
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
-          content => template('consul/consul.debian.erb')
+          content => template('consul/consul.debian.erb'),
         }
       }
       'sles': {
@@ -68,7 +77,7 @@ class consul::config(
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
-          content => template('consul/consul.sles.erb')
+          content => template('consul/consul.sles.erb'),
         }
       }
       'launchd': {
@@ -76,7 +85,7 @@ class consul::config(
           mode    => '0644',
           owner   => 'root',
           group   => 'wheel',
-          content => template('consul/consul.launchd.erb')
+          content => template('consul/consul.launchd.erb'),
         }
       }
       'freebsd': {
@@ -84,13 +93,13 @@ class consul::config(
           mode    => '0444',
           owner   => 'root',
           group   => 'wheel',
-          content => template('consul/consul.freebsd-rcconf.erb')
+          content => template('consul/consul.freebsd-rcconf.erb'),
         }
         file { '/usr/local/etc/rc.d/consul':
           mode    => '0555',
           owner   => 'root',
           group   => 'wheel',
-          content => template('consul/consul.freebsd.erb')
+          content => template('consul/consul.freebsd.erb'),
         }
       }
       default: {
@@ -109,11 +118,11 @@ class consul::config(
   -> file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
-    owner   => $::consul::user_real,
-    group   => $::consul::group_real,
-    mode    => $::consul::config_mode,
-    content => consul::sorted_json($config_hash, $::consul::pretty_config, $::consul::pretty_config_indent),
-    require => File[$::consul::config_dir],
+    owner   => $consul::user_real,
+    group   => $consul::group_real,
+    mode    => $consul::config_mode,
+    content => consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    require => File[$consul::config_dir],
   }
 
 }
