@@ -17,7 +17,7 @@ class consul::run_service {
 
   if $consul::manage_service == true and $consul::install_method != 'docker' {
     if $::operatingsystem == 'windows' {
-      class { 'consul::windows_service':
+      class { '::consul::windows_service':
         before => Service['consul'],
       }
     }
@@ -46,16 +46,16 @@ class consul::run_service {
     docker::run { 'consul':
       image   => "${consul::docker_image}:${consul::version}",
       net     => 'host',
-      volumes => [ "${::consul::config_dir}:/consul/config", "${::consul::data_dir}:/consul/data" ],
+      volumes => [ "${consul::config_dir}:/consul/config", "${consul::data_dir}:/consul/data" ],
       env     => $env,
-      command => $docker_command
+      command => $docker_command,
     }
   }
 
   case $consul::install_method {
     'docker': {
       $wan_command = "docker exec consul consul join -wan ${consul::join_wan}"
-      $wan_unless = "docker exec consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
+      $wan_unless = "docker exec consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"  #lint:ignore:140chars
     }
     default: {
       $wan_command = "consul join -wan ${consul::join_wan}"
