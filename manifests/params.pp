@@ -5,7 +5,7 @@
 #
 class consul::params {
   $acls                  = {}
-  $archive_path          = ''
+  $archive_path          = ''  #lint:ignore:empty_string_assignment
   $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}
@@ -15,7 +15,7 @@ class consul::params {
   $download_extension    = 'zip'
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
-  $extra_options         = ''
+  $extra_options         = ''  #lint:ignore:empty_string_assignment
   $group                 = 'consul'
   $log_file              = '/var/log/consul'
   $install_method        = 'url'
@@ -95,7 +95,7 @@ class consul::params {
     }
   }
 
-  if $facts['operatingsystem'] == 'windows' {
+  if $facts['os']['family'] == 'windows' {
     $init_style = 'unmanaged'
   } else {
     $init_style = $facts['service_provider'] ? {

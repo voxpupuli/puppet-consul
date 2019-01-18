@@ -22,7 +22,7 @@ class consul::windows_service {
   $app_log_file = 'consul.log'
   $app_log = "${app_log_path}//${app_log_file}"
 
-  include '::archive'
+  include 'archive'
 
   file { $app_log_path:
     ensure => 'directory',
@@ -36,12 +36,12 @@ class consul::windows_service {
     unless    => 'if((get-service -name consul -ErrorAction SilentlyContinue).count -ne 1){exit 1}',
     logoutput => true,
     provider  => 'powershell',
-    notify    => Exec['consul_service_set_parameters']
+    notify    => Exec['consul_service_set_parameters'],
   }
   file { "${consul::bin_dir}/set_service_parameters.ps1":
     ensure  => 'present',
     content => template('consul/set_service_parameters.ps1.erb'),
-    notify  => Exec['consul_service_set_parameters']
+    notify  => Exec['consul_service_set_parameters'],
   }
   -> exec { 'consul_service_set_parameters':
     cwd         => $consul::bin_dir,

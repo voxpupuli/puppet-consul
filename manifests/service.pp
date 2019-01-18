@@ -38,7 +38,7 @@
 #
 # === Examples
 # @example
-#   ::consul::service { 'my_db':
+#  consul::service { 'my_db':
 #    port                => 3306,
 #    tags                => ['db','mysql'],
 #    address             => '1.2.3.4',

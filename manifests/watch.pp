@@ -136,7 +136,7 @@ define consul::watch(
   }
 
   $watch_hash = {
-    watches => [delete_undef_values(merge($basic_hash, $type_hash))]
+    watches => [delete_undef_values(merge($basic_hash, $type_hash))],
   }
 
   File[$consul::config_dir]
