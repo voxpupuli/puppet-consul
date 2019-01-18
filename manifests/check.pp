@@ -65,7 +65,7 @@ define consul::check(
   $token      = undef,
   $ttl        = undef,
 ) {
-  include ::consul
+  include consul
 
   $basic_hash = {
     'id'         => $id,
