@@ -62,7 +62,7 @@ define consul::watch(
   $token                         = undef,
   $type                          = undef,
 ) {
-  include ::consul
+  include consul
   $id = $title
 
   $basic_hash = {

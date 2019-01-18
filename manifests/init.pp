@@ -150,7 +150,7 @@
 # === Examples
 #
 #  @example
-#    class { '::consul':
+#    class { 'consul':
 #      config_hash => {
 #        'datacenter'   => 'east-aws',
 #        'node_name'    => $::fqdn,
@@ -266,13 +266,13 @@ class consul (
   }
 
   anchor {'consul_first': }
-  -> class { '::consul::install': }
-  -> class { '::consul::config':
+  -> class { 'consul::install': }
+  -> class { 'consul::config':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
     notify      => $notify_service,
   }
-  -> class { '::consul::run_service': }
-  -> class { '::consul::reload_service': }
+  -> class { 'consul::run_service': }
+  -> class { 'consul::reload_service': }
   -> anchor {'consul_last': }
 }

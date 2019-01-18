@@ -22,7 +22,7 @@ class consul::windows_service {
   $app_log_file = 'consul.log'
   $app_log = "${app_log_path}//${app_log_file}"
 
-  include '::archive'
+  include 'archive'
 
   file { $app_log_path:
     ensure => 'directory',
