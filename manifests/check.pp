@@ -84,7 +84,7 @@ define consul::check(
   }
 
   $check_hash = {
-    check => delete_undef_values($basic_hash)
+    check => delete_undef_values($basic_hash),
   }
 
   consul::validate_checks($check_hash[check])

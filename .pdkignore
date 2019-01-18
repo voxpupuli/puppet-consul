@@ -1,7 +1,6 @@
 .git/
 .*.sw[op]
 .metadata
-.rspec_system
 .yardoc
 .yardwarns
 *.iml
