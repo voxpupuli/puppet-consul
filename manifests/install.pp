@@ -4,13 +4,13 @@
 #
 class consul::install {
 
-  if $consul::data_dir {
-    file { $consul::data_dir:
-      ensure => 'directory',
-      owner  => $consul::user_real,
-      group  => $consul::group_real,
-      mode   => $consul::data_dir_mode,
-    }
+  $real_data_dir = pick($consul::data_dir, $consul::config_hash[data_dir], $consul::config_defaults[data_dir])
+
+  file { $real_data_dir:
+    ensure => 'directory',
+    owner  => $consul::user_real,
+    group  => $consul::group_real,
+    mode   => $consul::data_dir_mode,
   }
 
   case $consul::install_method {
@@ -18,8 +18,7 @@ class consul::install {
       # Do nothing as docker will install when run
     }
     'url': {
-      $install_prefix = pick($consul::config_hash[data_dir], $consul::config_defaults[data_dir])
-      $install_path = pick($consul::archive_path, "${install_prefix}/archives")
+      $install_path = pick($consul::archive_path, "${real_data_dir}/archives")
 
       # only notify if we are installing a new version (work around for switching to archive module)
       if getvar('::consul_version') != $consul::version {
@@ -68,7 +67,7 @@ class consul::install {
       }
 
       if $consul::data_dir {
-        Package[$consul::package_name] -> File[$consul::data_dir]
+        Package[$consul::package_name] -> File[$real_data_dir]
       }
     }
     'none': {}
