@@ -21,6 +21,7 @@ class consul::run_service {
         before => Service['consul'],
       }
     }
+
     service { 'consul':
       ensure   => $consul::service_ensure,
       name     => $service_name,

@@ -28,4 +28,3 @@ class consul::windows_service (
     refreshonly => true,
   }
 }
-
