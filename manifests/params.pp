@@ -15,13 +15,10 @@ class consul::params {
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
   $extra_options         = ''  #lint:ignore:empty_string_assignment
-  $group                 = 'consul'
   $log_file              = '/var/log/consul'
   $install_method        = 'url'
   $join_wan              = false
-  $manage_group          = true
   $manage_service        = true
-  $manage_user           = true
   $package_ensure        = 'latest'
   $package_name          = 'consul'
   $pretty_config         = false
@@ -32,7 +29,6 @@ class consul::params {
   $service_ensure        = 'running'
   $services              = {}
   $service_config_hash   = {}
-  $user                  = 'consul'
   $version               = '1.2.3'
   $watches               = {}
 
@@ -78,6 +74,10 @@ class consul::params {
       $binary_mode = '0555'
       $binary_name = 'consul'
       $binary_owner = 'root'
+      $manage_user = true
+      $manage_group = true
+      $user = 'consul'
+      $group = 'consul'
     }
   }
 
