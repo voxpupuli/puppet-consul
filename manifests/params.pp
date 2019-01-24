@@ -62,6 +62,10 @@ class consul::params {
       $binary_mode = '0775'
       $binary_name = 'consul.exe'
       $binary_owner = 'NT AUTHORITY\NETWORK SERVICE'
+      $manage_user = false
+      $manage_group = false
+      $user = 'NT AUTHORITY\NETWORK SERVICE'
+      $group = 'Administrators'
     }
     default: {
       # 0 instead of root because OS X uses "wheel".
