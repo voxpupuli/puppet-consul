@@ -7,7 +7,6 @@ class consul::params {
   $acls                  = {}
   $archive_path          = ''  #lint:ignore:empty_string_assignment
   $checks                = {}
-  $config_defaults       = {}
   $config_hash           = {}
   $config_mode           = '0664'
   $docker_image          = 'consul'
