@@ -5,7 +5,7 @@
 #
 class consul::params {
   $acls                  = {}
-  $archive_path          = ''  #lint:ignore:empty_string_assignment
+  $archive_path          = ''
   $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}
@@ -15,7 +15,7 @@ class consul::params {
   $download_extension    = 'zip'
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
-  $extra_options         = ''  #lint:ignore:empty_string_assignment
+  $extra_options         = ''
   $group                 = 'consul'
   $log_file              = '/var/log/consul'
   $install_method        = 'url'
@@ -32,7 +32,6 @@ class consul::params {
   $service_enable        = true
   $service_ensure        = 'running'
   $services              = {}
-  $service_config_hash   = {}
   $user                  = 'consul'
   $version               = '1.2.3'
   $watches               = {}
@@ -57,13 +56,15 @@ class consul::params {
 
   case $facts['os']['name'] {
     'windows': {
-      $binary_group = 'Administrators'
-      $binary_mode = '0755'
+      $data_dir_mode = '0775'
+      $binary_group = undef
+      $binary_mode = '0775'
       $binary_name = 'consul.exe'
-      $binary_owner = 'Administrator'
+      $binary_owner = 'NT AUTHORITY\NETWORK SERVICE'
     }
     default: {
       # 0 instead of root because OS X uses "wheel".
+      $data_dir_mode = '0755'
       $binary_group = 0
       $binary_mode = '0555'
       $binary_name = 'consul'
@@ -95,7 +96,7 @@ class consul::params {
     }
   }
 
-  if $facts['os']['family'] == 'windows' {
+  if $facts['operatingsystem'] == 'windows' {
     $init_style = 'unmanaged'
   } else {
     $init_style = $facts['service_provider'] ? {
