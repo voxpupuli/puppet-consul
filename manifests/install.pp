@@ -9,7 +9,7 @@ class consul::install {
       ensure => 'directory',
       owner  => $consul::user_real,
       group  => $consul::group_real,
-      mode   => '0755',
+      mode   => $consul::data_dir_mode,
     }
   }
 
