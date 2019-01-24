@@ -16,6 +16,11 @@ class consul::run_service {
   }
 
   if $consul::manage_service == true and $consul::install_method != 'docker' {
+    if $::operatingsystem == 'windows' {
+      class { 'consul::windows_service':
+        before => Service['consul'],
+      }
+    }
     service { 'consul':
       ensure   => $consul::service_ensure,
       name     => $service_name,
