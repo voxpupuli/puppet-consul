@@ -6,7 +6,6 @@
 class consul::params {
   $acls                  = {}
   $archive_path          = ''  #lint:ignore:empty_string_assignment
-  $bin_dir               = '/usr/local/bin'
   $checks                = {}
   $config_defaults       = {}
   $config_hash           = {}
@@ -49,8 +48,13 @@ class consul::params {
 
   $config_dir = $facts['os']['family'] ? {
     'FreeBSD' => '/usr/local/etc/consul.d',
-    'windows' => 'c:/Consul/config',
+    'windows' => 'C:\\ProgramData\\consul\\config',
     default   => '/etc/consul'
+  }
+
+  $bin_dir = $facts['os']['family'] ? {
+    'windows' => 'C:\\ProgramData\\consul',
+    default   => '/usr/local/bin'
   }
 
   $os = downcase($facts['kernel'])
