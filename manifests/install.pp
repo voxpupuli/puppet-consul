@@ -18,7 +18,7 @@ class consul::install {
       # Do nothing as docker will install when run
     }
     'url': {
-      $install_prefix = pick($consul::config_hash[data_dir], $consul::install_prefix_default)
+      $install_prefix = pick($consul::config_hash[data_dir], $consul::config_defaults[data_dir])
       $install_path = pick($consul::archive_path, "${install_prefix}/archives")
 
       # only notify if we are installing a new version (work around for switching to archive module)
