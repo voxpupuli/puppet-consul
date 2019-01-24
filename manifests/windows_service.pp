@@ -3,14 +3,11 @@
 # Installs consul windows server
 # == Parameters
 #
-# [*nssm_version*]
-#   nssm version to download
+# [*sys32*]
+#   path to system32 folder
 #
-# [*nssm_download_url*]
-#   nssm version to download
-#
-# [*nssm_download_url_base*]
-#   nssm version to download
+# [*service_name*]
+#   Name of the service
 #
 class consul::windows_service (
   $sys32 = 'c:\\windows\\system32',
