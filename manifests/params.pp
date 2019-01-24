@@ -98,7 +98,7 @@ class consul::params {
   }
 
   if $facts['os']['family'] == 'windows' {
-    $init_style = 'unmanaged'
+    $init_style = 'windows'
   } else {
     $init_style = $facts['service_provider'] ? {
       undef   => 'systemd',

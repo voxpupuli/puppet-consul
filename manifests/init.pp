@@ -214,11 +214,7 @@ class consul (
     $group_real = undef
     $init_style_real = 'unmanaged'
   }
-  elsif $::operatingsystem == 'windows' {
-    $user_real = $user
-    $group_real = $group
-    $init_style_real = 'windows'
-  } else {
+  else {
     $user_real = $user
     $group_real = $group
     $init_style_real = $init_style
