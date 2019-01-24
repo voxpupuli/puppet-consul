@@ -62,7 +62,9 @@ class consul::params {
       $binary_mode = '0775'
       $binary_name = 'consul.exe'
       $binary_owner = 'NT AUTHORITY\NETWORK SERVICE'
-      $install_prefix_default = 'C:\\ProgramData\\consul'
+      $config_defaults  = {
+        data_dir => 'C:\\ProgramData\\consul'
+      }
       $manage_user = false
       $manage_group = false
       $user = 'NT AUTHORITY\NETWORK SERVICE'
@@ -75,7 +77,9 @@ class consul::params {
       $binary_mode = '0555'
       $binary_name = 'consul'
       $binary_owner = 'root'
-      $install_prefix_default = '/opt/consul'
+      $config_defaults  = {
+        data_dir => '/opt/consul'
+      }
       $manage_user = true
       $manage_group = true
       $user = 'consul'
