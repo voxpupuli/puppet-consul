@@ -9,6 +9,17 @@
 #
 # [*arch*]
 #   Architecture of consul binary to download.
+# == Class: consul
+#
+# Installs, configures and manages consul
+#
+# === Parameters
+#
+# [*acls*]
+#   Hash of consul_acl resources to create.
+#
+# [*arch*]
+#   Architecture of consul binary to download.
 #
 # [*archive_path*]
 #   Path used when installing consul via the url.
@@ -128,9 +139,6 @@
 # [*user*]
 #   Name of the user that should own the consul configuration files.
 #
-# [*user_password*]
-#   The password for the user created by the `user` atribute. Default to ``
-#
 # [*version*]
 #   Specify version of consul binary to download.
 #
@@ -139,14 +147,21 @@
 #
 # [*shell*]
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
+#
 # [*enable_beta_ui*]
-#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. You can enable it by setting this variable to true. Defaults to false
+#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. 
+#   You can enable it by setting this variable to true. Defaults to false
+#
 # [*allow_binding_to_root_ports*]
 #   Boolean, enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
+#
+# [*log_file*]
+#   String, where should the log file be located
+#
 # === Examples
 #
 #  @example
-#    class { '::consul':
+#    class { 'consul':
 #      config_hash => {
 #        'datacenter'   => 'east-aws',
 #        'node_name'    => $::fqdn,
