@@ -291,7 +291,7 @@ Windows service does no longer need [NSSM] to host the service. Consul will be i
 * consul::user will default be `NT AUTHORITY\NETWORK SERVICE` (Has by default `logon as a service` permission).
 * consul::group will default be `Administrators`
 
-## Usage:
+Example:
 ```puppet
 class { '::consul':
   config_hash => {
@@ -311,7 +311,7 @@ To view this data, you must send a signal to the Consul process: on Unix, this i
 
 This telemetry information can be used for debugging or otherwise getting a better view of what Consul is doing.
 
-## Usage
+Example:
 ```puppet
 class { '::consul':
   config_hash => {
