@@ -291,7 +291,7 @@ Windows service does no longer need [NSSM] to host the service. Consul will be i
 * consul::user will default be `NT AUTHORITY\NETWORK SERVICE` (Has by default `logon as a service` permission).
 * consul::group will default be `Administrators`
 
-Default install:
+## Usage:
 ```puppet
 class { '::consul':
   config_hash => {
@@ -304,14 +304,14 @@ class { '::consul':
 }
 ```
 
-##Telemetry
+## Telemetry
 The Consul agent collects various runtime metrics about the performance of different libraries and subsystems. These metrics are aggregated on a ten second interval and are retained for one minute.
 
 To view this data, you must send a signal to the Consul process: on Unix, this is USR1 while on Windows it is BREAK. Once Consul receives the signal, it will dump the current telemetry information to the agent's stderr.
 
 This telemetry information can be used for debugging or otherwise getting a better view of what Consul is doing.
 
-##Usage
+## Usage
 ```puppet
 class { '::consul':
   config_hash => {
