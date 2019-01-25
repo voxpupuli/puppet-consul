@@ -286,7 +286,7 @@ Depending on the version of puppetserver deployed it may not be new enough (1.8.
 
 Windows service does no longer need [NSSM] to host the service. Consul will be installed as a native windows service using build-in sc.exe. The following caveats apply:
 
-* By defult eveything will be installed into `c:\ProgramData\Consul\`
+* By defult eveything will be installed into `c:\ProgramData\Consul\` and `$consul::config_hash['data_dir']` will default point to that location, so you don't need that in your `config_hash`
 * The service user needs `logon as a service` permission to run things as a service(not yet supported by this module). therefore will `consul::manage_user` and `consul::manage_group` be default `false`.
 * consul::user will default be `NT AUTHORITY\NETWORK SERVICE` (Has by default `logon as a service` permission).
 * consul::group will default be `Administrators`
@@ -296,7 +296,6 @@ Default install:
 class { '::consul':
   config_hash => {
     'bootstrap_expect' => 1,
-    #'data_dir'        => 'c:\ProgramData\Consul\', # you don't need `data_dir` in the `config_hash`, it will default be `c:\ProgramData\Consul\`
     'datacenter'       => 'dc1',
     'log_level'        => 'INFO',
     'node_name'        => 'server',
