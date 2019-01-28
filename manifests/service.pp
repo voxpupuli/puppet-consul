@@ -61,17 +61,17 @@
 #  }
 #
 define consul::service(
-  $address                   = undef,
-  $checks                    = [],
-  $enable_tag_override       = false,
-  $ensure                    = present,
-  $id                        = $title,
-  $port                      = undef,
-  $service_name              = $title,
-  Hash $service_config_hash  = {},
-  $tags                      = [],
-  $token                     = undef,
-  Hash[String, String] $meta = {},
+  $address                         = undef,
+  $checks                          = [],
+  $enable_tag_override             = false,
+  $ensure                          = present,
+  $id                              = $title,
+  $port                            = undef,
+  $service_name                    = $title,
+  Hash $service_config_hash        = {},
+  $tags                            = [],
+  $token                           = undef,
+  Hash[String[1], String[1]] $meta = {},
 ) {
 
   include consul
