@@ -123,7 +123,10 @@ configure a health check to monitor its availability.
     }
   ],
   port    => 6379,
-  tags    => ['master']
+  tags    => ['master'],
+  meta    => {
+    SLA => '1'
+  }
 }
 ```
 
@@ -142,6 +145,8 @@ consul::services:
     port: 42
     tags:
       - "foo:%{::bar}"
+    meta:
+      SLA: 1
   service2:
     address: "%{::ipaddress}"
     checks:
@@ -150,6 +155,8 @@ consul::services:
     port: 43
     tags:
       - "foo:%{::baz}"
+    meta:
+      SLA: 4
 ```
 
 ## Watch Definitions
