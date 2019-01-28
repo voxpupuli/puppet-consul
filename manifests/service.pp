@@ -36,6 +36,9 @@
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# [*meta*]
+#   Service meta key/value pairs as hash.
+#
 # === Examples
 # @example
 #  consul::service { 'my_db':
@@ -58,16 +61,17 @@
 #  }
 #
 define consul::service(
-  $address                  = undef,
-  $checks                   = [],
-  $enable_tag_override      = false,
-  $ensure                   = present,
-  $id                       = $title,
-  $port                     = undef,
-  $service_name             = $title,
-  Hash $service_config_hash = {},
-  $tags                     = [],
-  $token                    = undef,
+  $address                   = undef,
+  $checks                    = [],
+  $enable_tag_override       = false,
+  $ensure                    = present,
+  $id                        = $title,
+  $port                      = undef,
+  $service_name              = $title,
+  Hash $service_config_hash  = {},
+  $tags                      = [],
+  $token                     = undef,
+  Hash[String, String] $meta = {},
 ) {
 
   include consul
@@ -88,6 +92,7 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
+    'meta'              => $meta,
     $override_key       => $enable_tag_override,
   }
 
