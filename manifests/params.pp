@@ -6,9 +6,7 @@
 class consul::params {
   $acls                  = {}
   $archive_path          = ''  #lint:ignore:empty_string_assignment
-  $bin_dir               = '/usr/local/bin'
   $checks                = {}
-  $config_defaults       = {}
   $config_hash           = {}
   $config_mode           = '0664'
   $docker_image          = 'consul'
@@ -16,13 +14,10 @@ class consul::params {
   $download_url_base     = 'https://releases.hashicorp.com/consul/'
   $extra_groups          = []
   $extra_options         = ''  #lint:ignore:empty_string_assignment
-  $group                 = 'consul'
   $log_file              = '/var/log/consul'
   $install_method        = 'url'
   $join_wan              = false
-  $manage_group          = true
   $manage_service        = true
-  $manage_user           = true
   $package_ensure        = 'latest'
   $package_name          = 'consul'
   $pretty_config         = false
@@ -33,7 +28,6 @@ class consul::params {
   $service_ensure        = 'running'
   $services              = {}
   $service_config_hash   = {}
-  $user                  = 'consul'
   $version               = '1.2.3'
   $watches               = {}
 
@@ -49,25 +43,46 @@ class consul::params {
 
   $config_dir = $facts['os']['family'] ? {
     'FreeBSD' => '/usr/local/etc/consul.d',
-    'windows' => 'c:/Consul/config',
+    'windows' => 'C:\\ProgramData\\consul\\config',
     default   => '/etc/consul'
+  }
+
+  $bin_dir = $facts['os']['family'] ? {
+    'windows' => 'C:\\ProgramData\\consul',
+    default   => '/usr/local/bin'
   }
 
   $os = downcase($facts['kernel'])
 
   case $facts['os']['name'] {
     'windows': {
-      $binary_group = 'Administrators'
-      $binary_mode = '0755'
+      $data_dir_mode = '0775'
+      $binary_group = undef
+      $binary_mode = '0775'
       $binary_name = 'consul.exe'
-      $binary_owner = 'Administrator'
+      $binary_owner = 'NT AUTHORITY\NETWORK SERVICE'
+      $config_defaults  = {
+        data_dir => 'C:\\ProgramData\\consul'
+      }
+      $manage_user = false
+      $manage_group = false
+      $user = 'NT AUTHORITY\NETWORK SERVICE'
+      $group = 'Administrators'
     }
     default: {
       # 0 instead of root because OS X uses "wheel".
+      $data_dir_mode = '0755'
       $binary_group = 0
       $binary_mode = '0555'
       $binary_name = 'consul'
       $binary_owner = 'root'
+      $config_defaults  = {
+        data_dir => '/opt/consul'
+      }
+      $manage_user = true
+      $manage_group = true
+      $user = 'consul'
+      $group = 'consul'
     }
   }
 
