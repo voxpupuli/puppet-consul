@@ -71,7 +71,7 @@ define consul::service(
   Hash $service_config_hash        = {},
   $tags                            = [],
   $token                           = undef,
-  Hash[String[1], String[1]] $meta = {},
+  Hash[String[1], String[1]] $meta = undef,
 ) {
 
   include consul
