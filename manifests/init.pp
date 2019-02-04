@@ -87,9 +87,6 @@
 # [*manage_user*]
 #   Whether to create/manage the user that should own consul's configuration files.
 #
-# [*nssm_exec*]
-#   Location of nssm windows binary for service management
-#
 # [*os*]
 #   OS component in the name of the archive file containing the consul binary.
 #
@@ -187,7 +184,6 @@ class consul (
   Boolean $manage_group                      = $consul::params::manage_group,
   Boolean $manage_service                    = $consul::params::manage_service,
   Boolean $manage_user                       = $consul::params::manage_user,
-  Optional[String] $nssm_exec                = undef,
   $os                                        = $consul::params::os,
   $package_ensure                            = $consul::params::package_ensure,
   $package_name                              = $consul::params::package_name,
