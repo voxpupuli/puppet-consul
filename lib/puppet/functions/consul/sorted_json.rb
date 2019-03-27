@@ -56,7 +56,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
   #         ]
   #     }
   #
-  def sorted_json(unsorted_hash = {}, pretty = false, indent_len = 4, quoted=false)
+  def sorted_json(unsorted_hash = {}, pretty = false, indent_len = 4)
     # simplify jsonification of standard types
     simple_generate = lambda do |obj|
       case obj
@@ -66,8 +66,8 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
           "#{obj}"
         else
           # Should be a string
-          # keep string integers unquoted when quoted == false
-          (obj =~ /\A[-]?(0|[1-9]\d*)\z/ && !quoted) ? obj : obj.to_json
+          # keep string integers unquoted
+          (obj =~ /\A[-]?(0|[1-9]\d*)\z/) ? obj : obj.to_json
       end
     end
 
@@ -84,10 +84,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
         when Hash
           ret = []
           obj.keys.sort.each do |k|
-            if k =~ /\A(node_meta|tags)\z/ then
-              quoted = true
-            end
-            ret.push(k.to_json << ":" << sorted_generate.call(obj[k], quoted))
+            ret.push(k.to_json << ":" << sorted_generate.call(obj[k]))
           end
           return "{" << ret.join(",") << "}";
         else
@@ -130,9 +127,6 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
           # This level works in a similar way to the above
           level += 1
           obj.keys.sort.each do |k|
-            if k =~ /\A(node_meta|tags)\z/ then
-              quoted = true
-            end
             ret.push("#{indent * level}" << k.to_json << ": " << sorted_pretty_generate.call(obj[k], indent_len, level))
           end
           level -= 1
