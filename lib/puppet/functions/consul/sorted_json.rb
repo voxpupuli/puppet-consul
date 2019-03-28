@@ -57,17 +57,22 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
   #     }
   #
   def sorted_json(unsorted_hash = {}, pretty = false, indent_len = 4)
+    quoted = false
     # simplify jsonification of standard types
     simple_generate = lambda do |obj|
       case obj
         when NilClass, :undef
           'null'
         when Integer, Float, TrueClass, FalseClass
-          "#{obj}"
+          if quoted then
+            "\"#{obj}\""
+          else
+            "#{obj}"
+          end
         else
           # Should be a string
           # keep string integers unquoted
-          (obj =~ /\A[-]?(0|[1-9]\d*)\z/) ? obj : obj.to_json
+          (obj =~ /\A[-]?(0|[1-9]\d*)\z/ && !quoted) ? obj : obj.to_json
       end
     end
 
@@ -84,8 +89,12 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
         when Hash
           ret = []
           obj.keys.sort.each do |k|
+            if k =~ /\A(node_meta|meta|tags)\z/ then
+              quoted = true
+            end
             ret.push(k.to_json << ":" << sorted_generate.call(obj[k]))
           end
+          quoted = false
           return "{" << ret.join(",") << "}";
         else
           raise Exception.new("Unable to handle object of type #{obj.class.name} with value #{obj.inspect}")
@@ -127,10 +136,14 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
           # This level works in a similar way to the above
           level += 1
           obj.keys.sort.each do |k|
+            if k =~ /\A(node_meta|meta|tags)\z/ then
+              quoted = true
+            end
             ret.push("#{indent * level}" << k.to_json << ": " << sorted_pretty_generate.call(obj[k], indent_len, level))
           end
           level -= 1
 
+          quoted = false
           return "{\n" << ret.join(",\n") << "\n#{indent * level}}";
         else
           raise Exception.new("Unable to handle object of type #{obj.class.name} with value #{obj.inspect}")
