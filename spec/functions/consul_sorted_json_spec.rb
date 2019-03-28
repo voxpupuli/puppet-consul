@@ -48,6 +48,15 @@ RSpec.shared_examples 'handling_simple_types' do |pretty|
   it 'handles simple string' do
     is_expected.to run.with_params({'key' => 'aString' },pretty).and_return(deprettyfy("{\n    \"key\": \"aString\"\n}\n",pretty))
   end
+  it 'quotes values of tags' do
+    is_expected.to run.with_params({'tags' => 12 },pretty).and_return(deprettyfy("{\n    \"tags\": \"12\"\n}\n",pretty))
+  end
+  it 'quotes values of meta' do
+    is_expected.to run.with_params({'meta' => {'sla' => 2 } },pretty).and_return(deprettyfy("{\n    \"meta\": {\n        \"sla\": \"2\"\n    }\n}\n",pretty))
+  end
+  it 'quotes values of node_meta' do
+    is_expected.to run.with_params({'node_meta' => {'cpus' => 8 } },pretty).and_return(deprettyfy("{\n    \"node_meta\": {\n        \"cpus\": \"8\"\n    }\n}\n",pretty))
+  end
 end
 describe 'consul::sorted_json', :type => :puppet_function do
 
