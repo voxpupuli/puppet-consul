@@ -199,6 +199,45 @@ consul to restart.
 
 ## ACL Definitions
 
+### Policy/Token system
+
+Starting with version 1.4.0, a new ACL system was introduces separating rules (policies) from tokens.
+
+Tokens and policies may be both managed by Puppet:
+```puppet
+consul_policy {'test_policy':
+  description   => 'test description',
+  rules         => [
+      {
+          'resource'    => 'service_prefix',
+          'segment'     => 'test_service',
+          'disposition' => 'read'
+      },
+      {
+          'resource'    => 'key',
+          'segment'     => 'test_key',
+          'disposition' => 'write'
+      },
+  ],
+  acl_api_token => 'e33653a6-0320-4a71-b3af-75f14578e3aa',
+}
+
+consul_token {'test_token':
+  policies_by_name  => [
+   'test_policy'
+  ],
+  policies_by_id    => [
+    '652f27c9-d08d-412b-8985-9becc9c42fb2'
+  ],
+}
+
+```
+
+All resource names need to be unique, as they are either used for token mapping or directly as Consul policy name.
+
+Externally created tokens and policies may be used by referencing them by ID (Token: accessor_id property, Policy: ID property, linking: policies_by_id property)
+
+### Legacy system
 ```puppet
 consul_acl { 'ctoken':
   ensure => 'present',
