@@ -191,11 +191,11 @@ class consul (
   }]]                            $tokens                      = {},
   Hash[String[1], Struct[{
     id            => Optional[String[1]],
-    description   => Optional[String[1]],
+    description   => Optional[String[0]],
     rules         => Optional[Array[Struct[{
-      resource    => String[1],
-      segment     => String[1],
-      disposition => String[1],
+        resource    => String[1],
+        segment     => String[0],
+        disposition => String[1],
     }]]],
     acl_api_token => Optional[String[1]],
     protocol      => Optional[String[1]],
