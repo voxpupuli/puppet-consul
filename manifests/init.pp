@@ -150,7 +150,7 @@
 #    class { 'consul':
 #      config_hash => {
 #        'datacenter'   => 'east-aws',
-#        'node_name'    => $::fqdn,
+#        'node_name'    => $facts['fqdn'],
 #        'pretty_config => true,
 #        'retry-join'   => ['172.16.0.1'],
 #      },
@@ -237,7 +237,7 @@ class consul (
   } elsif ($config_hash_real['client_addr']) {
     $http_addr = split($config_hash_real['client_addr'], ' ')[0]
   } else {
-    $http_addr = $::ipaddress_lo
+    $http_addr = '127.0.0.1'
   }
 
   if $services {
