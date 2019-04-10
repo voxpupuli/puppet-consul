@@ -200,7 +200,7 @@ describe 'consul class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
+      # Run it twice to test for idempotency
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: false)
     end
