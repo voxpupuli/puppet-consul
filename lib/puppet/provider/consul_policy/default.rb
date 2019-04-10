@@ -93,7 +93,7 @@ Puppet::Type.type(:consul_policy).provide(
 
     unless @existing_policy
       policy = ConsulPolicy.new(nil, @resource[:name], @resource[:description], @rules_encoded)
-      @client.create_policy(policy)
+      @client.create_policy(policy, @resource[:api_tries])
       @resource[:id] = policy.id
       Puppet.notice("Created Consul ACL policy #{policy.name} with ID #{policy.id}")
     end
@@ -153,11 +153,11 @@ class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
     response['Rules']
   end
 
-  def create_policy(policy)
+  def create_policy(policy, tries)
     body = create_body(policy)
 
     begin
-      response = put('/policy', body)
+      response = put('/policy', body, tries)
       policy.id = response['ID']
     rescue StandardError => e
       Puppet.warning("Unable to create policy #{policy.name}: #{e.message}")

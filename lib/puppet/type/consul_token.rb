@@ -12,7 +12,7 @@ Puppet::Type.newtype(:consul_token) do
     end
   end
 
-  newparam(:accessor_id) do
+  newproperty(:accessor_id) do
     desc 'Accessor ID of the token'
     validate do |value|
       raise ArgumentError, "Accessor ID must be a string" if not value.is_a?(String)
@@ -45,7 +45,7 @@ Puppet::Type.newtype(:consul_token) do
     defaultto ''
   end
 
-  newproperty(:protocol) do
+  newparam(:protocol) do
     desc 'consul protocol'
     newvalues(:http, :https)
     defaultto :http

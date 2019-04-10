@@ -20,12 +20,12 @@ module PuppetX::Consul
           send_request(request, tries)
         end
 
-        def put (path, body)
+        def put (path, body, tries = 1)
           path = @global_uri.request_uri + path
           request = Net::HTTP::Put.new(path)
           request.body = body.to_json
 
-          send_request(request, 1)
+          send_request(request, tries)
         end
 
         def delete (path)
@@ -54,7 +54,7 @@ module PuppetX::Consul
               response_code = response.code
               break if response_code == '200'
             rescue Errno::ECONNREFUSED => exc
-              Puppet.debug("#{uri}/list?token=<redacted> #{exc.class} #{exc.message}")
+              Puppet.debug("#{exc.class} #{exc.message}")
             end
           end
 
