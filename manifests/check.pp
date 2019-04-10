@@ -50,7 +50,7 @@
 #   Value in seconds before the http endpoint considers a failing healthcheck
 #   to be "HARD" down.
 #
-define consul::check(
+define consul::check (
   $ensure     = present,
   $http       = undef,
   $id         = $title,
@@ -90,13 +90,13 @@ define consul::check(
   consul::validate_checks($check_hash[check])
 
   $escaped_id = regsubst($id,'\/','_','G')
-  File[$consul::config_dir]
-  -> file { "${consul::config_dir}/check_${escaped_id}.json":
+  file { "${consul::config_dir}/check_${escaped_id}.json":
     ensure  => $ensure,
     owner   => $consul::user_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($check_hash, $consul::pretty_config, $consul::pretty_config_indent),
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+  }
 
 }
