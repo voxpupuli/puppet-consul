@@ -108,7 +108,7 @@ define consul::watch (
       }
     }
     'service': {
-      if (! service ){
+      if (! $service ){
         fail('service is required for watch type of [service]')
       }
       $type_hash = {
