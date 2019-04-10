@@ -135,7 +135,7 @@
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
 #
 # [*enable_beta_ui*]
-#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. 
+#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status.
 #   You can enable it by setting this variable to true. Defaults to false
 #
 # [*allow_binding_to_root_ports*]
@@ -203,20 +203,20 @@ class consul (
   Boolean $allow_binding_to_root_ports       = false,
 ) inherits consul::params {
 
-  # lint:ignore:140chars
-  $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
-  # lint:endignore
+  $real_download_url = pick(
+    $download_url,
+    "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}",
+  )
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 
   if $install_method == 'docker' {
-    $user_real = undef
-    $group_real = undef
+    $user_real       = undef
+    $group_real      = undef
     $init_style_real = 'unmanaged'
-  }
-  else {
-    $user_real = $user
-    $group_real = $group
+  } else {
+    $user_real       = $user
+    $group_real      = $group
     $init_style_real = $init_style
   }
 
@@ -226,13 +226,13 @@ class consul (
     $data_dir = undef
   }
 
-  if ($config_hash_real['ports'] and $config_hash_real['ports']['http']) {
+  if dig($config_hash_real,'ports','http') {
     $http_port = $config_hash_real['ports']['http']
   } else {
     $http_port = 8500
   }
 
-  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['http']) {
+  if dig($config_hash_real,'addresses','http') {
     $http_addr = split($config_hash_real['addresses']['http'], ' ')[0]
   } elsif ($config_hash_real['client_addr']) {
     $http_addr = split($config_hash_real['client_addr'], ' ')[0]

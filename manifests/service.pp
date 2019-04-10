@@ -60,7 +60,7 @@
 #    ],
 #  }
 #
-define consul::service(
+define consul::service (
   $address                                   = undef,
   $checks                                    = [],
   $enable_tag_override                       = false,
@@ -113,6 +113,7 @@ define consul::service(
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
-    require => File[$consul::config_dir],
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+  }
+
 }
