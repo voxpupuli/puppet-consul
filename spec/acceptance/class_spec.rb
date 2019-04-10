@@ -150,4 +150,84 @@ describe 'consul class' do
       its(:stdout) { should match %r{Consul v1.2.3} }
     end
   end
+  context 'with new ACL system' do
+    it 'should work with no errors based on the example' do
+      pp = <<-EOS
+        package { 'unzip': ensure => present } ->
+        class { 'consul':
+          version        => '1.4.4',
+          manage_service => true,
+          config_hash    => {
+              'datacenter'         => 'east-aws',
+              'primary_datacenter' => 'east-aws',
+              'data_dir'           => '/opt/consul',
+              'log_level'          => 'INFO',
+              'node_name'          => 'foobar',
+              'server'             => true,
+              'bootstrap'          => true,
+              'bootstrap_expect'   => 1,
+              'start_join'         => ['172.17.0.2'],
+              'rejoin_after_leave' => true,
+              'leave_on_terminate' => true,
+              'client_addr'        => "0.0.0.0",
+              'acl' => {
+                'enabled'        => true,
+                'default_policy' => 'allow',
+                'down_policy'    => 'extend-cache',
+                'tokens'         => {
+                  'master' => '222bf65c-2477-4003-8f8e-842a4b394d8d'
+                }
+              },
+          },
+          acl_api_token    => '222bf65c-2477-4003-8f8e-842a4b394d8d',
+          acl_api_hostname => '172.17.0.2',
+          acl_api_tries    => 10,
+          tokens => {
+            'test_token_xyz' => {
+              'policies_by_name' => ['test_policy_abc']
+            }
+          },
+          policies => {
+            'test_policy_abc' => {
+              'description' => "This is a test policy",
+              'rules'       => [
+                {'resource' => 'service_prefix', 'segment' => 'tst_service', 'disposition' => 'read'},
+                {'resource' => 'key', 'segment' => 'test_key', 'disposition' => 'write'},
+                {'resource' => 'node_prefix', 'segment' => '', 'disposition' => 'deny'},
+              ],
+            }
+          }
+        }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: false)
+    end
+
+    describe file('/opt/consul') do
+      it { should be_directory }
+    end
+
+    describe service('consul') do
+      it { should be_enabled }
+      it { should be_running }
+    end
+
+    describe command('consul version') do
+      its(:stdout) { should match %r{Consul v1.4.4} }
+    end
+
+    describe command('consul acl token list --token 222bf65c-2477-4003-8f8e-842a4b394d8d | grep Description') do
+      its(:stdout) { should match %r{test_token_xyz} }
+    end
+
+    describe command("consul acl token list --token 222bf65c-2477-4003-8f8e-842a4b394d8d | grep -v Local | grep -v Create | grep -v Legacy | sed s/'.* - '//g") do
+      its(:stdout) { should include "Description:  test_token_xyz\nPolicies:\ntest_policy_abc" }
+    end
+
+    describe command('consul acl policy read --name test_policy_abc --token 222bf65c-2477-4003-8f8e-842a4b394d8d') do
+      its(:stdout) { should include "Rules:\nservice_prefix \"tst_service\" {\n  policy = \"read\"\n}\n\nkey \"test_key\" {\n  policy = \"write\"\n}\n\nnode_prefix \"\" {\n  policy = \"deny\"\n}" }
+    end
+  end
 end

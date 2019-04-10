@@ -58,7 +58,7 @@ Puppet::Type.type(:consul_token).provide(
 
   def flush
     if @resource[:ensure] != :absent && !@existing_token
-      created_token = @client.create_token(@resource[:name], @resource[:policies_by_name], @resource[:policies_by_id])
+      created_token = @client.create_token(@resource[:name], @resource[:policies_by_name], @resource[:policies_by_id], @resource[:api_tries])
       @resource[:accessor_id] = created_token.accessor_id
 
       Puppet.info("Created token #{created_token.description} with Accessor ID  #{created_token.accessor_id}")
@@ -130,10 +130,10 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
     collection
   end
 
-  def create_token(description, policies_by_name, policies_by_id)
+  def create_token(description, policies_by_name, policies_by_id, tries)
     begin
       body = encode_body(description, policies_by_name, policies_by_id)
-      response = put('/token', body)
+      response = put('/token', body, tries)
     rescue StandardError => e
       Puppet.warning("Unable to create token #{description}: #{e.message}")
       return nil

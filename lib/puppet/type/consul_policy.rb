@@ -12,7 +12,7 @@ Puppet::Type.newtype(:consul_policy) do
     end
   end
 
-  newparam(:id) do
+  newproperty(:id) do
     desc 'ID of already existing policy'
     validate do |value|
       raise ArgumentError, "ID must be a string" if not value.is_a?(String)
@@ -41,7 +41,7 @@ Puppet::Type.newtype(:consul_policy) do
     defaultto ''
   end
 
-  newproperty(:protocol) do
+  newparam(:protocol) do
     desc 'consul protocol'
     newvalues(:http, :https)
     defaultto :http
