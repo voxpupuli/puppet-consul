@@ -256,19 +256,19 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
-  $notify_service = $restart_on_change ? {
-    true    => Class['consul::run_service'],
-    default => undef,
+  contain 'consul::install'
+  contain 'consul::config'
+  contain 'consul::run_service'
+  contain 'consul::reload_service'
+
+  Class['consul::install']
+  -> Class['consul::config']
+  -> Class['consul::run_service']
+  -> Class['consul::reload_service']
+
+  if $restart_on_change {
+    Class['consul::config']
+    ~> Class['consul::run_service']
   }
 
-  anchor {'consul_first': }
-  -> class { 'consul::install': }
-  -> class { 'consul::config':
-    config_hash => $config_hash_real,
-    purge       => $purge_config_dir,
-    notify      => $notify_service,
-  }
-  -> class { 'consul::run_service': }
-  -> class { 'consul::reload_service': }
-  -> anchor {'consul_last': }
 }

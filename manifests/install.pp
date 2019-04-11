@@ -13,6 +13,14 @@ class consul::install {
     mode   => $consul::data_dir_mode,
   }
 
+  # only notify if we are installing a new version (work around for switching
+  # to archive module)
+  if $facts['consul_version'] != $consul::version {
+    $do_notify_service = Class['consul::run_service']
+  } else {
+    $do_notify_service = undef
+  }
+
   case $consul::install_method {
     'docker': {
       # Do nothing as docker will install when run
@@ -20,12 +28,6 @@ class consul::install {
     'url': {
       $install_path = pick($consul::archive_path, "${real_data_dir}/archives")
 
-      # only notify if we are installing a new version (work around for switching to archive module)
-      if getvar('::consul_version') != $consul::version {
-        $do_notify_service = $consul::notify_service
-      } else {
-        $do_notify_service = undef
-      }
 
       include archive
 
@@ -59,7 +61,7 @@ class consul::install {
     'package': {
       package { $consul::package_name:
         ensure => $consul::package_ensure,
-        notify => $consul::notify_service,
+        notify => $do_notify_service,
       }
 
       if $consul::manage_user {
