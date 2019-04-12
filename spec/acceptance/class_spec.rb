@@ -166,7 +166,7 @@ describe 'consul class' do
               'server'             => true,
               'bootstrap'          => true,
               'bootstrap_expect'   => 1,
-              'start_join'         => ['172.17.0.2'],
+              'start_join'         => ['127.0.0.1'],
               'rejoin_after_leave' => true,
               'leave_on_terminate' => true,
               'client_addr'        => "0.0.0.0",
@@ -180,7 +180,7 @@ describe 'consul class' do
               },
           },
           acl_api_token    => '222bf65c-2477-4003-8f8e-842a4b394d8d',
-          acl_api_hostname => '172.17.0.2',
+          acl_api_hostname => '127.0.0.1',
           acl_api_tries    => 10,
           tokens => {
             'test_token_xyz' => {
