@@ -16,7 +16,7 @@ class consul::run_service {
   }
 
   if $consul::manage_service == true and $consul::install_method != 'docker' {
-    if $::operatingsystem == 'windows' {
+    if $facts['os']['name'] == 'windows' {
       class { 'consul::windows_service':
         before => Service['consul'],
       }
@@ -37,8 +37,7 @@ class consul::run_service {
     if $server_mode {
       $env = [ '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'' ]
       $docker_command = 'agent -server'
-    }
-    else {
+    } else {
       $env = undef
       $docker_command = 'agent'
     }
@@ -46,7 +45,7 @@ class consul::run_service {
     docker::run { 'consul':
       image   => "${consul::docker_image}:${consul::version}",
       net     => 'host',
-      volumes => [ "${consul::config_dir}:/consul/config", "${consul::data_dir}:/consul/data" ],
+      volumes => ["${consul::config_dir}:/consul/config", "${consul::data_dir}:/consul/data"],
       env     => $env,
       command => $docker_command,
     }

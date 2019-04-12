@@ -31,31 +31,35 @@ class consul::install {
 
       include archive
 
-      file { [
-          $install_path,
-        "${install_path}/consul-${consul::version}"]:
-          ensure => directory,
-          owner  => $consul::binary_owner,
-          group  => $consul::binary_group,
-          mode   => $consul::binary_mode,
+      file { [$install_path, "${install_path}/consul-${consul::version}"]:
+        ensure => directory,
+        owner  => $consul::binary_owner,
+        group  => $consul::binary_group,
+        mode   => $consul::binary_mode,
       }
-      -> archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
+
+      archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
         source       => $consul::real_download_url,
         proxy_server => $consul::proxy_server,
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
         creates      => "${install_path}/consul-${consul::version}/${consul::binary_name}",
+        require      => File["${install_path}/consul-${consul::version}"],
       }
-      -> file {
-        "${install_path}/consul-${consul::version}/${consul::binary_name}":
-          owner => $consul::binary_owner,
-          group => $consul::binary_group,
-          mode  => $consul::binary_mode;
-        "${consul::bin_dir}/${consul::binary_name}":
-          ensure => link,
-          notify => $do_notify_service,
-          target => "${install_path}/consul-${consul::version}/${consul::binary_name}";
+
+      file { "${install_path}/consul-${consul::version}/${consul::binary_name}":
+        owner   => $consul::binary_owner,
+        group   => $consul::binary_group,
+        mode    => $consul::binary_mode,
+        require => Archive["${install_path}/consul-${consul::version}.${consul::download_extension}"],
+      }
+
+      file { "${consul::bin_dir}/${consul::binary_name}":
+        ensure  => link,
+        notify  => $do_notify_service,
+        target  => "${install_path}/consul-${consul::version}/${consul::binary_name}",
+        require => File["${install_path}/consul-${consul::version}/${consul::binary_name}"],
       }
     }
     'package': {

@@ -277,7 +277,7 @@ describe 'consul' do
           :service_ensure => 'stopped',
           :services => {
             'test_service1' => {
-              'port' => '5'
+              'port' => 8088
             }
           }
         }}
@@ -289,7 +289,7 @@ describe 'consul' do
           :manage_service => false,
           :services => {
             'test_service1' => {
-              'port' => '5'
+              'port' => 8088
             }
           }
         }}
@@ -337,7 +337,7 @@ describe 'consul' do
           },
           :config_hash => {
             'ports' => {
-              'http' => '9999'
+              'http' => 9999
             },
             'addresses' => {
               'http' => 'consul.example.com'
@@ -369,11 +369,11 @@ describe 'consul' do
         let (:params) {{
           :services => {
             'test_service1' => {
-              'port' => '5'
+              'port' => 8088
             }
           }
         }}
-        it { should contain_consul__service('test_service1').with_port('5') }
+        it { should contain_consul__service('test_service1').with_port(8088) }
         it { should have_consul__service_resource_count(1) }
         it { should contain_exec('reload consul service')  }
       end
@@ -454,7 +454,7 @@ describe 'consul' do
           :init_style => 'init',
           :config_hash => {
             'ports' => {
-              'http' => '9999'
+              'http' => 9999
             },
             'addresses' => {
               'http' => 'consul.example.com'
@@ -498,7 +498,7 @@ describe 'consul' do
           :init_style => 'debian',
           :config_hash => {
             'ports' => {
-              'http' => '9999'
+              'http' => 9999
             },
             'addresses' => {
               'http' => 'consul.example.com'
@@ -528,7 +528,7 @@ describe 'consul' do
           :init_style => 'upstart',
           :config_hash => {
             'ports' => {
-              'http' => '9999'
+              'http' => 9999
             },
             'addresses' => {
               'http' => 'consul.example.com'
