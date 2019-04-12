@@ -230,7 +230,6 @@ consul_token {'test_token':
     '652f27c9-d08d-412b-8985-9becc9c42fb2'
   ],
 }
-
 ```
 
 All resource names need to be unique, as they are either used for token mapping or directly as Consul policy name.
