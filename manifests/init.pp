@@ -76,7 +76,7 @@
 #                  `none`    - disable install.
 #
 # [*join_wan*]
-#   Whether to join the wan on service start.
+#   The wan to join on service start (e.g. 'wan.foo.com'). Defaults to undef (i.e. won't join a wan).
 #
 # [*manage_group*]
 #   Whether to create/manage the group that should own the consul configuration files.
@@ -135,7 +135,7 @@
 #   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
 #
 # [*enable_beta_ui*]
-#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status. 
+#   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status.
 #   You can enable it by setting this variable to true. Defaults to false
 #
 # [*allow_binding_to_root_ports*]
@@ -150,73 +150,73 @@
 #    class { 'consul':
 #      config_hash => {
 #        'datacenter'   => 'east-aws',
-#        'node_name'    => $::fqdn,
+#        'node_name'    => $facts['fqdn'],
 #        'pretty_config => true,
 #        'retry-join'   => ['172.16.0.1'],
 #      },
 #    }
 #
 class consul (
-  Hash $acls                                 = $consul::params::acls,
-  $arch                                      = $consul::params::arch,
-  $archive_path                              = $consul::params::archive_path,
-  $bin_dir                                   = $consul::params::bin_dir,
-  $binary_group                              = $consul::params::binary_group,
-  $binary_mode                               = $consul::params::binary_mode,
-  $binary_name                               = $consul::params::binary_name,
-  $binary_owner                              = $consul::params::binary_owner,
-  Hash $checks                               = $consul::params::checks,
-  Hash $config_defaults                      = $consul::params::config_defaults,
-  $config_dir                                = $consul::params::config_dir,
-  Hash $config_hash                          = $consul::params::config_hash,
-  $config_mode                               = $consul::params::config_mode,
-  $docker_image                              = $consul::params::docker_image,
-  $download_extension                        = $consul::params::download_extension,
-  Optional[Stdlib::HTTPUrl] $download_url    = undef,
-  $download_url_base                         = $consul::params::download_url_base,
-  Array $extra_groups                        = $consul::params::extra_groups,
-  $extra_options                             = $consul::params::extra_options,
-  $group                                     = $consul::params::group,
-  $log_file                                  = $consul::params::log_file,
-  $init_style                                = $consul::params::init_style,
-  $install_method                            = $consul::params::install_method,
-  $join_wan                                  = $consul::params::join_wan,
-  Boolean $manage_group                      = $consul::params::manage_group,
-  Boolean $manage_service                    = $consul::params::manage_service,
-  Boolean $manage_user                       = $consul::params::manage_user,
-  $os                                        = $consul::params::os,
-  $package_ensure                            = $consul::params::package_ensure,
-  $package_name                              = $consul::params::package_name,
-  Boolean $pretty_config                     = $consul::params::pretty_config,
-  Integer $pretty_config_indent              = $consul::params::pretty_config_indent,
-  Optional[Stdlib::HTTPUrl] $proxy_server    = undef,
-  Boolean $purge_config_dir                  = $consul::params::purge_config_dir,
-  Boolean $restart_on_change                 = $consul::params::restart_on_change,
-  Boolean $service_enable                    = $consul::params::service_enable,
-  Enum['stopped', 'running'] $service_ensure = $consul::params::service_ensure,
-  Hash $services                             = $consul::params::services,
-  $user                                      = $consul::params::user,
-  $version                                   = $consul::params::version,
-  Hash $watches                              = $consul::params::watches,
-  Optional[String] $shell                    = $consul::params::shell,
-  Boolean $enable_beta_ui                    = false,
-  Boolean $allow_binding_to_root_ports       = false,
+  Hash                           $acls                         = {},
+  String[1]                      $arch                         = $consul::params::arch,
+  Optional[Stdlib::Absolutepath] $archive_path                 = undef,
+  Stdlib::Absolutepath           $bin_dir                      = $consul::params::bin_dir,
+  Optional[String[1]]            $binary_group                 = $consul::params::binary_group,
+  String[1]                      $binary_mode                  = $consul::params::binary_mode,
+  String[1]                      $binary_name                  = $consul::params::binary_name,
+  String[1]                      $binary_owner                 = $consul::params::binary_owner,
+  Hash                           $checks                       = {},
+  Hash                           $config_defaults              = $consul::params::config_defaults,
+  Stdlib::Absolutepath           $config_dir                   = $consul::params::config_dir,
+  Hash                           $config_hash                  = {},
+  String[1]                      $config_mode                  = '0664',
+  String[1]                      $docker_image                 = 'consul',
+  String[1]                      $download_extension           = 'zip',
+  Optional[Stdlib::HTTPUrl]      $download_url                 = undef,
+  String[1]                      $download_url_base            = 'https://releases.hashicorp.com/consul/',
+  Array                          $extra_groups                 = [],
+  Optional[String[1]]            $extra_options                = undef,
+  String[1]                      $group                        = $consul::params::group,
+  Stdlib::Absolutepath           $log_file                     = '/var/log/consul',
+  String[1]                      $init_style                   = $consul::params::init_style,
+  String[1]                      $install_method               = 'url',
+  Optional[String[1]]            $join_wan                     = undef,
+  Boolean                        $manage_group                 = $consul::params::manage_group,
+  Boolean                        $manage_service               = true,
+  Boolean                        $manage_user                  = $consul::params::manage_user,
+  String[1]                      $os                           = $facts['kernel'].downcase,
+  String[1]                      $package_ensure               = 'latest',
+  String[1]                      $package_name                 = 'consul',
+  Boolean                        $pretty_config                = false,
+  Integer                        $pretty_config_indent         = 4,
+  Optional[Stdlib::HTTPUrl]      $proxy_server                 = undef,
+  Boolean                        $purge_config_dir             = true,
+  Boolean                        $restart_on_change            = true,
+  Boolean                        $service_enable               = true,
+  Enum['stopped', 'running']     $service_ensure               = 'running',
+  Hash                           $services                     = {},
+  String[1]                      $user                         = $consul::params::user,
+  String[1]                      $version                      = '1.2.3',
+  Hash                           $watches                      = {},
+  Optional[String[1]]            $shell                        = $consul::params::shell,
+  Boolean                        $enable_beta_ui               = false,
+  Boolean                        $allow_binding_to_root_ports  = false,
 ) inherits consul::params {
 
-  # lint:ignore:140chars
-  $real_download_url    = pick($download_url, "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}")
-  # lint:endignore
+  $real_download_url = pick(
+    $download_url,
+    "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}",
+  )
 
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 
   if $install_method == 'docker' {
-    $user_real = undef
-    $group_real = undef
+    $user_real       = undef
+    $group_real      = undef
     $init_style_real = 'unmanaged'
-  }
-  else {
-    $user_real = $user
-    $group_real = $group
+  } else {
+    $user_real       = $user
+    $group_real      = $group
     $init_style_real = $init_style
   }
 
@@ -226,18 +226,18 @@ class consul (
     $data_dir = undef
   }
 
-  if ($config_hash_real['ports'] and $config_hash_real['ports']['http']) {
+  if dig($config_hash_real,'ports','http') {
     $http_port = $config_hash_real['ports']['http']
   } else {
     $http_port = 8500
   }
 
-  if ($config_hash_real['addresses'] and $config_hash_real['addresses']['http']) {
+  if dig($config_hash_real,'addresses','http') {
     $http_addr = split($config_hash_real['addresses']['http'], ' ')[0]
   } elsif ($config_hash_real['client_addr']) {
-    $http_addr = $config_hash_real['client_addr']
+    $http_addr = split($config_hash_real['client_addr'], ' ')[0]
   } else {
-    $http_addr = $::ipaddress_lo
+    $http_addr = '127.0.0.1'
   }
 
   if $services {
@@ -256,19 +256,19 @@ class consul (
     create_resources(consul_acl, $acls)
   }
 
-  $notify_service = $restart_on_change ? {
-    true    => Class['consul::run_service'],
-    default => undef,
+  contain 'consul::install'
+  contain 'consul::config'
+  contain 'consul::run_service'
+  contain 'consul::reload_service'
+
+  Class['consul::install']
+  -> Class['consul::config']
+  -> Class['consul::run_service']
+  -> Class['consul::reload_service']
+
+  if $restart_on_change {
+    Class['consul::config']
+    ~> Class['consul::run_service']
   }
 
-  anchor {'consul_first': }
-  -> class { 'consul::install': }
-  -> class { 'consul::config':
-    config_hash => $config_hash_real,
-    purge       => $purge_config_dir,
-    notify      => $notify_service,
-  }
-  -> class { 'consul::run_service': }
-  -> class { 'consul::reload_service': }
-  -> anchor {'consul_last': }
 }

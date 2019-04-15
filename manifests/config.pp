@@ -19,12 +19,12 @@
 # [*restart_on_change*]
 #   Bool. Should the service be restarted on changes
 #
-class consul::config(
-  Hash $config_hash,
-  Boolean $purge = true,
-  Boolean $enable_beta_ui = $consul::enable_beta_ui,
+class consul::config (
+  Hash    $config_hash                 = $consul::config_hash_real,
+  Boolean $purge                       = $consul::purge_config_dir,
+  Boolean $enable_beta_ui              = $consul::enable_beta_ui,
   Boolean $allow_binding_to_root_ports = $consul::allow_binding_to_root_ports,
-  Boolean $restart_on_change = $consul::restart_on_change,
+  Boolean $restart_on_change           = $consul::restart_on_change,
 ) {
 
   $notify_service = $restart_on_change ? {
@@ -37,6 +37,7 @@ class consul::config(
     case $consul::init_style_real {
       'upstart': {
         file { '/etc/init/consul.conf':
+          ensure  => file,
           mode    => '0444',
           owner   => 'root',
           group   => 'root',
@@ -51,13 +52,14 @@ class consul::config(
         }
       }
       'systemd': {
-        systemd::unit_file{'consul.service':
+        systemd::unit_file { 'consul.service':
           content => template('consul/consul.systemd.erb'),
           notify  => $notify_service,
         }
       }
       'init','redhat': {
         file { '/etc/init.d/consul':
+          ensure  => file,
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
@@ -66,6 +68,7 @@ class consul::config(
       }
       'debian': {
         file { '/etc/init.d/consul':
+          ensure  => file,
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
@@ -74,6 +77,7 @@ class consul::config(
       }
       'sles': {
         file { '/etc/init.d/consul':
+          ensure  => file,
           mode    => '0555',
           owner   => 'root',
           group   => 'root',
@@ -82,6 +86,7 @@ class consul::config(
       }
       'launchd': {
         file { '/Library/LaunchDaemons/io.consul.daemon.plist':
+          ensure  => file,
           mode    => '0644',
           owner   => 'root',
           group   => 'wheel',
@@ -90,12 +95,14 @@ class consul::config(
       }
       'freebsd': {
         file { '/etc/rc.conf.d/consul':
+          ensure  => file,
           mode    => '0444',
           owner   => 'root',
           group   => 'wheel',
           content => template('consul/consul.freebsd-rcconf.erb'),
         }
         file { '/usr/local/etc/rc.d/consul':
+          ensure  => file,
           mode    => '0555',
           owner   => 'root',
           group   => 'wheel',
@@ -115,14 +122,14 @@ class consul::config(
     purge   => $purge,
     recurse => $purge,
   }
-  -> file { 'consul config.json':
+
+  file { 'consul config.json':
     ensure  => present,
     path    => "${consul::config_dir}/config.json",
     owner   => $consul::user_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
-    require => File[$consul::config_dir],
   }
 
 }

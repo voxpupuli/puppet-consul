@@ -261,6 +261,19 @@ describe 'consul::service' do
             .with_content(/"token" *: *"too-cool-for-this-service"/)
         }
       end
+      describe 'with meta' do
+        let(:params) {{
+          'meta' => {
+            'foo' => 'bar',
+          },
+        }}
+
+        it {
+          should contain_file("/etc/consul/service_my_service.json") \
+            .with_content(/"meta" *: *\{/) \
+            .with_content(/"foo" *: *"bar"/)
+        }
+      end
     end
   end
 end

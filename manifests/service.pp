@@ -36,6 +36,9 @@
 # [*token*]
 #   ACL token for interacting with the catalog (must be 'management' type)
 #
+# [*meta*]
+#   Service meta key/value pairs as hash.
+#
 # === Examples
 # @example
 #  consul::service { 'my_db':
@@ -57,17 +60,24 @@
 #    ],
 #  }
 #
-define consul::service(
-  $address                  = undef,
-  $checks                   = [],
-  $enable_tag_override      = false,
-  $ensure                   = present,
-  $id                       = $title,
-  $port                     = undef,
-  $service_name             = $title,
-  Hash $service_config_hash = {},
-  $tags                     = [],
-  $token                    = undef,
+define consul::service (
+  Optional[String[1]]         $address              = undef,
+  Array[Hash]                 $checks               = [],
+  Boolean                     $enable_tag_override  = false,
+  String[1]                   $ensure               = 'present',
+  String[1]                   $id                   = $title,
+  Optional[Integer[0, 65535]] $port                 = undef,
+  String[1]                   $service_name         = $title,
+  Hash                        $service_config_hash  = {},
+  Array[String[1]]            $tags                 = [],
+  Optional[String[1]]         $token                = undef,
+  Optional[Hash[
+    String[1],
+    Variant[
+      String[1],
+      Numeric,
+      Boolean,
+  ]]]                         $meta                 = undef,
 ) {
 
   include consul
@@ -88,6 +98,7 @@ define consul::service(
     'tags'              => $tags,
     'checks'            => $checks,
     'token'             => $token,
+    'meta'              => $meta,
     $override_key       => $enable_tag_override,
   }
 
@@ -104,6 +115,7 @@ define consul::service(
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
-    require => File[$consul::config_dir],
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+  }
+
 }

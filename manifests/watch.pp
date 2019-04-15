@@ -47,7 +47,7 @@
 # [*type*]
 #   Type of data to watch. (Like key, service, services, nodes)
 #
-define consul::watch(
+define consul::watch (
   $args                          = undef,
   $datacenter                    = undef,
   $ensure                        = present,
@@ -62,6 +62,7 @@ define consul::watch(
   $token                         = undef,
   $type                          = undef,
 ) {
+
   include consul
   $id = $title
 
@@ -74,19 +75,19 @@ define consul::watch(
   }
 
   if (versioncmp($consul::version, '0.4.0') < 0) {
-    fail ('Watches are only supported in Consul 0.4.0 and above')
+    fail('Watches are only supported in Consul 0.4.0 and above')
   }
 
   if (! $handler and ! $args) {
-    fail ('All watch conditions must have a handler or args list defined')
+    fail('All watch conditions must have a handler or args list defined')
   }
 
   if ($handler and $args) {
-    fail ('Watch conditions cannot have both a handler and args list defined')
+    fail('Watch conditions cannot have both a handler and args list defined')
   }
 
   if (! $type ) {
-    fail ('All watch conditions must have a type defined')
+    fail('All watch conditions must have a type defined')
   }
 
   case $type {
@@ -107,7 +108,7 @@ define consul::watch(
       }
     }
     'service': {
-      if (! service ){
+      if (! $service ){
         fail('service is required for watch type of [service]')
       }
       $type_hash = {
@@ -139,13 +140,13 @@ define consul::watch(
     watches => [delete_undef_values(merge($basic_hash, $type_hash))],
   }
 
-  File[$consul::config_dir]
-  -> file { "${consul::config_dir}/watch_${id}.json":
+  file { "${consul::config_dir}/watch_${id}.json":
     ensure  => $ensure,
     owner   => $consul::user_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
-  } ~> Class['consul::reload_service']
+    notify  => Class['consul::reload_service'],
+  }
 
 }
