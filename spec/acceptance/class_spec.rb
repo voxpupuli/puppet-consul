@@ -151,6 +151,8 @@ describe 'consul class' do
     end
   end
   context 'with new ACL system' do
+    acl_master_token = '222bf65c-2477-4003-8f8e-842a4b394d8d'
+
     it 'should work with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
@@ -175,11 +177,11 @@ describe 'consul class' do
                 'default_policy' => 'allow',
                 'down_policy'    => 'extend-cache',
                 'tokens'         => {
-                  'master' => '222bf65c-2477-4003-8f8e-842a4b394d8d'
+                  'master' => '#{acl_master_token}'
                 }
               },
           },
-          acl_api_token    => '222bf65c-2477-4003-8f8e-842a4b394d8d',
+          acl_api_token    => '#{acl_master_token}',
           acl_api_hostname => '127.0.0.1',
           acl_api_tries    => 10,
           tokens => {
@@ -218,15 +220,15 @@ describe 'consul class' do
       its(:stdout) { should match %r{Consul v1.4.4} }
     end
 
-    describe command('consul acl token list --token 222bf65c-2477-4003-8f8e-842a4b394d8d | grep Description') do
+    describe command("consul acl token list --token #{acl_master_token} | grep Description") do
       its(:stdout) { should match %r{test_token_xyz} }
     end
 
-    describe command("consul acl token list --token 222bf65c-2477-4003-8f8e-842a4b394d8d | grep -v Local | grep -v Create | grep -v Legacy | sed s/'.* - '//g") do
+    describe command("consul acl token list --token #{acl_master_token} | grep -v Local | grep -v Create | grep -v Legacy | sed s/'.* - '//g") do
       its(:stdout) { should include "Description:  test_token_xyz\nPolicies:\ntest_policy_abc" }
     end
 
-    describe command('consul acl policy read --name test_policy_abc --token 222bf65c-2477-4003-8f8e-842a4b394d8d') do
+    describe command("consul acl policy read --name test_policy_abc --token #{acl_master_token}") do
       its(:stdout) { should include "Rules:\nservice_prefix \"tst_service\" {\n  policy = \"read\"\n}\n\nkey \"test_key\" {\n  policy = \"write\"\n}\n\nnode_prefix \"\" {\n  policy = \"deny\"\n}" }
     end
   end
