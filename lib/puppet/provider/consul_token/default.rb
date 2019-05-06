@@ -62,9 +62,9 @@ Puppet::Type.type(:consul_token).provide(
       @resource[:accessor_id] = created_token.accessor_id
 
       Puppet.info("Created token #{created_token.description} with Accessor ID  #{created_token.accessor_id}")
-    elsif @resource[:ensure] != :absent && @existing_token && @existing_token.is_policy_list_equal(@resource[:policies_by_name], @resource[:policies_by_id])
+    elsif @resource[:ensure] != :absent && @existing_token && !@existing_token.is_policy_list_equal(@resource[:policies_by_id], @resource[:policies_by_name])
       new_policy_list = @client.update_token(@existing_token.accessor_id, @existing_token.description, @resource[:policies_by_name], @resource[:policies_by_id])
-      @existing_policy.policies = new_policy_list
+      @existing_token.policies = new_policy_list
 
       Puppet.info("Updated token #{@existing_token.description} (Accessor ID: #{@existing_token.accessor_id}")
     elsif @resource[:ensure] == :absent && @existing_token

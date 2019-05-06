@@ -98,7 +98,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
             'Policies'    => []
         }
 
-        stub_request(:put, "http://localhost:8500/v1/acl/token").
+        create_response_stub = stub_request(:put, "http://localhost:8500/v1/acl/token").
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'},
                  :body    => "{\"Description\":\"test_token\",\"Local\":false,\"Policies\":[{\"Name\":\"test_policy_1\"},{\"ID\":\"652f27c9-d08d-412b-8985-9becc9c42fb2\"}]}").
             to_return(:status => 200, :body => JSON.dump(response), :headers => {})
@@ -109,6 +109,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
         resource.provider.flush
 
         expect(resource[:accessor_id]).to eql('f28febb0-8746-4b6a-b6bf-03cde92005a1')
+        assert_requested(create_response_stub)
       end
     end
 
@@ -137,7 +138,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
             'Policies'    => []
         }
 
-        stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
+        update_response_stub = stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'},
                  :body    => "{\"Description\":\"test_token\",\"Local\":false,\"Policies\":[{\"Name\":\"test_policy_1\"},{\"ID\":\"652f27c9-d08d-412b-8985-9becc9c42fb2\"}]}").
             to_return(:status => 200, :body => JSON.dump(update_response), :headers => {})
@@ -146,6 +147,8 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
         described_class.reset
         resource.provider.create
         resource.provider.flush
+
+        assert_requested(update_response_stub)
       end
 
       it 'should update policies in case of missing policy Name' do
@@ -172,7 +175,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
             'Policies'    => []
         }
 
-        stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
+        update_response_stub = stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'},
                  :body    => "{\"Description\":\"test_token\",\"Local\":false,\"Policies\":[{\"Name\":\"test_policy_1\"},{\"ID\":\"652f27c9-d08d-412b-8985-9becc9c42fb2\"}]}").
             to_return(:status => 200, :body => JSON.dump(update_response), :headers => {})
@@ -181,6 +184,8 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
         described_class.reset
         resource.provider.create
         resource.provider.flush
+
+        assert_requested(update_response_stub)
       end
 
       it 'should update policies in case of surplus policy' do
@@ -215,7 +220,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
             'Policies'    => []
         }
 
-        stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
+        update_response_stub = stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'},
                  :body    => "{\"Description\":\"test_token\",\"Local\":false,\"Policies\":[{\"Name\":\"test_policy_1\"},{\"ID\":\"652f27c9-d08d-412b-8985-9becc9c42fb2\"}]}").
             to_return(:status => 200, :body => JSON.dump(update_response), :headers => {})
@@ -224,6 +229,49 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
         described_class.reset
         resource.provider.create
         resource.provider.flush
+
+        assert_requested(update_response_stub)
+      end
+
+      it 'should update policies in case of other policy_name' do
+        list_response = [
+            {
+                'AccessorID'  => '803ba11a-afe9-4198-a179-ef25a2adbf0b',
+                'Description' => 'test_token',
+                'Policies'    => [
+                    {
+                        'ID'   => '91c889b8-88fe-46d0-bdbd-54447fcd191b',
+                        'Name' => 'other_name'
+                    },
+                    {
+                        'ID'   => '652f27c9-d08d-412b-8985-9becc9c42fb2',
+                        'Name' => 'test_policy_2'
+                    }
+                ]
+            },
+        ]
+
+        stub_request(:get, "http://localhost:8500/v1/acl/tokens").
+            with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'}).
+            to_return(:status => 200, :body => JSON.dump(list_response), :headers => {})
+
+        update_response = {
+            'AccessorID'  => 'f28febb0-8746-4b6a-b6bf-03cde92005a1',
+            'Description' => 'test_token',
+            'Policies'    => []
+        }
+
+        update_response_stub = stub_request(:put, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
+            with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'},
+                 :body    => "{\"Description\":\"test_token\",\"Local\":false,\"Policies\":[{\"Name\":\"test_policy_1\"},{\"ID\":\"652f27c9-d08d-412b-8985-9becc9c42fb2\"}]}").
+            to_return(:status => 200, :body => JSON.dump(update_response), :headers => {})
+
+        described_class.prefetch(resources)
+        described_class.reset
+        resource.provider.create
+        resource.provider.flush
+
+        assert_requested(update_response_stub)
       end
 
       it 'no update if policies match' do
@@ -269,7 +317,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'}).
             to_return(:status => 200, :body => JSON.dump(list_response), :headers => {})
 
-        stub_request(:delete, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
+        delete_response_stub = stub_request(:delete, "http://localhost:8500/v1/acl/token/803ba11a-afe9-4198-a179-ef25a2adbf0b").
             with(:headers => {'X-Consul-Token'=> 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent'=>'Ruby'}).
             to_return(:status => 200, :body => '[]', :headers => {})
 
@@ -278,6 +326,8 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
         resource[:ensure] = :absent
         resource.provider.destroy
         resource.provider.flush
+
+        assert_requested(delete_response_stub)
       end
 
       it 'should not delete absent non-existing token' do
