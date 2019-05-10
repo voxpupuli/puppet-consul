@@ -223,6 +223,7 @@ consul_policy {'test_policy':
 }
 
 consul_token {'test_token':
+  accessor_id       => '7c4e3f11-786d-44e6-ac1d-b99546a1ccbd',
   policies_by_name  => [
    'test_policy'
   ],
@@ -232,7 +233,7 @@ consul_token {'test_token':
 }
 ```
 
-All resource names need to be unique, as they are either used for token mapping or directly as Consul policy name.
+Predefining token secret is supported by setting secret_id property.
 
 Externally created tokens and policies may be used by referencing them by ID (Token: accessor_id property, Policy: ID property, linking: policies_by_id property)
 
