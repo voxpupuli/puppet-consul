@@ -12,14 +12,7 @@ Puppet::Type.type(:consul_token).provide(
   def self.prefetch(resources)
     resources.each do |name, resource|
       tokens = list_tokens(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries])
-      # Trying to find the token object by comparing its description to resource name
-      token = tokens.select{|token| token.description == name}
-
-      if token.any? && resource[:accessor_id] != ''
-        resource[:accessor_id] = token.first.accessor_id
-      else
-        resource[:accessor_id] = ''
-      end
+      token = tokens.select{|token| token.accessor_id == resource[:accessor_id]}
 
       resource.provider = new({}, @client, token.any? ? token.first : nil)
     end
@@ -58,8 +51,9 @@ Puppet::Type.type(:consul_token).provide(
 
   def flush
     if @resource[:ensure] != :absent && !@existing_token
-      created_token = @client.create_token(@resource[:name], @resource[:policies_by_name], @resource[:policies_by_id], @resource[:api_tries])
+      created_token = @client.create_token(@resource[:accessor_id], @resource[:name], @resource[:policies_by_name], @resource[:policies_by_id], @resource[:api_tries], @resource[:secret_id] ? @resource[:secret_id] : nil )
       @resource[:accessor_id] = created_token.accessor_id
+      @resource[:secret_id] = created_token.secret_id
 
       Puppet.info("Created token #{created_token.description} with Accessor ID  #{created_token.accessor_id}")
     elsif @resource[:ensure] != :absent && @existing_token && !@existing_token.is_policy_list_equal(@resource[:policies_by_id], @resource[:policies_by_name])
@@ -82,11 +76,12 @@ Puppet::Type.type(:consul_token).provide(
 end
 
 class ConsulToken
-  attr_reader :accessor_id, :description, :policies
+  attr_reader :accessor_id, :secret_id, :description, :policies
   attr_writer :policies
 
-  def initialize (accessor_id, description, policies)
+  def initialize (accessor_id, secret_id, description, policies)
     @accessor_id = accessor_id
+    @secret_id = secret_id
     @description = description
     @policies = policies
   end
@@ -124,27 +119,27 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
 
     collection = []
     response.each {|item|
-      collection.push(ConsulToken.new(item['AccessorID'], item['Description'], parse_policies(item['Policies'])))
+      collection.push(ConsulToken.new(item['AccessorID'], item['SecretID'], item['Description'], parse_policies(item['Policies'])))
     }
 
     collection
   end
 
-  def create_token(description, policies_by_name, policies_by_id, tries)
+  def create_token(accessor_id, description, policies_by_name, policies_by_id, tries, secret_id = nil)
     begin
-      body = encode_body(description, policies_by_name, policies_by_id)
+      body = encode_body(accessor_id, description, policies_by_name, policies_by_id, secret_id)
       response = put('/token', body, tries)
     rescue StandardError => e
       Puppet.warning("Unable to create token #{description}: #{e.message}")
       return nil
     end
 
-    ConsulToken.new(response['AccessorID'], description, parse_policies(response['Policies']))
+    ConsulToken.new(response['AccessorID'], response['SecretID'], description, parse_policies(response['Policies']))
   end
 
   def update_token(accessor_id, description, policies_by_name, policies_by_id)
     begin
-      body = encode_body(description, policies_by_name, policies_by_id)
+      body = encode_body(accessor_id, description, policies_by_name, policies_by_id, nil)
       response = put('/token/' + accessor_id, body)
     rescue StandardError => e
       Puppet.warning("Unable to update token #{description} (Accessor ID: #{accessor_id}): #{e.message}")
@@ -180,7 +175,7 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
     policy_links
   end
 
-  def encode_body(description, policies_by_name, policies_by_id)
+  def encode_body(accessor_id, description, policies_by_name, policies_by_id, secret_id = nil)
     policies = []
     policies_by_name.each {|name|
       policies.push({'Name' => name})
@@ -191,9 +186,14 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
     }
 
     body = {}
+    body.store('AccessorID', accessor_id)
     body.store('Description', description)
     body.store('Local', false)
     body.store('Policies', policies)
+
+    if !secret_id.nil? && !secret_id.to_s.strip.empty?
+      body.store('SecretID', secret_id)
+    end
 
     body
   end

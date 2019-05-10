@@ -157,7 +157,7 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
-          version        => '1.4.4',
+          version        => '1.5.0',
           manage_service => true,
           config_hash    => {
               'datacenter'         => 'east-aws',
@@ -186,6 +186,7 @@ describe 'consul class' do
           acl_api_tries    => 10,
           tokens => {
             'test_token_xyz' => {
+              'accessor_id'      => '7c4e3f11-786d-44e6-ac1d-b99546a1ccbd',
               'policies_by_name' => ['test_policy_abc']
             }
           },
@@ -217,7 +218,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.4.4} }
+      its(:stdout) { should match %r{Consul v1.5.0} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep Description") do
@@ -225,7 +226,7 @@ describe 'consul class' do
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep -v Local | grep -v Create | grep -v Legacy | sed s/'.* - '//g") do
-      its(:stdout) { should include "Description:  test_token_xyz\nPolicies:\ntest_policy_abc" }
+      its(:stdout) { should include "test_token_xyz\nPolicies:\ntest_policy_abc" }
     end
 
     describe command("consul acl policy read --name test_policy_abc --token #{acl_master_token}") do

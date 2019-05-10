@@ -14,6 +14,12 @@ describe Puppet::Type.type(:consul_token) do
     end.to raise_error(Puppet::Error, /ID must be a string/)
   end
 
+  it 'should fail if secret_id ist not a string' do
+    expect do
+      Puppet::Type.type(:consul_token).new(:name => 'foo', :secret_id => {})
+    end.to raise_error(Puppet::Error, /ID must be a string/)
+  end
+
   it 'should fail if policy name list is not an array' do
     expect do
       Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_name => 'abc')

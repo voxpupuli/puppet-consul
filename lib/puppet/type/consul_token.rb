@@ -19,6 +19,15 @@ Puppet::Type.newtype(:consul_token) do
     end
   end
 
+  newproperty(:secret_id) do
+    desc 'Secret ID of the token'
+    validate do |value|
+      raise ArgumentError, "Secret ID must be a string" if not value.is_a?(String)
+    end
+
+    defaultto ''
+  end
+
   newparam(:policies_by_name) do
     desc 'List of policy names assigned to the token'
     validate do |value|
