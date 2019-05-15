@@ -85,7 +85,7 @@ Puppet::Type.type(:consul_policy).provide(
     if @resource[:ensure] == :absent
       if @existing_policy
         @client.delete_policy(@existing_policy.id)
-        Puppet.notice(" Deleted Consul ACL policy #{@existing_policy.name} (ID: #{@existing_policy.id})")
+        Puppet.notice("Deleted Consul ACL policy #{@existing_policy.name} (ID: #{@existing_policy.id})")
       end
 
       return
@@ -103,7 +103,7 @@ Puppet::Type.type(:consul_policy).provide(
       @existing_policy.rules = @rules_encoded
 
       @client.update_policy(@existing_policy)
-      Puppet.notice(" Updated Consul ACL policy #{@existing_policy.name} (ID: #{@existing_policy.id})")
+      Puppet.notice("Updated Consul ACL policy #{@existing_policy.name} (ID: #{@existing_policy.id})")
     end
   end
 
