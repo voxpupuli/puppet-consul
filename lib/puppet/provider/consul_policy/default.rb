@@ -170,7 +170,7 @@ class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
     begin
       put('/policy/' + policy.id, body)
     rescue StandardError => e
-      Puppet.warning("Unable to update policy #{policy.name} (ID: #{policy.ID}): #{e.message}")
+      Puppet.warning("Unable to update policy #{policy.name} (ID: #{policy.id}): #{e.message}")
     end
   end
 
