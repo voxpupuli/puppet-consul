@@ -1,0 +1,70 @@
+require 'spec_helper'
+
+describe Puppet::Type.type(:consul_policy) do
+
+  it 'should fail if no name is provided' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(:rules => {})
+    end.to raise_error(Puppet::Error, /Title or name must be provided/)
+  end
+
+  it 'should fail if ID ist not a string' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(:name => 'foo', :id => {})
+    end.to raise_error(Puppet::Error, /ID must be a string/)
+  end
+
+  it 'should fail if description ist not a string' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(:name => 'foo', :description => {})
+    end.to raise_error(Puppet::Error, /Description must be a string/)
+  end
+
+  context 'with name defined' do
+    rules = [
+        {
+            :resource    =>  'service_prefix',
+            :segment     => 'test_service',
+            :disposition => 'read'
+        },
+        {
+            :resource    =>  'key_prefix',
+            :segment     => 'key',
+            :disposition => 'write'
+        }
+    ]
+
+    before :each do
+      @policy = Puppet::Type.type(:consul_policy).new(
+        :name         => 'testing',
+        :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+        :description  => 'test description',
+        :rules        => rules
+      )
+    end
+
+    it 'should accept an id' do
+      expect(@policy[:id]).to eq('39c75e12-7f43-0a40-dfba-9aa3fcda08d4')
+    end
+
+    it 'should accept a description' do
+      expect(@policy[:description]).to eq('test description')
+    end
+
+    it 'should accept rules' do
+      expect(@policy[:rules]).to eq(rules)
+    end
+
+    it 'should default to localhost' do
+      expect(@policy[:hostname]).to eq('localhost')
+    end
+
+    it 'should default to http' do
+      expect(@policy[:protocol]).to eq(:http)
+    end
+
+    it 'should default to port 8500' do
+      expect(@policy[:port]).to eq(8500)
+    end
+  end
+end
