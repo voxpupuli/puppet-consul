@@ -21,15 +21,27 @@ Puppet::Type.newtype(:consul_policy) do
     defaultto ''
   end
 
-  newparam(:description) do
+  newproperty(:description) do
     desc 'Description of the policy'
     validate do |value|
       raise ArgumentError, "Description must be a string" if not value.is_a?(String)
     end
   end
 
-  newparam(:rules) do
+  newproperty(:rules, :array_matching => :all) do
     desc 'List of ACL rules for this policy'
+    validate do |value|
+      raise ArgumentError, "Policy rule must be a hash" unless value.is_a?(Hash)
+
+      raise ArgumentError, "Policy rule needs to specify a resource" unless value.key?('resource')
+      raise ArgumentError, "Policy rule needs to specify a segment" unless value.key?('segment')
+      raise ArgumentError, "Policy rule needs to specify a disposition" unless value.key?('disposition')
+
+      raise ArgumentError, "Policy rule resource must be a string" unless value['resource'].is_a?(String)
+      raise ArgumentError, "Policy rule segment must be a string" unless value['segment'].is_a?(String)
+      raise ArgumentError, "Policy rule disposition must be a string" unless value['disposition'].is_a?(String)
+    end
+
     defaultto []
   end
 

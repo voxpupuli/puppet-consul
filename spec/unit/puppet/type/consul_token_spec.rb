@@ -22,14 +22,14 @@ describe Puppet::Type.type(:consul_token) do
 
   it 'should fail if policy name list is not an array' do
     expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_name => 'abc')
-    end.to raise_error(Puppet::Error, /Policy name list must be an array/)
+      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_name => [[]])
+    end.to raise_error(Puppet::Error, /Policy name list must be an array of strings/)
   end
 
   it 'should fail if policy ID list is not an array' do
     expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_id => 'abc')
-    end.to raise_error(Puppet::Error, /Policy ID list must be an array/)
+      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_id => [[]])
+    end.to raise_error(Puppet::Error, /Policy ID list must be an array of strings/)
   end
 
   context 'with name defined' do
