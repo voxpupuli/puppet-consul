@@ -35,7 +35,7 @@ Puppet::Type.type(:consul_policy).provide(
         existing_policy = nil
       end
 
-      resource.provider = new({}, @client, rules_encoded, existing_policy)
+      resource.provider = new({}, @client, rules_encoded, existing_policy, resource)
     end
   end
 
@@ -60,7 +60,7 @@ Puppet::Type.type(:consul_policy).provide(
     @all_policies
   end
 
-  def initialize(messages, client = nil, rules_encoded = '', existing_policy = nil)
+  def initialize(messages, client = nil, rules_encoded = '', existing_policy = nil, resource = nil)
     super(messages)
     @property_flush = {}
 
@@ -70,8 +70,13 @@ Puppet::Type.type(:consul_policy).provide(
 
     if existing_policy
       @property_hash = {
-          :id => existing_policy.id
+          :id          => existing_policy.id,
+          :description => existing_policy.description
       }
+
+      if rules_encoded == existing_policy.rules
+        @property_hash[:rules] = resource[:rules]
+      end
     end
   end
 
