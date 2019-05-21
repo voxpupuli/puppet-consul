@@ -205,7 +205,7 @@ describe 'consul class' do
 
       # Run it twice to test for idempotency
       apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: false)
+      apply_manifest(pp, catch_changes: true)
     end
 
     describe file('/opt/consul') do

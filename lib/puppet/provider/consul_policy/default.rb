@@ -67,6 +67,12 @@ Puppet::Type.type(:consul_policy).provide(
     @client = client
     @rules_encoded = rules_encoded
     @existing_policy = existing_policy
+
+    if existing_policy
+      @property_hash = {
+          :id => existing_policy.id
+      }
+    end
   end
 
   def exists?
