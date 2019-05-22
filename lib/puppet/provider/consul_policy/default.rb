@@ -81,7 +81,7 @@ Puppet::Type.type(:consul_policy).provide(
   end
 
   def exists?
-    @property_hash[:ensure] = :present
+    @existing_policy
   end
 
   def create
