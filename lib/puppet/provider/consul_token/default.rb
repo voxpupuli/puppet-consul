@@ -53,7 +53,7 @@ Puppet::Type.type(:consul_token).provide(
   end
 
   def exists?
-    @property_hash[:ensure] = :present
+    @existing_token
   end
 
   def create
