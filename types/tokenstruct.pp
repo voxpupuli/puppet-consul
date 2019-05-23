@@ -1,5 +1,6 @@
 type Consul::TokenStruct = Struct[{
   accessor_id      => String[1],
+  ensure           => Optional[Enum['present', 'absent']],
   secret_id        => Optional[String[1]],
   policies_by_name => Optional[Array[String]],
   policies_by_id   => Optional[Array[String]],

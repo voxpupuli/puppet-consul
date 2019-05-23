@@ -28,19 +28,19 @@ Puppet::Type.newtype(:consul_token) do
     defaultto ''
   end
 
-  newparam(:policies_by_name) do
+  newproperty(:policies_by_name, :array_matching => :all) do
     desc 'List of policy names assigned to the token'
     validate do |value|
-      raise ArgumentError, "Policy name list must be an array" if not value.is_a?(Array)
+      raise ArgumentError, "Policy name list must be an array of strings" if not value.is_a?(String)
     end
 
     defaultto []
   end
 
-  newparam(:policies_by_id) do
+  newproperty(:policies_by_id, :array_matching => :all) do
     desc 'List of policy IDs assigned to the token'
     validate do |value|
-      raise ArgumentError, "Policy ID list must be an array" if not value.is_a?(Array)
+      raise ArgumentError, "Policy ID list must be an array of strings" if not value.is_a?(String)
     end
 
     defaultto []
