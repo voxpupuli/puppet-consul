@@ -14,7 +14,7 @@ Puppet::Type.type(:consul_token).provide(
       tokens = list_tokens(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries])
       token = tokens.select{|token| token.accessor_id == resource[:accessor_id]}
 
-      resource.provider = new({}, @client, token.any? ? token.first : nil)
+      resource.provider = new({}, @client, token.any? ? token.first : nil, resource)
     end
   end
 
@@ -29,16 +29,31 @@ Puppet::Type.type(:consul_token).provide(
     @token_collection
   end
 
-  def initialize(messages, client = nil, existing_token = nil)
+  def initialize(messages, client = nil, existing_token = nil, resource = nil)
     super(messages)
     @property_flush = {}
 
     @client = client
     @existing_token = existing_token
+
+    if resource
+      @property_hash = {
+          :secret_id  => resource[:secret_id],
+      }
+    end
+
+    if existing_token
+      @property_hash[:accessor_id] = existing_token.accessor_id
+
+      if existing_token.is_policy_list_equal(resource[:policies_by_id], resource[:policies_by_name])
+        @property_hash[:policies_by_id] = resource[:policies_by_id]
+        @property_hash[:policies_by_name] = resource[:policies_by_name]
+      end
+    end
   end
 
   def exists?
-    @property_hash[:ensure] = :present
+    @existing_token
   end
 
   def create

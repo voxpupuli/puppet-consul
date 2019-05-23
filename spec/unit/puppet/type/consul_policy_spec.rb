@@ -4,7 +4,7 @@ describe Puppet::Type.type(:consul_policy) do
 
   it 'should fail if no name is provided' do
     expect do
-      Puppet::Type.type(:consul_policy).new(:rules => {})
+      Puppet::Type.type(:consul_policy).new(:id => {}, :rules => {})
     end.to raise_error(Puppet::Error, /Title or name must be provided/)
   end
 
@@ -20,17 +20,127 @@ describe Puppet::Type.type(:consul_policy) do
     end.to raise_error(Puppet::Error, /Description must be a string/)
   end
 
+  it 'should fail if rules is not a hash' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => 'abc'
+      )
+    end.to raise_error(Puppet::Error, /Policy rule must be a hash/)
+  end
+
+  it 'should fail if rule resource is missing' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'segment'     => 'test_service',
+                  'disposition' => 'read'
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule needs to specify a resource/)
+  end
+
+  it 'should fail if rule segment is missing' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'resource'    =>  'service_prefix',
+                  'disposition' => 'read'
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule needs to specify a segment/)
+  end
+
+  it 'should fail if rule disposition is missing' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'resource'    =>  'service_prefix',
+                  'segment'     => 'test_service',
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule needs to specify a disposition/)
+  end
+
+  it 'should fail if rule resource is not a string' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'resource'    => [],
+                  'segment'     => 'test_service',
+                  'disposition' => 'read'
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule resource must be a string/)
+  end
+
+  it 'should fail if rule segment is not a string' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'resource'    => 'key_prefix',
+                  'segment'     => [],
+                  'disposition' => 'read'
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule segment must be a string/)
+  end
+
+  it 'should fail if rule disposition is not a string' do
+    expect do
+      Puppet::Type.type(:consul_policy).new(
+          :name         => 'testing',
+          :id           => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          :description  => 'test description',
+          :rules        => [
+              {
+                  'resource'    => 'key_prefix',
+                  'segment'     => 'test_service',
+                  'disposition' => []
+              }
+          ]
+      )
+    end.to raise_error(Puppet::Error, /Policy rule disposition must be a string/)
+  end
+
   context 'with name defined' do
     rules = [
         {
-            :resource    =>  'service_prefix',
-            :segment     => 'test_service',
-            :disposition => 'read'
+            'resource'    =>  'service_prefix',
+            'segment'     => 'test_service',
+            'disposition' => 'read'
         },
         {
-            :resource    =>  'key_prefix',
-            :segment     => 'key',
-            :disposition => 'write'
+            'resource'    =>  'key_prefix',
+            'segment'     => 'key',
+            'disposition' => 'write'
         }
     ]
 

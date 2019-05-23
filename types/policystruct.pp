@@ -1,5 +1,6 @@
 type Consul::PolicyStruct = Struct[{
   id            => Optional[String[1]],
+  ensure        => Optional[Enum['present', 'absent']],
   description   => Optional[String[0]],
   rules         => Optional[Array[Struct[{
     resource    => String[1],

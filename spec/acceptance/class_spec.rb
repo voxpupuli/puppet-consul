@@ -188,6 +188,11 @@ describe 'consul class' do
             'test_token_xyz' => {
               'accessor_id'      => '7c4e3f11-786d-44e6-ac1d-b99546a1ccbd',
               'policies_by_name' => ['test_policy_abc']
+            },
+            'test_token_absent' => {
+              'accessor_id'      => '10381ad3-2837-43a6-b1ea-e27b7d53a749',
+              'policies_by_name' => ['test_policy_abc'],
+              'ensure'           => 'absent'
             }
           },
           policies => {
@@ -198,6 +203,13 @@ describe 'consul class' do
                 {'resource' => 'key', 'segment' => 'test_key', 'disposition' => 'write'},
                 {'resource' => 'node_prefix', 'segment' => '', 'disposition' => 'deny'},
               ],
+            },
+            'test_policy_absent' => {
+              'description' => "This policy should not exists",
+              'rules'       => [
+                {'resource' => 'service_prefix', 'segment' => 'test_segment', 'disposition' => 'read'}
+              ],
+              'ensure'      => 'absent'
             }
           }
         }
@@ -205,7 +217,7 @@ describe 'consul class' do
 
       # Run it twice to test for idempotency
       apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: false)
+      apply_manifest(pp, catch_changes: true)
     end
 
     describe file('/opt/consul') do
