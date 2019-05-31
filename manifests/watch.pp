@@ -13,7 +13,7 @@
 #   Defaults to 'present'
 #
 # [*event_name*]
-#   Name of an event to watch for.
+#   Name of an event to watch for, defaults to the resource title.
 #
 # [*handler*]
 #   Full path to the script that will be excuted. This parameter is deprecated
@@ -51,7 +51,7 @@ define consul::watch (
   $args                          = undef,
   $datacenter                    = undef,
   $ensure                        = present,
-  $event_name                    = undef,
+  $event_name                    = $title,
   $handler                       = undef,
   $key                           = undef,
   $keyprefix                     = undef,
@@ -64,7 +64,6 @@ define consul::watch (
 ) {
 
   include consul
-  $id = $title
 
   $basic_hash = {
     'type'       => $type,
@@ -140,7 +139,7 @@ define consul::watch (
     watches => [delete_undef_values(merge($basic_hash, $type_hash))],
   }
 
-  file { "${consul::config_dir}/watch_${id}.json":
+  file { "${consul::config_dir}/watch_${event_name}.json":
     ensure  => $ensure,
     owner   => $consul::user_real,
     group   => $consul::group_real,
