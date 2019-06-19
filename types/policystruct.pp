@@ -4,7 +4,7 @@ type Consul::PolicyStruct = Struct[{
   description   => Optional[String[0]],
   rules         => Optional[Array[Struct[{
     resource    => String[1],
-    segment     => String[0],
+    segment     => Optional[String[0]],
     disposition => String[1],
   }]]],
   acl_api_token => Optional[String[1]],
