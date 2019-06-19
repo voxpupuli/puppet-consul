@@ -34,11 +34,11 @@ Puppet::Type.newtype(:consul_policy) do
       raise ArgumentError, "Policy rule must be a hash" unless value.is_a?(Hash)
 
       raise ArgumentError, "Policy rule needs to specify a resource" unless value.key?('resource')
-      raise ArgumentError, "Policy rule needs to specify a segment" unless value.key?('segment')
+      raise ArgumentError, "Policy rule needs to specify a segment" unless value.key?('segment') || ['acl', 'operator'].include?(value['resource'])
       raise ArgumentError, "Policy rule needs to specify a disposition" unless value.key?('disposition')
 
       raise ArgumentError, "Policy rule resource must be a string" unless value['resource'].is_a?(String)
-      raise ArgumentError, "Policy rule segment must be a string" unless value['segment'].is_a?(String)
+      raise ArgumentError, "Policy rule segment must be a string" unless value['segment'].is_a?(String) || ['acl', 'operator'].include?(value['resource'])
       raise ArgumentError, "Policy rule disposition must be a string" unless value['disposition'].is_a?(String)
     end
 
