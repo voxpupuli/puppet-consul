@@ -202,6 +202,7 @@ describe 'consul class' do
                 {'resource' => 'service_prefix', 'segment' => 'tst_service', 'disposition' => 'read'},
                 {'resource' => 'key', 'segment' => 'test_key', 'disposition' => 'write'},
                 {'resource' => 'node_prefix', 'segment' => '', 'disposition' => 'deny'},
+                {'resource' => 'operator', 'disposition' => 'read'},
               ],
             },
             'test_policy_absent' => {
