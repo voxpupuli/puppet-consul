@@ -232,8 +232,8 @@ consul_token {'test_token':
   ],
 }
 ```
-Here is an exmaple to automatically create a policy and acl for each host. 
-For development environments `acl_api_token` can be the bootstrap token. For production it should be a dedicated token with access to write/read from the acls. 
+Here is an example to automatically create a policy and token for each host. 
+For development environments `acl_api_token` can be the bootstrap token. For production it should be a dedicated token with access to write/read from the acls.
 
 ```
   # Crate ACL policy that allows nodes to update themselves and read others
