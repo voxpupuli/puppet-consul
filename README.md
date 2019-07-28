@@ -235,6 +235,10 @@ consul_token {'test_token':
 Here is an example to automatically create a policy and token for each host. 
 For development environments `acl_api_token` can be the bootstrap token. For production it should be a dedicated token with access to write/read from the acls.
 
+`accessor_id` must be provided. It is a uuid. It can be generated in several different ways. 
+1. Statically generated and assigned to the resource. See `/usr/bin/uuidgen` on unix systems. 
+2. Dynamically derived from the `$::uuid` fact in puppet (useful when `consul_token` has 1:1 mapping to hosts). 
+3. Dynamically derived from arbitrary string using `fqdn_uuid()` (useful for giving all instances of a resource unique id).  
 ```
   # Crate ACL policy that allows nodes to update themselves and read others
   consul_policy { $::hostname:
@@ -255,6 +259,7 @@ For development environments `acl_api_token` can be the bootstrap token. For pro
   }
 
   consul_token { $::hostname:
+    accessor_id => fqdn_uuid($::hostname),
     policies_by_name => ["${::hostname}"],
     acl_api_token => $acl_api_token,
   }
