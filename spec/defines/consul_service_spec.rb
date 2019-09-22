@@ -165,6 +165,24 @@ describe 'consul::service' do
             .with_content(/"port":"5"/)
         }
       end
+      describe 'with weight' do
+        let(:params) {{
+          'service_config_hash' =>  {
+            'weights' => {
+              'passing' => 10,
+              'warning' => 1
+            }
+          }      
+        }}
+        it {
+          should contain_file("/etc/consul/service_my_service.json") \
+            .with_content(/"passing":(\s|)10/)
+        }
+        it {
+          should_not contain_file("/etc/consul/service_my_service.json") \
+            .with_content(/"passing":(\s|)"10"/)
+        }
+      end
       describe 'with both ttl and script' do
         let(:params) {{
           'checks' => [
