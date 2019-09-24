@@ -42,6 +42,7 @@ class consul::reload_service {
       command     => $command,
       refreshonly => true,
       tries       => 3,
+      try_sleep   => 10,
     }
   }
 }
