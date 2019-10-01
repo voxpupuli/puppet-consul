@@ -67,7 +67,7 @@ define consul::check (
   $timeout    = undef,
   $token      = undef,
   $ttl        = undef,
-  $grpc       = undef,
+  String[1] $grpc       = undef,
 ) {
   include consul
 
