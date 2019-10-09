@@ -20,7 +20,7 @@ class consul::reload_service {
     }
 
     # The reload service should connect to http if possible (http port different from -1)
-    if $consul::http_port != '-1' {
+    if $consul::http_port != -1 {
       $reload_options = "-http-addr=${http_addr}:${consul::http_port}"
     }
     elsif $consul::verify_incoming  { # in case incoming connections are verified correct certificate files should be used
