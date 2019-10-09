@@ -277,7 +277,7 @@ class consul (
   if dig($config_hash_real,'verify_incoming') {
     $verify_incoming = $config_hash_real['verify_incoming']
   } else {
-    $verify_incoming = False
+    $verify_incoming = false
   }
 
   if dig($config_hash_real,'cert_file') {
