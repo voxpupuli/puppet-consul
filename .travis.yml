@@ -7,9 +7,6 @@ script: bundle exec rake $CHECK
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.1.9
-    env: PUPPET_VERSION="~> 4.0" CHECK=test PARALLEL_TEST_PROCESSORS=12
-    bundler_args: --without development
   - rvm: 2.4.4
     env: PUPPET_VERSION="~> 5.0" CHECK=test
     bundler_args: --without development
