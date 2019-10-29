@@ -23,11 +23,6 @@ matrix:
     sudo: required
   - rvm: 2.5.1
     dist: trusty
-    env: BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=ubuntu1404-64{hypervisor=docker} CHECK=beaker
-    services: docker
-    sudo: required
-  - rvm: 2.5.1
-    dist: trusty
     env: BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=ubuntu1604-64{hypervisor=docker} CHECK=beaker
     services: docker
     sudo: required
@@ -49,11 +44,6 @@ matrix:
   - rvm: 2.5.1
     dist: trusty
     env: BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet6 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=debian9-64{hypervisor=docker} CHECK=beaker
-    services: docker
-    sudo: required
-  - rvm: 2.5.1
-    dist: trusty
-    env: BEAKER_IS_PE=no BEAKER_PUPPET_COLLECTION=puppet6 PUPPET_INSTALL_TYPE=agent BEAKER_debug=true BEAKER_setfile=ubuntu1404-64{hypervisor=docker} CHECK=beaker
     services: docker
     sudo: required
   - rvm: 2.5.1
