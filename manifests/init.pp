@@ -112,7 +112,7 @@
 #   OS component in the name of the archive file containing the consul binary.
 #
 # [*package_ensure*]
-#   Only valid when the install_method == package. Defaults to `latest`.
+#   Only valid when the install_method == package. Defaults to `installed`.
 #
 # [*package_name*]
 #   Only valid when the install_method == package. Defaults to `consul`.
@@ -213,7 +213,7 @@ class consul (
   Boolean                               $manage_service              = true,
   Boolean                               $manage_user                 = $consul::params::manage_user,
   String[1]                             $os                          = $facts['kernel'].downcase,
-  String[1]                             $package_ensure              = 'latest',
+  String[1]                             $package_ensure              = 'installed',
   String[1]                             $package_name                = 'consul',
   Boolean                               $pretty_config               = false,
   Integer                               $pretty_config_indent        = 4,
