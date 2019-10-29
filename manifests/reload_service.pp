@@ -24,10 +24,10 @@ class consul::reload_service {
       $reload_options = "-http-addr=${http_addr}:${consul::http_port}"
     }
     elsif $consul::verify_incoming  { # in case incoming connections are verified correct certificate files should be used
-      $reload_options = "-http-addr=https://$(hostname):${consul::https_port} -client-cert=${consul::cert_file} -client-key=${consul::key_file}"
+      $reload_options = "-http-addr=https://localhost:${consul::https_port} -client-cert=${consul::cert_file} -client-key=${consul::key_file}"
     }
     else {
-      $reload_options = "-http-addr=https://$(hostname):${consul::https_port}}"
+      $reload_options = "-http-addr=https://localhost:${consul::https_port}}"
     }
 
 
@@ -38,6 +38,7 @@ class consul::reload_service {
 
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
+      environment => [ 'CONSUL_HTTP_SSL_VERIFY=false',],
       command     => $command,
       refreshonly => true,
       tries       => 3,
