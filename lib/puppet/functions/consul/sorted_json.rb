@@ -91,6 +91,8 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
           obj.keys.sort.each do |k|
             if k =~ /\A(node_meta|meta|tags)\z/ then
               quoted = true
+            elsif k =~ /\A(weights)\z/ then
+              quoted = false
             end
             ret.push(k.to_json << ":" << sorted_generate.call(obj[k]))
           end
