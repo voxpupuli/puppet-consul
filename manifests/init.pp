@@ -260,12 +260,36 @@ class consul (
     $http_port = 8500
   }
 
+  if dig($config_hash_real,'ports','https') {
+    $https_port = $config_hash_real['ports']['https']
+  } else {
+    $https_port = Undef
+  }
+
   if dig($config_hash_real,'addresses','http') {
     $http_addr = split($config_hash_real['addresses']['http'], ' ')[0]
   } elsif ($config_hash_real['client_addr']) {
     $http_addr = split($config_hash_real['client_addr'], ' ')[0]
   } else {
     $http_addr = '127.0.0.1'
+  }
+
+  if dig($config_hash_real,'verify_incoming') {
+    $verify_incoming = $config_hash_real['verify_incoming']
+  } else {
+    $verify_incoming = false
+  }
+
+  if dig($config_hash_real,'cert_file') {
+    $cert_file = $config_hash_real['cert_file']
+  } else {
+    $cert_file = Undef
+  }
+
+  if dig($config_hash_real,'key_file') {
+    $key_file = $config_hash_real['key_file']
+  } else {
+    $key_file = Undef
   }
 
   if $services {

@@ -1,6 +1,6 @@
 {
   "name": "KyleAnderson-consul",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "author": "Kyle Anderson <kyle@xkyle.com>",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -19,10 +19,6 @@
     {
       "name": "camptocamp/systemd",
       "version_requirement": ">= 1.1.1 < 3.0.0"
-    },
-    {
-      "name": "puppetlabs/powershell",
-      "version_requirement": ">= 2.1.3 < 3.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -47,7 +43,6 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "5",
         "6",
         "7"
       ]
@@ -55,7 +50,6 @@
     {
       "operatingsystem": "Scientific",
       "operatingsystemrelease": [
-        "5",
         "6",
         "7"
       ]
@@ -63,7 +57,6 @@
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "5",
         "6",
         "7"
       ]
@@ -71,7 +64,6 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "14.04",
         "16.04",
         "18.04"
       ]
@@ -127,7 +119,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.7.1 < 7.0.0"
+      "version_requirement": ">= 5.0.0 < 7.0.0"
     }
   ],
   "description": "Configures Consul by Hashicorp",
