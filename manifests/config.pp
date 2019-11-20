@@ -54,6 +54,7 @@ class consul::config (
       'systemd': {
         systemd::unit_file { 'consul.service':
           content => template('consul/consul.systemd.erb'),
+          path    => '/usr/lib/systemd/system',
           notify  => $notify_service,
         }
       }
