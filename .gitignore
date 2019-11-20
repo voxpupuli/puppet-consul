@@ -20,6 +20,7 @@
 /spec/fixtures/modules/
 /tmp/
 /vendor/
+/.vendor/
 /convert_report.txt
 /update_report.txt
 .DS_Store
