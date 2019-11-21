@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v6.0.0](https://github.com/solarkennedy/puppet-consul/tree/v6.0.0) (2019-10-30)
+## [v6.0.1](https://github.com/solarkennedy/puppet-consul/tree/v6.0.1) (2019-11-20)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v6.0.0...v6.0.1)
+
+**Fixed bugs:**
+
+- systemd: Start consul after network is really up [\#512](https://github.com/solarkennedy/puppet-consul/pull/512) ([bastelfreak](https://github.com/bastelfreak))
+- Add a sleep between tries of consul service reload [\#494](https://github.com/solarkennedy/puppet-consul/pull/494) ([cmd-ntrf](https://github.com/cmd-ntrf))
+
+## [v6.0.0](https://github.com/solarkennedy/puppet-consul/tree/v6.0.0) (2019-10-31)
 
 [Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v5.1.0...v6.0.0)
 
@@ -25,6 +34,7 @@ These should not affect the functionality of the module.
 
 **Merged pull requests:**
 
+- release 6.0.0 [\#510](https://github.com/solarkennedy/puppet-consul/pull/510) ([bastelfreak](https://github.com/bastelfreak))
 - drop puppetlabs/powershell dependency [\#506](https://github.com/solarkennedy/puppet-consul/pull/506) ([bastelfreak](https://github.com/bastelfreak))
 - Bump stdlib & archive versions [\#501](https://github.com/solarkennedy/puppet-consul/pull/501) ([jay7x](https://github.com/jay7x))
 - remove failing tests on centos6 + puppet 6 [\#500](https://github.com/solarkennedy/puppet-consul/pull/500) ([solarkennedy](https://github.com/solarkennedy))
