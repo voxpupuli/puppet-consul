@@ -57,6 +57,9 @@ RSpec.shared_examples 'handling_simple_types' do |pretty|
   it 'quotes values of node_meta' do
     is_expected.to run.with_params({'node_meta' => {'cpus' => 8 } },pretty).and_return(deprettyfy("{\n    \"node_meta\": {\n        \"cpus\": \"8\"\n    }\n}\n",pretty))
   end
+  it 'quotes values of args' do
+    is_expected.to run.with_params({'args' => ['aString', '1', 2] },pretty).and_return(deprettyfy("{\n    \"args\": [\n        \"aString\",\n        \"1\",\n        \"2\"\n    ]\n}\n",pretty))
+  end
 end
 describe 'consul::sorted_json', :type => :puppet_function do
 

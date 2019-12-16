@@ -7,7 +7,7 @@ describe 'consul::check' do
       let :facts do
         facts
       end
-  
+
       let(:title) { "my_check" }
 
       describe 'with no args' do
@@ -36,7 +36,7 @@ describe 'consul::check' do
       describe 'with args' do
         let(:params) {{
           'interval' => '30s',
-          'args'     => ['sh', '-c', 'true'],
+          'args'     => ['sh', '-c', 'true', '1', 2],
         }}
         it {
           should contain_file("/etc/consul/check_my_check.json") \
@@ -44,7 +44,7 @@ describe 'consul::check' do
             .with_content(/"name" *: *"my_check"/) \
             .with_content(/"check" *: *\{/) \
             .with_content(/"interval" *: *"30s"/) \
-            .with_content(/"args" *: *\[ *"sh", *"-c", *"true" *\]/)
+            .with_content(/"args" *: *\[ *"sh", *"-c", *"true", *"1", *"2" *\]/)
         }
       end
       describe 'with script and service_id' do

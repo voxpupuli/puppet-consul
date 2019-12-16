@@ -89,7 +89,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
         when Hash
           ret = []
           obj.keys.sort.each do |k|
-            if k =~ /\A(node_meta|meta|tags)\z/ then
+            if k =~ /\A(node_meta|meta|tags|args)\z/ then
               quoted = true
             elsif k =~ /\A(weights)\z/ then
               quoted = false
@@ -138,7 +138,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
           # This level works in a similar way to the above
           level += 1
           obj.keys.sort.each do |k|
-            if k =~ /\A(node_meta|meta|tags)\z/ then
+            if k =~ /\A(node_meta|meta|tags|args)\z/ then
               quoted = true
             elsif k =~ /\A(weights)\z/ then
               quoted = false
