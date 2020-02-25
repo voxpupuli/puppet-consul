@@ -27,7 +27,7 @@ class consul::reload_service {
       $reload_options = "-http-addr=https://localhost:${consul::https_port} -client-cert=${consul::cert_file} -client-key=${consul::key_file}"
     }
     else {
-      $reload_options = "-http-addr=https://localhost:${consul::https_port}}"
+      $reload_options = "-http-addr=https://localhost:${consul::https_port}"
     }
 
 
@@ -42,6 +42,7 @@ class consul::reload_service {
       command     => $command,
       refreshonly => true,
       tries       => 3,
+      try_sleep   => 10,
     }
   }
 }
