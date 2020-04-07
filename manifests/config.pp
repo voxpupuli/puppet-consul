@@ -130,6 +130,7 @@ class consul::config (
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    validate_cmd => "${consul::bin_dir}/${consul::binary_name} validate %",
   }
 
 }
