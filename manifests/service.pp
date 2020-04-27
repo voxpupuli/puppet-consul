@@ -105,7 +105,7 @@ define consul::service (
   $basic_hash = $default_config_hash + $service_config_hash
 
   $service_hash = {
-    service => delete_undef_values($basic_hash),
+    service => $basic_hash.filter |$key, $val| { $val =~ NotUndef },
   }
 
   $escaped_id = regsubst($id,'\/','_','G')

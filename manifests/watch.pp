@@ -136,8 +136,10 @@ define consul::watch (
     }
   }
 
+  $merged_hash = merge($basic_hash, $type_hash)
+
   $watch_hash = {
-    watches => [delete_undef_values(merge($basic_hash, $type_hash))],
+    watches => [$merged_hash.filter |$key, $val| { $val =~ NotUndef }],
   }
 
   file { "${consul::config_dir}/watch_${id}.json":
