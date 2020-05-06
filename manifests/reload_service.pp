@@ -19,16 +19,30 @@ class consul::reload_service {
       $http_addr = $consul::http_addr
     }
 
+    # The reload service should connect to http if possible (http port different from -1)
+    if $consul::http_port != -1 {
+      $reload_options = "-http-addr=${http_addr}:${consul::http_port}"
+    }
+    elsif $consul::verify_incoming  { # in case incoming connections are verified correct certificate files should be used
+      $reload_options = "-http-addr=https://localhost:${consul::https_port} -client-cert=${consul::cert_file} -client-key=${consul::key_file}"
+    }
+    else {
+      $reload_options = "-http-addr=https://localhost:${consul::https_port}"
+    }
+
+
     case $consul::install_method {
-      'docker': { $command = "docker exec consul consul reload -http-addr=${http_addr}:${consul::http_port}" }
-      default: { $command = "consul reload -http-addr=${http_addr}:${consul::http_port}" }
+      'docker': { $command = "docker exec consul consul reload  ${reload_options}"}
+      default: { $command = "consul reload ${reload_options}"}
     }
 
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
+      environment => [ 'CONSUL_HTTP_SSL_VERIFY=false',],
       command     => $command,
       refreshonly => true,
       tries       => 3,
+      try_sleep   => 10,
     }
   }
 }

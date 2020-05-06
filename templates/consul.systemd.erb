@@ -1,6 +1,8 @@
+# THIS FILE IS MANAGED BY PUPPET
 [Unit]
 Description=Consul Agent
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 <% if @allow_binding_to_root_ports == true -%>

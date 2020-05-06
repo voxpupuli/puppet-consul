@@ -108,6 +108,9 @@
 # [*manage_user*]
 #   Whether to create/manage the user that should own consul's configuration files.
 #
+# [*manage_data_dir*]
+#   Whether to manage the consul storage data directory.
+#
 # [*os*]
 #   OS component in the name of the archive file containing the consul binary.
 #
@@ -212,6 +215,7 @@ class consul (
   Boolean                               $manage_group                = $consul::params::manage_group,
   Boolean                               $manage_service              = true,
   Boolean                               $manage_user                 = $consul::params::manage_user,
+  Boolean                               $manage_data_dir             = true,
   String[1]                             $os                          = $facts['kernel'].downcase,
   String[1]                             $package_ensure              = 'latest',
   String[1]                             $package_name                = 'consul',
@@ -260,12 +264,36 @@ class consul (
     $http_port = 8500
   }
 
+  if dig($config_hash_real,'ports','https') {
+    $https_port = $config_hash_real['ports']['https']
+  } else {
+    $https_port = Undef
+  }
+
   if dig($config_hash_real,'addresses','http') {
     $http_addr = split($config_hash_real['addresses']['http'], ' ')[0]
   } elsif ($config_hash_real['client_addr']) {
     $http_addr = split($config_hash_real['client_addr'], ' ')[0]
   } else {
     $http_addr = '127.0.0.1'
+  }
+
+  if dig($config_hash_real,'verify_incoming') {
+    $verify_incoming = $config_hash_real['verify_incoming']
+  } else {
+    $verify_incoming = false
+  }
+
+  if dig($config_hash_real,'cert_file') {
+    $cert_file = $config_hash_real['cert_file']
+  } else {
+    $cert_file = Undef
+  }
+
+  if dig($config_hash_real,'key_file') {
+    $key_file = $config_hash_real['key_file']
+  } else {
+    $key_file = Undef
   }
 
   if $services {
