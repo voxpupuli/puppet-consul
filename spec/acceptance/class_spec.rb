@@ -217,8 +217,19 @@ describe 'consul class' do
       EOS
 
       # Run it twice to test for idempotency
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
+      apply_manifest(pp, catch_failures: true, debug: true)
+      apply_manifest(pp, catch_changes: true, debug: true)
+
+      # Ugh
+      dumpfiles = <<-EOS
+        exec { 'dump config and log files':
+          path      => ['/bin', '/usr/bin'],
+          command   => 'cat /etc/consul/*.json /var/log/consul',
+          logoutput => true;
+        }
+      EOS
+
+      apply_manifest(dumpfiles, debug: true)
     end
 
     describe file('/opt/consul') do
