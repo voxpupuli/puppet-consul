@@ -6,11 +6,13 @@ class consul::install {
 
   $real_data_dir = pick($consul::data_dir, $consul::config_hash[data_dir], $consul::config_defaults[data_dir])
 
-  file { $real_data_dir:
-    ensure => 'directory',
-    owner  => $consul::user_real,
-    group  => $consul::group_real,
-    mode   => $consul::data_dir_mode,
+  if $consul::manage_data_dir {
+    file { $real_data_dir:
+      ensure => 'directory',
+      owner  => $consul::user_real,
+      group  => $consul::group_real,
+      mode   => $consul::data_dir_mode,
+    }
   }
 
   # only notify if we are installing a new version (work around for switching
