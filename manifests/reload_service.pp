@@ -32,8 +32,14 @@ class consul::reload_service {
 
 
     case $consul::install_method {
-      'docker': { $command = "docker exec consul consul reload  ${reload_options}"}
-      default: { $command = "consul reload ${reload_options}"}
+      'docker': { $command_part1 = "docker exec consul consul reload  ${reload_options}"}
+      default: { $command_part1 = "consul reload ${reload_options}"}
+    }
+
+    if $consul::acl_api_token != '' {
+      $command = Sensitive("${command_part1} -token=${consul::acl_api_token}")
+    } else {
+      $command = $command_part1
     }
 
     exec { 'reload consul service':
