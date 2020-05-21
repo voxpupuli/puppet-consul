@@ -64,6 +64,9 @@
 # [*config_mode*]
 #   Use this to set the JSON config file mode for consul.
 #
+# [*data_dir_mode*]
+#   Use this to set the data_dir directory mode for consul.
+#
 # [*docker_image*]
 #   Only valid when the install_method == docker. Defaults to `consul`.
 #
@@ -201,6 +204,7 @@ class consul (
   Stdlib::Absolutepath                  $config_dir                  = $consul::params::config_dir,
   Hash                                  $config_hash                 = {},
   String[1]                             $config_mode                 = '0664',
+  String[1]                             $data_dir_mode               = $consul::params::data_dir_mode,
   String[1]                             $docker_image                = 'consul',
   String[1]                             $download_extension          = 'zip',
   Optional[Stdlib::HTTPUrl]             $download_url                = undef,
