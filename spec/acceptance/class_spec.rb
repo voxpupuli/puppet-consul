@@ -218,28 +218,17 @@ describe 'consul class' do
 
       # Checking to see if it's just an ordering problem
       apply_manifest(pp, catch_failures: false, debug: false)
-      apply_manifest(pp, catch_failures: false, debug: false)
-      apply_manifest(pp, catch_failures: false, debug: false)
+      apply_manifest(pp, catch_changes: true, debug: false)
+      apply_manifest(pp, catch_failures: true, debug: false)
 
-      # Ugh
-      dumpfiles = <<-EOS
-        exec { 'validate config':
-          path      => ['/bin', '/usr/bin'],
-          command   => '/usr/local/bin/consul validate /etc/consul 2>&1',
-          logoutput => true;
-        }->
-        exec { 'dump config and log files':
-          path      => ['/bin', '/usr/bin'],
-          command   => 'cat /etc/consul/*.json /etc/sysconfig/consul /var/log/consul',
-          logoutput => true;
-        }
-      EOS
-
-      apply_manifest(dumpfiles, debug: true)
     end
 
     describe file('/opt/consul') do
       it { should be_directory }
+    end
+
+    describe command('consul validate /etc/consul') do
+      its(:stdout) { should match %r{Configuration is valid!} }
     end
 
     describe service('consul') do
