@@ -163,7 +163,7 @@ describe 'consul class' do
               'datacenter'         => 'east-aws',
               'primary_datacenter' => 'east-aws',
               'data_dir'           => '/opt/consul',
-              'log_level'          => 'INFO',
+              'log_level'          => 'DEBUG',
               'node_name'          => 'foobar',
               'server'             => true,
               'bootstrap'          => true,
@@ -224,7 +224,12 @@ describe 'consul class' do
       dumpfiles = <<-EOS
         exec { 'dump config and log files':
           path      => ['/bin', '/usr/bin'],
-          command   => 'cat /etc/consul/*.json /var/log/consul',
+          command   => 'cat /etc/consul/*.json /etc/sysconfig/consul /var/log/consul',
+          logoutput => true;
+        }->
+        exec { 'dump ps':
+          path      => ['/bin', '/usr/bin'],
+          command   => 'ps -ef |grep consul'
           logoutput => true;
         }
       EOS
