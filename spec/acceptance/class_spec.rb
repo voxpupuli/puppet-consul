@@ -216,9 +216,10 @@ describe 'consul class' do
         }
       EOS
 
-      # Run it once in debug but without failures to let the
-      # config dumper do its thing
-      apply_manifest(pp, catch_failures: false, debug: true)
+      # Checking to see if it's just an ordering problem
+      apply_manifest(pp, catch_failures: false, debug: false)
+      apply_manifest(pp, catch_failures: false, debug: false)
+      apply_manifest(pp, catch_failures: false, debug: false)
 
       # Ugh
       dumpfiles = <<-EOS
