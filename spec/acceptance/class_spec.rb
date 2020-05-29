@@ -222,9 +222,9 @@ describe 'consul class' do
 
       # Ugh
       dumpfiles = <<-EOS
-        exec { 'attempt to start manually in foreground':
+        exec { 'validate config':
           path      => ['/bin', '/usr/bin'],
-          command   => '/usr/local/bin/consul agent -pid-file /var/run/consul/consul.pid -config-dir /etc/consul -enable-local-script-checks 2>&1',
+          command   => '/usr/local/bin/consul validate /etc/consul 2>&1',
           logoutput => true;
         }->
         exec { 'dump config and log files':
