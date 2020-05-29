@@ -216,9 +216,9 @@ describe 'consul class' do
         }
       EOS
 
-      # Run it twice to test for idempotency
-      apply_manifest(pp, catch_failures: true, debug: true)
-      apply_manifest(pp, catch_changes: true, debug: true)
+      # Run it once in debug but without failures to let the
+      # config dumper do its thing
+      apply_manifest(pp, catch_failures: false, debug: true)
 
       # Ugh
       dumpfiles = <<-EOS
