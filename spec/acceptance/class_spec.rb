@@ -229,7 +229,7 @@ describe 'consul class' do
         }->
         exec { 'dump ps':
           path      => ['/bin', '/usr/bin'],
-          command   => 'ps -ef |grep consul'
+          command   => 'ps -ef |grep consul',
           logoutput => true;
         }
       EOS
