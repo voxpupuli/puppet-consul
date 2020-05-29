@@ -222,14 +222,14 @@ describe 'consul class' do
 
       # Ugh
       dumpfiles = <<-EOS
+        exec { 'attempt to start manually in foreground':
+          path      => ['/bin', '/usr/bin'],
+          command   => '/usr/local/bin/consul agent -pid-file /var/run/consul/consul.pid -config-dir /etc/consul -enable-local-script-checks 2>&1',
+          logoutput => true;
+        }->
         exec { 'dump config and log files':
           path      => ['/bin', '/usr/bin'],
           command   => 'cat /etc/consul/*.json /etc/sysconfig/consul /var/log/consul',
-          logoutput => true;
-        }->
-        exec { 'dump ps':
-          path      => ['/bin', '/usr/bin'],
-          command   => 'ps -ef |grep consul',
           logoutput => true;
         }
       EOS
