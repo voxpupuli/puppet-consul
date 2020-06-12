@@ -63,7 +63,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
       case obj
         when NilClass, :undef
           'null'
-        when Integer, Float, TrueClass, FalseClass
+        when Float, TrueClass, FalseClass
           if quoted then
             "\"#{obj}\""
           else
