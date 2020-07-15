@@ -12,4 +12,5 @@ type Consul::PolicyStruct = Struct[{
   port          => Optional[Integer[1, 65535]],
   hostname      => Optional[String[1]],
   api_tries     => Optional[Integer[1]],
+  datacenters   => Optional[Array[String]],
 }]

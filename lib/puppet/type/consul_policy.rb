@@ -83,6 +83,14 @@ Puppet::Type.newtype(:consul_policy) do
     end
   end
 
+  newproperty(:datacenters, :array_matching => :all) do
+    desc 'datacenters where the policy is valid within'
+    defaultto []
+    validate do |value|
+      raise ArgumentError, "Datacenter must be a string" if not value.is_a?(String)
+    end
+  end
+
   autorequire(:service) do
     ['consul']
   end
