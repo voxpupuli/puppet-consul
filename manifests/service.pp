@@ -60,6 +60,28 @@
 #    ],
 #  }
 #
+# @example
+#  consul::service { 'my_https_app':
+#    port                => 443,
+#    tags                => ['web','rails'],
+#    address             => '1.2.3.5',
+#    token               => 'xxxxxxxxxx',
+#    service_config_hash =>  {
+#      'connect' => {
+#        'sidecar_service' => {},
+#      },
+#    },
+#    checks              => [
+#      {
+#        name            => 'HTTPS Request',
+#        http            => 'https://localhost:443',
+#        tls_skip_verify => true,
+#        method          => "GET",
+#        headers         => { "Host" => ["test.example.com"] },
+#      },
+#    ],
+#  }
+#
 define consul::service (
   Optional[String[1]]         $address              = undef,
   Array[Hash]                 $checks               = [],
