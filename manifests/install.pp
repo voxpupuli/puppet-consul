@@ -90,6 +90,7 @@ class consul::install {
       system => true,
       groups => $consul::extra_groups,
       shell  => $consul::shell,
+      home   => $real_data_dir,
     }
 
     if ($consul::manage_group) and ($consul::install_method != 'docker' ) {
