@@ -172,7 +172,7 @@ describe 'consul::service' do
               'passing' => 10,
               'warning' => 1
             }
-          }      
+          }
         }}
         it {
           should contain_file("/etc/consul/service_my_service.json") \
