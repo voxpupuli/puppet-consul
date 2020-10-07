@@ -5,6 +5,12 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
+<% if scope.lookupvar('consul::config::config_hash')['retry_join'].nil? or \
+      scope.lookupvar('consul::config::config_hash')['retry_join'].length < 2 -%>
+Type=exec
+<% else -%>
+Type=notify
+<% end -%>
 <% if @allow_binding_to_root_ports == true -%>
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 <% end -%>
