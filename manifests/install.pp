@@ -41,13 +41,14 @@ class consul::install {
       }
 
       archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
-        ensure       => present,
-        source       => $consul::real_download_url,
-        proxy_server => $consul::proxy_server,
-        extract      => true,
-        extract_path => "${install_path}/consul-${consul::version}",
-        creates      => "${install_path}/consul-${consul::version}/${consul::binary_name}",
-        require      => File["${install_path}/consul-${consul::version}"],
+        ensure         => present,
+        source         => $consul::real_download_url,
+        proxy_server   => $consul::proxy_server,
+        allow_insecure => $consul::allow_insecure,
+        extract        => true,
+        extract_path   => "${install_path}/consul-${consul::version}",
+        creates        => "${install_path}/consul-${consul::version}/${consul::binary_name}",
+        require        => File["${install_path}/consul-${consul::version}"],
       }
 
       file { "${install_path}/consul-${consul::version}/${consul::binary_name}":

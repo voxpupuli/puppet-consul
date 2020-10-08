@@ -28,6 +28,9 @@
 # [*acl_api_token*]
 #   Global token of ACL API, will be merged with consul_token resources
 #
+# [*allow_insecure*]
+#   Allow insecure connection when downloading the archive.
+#
 # [*arch*]
 #   Architecture of consul binary to download.
 #
@@ -192,6 +195,7 @@ class consul (
   Integer[1, 65535]                     $acl_api_port                = 8500,
   Integer[1]                            $acl_api_tries               = 3,
   String[0]                             $acl_api_token               = '',
+  Boolean                               $allow_insecure              = false,
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,
