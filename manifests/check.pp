@@ -50,37 +50,49 @@
 #   Value in seconds before the http endpoint considers a failing healthcheck
 #   to be "HARD" down.
 #
+# [*success_before_passing*]
+#   Value may be set to become check passing only after a specified number of consecutive
+#   checks return passing
+#
+# [*failures_before_critical*]
+#   Value may be set to become check critical only after a specified number of consecutive
+#   checks return critical
+#
 define consul::check (
-  $ensure     = present,
-  $http       = undef,
-  $id         = $title,
-  $interval   = undef,
-  $notes      = undef,
-  $script     = undef,
-  $args       = undef,
-  $service_id = undef,
-  $status     = undef,
-  $tcp        = undef,
-  $timeout    = undef,
-  $token      = undef,
-  $ttl        = undef,
+  $ensure                   = present,
+  $http                     = undef,
+  $id                       = $title,
+  $interval                 = undef,
+  $notes                    = undef,
+  $script                   = undef,
+  $args                     = undef,
+  $service_id               = undef,
+  $status                   = undef,
+  $tcp                      = undef,
+  $timeout                  = undef,
+  $token                    = undef,
+  $ttl                      = undef,
+  $success_before_passing   = undef,
+  $failures_before_critical = undef,
 ) {
   include consul
 
   $basic_hash = {
-    'id'         => $id,
-    'name'       => $name,
-    'ttl'        => $ttl,
-    'http'       => $http,
-    'script'     => $script,
-    'args'       => $args,
-    'tcp'        => $tcp,
-    'interval'   => $interval,
-    'timeout'    => $timeout,
-    'service_id' => $service_id,
-    'notes'      => $notes,
-    'token'      => $token,
-    'status'     => $status,
+    'id'                       => $id,
+    'name'                     => $name,
+    'ttl'                      => $ttl,
+    'http'                     => $http,
+    'script'                   => $script,
+    'args'                     => $args,
+    'tcp'                      => $tcp,
+    'interval'                 => $interval,
+    'timeout'                  => $timeout,
+    'service_id'               => $service_id,
+    'notes'                    => $notes,
+    'token'                    => $token,
+    'status'                   => $status,
+    'success_before_passing'   => $success_before_passing,
+    'failures_before_critical' => $failures_before_critical,
   }
 
   $check_hash = {
