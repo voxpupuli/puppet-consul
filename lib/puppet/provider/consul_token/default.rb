@@ -44,6 +44,7 @@ Puppet::Type.type(:consul_token).provide(
 
     if existing_token
       @property_hash[:accessor_id] = existing_token.accessor_id
+      @property_hash[:description] = existing_token.description
 
       if existing_token.is_policy_list_equal(resource[:policies_by_id], resource[:policies_by_name])
         @property_hash[:policies_by_id] = resource[:policies_by_id]
@@ -71,9 +72,11 @@ Puppet::Type.type(:consul_token).provide(
       @resource[:secret_id] = created_token.secret_id
 
       Puppet.info("Created token #{created_token.description} with Accessor ID  #{created_token.accessor_id}")
-    elsif @resource[:ensure] != :absent && @existing_token && !@existing_token.is_policy_list_equal(@resource[:policies_by_id], @resource[:policies_by_name])
-      new_policy_list = @client.update_token(@existing_token.accessor_id, @existing_token.description, @resource[:policies_by_name], @resource[:policies_by_id])
+    elsif @resource[:ensure] != :absent && @existing_token &&
+      (!@existing_token.is_policy_list_equal(@resource[:policies_by_id], @resource[:policies_by_name]) || @existing_token.description != @resource[:description])
+      new_policy_list = @client.update_token(@existing_token.accessor_id, @resource[:description], @resource[:policies_by_name], @resource[:policies_by_id])
       @existing_token.policies = new_policy_list
+      @existing_token.description = @resource[:description]
 
       Puppet.info("Updated token #{@existing_token.description} (Accessor ID: #{@existing_token.accessor_id}")
     elsif @resource[:ensure] == :absent && @existing_token
@@ -92,7 +95,7 @@ end
 
 class ConsulToken
   attr_reader :accessor_id, :secret_id, :description, :policies
-  attr_writer :policies
+  attr_writer :policies, :description
 
   def initialize (accessor_id, secret_id, description, policies)
     @accessor_id = accessor_id
