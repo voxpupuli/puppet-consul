@@ -5,6 +5,7 @@ describe Puppet::Type.type(:consul_token).provider(:default) do
   let(:resource) { Puppet::Type.type(:consul_token).new(
       {
           :name              => 'test_token',
+          :description       => 'test_token',
           :accessor_id       => '123123-1234-1234-1234-123456789',
           :acl_api_token     => 'e33653a6-0320-4a71-b3af-75f14578e3aa',
           :policies_by_name  => [

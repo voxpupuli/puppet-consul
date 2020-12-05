@@ -12,6 +12,13 @@ Puppet::Type.newtype(:consul_token) do
     end
   end
 
+  newproperty(:description) do
+    desc 'Description of the token'
+    validate do |value|
+      raise ArgumentError, "Description must be a string" if not value.is_a?(String)
+    end
+  end
+
   newproperty(:accessor_id) do
     desc 'Accessor ID of the token'
     validate do |value|
