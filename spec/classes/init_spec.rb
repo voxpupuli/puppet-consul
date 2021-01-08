@@ -159,14 +159,14 @@ describe 'consul' do
             'ui' => true
           },
         }}
-        it { should contain_file('consul config.json').with_content(/"ui":true/) }
+        it { should contain_file('consul config').with_content(/"ui":true/) }
       end
 
       context "When not installing UI" do
         let(:params) {{
           :config_hash => { },
         }}
-        it { should_not contain_file('consul config.json').with_content(/"ui":true/) }
+        it { should_not contain_file('consul config').with_content(/"ui":true/) }
       end
 
       context "By default, a user and group should be installed" do
@@ -194,8 +194,8 @@ describe 'consul' do
           :config_hash =>
             { 'bootstrap_expect' => '5' }
         }}
-        it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
-        it { should_not contain_file('consul config.json').with_content(/"bootstrap_expect":"5"/) }
+        it { should contain_file('consul config').with_content(/"bootstrap_expect":5/) }
+        it { should_not contain_file('consul config').with_content(/"bootstrap_expect":"5"/) }
       end
 
       context 'Config_defaults is used to provide additional config' do
@@ -207,8 +207,8 @@ describe 'consul' do
               'bootstrap_expect' => '5',
           }
         }}
-        it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
-        it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
+        it { should contain_file('consul config').with_content(/"bootstrap_expect":5/) }
+        it { should contain_file('consul config').with_content(/"data_dir":"\/dir1"/) }
       end
 
       context 'Config_defaults is used to provide additional config and is overridden' do
@@ -230,11 +230,11 @@ describe 'consul' do
               },
           }
         }}
-        it { should contain_file('consul config.json').with_content(/"bootstrap_expect":5/) }
-        it { should contain_file('consul config.json').with_content(/"data_dir":"\/dir1"/) }
-        it { should contain_file('consul config.json').with_content(/"server":true/) }
-        it { should contain_file('consul config.json').with_content(/"http":-1/) }
-        it { should contain_file('consul config.json').with_content(/"https":8500/) }
+        it { should contain_file('consul config').with_content(/"bootstrap_expect":5/) }
+        it { should contain_file('consul config').with_content(/"data_dir":"\/dir1"/) }
+        it { should contain_file('consul config').with_content(/"server":true/) }
+        it { should contain_file('consul config').with_content(/"http":-1/) }
+        it { should contain_file('consul config').with_content(/"https":8500/) }
       end
 
       context 'When pretty config is true' do
@@ -249,11 +249,11 @@ describe 'consul' do
               },
           }
         }}
-        it { should contain_file('consul config.json').with_content(/"bootstrap_expect": 5,/) }
-        it { should contain_file('consul config.json').with_content(/"server": true/) }
-        it { should contain_file('consul config.json').with_content(/"http": -1,/) }
-        it { should contain_file('consul config.json').with_content(/"https": 8500/) }
-        it { should contain_file('consul config.json').with_content(/"ports": \{/) }
+        it { should contain_file('consul config').with_content(/"bootstrap_expect": 5,/) }
+        it { should contain_file('consul config').with_content(/"server": true/) }
+        it { should contain_file('consul config').with_content(/"http": -1,/) }
+        it { should contain_file('consul config').with_content(/"https": 8500/) }
+        it { should contain_file('consul config').with_content(/"ports": \{/) }
       end
 
       context "When asked not to manage the user" do
@@ -311,7 +311,7 @@ describe 'consul' do
           :group => 'custom_consul_group',
           :config_mode  => '0600',
         }}
-        it { should contain_file('consul config.json').with(
+        it { should contain_file('consul config').with(
           :owner => 'custom_consul_user',
           :group => 'custom_consul_group',
           :mode  => '0600'
