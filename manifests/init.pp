@@ -58,6 +58,9 @@
 # [*config_dir*]
 #   Directory to place consul configuration files in.
 #
+# [*config_name*]
+#   Name of the consul configuration file.
+#
 # [*config_hash*]
 #   Use this to populate the JSON config file for consul.
 #
@@ -202,6 +205,7 @@ class consul (
   Hash                                  $checks                      = {},
   Hash                                  $config_defaults             = $consul::params::config_defaults,
   Stdlib::Absolutepath                  $config_dir                  = $consul::params::config_dir,
+  String[1]                             $config_name                 = 'config.json',
   Hash                                  $config_hash                 = {},
   String[1]                             $config_mode                 = '0664',
   String[1]                             $data_dir_mode               = $consul::params::data_dir_mode,
