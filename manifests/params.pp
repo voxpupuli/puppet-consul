@@ -5,6 +5,8 @@
 #
 class consul::params {
 
+  $manage_repo = false
+
   case $facts['architecture'] {
     'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
     'i386':                   { $arch = '386'   }
@@ -62,31 +64,24 @@ class consul::params {
   case $facts['os']['name'] {
     'Ubuntu': {
       $shell = '/usr/sbin/nologin'
-      $manage_repo = true
     }
     'RedHat': {
       $shell = '/sbin/nologin'
-      $manage_repo = true
     }
     'Debian': {
       $shell = '/usr/sbin/nologin'
-      $manage_repo = true
     }
     'Archlinux': {
       $shell = '/sbin/nologin'
-      $manage_repo = false
     }
     'OpenSuSE': {
       $shell = '/usr/sbin/nologin'
-      $manage_repo = false
     }
     /SLE[SD]/: {
       $shell = '/usr/sbin/nologin'
-      $manage_repo = false
     }
     default: {
       $shell = undef
-      $manage_repo = false
     }
   }
 
