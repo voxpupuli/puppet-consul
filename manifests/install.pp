@@ -67,6 +67,7 @@ class consul::install {
     'package': {
       if $consul::manage_repo{
         include hashi_stack::repo
+        Class['hashi_stack::repo'] -> Package[$consul::package_name]
       }
       package { $consul::package_name:
         ensure => $consul::package_ensure,
