@@ -108,6 +108,9 @@
 # [*manage_group*]
 #   Whether to create/manage the group that should own the consul configuration files.
 #
+# [*manage_repo*]
+#   Configure the upstream HashiCorp repository. Only relevant when $nomad::install_method = 'package'.
+#
 # [*manage_service*]
 #   Whether to manage the consul service.
 #
@@ -221,6 +224,7 @@ class consul (
   String[1]                             $install_method              = 'url',
   Optional[String[1]]                   $join_wan                    = undef,
   Boolean                               $manage_group                = $consul::params::manage_group,
+  Boolean                               $manage_repo                 = $consul::params::manage_repo,
   Boolean                               $manage_service              = true,
   Boolean                               $manage_user                 = $consul::params::manage_user,
   Boolean                               $manage_data_dir             = true,

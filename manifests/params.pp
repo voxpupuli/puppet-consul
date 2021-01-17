@@ -5,6 +5,8 @@
 #
 class consul::params {
 
+  $manage_repo = false
+
   case $facts['architecture'] {
     'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
     'i386':                   { $arch = '386'   }

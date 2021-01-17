@@ -77,6 +77,47 @@ describe 'consul' do
         it { should_not contain_exec('join consul wan') }
       end
 
+      context "When asked not to manage the repo" do
+        let(:params) {{
+          :manage_repo => false
+        }}
+
+        case facts[:os]['family']
+        when 'Debian'
+          it { should_not contain_apt__source('HashiCorp') }
+        when 'RedHat'
+          it { should_not contain_yumrepo('HashiCorp') }
+        end
+      end
+
+      context "When asked to manage the repo but not to install using package" do
+        let(:params) {{
+          :install_method => 'url',
+          :manage_repo => true
+        }}
+
+        case facts[:os]['family']
+        when 'Debian'
+          it { should_not contain_apt__source('HashiCorp') }
+        when 'RedHat'
+          it { should_not contain_yumrepo('HashiCorp') }
+        end
+      end
+
+      context "When asked to manage the repo and to install as package" do
+        let(:params) {{
+          :install_method => 'package',
+          :manage_repo => true
+        }}
+
+        case facts[:os]['family']
+        when 'Debian'
+          it { should contain_apt__source('HashiCorp') }
+        when 'RedHat'
+          it { should contain_yumrepo('HashiCorp') }
+        end
+      end
+
       context 'When requesting to install via a package with defaults' do
         let(:params) {{
           :install_method => 'package'
