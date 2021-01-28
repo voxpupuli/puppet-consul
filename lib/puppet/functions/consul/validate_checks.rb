@@ -27,14 +27,15 @@ Puppet::Functions.create_function(:'consul::validate_checks') do
             if check_types_defined > 1
                 raise Puppet::ParseError.new('multiple check types cannot be specified in a single check definition')
             elsif check_types_defined == 0
-                raise Puppet::ParseError.new('One of the following check types must be defined: http, tcp, grpc, script, or ttl')
+                puts obj
+                raise Puppet::ParseError.new('one of the following check types must be defined: http, tcp, grpc, script, or ttl')
             end
 
-            if (is_http || is_script || is_tcp || is_grpc) && !has_interval
+            if (!is_ttl && !has_interval)
                 raise Puppet::ParseError.new('interval must be defined for tcp, http, grpc, and script checks')
             end
 
-            if is_ttl && has_interval
+            if (is_ttl && has_interval)
                 raise Puppet::ParseError.new('interval must not be defined for ttl checks')
             end
         else
