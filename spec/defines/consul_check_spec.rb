@@ -23,7 +23,6 @@ describe 'consul::check' do
         let(:params) {{
           'fakecheck' => 'http://zombo.com'
         }}
-
         it {
           expect {
             should raise_error(Puppet::Error, /one of the following check types must be defined: http, tcp, grpc, script, or ttl/)
