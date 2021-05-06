@@ -97,4 +97,13 @@ describe 'consul::validate_checks' do
       }
     ])}
   end
+
+  describe 'validate alias_service check' do
+    it {should run.with_params([
+      {
+        'name'          => 'foo-service-alias',
+        'alias_service' => 'foo-service',
+      }
+    ])}
+  end
 end
