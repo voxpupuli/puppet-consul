@@ -3,7 +3,7 @@ require 'net/http'
 require 'pp'
 require 'uri'
 Puppet::Type.type(:consul_acl).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -26,7 +26,7 @@ Puppet::Type.type(:consul_acl).provide(
         resource.provider = new(found_acl)
       else
         Puppet.debug("found none #{name}")
-        resource.provider = new({:ensure => :absent})
+        resource.provider = new({ ensure: :absent })
       end
     end
   end
@@ -42,7 +42,7 @@ Puppet::Type.type(:consul_acl).provide(
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
 
-    path=uri.request_uri + "/list?token=#{acl_api_token}"
+    path = uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
     res = nil
     res_code = nil
@@ -73,16 +73,16 @@ Puppet::Type.type(:consul_acl).provide(
 
     nacls = acls.collect do |acl|
       {
-        :name   => acl["Name"],
-        :type   => acl["Type"].intern,
-        :rules  => acl['Rules'].empty? ? {} : JSON.parse(acl["Rules"]),
-        :id     => acl["ID"],
-        :acl_api_token => acl_api_token,
-        :port => port,
-        :hostname => hostname,
-        :protocol => protocol,
-        :api_tries => tries,
-        :ensure => :present
+        name: acl['Name'],
+        type: acl['Type'].to_sym,
+        rules: acl['Rules'].empty? ? {} : JSON.parse(acl['Rules']),
+        id: acl['ID'],
+        acl_api_token: acl_api_token,
+        port: port,
+        hostname: hostname,
+        protocol: protocol,
+        api_tries: tries,
+        ensure: :present
       }
     end
 
@@ -90,7 +90,7 @@ Puppet::Type.type(:consul_acl).provide(
     nacls
   end
 
-  def put_acl(method,body)
+  def put_acl(method, body)
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
@@ -101,7 +101,7 @@ Puppet::Type.type(:consul_acl).provide(
     end
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -114,7 +114,7 @@ Puppet::Type.type(:consul_acl).provide(
     resources.first || nil
   end
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
@@ -133,33 +133,33 @@ Puppet::Type.type(:consul_acl).provide(
 
   def flush
     name = @resource[:name]
-    if @resource[:rules]
-      rules = @resource[:rules].to_json
-    else
-      rules = ""
-    end
+    rules = if @resource[:rules]
+              @resource[:rules].to_json
+            else
+              ''
+            end
     type = @resource[:type]
     port = @resource[:port]
     hostname = @resource[:hostname]
     protocol = @resource[:protocol]
     tries = @resource[:api_tries]
-    acl = self.get_resource(name, port, hostname, protocol, tries)
+    acl = get_resource(name, port, hostname, protocol, tries)
     if acl
       id = acl[:id]
       if @property_flush[:ensure] == :absent
         put_acl("destroy/#{id}", nil)
         return
       end
-      put_acl('update', { "id"    => "#{id}",
-                          "name"  => "#{name}",
-                          "type"  => "#{type}",
-                          "rules" => "#{rules}" })
+      put_acl('update', { 'id'    => id.to_s,
+                          'name'  => name.to_s,
+                          'type'  => type.to_s,
+                          'rules' => rules.to_s })
 
     else
-      put_acl('create', { "id"    => "#{@resource[:id]}",
-                          "name"  => "#{name}",
-                          "type"  => "#{type}",
-                          "rules" => "#{rules}" })
+      put_acl('create', { 'id'    => (@resource[:id]).to_s,
+                          'name'  => name.to_s,
+                          'type'  => type.to_s,
+                          'rules' => rules.to_s })
     end
     @property_hash.clear
   end

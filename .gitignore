@@ -1,7 +1,6 @@
 .git/
 .*.sw[op]
 .metadata
-.rspec_system
 .yardoc
 .yardwarns
 *.iml
@@ -20,7 +19,9 @@
 /spec/fixtures/modules/
 /tmp/
 /vendor/
-/.vendor/
 /convert_report.txt
 /update_report.txt
 .DS_Store
+.project
+.envrc
+/inventory.yaml

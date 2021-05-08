@@ -94,14 +94,13 @@ define consul::service (
   Array[String[1]]            $tags                 = [],
   Optional[String[1]]         $token                = undef,
   Optional[Hash[
-    String[1],
-    Variant[
       String[1],
-      Numeric,
-      Boolean,
+      Variant[
+        String[1],
+        Numeric,
+        Boolean,
   ]]]                         $meta                 = undef,
 ) {
-
   include consul
 
   consul::validate_checks($checks)
@@ -139,5 +138,4 @@ define consul::service (
     content => consul::sorted_json($service_hash, $consul::pretty_config, $consul::pretty_config_indent),
     notify  => Class['consul::reload_service'],
   }
-
 }

@@ -197,7 +197,7 @@ class consul (
   String[1]                             $acl_api_protocol            = 'http',
   Integer[1, 65535]                     $acl_api_port                = 8500,
   Integer[1]                            $acl_api_tries               = 3,
-  String[0]                             $acl_api_token               = '',
+  String[0]                             $acl_api_token               = '', # lint:ignore:empty_string_assignment
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,
@@ -246,7 +246,6 @@ class consul (
   Boolean                               $enable_beta_ui              = false,
   Boolean                               $allow_binding_to_root_ports = false,
 ) inherits consul::params {
-
   $real_download_url = pick(
     $download_url,
     "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}",
@@ -349,11 +348,11 @@ class consul (
 
   $policies.each | $name, $policy_config | {
     $merges_policy_config = merge($global_acl_config, $policy_config)
-    create_resources(consul_policy, {$name => $merges_policy_config})
+    create_resources(consul_policy, { $name => $merges_policy_config })
   }
 
   $tokens.each | $name, $token_config | {
     $merged_token_config = merge($global_acl_config, $token_config)
-    create_resources(consul_token, {$name => $merged_token_config})
+    create_resources(consul_token, { $name => $merged_token_config })
   }
 }

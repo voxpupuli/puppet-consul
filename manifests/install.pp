@@ -3,7 +3,6 @@
 # Installs consul based on the parameters from init
 #
 class consul::install {
-
   $real_data_dir = pick($consul::data_dir, $consul::config_hash[data_dir], $consul::config_defaults[data_dir])
 
   if $consul::manage_data_dir {
@@ -29,7 +28,6 @@ class consul::install {
     }
     'url': {
       $install_path = pick($consul::archive_path, "${real_data_dir}/archives")
-
 
       include archive
 
@@ -65,7 +63,7 @@ class consul::install {
       }
     }
     'package': {
-      if $consul::manage_repo{
+      if $consul::manage_repo {
         include hashi_stack::repo
         Class['hashi_stack::repo'] -> Package[$consul::package_name]
       }

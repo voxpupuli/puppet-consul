@@ -1,8 +1,30 @@
-# puppet-consul
-[![Build Status](https://travis-ci.org/solarkennedy/puppet-consul.png)](https://travis-ci.org/solarkennedy/puppet-consul)
+# KyleAnderson/consul
+
 [![Puppet Forge](https://img.shields.io/puppetforge/e/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
 [![Puppet Forge](https://img.shields.io/puppetforge/f/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
+[![Build Status](https://github.com/solarkennedy/puppet-consul/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/solarkennedy/puppet-consul/actions/workflows/ci.yml)
+
+This module manages Consul servers and agents.
+
+- [Compatibility](#compatibility)
+  - [What This Module Affects](#what-this-module-affects)
+- [Usage](#usage)
+- [Web UI](#web-ui)
+- [Service Definition](#service-definition)
+- [Watch Definitions](#watch-definitions)
+- [Check Definitions](#check-definitions)
+- [Removing Service, Check and Watch definitions](#removing-service-check-and-watch-definitions)
+- [ACL Definitions](#acl-definitions)
+  - [Policy/Token system](#policytoken-system)
+  - [Legacy system](#legacy-system)
+- [Prepared Queries and Prepared Query Templates](#prepared-queries-and-prepared-query-templates)
+- [Key/Value Objects](#keyvalue-objects)
+- [Limitations](#limitations)
+- [Windows Experimental Support](#windows-experimental-support)
+- [Telemetry](#telemetry)
+- [Consul Template](#consul-template)
+- [Development](#development)
 
 ## Compatibility
 
@@ -21,21 +43,22 @@ new versions of consul. Pin to the version that works for your setup!
 
 ### What This Module Affects
 
-* Installs the consul daemon (via url or package)
-  * If installing from zip, you *must* ensure the unzip utility is available.
-  * If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
-  * If installing on windows, you *must* install the `puppetlabs/powershell` module.
-* Optionally installs a user to run it under
-* Installs a configuration file (/etc/consul/config.json)
-* Manages the consul service via upstart, sysv, systemd, or nssm.
-* Optionally installs the Web UI
+- Installs the consul daemon (via url or package)
+  - If installing from zip, you *must* ensure the unzip utility is available.
+  - If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
+  - If installing on windows, you *must* install the `puppetlabs/powershell` module.
+- Optionally installs a user to run it under
+- Installs a configuration file (/etc/consul/config.json)
+- Manages the consul service via upstart, sysv, systemd, or nssm.
+- Optionally installs the Web UI
 
 ## Usage
 
 To set up a single consul server, with several agents attached:
 On the server:
+
 ```puppet
-class { '::consul':
+class { 'consul':
   config_hash => {
     'bootstrap_expect' => 1,
     'data_dir'         => '/opt/consul',
@@ -43,10 +66,12 @@ class { '::consul':
     'log_level'        => 'INFO',
     'node_name'        => 'server',
     'server'           => true,
-  }
+  },
 }
 ```
+
 On the agent(s):
+
 ```puppet
 class { 'consul':
   config_hash => {
@@ -55,10 +80,12 @@ class { 'consul':
     'log_level'  => 'INFO',
     'node_name'  => 'agent',
     'retry_join' => ['172.16.0.1'],
-  }
+  },
 }
 ```
+
 Disable install and service components:
+
 ```puppet
 class { 'consul':
   install_method => 'none',
@@ -70,7 +97,7 @@ class { 'consul':
     'log_level'  => 'INFO',
     'node_name'  => 'agent',
     'retry_join' => ['172.16.0.1'],
-  }
+  },
 }
 ```
 
@@ -79,6 +106,7 @@ class { 'consul':
 To install and run the Web UI on the server, include `ui => true` in the
 `config_hash`. You may also want to change the `client_addr` to `0.0.0.0` from
 the default `127.0.0.1`, for example:
+
 ```puppet
 class { 'consul':
   config_hash => {
@@ -90,20 +118,22 @@ class { 'consul':
     'node_name'        => 'server',
     'server'           => true,
     'ui'               => true,
-  }
+  },
 }
 ```
+
 For more security options, consider leaving the `client_addr` set to `127.0.0.1`
 and use with a reverse proxy:
+
 ```puppet
 $aliases = ['consul', 'consul.example.com']
 
 # Reverse proxy for Web interface
 include 'nginx'
 
-$server_names = [$facts['fqdn'], $aliases]
+$server_names = [$facts['networking']['fqdn'], $aliases]
 
-nginx::resource::vhost { $facts['fqdn']:
+nginx::resource::vhost { $facts['networking']['fqdn']:
   proxy       => 'http://localhost:8500',
   server_name => $server_names,
 }
@@ -121,13 +151,13 @@ consul::service { 'redis':
     {
       script   => '/usr/local/bin/check_redis.py',
       interval => '10s'
-    }
+    },
   ],
   port    => 6379,
   tags    => ['master'],
   meta    => {
     SLA => '1'
-  }
+  },
 }
 ```
 
@@ -136,26 +166,26 @@ See the service.pp docstrings for all available inputs.
 You can also use `consul::services` which accepts a hash of services, and makes
 it easy to declare in hiera. For example:
 
-```puppet
+```yaml
 consul::services:
   service1:
-    address: "%{::ipaddress}"
+    address: "%{facts.networking.ip}"
     checks:
       - http: http://localhost:42/status
         interval: 5s
     port: 42
     tags:
-      - "foo:%{::bar}"
+      - "foo:%{facts.custom.bar}"
     meta:
       SLA: 1
   service2:
-    address: "%{::ipaddress}"
+    address: "%{facts.networking.ip}"
     checks:
       - http: http://localhost:43/status
         interval: 5s
     port: 43
     tags:
-      - "foo:%{::baz}"
+      - "foo:%{facts.custom.baz}"
     meta:
       SLA: 4
 ```
@@ -205,20 +235,21 @@ consul to restart.
 Starting with version 1.4.0, a new ACL system was introduces separating rules (policies) from tokens.
 
 Tokens and policies may be both managed by Puppet:
+
 ```puppet
 consul_policy {'test_policy':
   description   => 'test description',
   rules         => [
-      {
-          'resource'    => 'service_prefix',
-          'segment'     => 'test_service',
-          'disposition' => 'read'
-      },
-      {
-          'resource'    => 'key',
-          'segment'     => 'test_key',
-          'disposition' => 'write'
-      },
+    {
+      'resource'    => 'service_prefix',
+      'segment'     => 'test_service',
+      'disposition' => 'read'
+    },
+    {
+      'resource'    => 'key',
+      'segment'     => 'test_key',
+      'disposition' => 'write'
+    },
   ],
   acl_api_token => 'e33653a6-0320-4a71-b3af-75f14578e3aa',
 }
@@ -233,21 +264,24 @@ consul_token {'test_token':
   ],
 }
 ```
-Here is an example to automatically create a policy and token for each host. 
+
+Here is an example to automatically create a policy and token for each host.
 For development environments `acl_api_token` can be the bootstrap token. For production it should be a dedicated token with access to write/read from the acls.
 
-`accessor_id` must be provided. It is a uuid. It can be generated in several different ways. 
-1. Statically generated and assigned to the resource. See `/usr/bin/uuidgen` on unix systems. 
-2. Dynamically derived from the `$::uuid` fact in puppet (useful when `consul_token` has 1:1 mapping to hosts). 
-3. Dynamically derived from arbitrary string using `fqdn_uuid()` (useful for giving all instances of a resource unique id).  
-```
+`accessor_id` must be provided. It is a uuid. It can be generated in several different ways.
+
+1. Statically generated and assigned to the resource. See `/usr/bin/uuidgen` on unix systems.
+2. Dynamically derived from the `$facts['dmi']['product']['uuid']` fact in puppet (useful when `consul_token` has 1:1 mapping to hosts).
+3. Dynamically derived from arbitrary string using `fqdn_uuid()` (useful for giving all instances of a resource unique id).
+
+```puppet
   # Create ACL policy that allows nodes to update themselves and read others
-  consul_policy { $::hostname:
-    description => "${::hostname}, generated by puppet",
+  consul_policy { $facts['networking']['hostname']:
+    description => "${facts['networking']['hostname']}, generated by puppet",
     rules => [
       {
         'resource' => 'node',
-        'segment' => "$::hostname",
+        'segment' => "$facts['networking']['hostname']",
         'disposition' => 'write'
       },
       {
@@ -256,25 +290,32 @@ For development environments `acl_api_token` can be the bootstrap token. For pro
         'disposition' => 'read'
       }
     ],
-    acl_api_token => $acl_api_token
+    acl_api_token => $acl_api_token,
   }
 
-  consul_token { $::hostname:
-    accessor_id => fqdn_uuid($::hostname),
-    policies_by_name => ["${::hostname}"],
+  consul_token { $facts['networking']['hostname']:
+    accessor_id => fqdn_uuid($facts['networking']['hostname']),
+    policies_by_name => ["${facts['networking']['hostname']}"],
     acl_api_token => $acl_api_token,
   }
  ```
- 
+
 Predefining token secret is supported by setting secret_id property.
 
 Externally created tokens and policies may be used by referencing them by ID (Token: accessor_id property, Policy: ID property, linking: policies_by_id property)
 
 ### Legacy system
+
 ```puppet
 consul_acl { 'ctoken':
   ensure => 'present',
-  rules  => {'key' => {'test' => {'policy' => 'read'}}},
+  rules  => {
+    'key' => {
+      'test' => {
+        'policy' => 'read'
+      },
+    },
+  },
   type   => 'client',
 }
 ```
@@ -331,7 +372,7 @@ consul_key_value { 'key/path':
   ensure     => 'present',
   value      => 'myvaluestring',
   flags      => 12345,
-  datacenter => 'dc1'
+  datacenter => 'dc1',
 }
 ```
 
@@ -340,37 +381,37 @@ This provider allows you to manage key/value pairs. It tries to be smart in two 
 1. It caches the data accessible from the kv store with the specified acl token.
 2. It does not update the key if the value & flag are already correct.
 
-
 These parameters are mandatory when using `consul_key_value`:
 
-* `name` Name of the key/value object. Path in key/value store.
-* `value` value of the key.
+- `name` Name of the key/value object. Path in key/value store.
+- `value` value of the key.
 
 The optional parameters only need to be specified if you require changes from default behaviour.
 
-* `flags` {Integer} an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application. Default is `0`.
-* `acl\_api_token` {String} Token for accessing the ACL API. Default is `''`.
-* `datacenter` {String} Use the key/value store in specified datacenter. If `''` (default) it will use the datacenter of the Consul agent at the HTTP address.
-* `protocol` {String} protocol to use. Either `'http'` (default) or `'https'`.
-* `port` {Integer} consul port. Defaults to `8500`.
-* `hostname` {String} consul hostname. Defaults to `'localhost'`.
-* `api_tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
+- `flags` {Integer} an opaque unsigned integer that can be attached to each entry. Clients can choose to use this however makes sense for their application. Default is `0`.
+- `acl\_api_token` {String} Token for accessing the ACL API. Default is `''`.
+- `datacenter` {String} Use the key/value store in specified datacenter. If `''` (default) it will use the datacenter of the Consul agent at the HTTP address.
+- `protocol` {String} protocol to use. Either `'http'` (default) or `'https'`.
+- `port` {Integer} consul port. Defaults to `8500`.
+- `hostname` {String} consul hostname. Defaults to `'localhost'`.
+- `api_tries` {Integer} number of tries when contacting the Consul REST API. Timeouts are not retried because a timeout already takes long. Defaults to `3`.
 
 ## Limitations
 
 Depends on the JSON gem, or a modern ruby. (Ruby 1.8.7 is not officially supported)
-Depending on the version of puppetserver deployed it may not be new enough (1.8.0 is too old, 2.0.3 is known to work).
+Current versions of puppetserver are new enough (2.0.3 & greater are known to work).
 
 ## Windows Experimental Support
 
 Windows service does no longer need [NSSM] to host the service. Consul will be installed as a native windows service using build-in sc.exe. The following caveats apply:
 
-* By defult eveything will be installed into `c:\ProgramData\Consul\` and `$consul::config_hash['data_dir']` will default point to that location, so you don't need that in your `config_hash`
-* The service user needs `logon as a service` permission to run things as a service(not yet supported by this module). therefore will `consul::manage_user` and `consul::manage_group` be default `false`.
-* consul::user will default be `NT AUTHORITY\NETWORK SERVICE` (Has by default `logon as a service` permission).
-* consul::group will default be `Administrators`
+- By defult eveything will be installed into `c:\ProgramData\Consul\` and `$consul::config_hash['data_dir']` will default point to that location, so you don't need that in your `config_hash`
+- The service user needs `logon as a service` permission to run things as a service(not yet supported by this module). therefore will `consul::manage_user` and `consul::manage_group` be default `false`.
+- consul::user will default be `NT AUTHORITY\NETWORK SERVICE` (Has by default `logon as a service` permission).
+- consul::group will default be `Administrators`
 
 Example:
+
 ```puppet
 class { 'consul':
   config_hash => {
@@ -379,11 +420,12 @@ class { 'consul':
     'log_level'        => 'INFO',
     'node_name'        => 'server',
     'server'           => true,
-  }
+  },
 }
 ```
 
 ## Telemetry
+
 The Consul agent collects various runtime metrics about the performance of different libraries and subsystems. These metrics are aggregated on a ten second interval and are retained for one minute.
 
 To view this data, you must send a signal to the Consul process: on Unix, this is USR1 while on Windows it is BREAK. Once Consul receives the signal, it will dump the current telemetry information to the agent's stderr.
@@ -391,6 +433,7 @@ To view this data, you must send a signal to the Consul process: on Unix, this i
 This telemetry information can be used for debugging or otherwise getting a better view of what Consul is doing.
 
 Example:
+
 ```puppet
 class { 'consul':
   config_hash => {
@@ -401,42 +444,43 @@ class { 'consul':
     'node_name'        => 'server',
     'server'           => true,
     'telemetry' => {
-       'statsd_address' => 'localhost:9125',
-       'prefix_filter' => [
-           '+consul.client.rpc',
-           '+consul.client.rpc.exceeded',
-           '+consul.acl.cache_hit',
-           '+consul.acl.cache_miss',
-           '+consul.dns.stale_queries',
-           '+consul.raft.state.leader',
-           '+consul.raft.state.candidate',
-           '+consul.raft.apply',
-           '+consul.raft.commitTime',
-           '+consul.raft.leader.dispatchLog',
-           '+consul.raft.replication.appendEntries',
-           '+consul.raft.leader.lastContact',
-           '+consul.rpc.accept_conn',
-           '+consul.catalog.register',
-           '+consul.catalog.deregister',
-           '+consul.kvs.apply',
-           '+consul.leader.barrier',
-           '+consul.leader.reconcile',
-           '+consul.leader.reconcileMember',
-           '+consul.leader.reapTombstones',
-           '+consul.rpc.raft_handoff',
-           '+consul.rpc.request_error',
-           '+consul.rpc.request',
-           '+consul.rpc.query',
-           '+consul.rpc.consistentRead',
-           '+consul.memberlist.msg.suspect',
-           '+consul.serf.member.flap',
-           '+consul.serf.events',
-           '+consul.session_ttl.active',
-           ]
-        }
-    }
+      'statsd_address' => 'localhost:9125',
+      'prefix_filter' => [
+        '+consul.client.rpc',
+        '+consul.client.rpc.exceeded',
+        '+consul.acl.cache_hit',
+        '+consul.acl.cache_miss',
+        '+consul.dns.stale_queries',
+        '+consul.raft.state.leader',
+        '+consul.raft.state.candidate',
+        '+consul.raft.apply',
+        '+consul.raft.commitTime',
+        '+consul.raft.leader.dispatchLog',
+        '+consul.raft.replication.appendEntries',
+        '+consul.raft.leader.lastContact',
+        '+consul.rpc.accept_conn',
+        '+consul.catalog.register',
+        '+consul.catalog.deregister',
+        '+consul.kvs.apply',
+        '+consul.leader.barrier',
+        '+consul.leader.reconcile',
+        '+consul.leader.reconcileMember',
+        '+consul.leader.reapTombstones',
+        '+consul.rpc.raft_handoff',
+        '+consul.rpc.request_error',
+        '+consul.rpc.request',
+        '+consul.rpc.query',
+        '+consul.rpc.consistentRead',
+        '+consul.memberlist.msg.suspect',
+        '+consul.serf.member.flap',
+        '+consul.serf.events',
+        '+consul.session_ttl.active',
+      ],
+    },
+  },
 }
 ```
+
 The metrics for the consul system you can look them in the Official Consul Site with all the description for every metric.
 Url: https://www.consul.io/docs/agent/telemetry.html
 
@@ -449,7 +493,7 @@ with values from Consul. This module does not configure consul template. See
 a module that can do that.
 
 ## Development
+
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
-

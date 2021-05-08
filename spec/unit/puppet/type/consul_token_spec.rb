@@ -1,35 +1,34 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:consul_token) do
-
-  it 'should fail if no name is provided' do
-    expect do
-      Puppet::Type.type(:consul_token).new(:type => 'client')
-    end.to raise_error(Puppet::Error, /Title or name must be provided/)
+  it 'fails if no name is provided' do
+    expect {
+      Puppet::Type.type(:consul_token).new(type: 'client')
+    }.to raise_error(Puppet::Error, %r{Title or name must be provided})
   end
 
-  it 'should fail if accessor_id ist not a string' do
-    expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :accessor_id => {})
-    end.to raise_error(Puppet::Error, /ID must be a string/)
+  it 'fails if accessor_id ist not a string' do
+    expect {
+      Puppet::Type.type(:consul_token).new(name: 'foo', accessor_id: {})
+    }.to raise_error(Puppet::Error, %r{ID must be a string})
   end
 
-  it 'should fail if secret_id ist not a string' do
-    expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :secret_id => {})
-    end.to raise_error(Puppet::Error, /ID must be a string/)
+  it 'fails if secret_id ist not a string' do
+    expect {
+      Puppet::Type.type(:consul_token).new(name: 'foo', secret_id: {})
+    }.to raise_error(Puppet::Error, %r{ID must be a string})
   end
 
-  it 'should fail if policy name list is not an array' do
-    expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_name => [[]])
-    end.to raise_error(Puppet::Error, /Policy name list must be an array of strings/)
+  it 'fails if policy name list is not an array' do
+    expect {
+      Puppet::Type.type(:consul_token).new(name: 'foo', policies_by_name: [[]])
+    }.to raise_error(Puppet::Error, %r{Policy name list must be an array of strings})
   end
 
-  it 'should fail if policy ID list is not an array' do
-    expect do
-      Puppet::Type.type(:consul_token).new(:name => 'foo', :policies_by_id => [[]])
-    end.to raise_error(Puppet::Error, /Policy ID list must be an array of strings/)
+  it 'fails if policy ID list is not an array' do
+    expect {
+      Puppet::Type.type(:consul_token).new(name: 'foo', policies_by_id: [[]])
+    }.to raise_error(Puppet::Error, %r{Policy ID list must be an array of strings})
   end
 
   context 'with name defined' do
@@ -38,34 +37,34 @@ describe Puppet::Type.type(:consul_token) do
 
     before :each do
       @token = Puppet::Type.type(:consul_token).new(
-        :name => 'testing',
-        :accessor_id => '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
-        :policies_by_name => policies_by_name,
-        :policies_by_id => policies_by_id,
-        )
+        name: 'testing',
+        accessor_id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+        policies_by_name: policies_by_name,
+        policies_by_id: policies_by_id,
+      )
     end
 
-    it 'should accept a accessor id' do
+    it 'accepts a accessor id' do
       expect(@token[:accessor_id]).to eq('39c75e12-7f43-0a40-dfba-9aa3fcda08d4')
     end
 
-    it 'should accept policy names' do
+    it 'accepts policy names' do
       expect(@token[:policies_by_name]).to eq(policies_by_name)
     end
 
-    it 'should accept policy IDs' do
+    it 'accepts policy IDs' do
       expect(@token[:policies_by_id]).to eq(policies_by_id)
     end
 
-    it 'should default to localhost' do
+    it 'defaults to localhost' do
       expect(@token[:hostname]).to eq('localhost')
     end
 
-    it 'should default to http' do
+    it 'defaults to http' do
       expect(@token[:protocol]).to eq(:http)
     end
 
-    it 'should default to port 8500' do
+    it 'defaults to port 8500' do
       expect(@token[:port]).to eq(8500)
     end
   end

@@ -120,7 +120,8 @@
       "version_requirement": ">= 6.1.0 < 8.0.0"
     }
   ],
-  "pdk-version": "1.8.0",
-  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
-  "template-ref": "1.8.0-0-g0d9da00"
+  "description": "Configures Consul by Hashicorp",
+  "pdk-version": "2.1.0",
+  "template-url": "pdk-default#2.1.0",
+  "template-ref": "tags/2.1.0-0-ga675ea5"
 }
