@@ -33,14 +33,45 @@
       ]
     },
     {
-      "operatingsystem": "RedHat",
+      "operatingsystem": "Archlinux"
+    },
+    {
+      "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "7",
         "8"
       ]
     },
     {
-      "operatingsystem": "CentOS",
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "10"
+      ]
+    },
+    {
+      "operatingsystem": "Fedora",
+      "operatingsystemrelease": [
+        "30",
+        "31",
+        "32"
+      ]
+    },
+    {
+      "operatingsystem": "FreeBSD",
+      "operatingsystemrelease": [
+        "11",
+        "12"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
         "8"
@@ -54,28 +85,10 @@
       ]
     },
     {
-      "operatingsystem": "OracleLinux",
+      "operatingsystem": "SLED",
       "operatingsystemrelease": [
-        "7",
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease": [
-        "18.04",
-        "20.04"
-      ]
-    },
-    {
-      "operatingsystem": "Archlinux"
-    },
-    {
-      "operatingsystem": "Fedora",
-      "operatingsystemrelease": [
-        "30",
-        "31",
-        "32"
+        "12",
+        "15"
       ]
     },
     {
@@ -86,17 +99,10 @@
       ]
     },
     {
-      "operatingsystem": "SLED",
+      "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "12",
-        "15"
-      ]
-    },
-    {
-      "operatingsystem": "FreeBSD",
-      "operatingsystemrelease": [
-        "11",
-        "12"
+        "18.04",
+        "20.04"
       ]
     },
     {
