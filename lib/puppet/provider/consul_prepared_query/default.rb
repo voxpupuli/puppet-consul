@@ -2,7 +2,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 Puppet::Type.type(:consul_prepared_query).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -25,7 +25,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
         resource.provider = new(found_prepared_query)
       else
         Puppet.debug("found none #{name}")
-        resource.provider = new({:ensure => :absent})
+        resource.provider = new({ ensure: :absent })
       end
     end
   end
@@ -40,7 +40,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/query")
     http = Net::HTTP.new(uri.host, uri.port)
 
-    path=uri.request_uri + "?token=#{acl_api_token}"
+    path = uri.request_uri + "?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
     res = nil
 
@@ -63,13 +63,13 @@ Puppet::Type.type(:consul_prepared_query).provide(
 
     nprepared_queries = prepared_queries.collect do |prepared_query|
       {
-        :name    => prepared_query["Name"],
-        :id      => prepared_query["ID"],
-        :session => prepared_query["Session"],
-        :token   => prepared_query["Token"],
-        :service => prepared_query["Service"],
-        :dns     => prepared_query["DNS"],
-        :ensure  => :present,
+        name: prepared_query['Name'],
+        id: prepared_query['ID'],
+        session: prepared_query['Session'],
+        token: prepared_query['Token'],
+        service: prepared_query['Service'],
+        dns: prepared_query['DNS'],
+        ensure: :present,
       }
     end
 
@@ -82,7 +82,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/query#{idstr}")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
-    return uri.request_uri + "?token=#{acl_api_token}", http
+    [uri.request_uri + "?token=#{acl_api_token}", http]
   end
 
   def create_prepared_query(body)
@@ -93,7 +93,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     end
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -106,7 +106,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     end
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -115,7 +115,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     req = Net::HTTP::Delete.new(path)
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -128,7 +128,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     resources.first || nil
   end
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
@@ -162,31 +162,29 @@ Puppet::Type.type(:consul_prepared_query).provide(
     template = @resource[:template]
     template_regexp = @resource[:template_regexp]
     template_type = @resource[:template_type]
-    prepared_query = self.get_resource(name, port, hostname, protocol, tries)
+    prepared_query = get_resource(name, port, hostname, protocol, tries)
     query_data = {
-      "Name"    => "#{name}",
-      "Token"   => "#{token}",
-      "Service" => {
-        "Service"     => "#{service_name}",
-        "Near"        => "#{service_near}",
-        "Failover"    => {
-          "NearestN"    => service_failover_n,
-          "Datacenters" => service_failover_dcs,
+      'Name'    => name.to_s,
+      'Token'   => token.to_s,
+      'Service' => {
+        'Service'     => service_name.to_s,
+        'Near'        => service_near.to_s,
+        'Failover'    => {
+          'NearestN'    => service_failover_n,
+          'Datacenters' => service_failover_dcs,
         },
-        "OnlyPassing" => service_only_passing,
-        "Tags"        => service_tags,
+        'OnlyPassing' => service_only_passing,
+        'Tags'        => service_tags,
       },
-      "DNS"    => {
-        "TTL" => "#{ttl}s"
+      'DNS' => {
+        'TTL' => "#{ttl}s"
       }
     }
     if template
-      query_data.merge!({
-        "Template" => {
-          "Type"   => template_type,
-          "Regexp" => template_regexp,
-        }
-      })
+      query_data['Template'] = {
+        'Type' => template_type,
+                            'Regexp' => template_regexp,
+      }
     end
     if prepared_query
       id = prepared_query[:id]

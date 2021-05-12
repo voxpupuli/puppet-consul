@@ -4,7 +4,6 @@
 # It ensure the service is running
 #
 class consul::run_service {
-
   $service_name = $consul::init_style_real ? {
     'launchd' => 'io.consul.daemon',
     default   => 'consul',
@@ -31,11 +30,10 @@ class consul::run_service {
   }
 
   if $consul::install_method == 'docker' {
-
     $server_mode = pick($consul::config_hash[server], false)
 
     if $server_mode {
-      $env = [ '\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'' ]
+      $env = ['\'CONSUL_ALLOW_PRIVILEGED_PORTS=\'']
       $docker_command = 'agent -server'
     } else {
       $env = undef

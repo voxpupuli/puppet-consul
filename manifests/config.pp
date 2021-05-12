@@ -26,14 +26,12 @@ class consul::config (
   Boolean $allow_binding_to_root_ports = $consul::allow_binding_to_root_ports,
   Boolean $restart_on_change           = $consul::restart_on_change,
 ) {
-
   $notify_service = $restart_on_change ? {
     true    => Class['consul::run_service'],
     default => undef,
   }
 
   if ($consul::init_style_real != 'unmanaged') {
-
     case $consul::init_style_real {
       'upstart': {
         file { '/etc/init/consul.conf':
@@ -124,12 +122,11 @@ class consul::config (
   }
 
   file { 'consul config':
-    ensure  => present,
+    ensure  => file,
     path    => "${consul::config_dir}/${consul::config_name}",
     owner   => $consul::user_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
     content => consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
   }
-
 }

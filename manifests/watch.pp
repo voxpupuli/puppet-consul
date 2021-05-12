@@ -62,7 +62,6 @@ define consul::watch (
   $token                         = undef,
   $type                          = undef,
 ) {
-
   include consul
   $id = $title
 
@@ -108,7 +107,7 @@ define consul::watch (
       }
     }
     'service': {
-      if (! $service ){
+      if (! $service ) {
         fail('service is required for watch type of [service]')
       }
       $type_hash = {
@@ -150,5 +149,4 @@ define consul::watch (
     content => consul::sorted_json($watch_hash, $consul::pretty_config, $consul::pretty_config_indent),
     notify  => Class['consul::reload_service'],
   }
-
 }

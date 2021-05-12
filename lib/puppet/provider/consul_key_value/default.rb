@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 require 'base64'
 Puppet::Type.type(:consul_key_value).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -27,7 +27,7 @@ Puppet::Type.type(:consul_key_value).provide(
         resource.provider = new(found_key_value)
       else
         Puppet.debug("found none #{name}")
-        resource.provider = new({:ensure => :absent})
+        resource.provider = new({ ensure: :absent })
       end
     end
   end
@@ -68,11 +68,11 @@ Puppet::Type.type(:consul_key_value).provide(
 
     nkey_values = key_values.collect do |key_value|
       {
-        :name     => key_value["Key"],
-        :value    => (key_value["Value"] == nil ? '' : Base64.decode64(key_value["Value"])),
-        :flags    => Integer(key_value["Flags"]),
-        :ensure   => :present,
-        :protocol => protocol,
+        name: key_value['Key'],
+        value: (key_value['Value'].nil? ? '' : Base64.decode64(key_value['Value'])),
+        flags: Integer(key_value['Flags']),
+        ensure: :present,
+        protocol: protocol,
       }
     end
     @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ] = nkey_values
@@ -80,7 +80,7 @@ Puppet::Type.type(:consul_key_value).provide(
   end
 
   # Reset the state of the provider between tests.
-  def self.reset()
+  def self.reset
     @key_values = {}
   end
 
@@ -88,7 +88,7 @@ Puppet::Type.type(:consul_key_value).provide(
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}&token=#{@resource[:acl_api_token]}")
     http = Net::HTTP.new(uri.host, uri.port)
     acl_api_token = @resource[:acl_api_token]
-    return uri.request_uri, http
+    [uri.request_uri, http]
   end
 
   def create_or_update_key_value(name, value, flags)
@@ -97,7 +97,7 @@ Puppet::Type.type(:consul_key_value).provide(
     req.body = value
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -106,7 +106,7 @@ Puppet::Type.type(:consul_key_value).provide(
     req = Net::HTTP::Delete.new(path)
     res = http.request(req)
     if res.code != '200'
-      raise(Puppet::Error,"Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
+      raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
     end
   end
 
@@ -119,7 +119,7 @@ Puppet::Type.type(:consul_key_value).provide(
     resources.first || nil
   end
 
-  def initialize(value={})
+  def initialize(value = {})
     super(value)
     @property_flush = {}
   end
@@ -149,13 +149,13 @@ Puppet::Type.type(:consul_key_value).provide(
     protocol = @resource[:protocol]
     tries = @resource[:api_tries]
     datacenter = @resource[:datacenter]
-    key_value = self.get_resource(name, port, hostname, protocol, tries, datacenter)
+    key_value = get_resource(name, port, hostname, protocol, tries, datacenter)
 
     if @property_flush[:ensure] == :absent
-      #key exists in the kv, but must be deleted. 
+      # key exists in the kv, but must be deleted.
       delete_key_value(name)
     else
-      #something changed, otherwise the flush method would not have been called.
+      # something changed, otherwise the flush method would not have been called.
       create_or_update_key_value(name, value, flags)
     end
     @property_hash.clear

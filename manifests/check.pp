@@ -110,5 +110,4 @@ define consul::check (
     content => consul::sorted_json($check_hash, $consul::pretty_config, $consul::pretty_config_indent),
     notify  => Class['consul::reload_service'],
   }
-
 }

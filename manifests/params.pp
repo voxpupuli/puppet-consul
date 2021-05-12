@@ -4,17 +4,16 @@
 # It sets variables according to platform
 #
 class consul::params {
-
   $manage_repo = false
 
-  case $facts['architecture'] {
+  case $facts['os']['architecture'] {
     'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
-    'i386':                   { $arch = '386'   }
+    'i386':                   { $arch = '386' }
     'aarch64':                { $arch = 'arm64' }
-    'armv7l':                 { $arch = 'armhfv6'}
-    /^arm.*/:                 { $arch = 'arm'   }
+    'armv7l':                 { $arch = 'armhfv6' }
+    /^arm.*/:                 { $arch = 'arm' }
     default:                  {
-      fail("Unsupported kernel architecture: ${facts['architecture']}")
+      fail("Unsupported kernel architecture: ${facts['os']['architecture']}")
     }
   }
 
@@ -37,7 +36,7 @@ class consul::params {
       $binary_name = 'consul.exe'
       $binary_owner = 'NT AUTHORITY\NETWORK SERVICE'
       $config_defaults  = {
-        data_dir => 'C:\\ProgramData\\consul'
+        data_dir => 'C:\\ProgramData\\consul',
       }
       $manage_user = false
       $manage_group = false
@@ -52,7 +51,7 @@ class consul::params {
       $binary_name = 'consul'
       $binary_owner = 'root'
       $config_defaults  = {
-        data_dir => '/opt/consul'
+        data_dir => '/opt/consul',
       }
       $manage_user = true
       $manage_group = true

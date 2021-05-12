@@ -1,9 +1,8 @@
 require 'spec_helper_acceptance'
 
 describe 'consul class' do
-
   context 'default parameters' do
-    it 'should work with no errors based on the example' do
+    it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
@@ -24,21 +23,20 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe service('consul') do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.0.5} }
+      its(:stdout) { is_expected.to match %r{Consul v1.0.5} }
     end
-
   end
   context 'default parameters' do
-    it 'should work with no errors based on the example' do
+    it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
@@ -60,21 +58,20 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe service('consul') do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.1.0} }
+      its(:stdout) { is_expected.to match %r{Consul v1.1.0} }
     end
-
   end
   context 'with performance options' do
-    it 'should work with no errors based on the example' do
+    it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
@@ -99,21 +96,20 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe service('consul') do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.2.0} }
+      its(:stdout) { is_expected.to match %r{Consul v1.2.0} }
     end
-
   end
   context 'with performance options' do
-    it 'should work with no errors based on the example' do
+    it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
@@ -138,22 +134,22 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe service('consul') do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.2.3} }
+      its(:stdout) { is_expected.to match %r{Consul v1.2.3} }
     end
   end
   context 'with new ACL system' do
     acl_master_token = '222bf65c-2477-4003-8f8e-842a4b394d8d'
 
-    it 'should work with no errors based on the example' do
+    it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present } ->
         class { 'consul':
@@ -222,28 +218,30 @@ describe 'consul class' do
     end
 
     describe file('/opt/consul') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe service('consul') do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe command('consul version') do
-      its(:stdout) { should match %r{Consul v1.5.0} }
+      its(:stdout) { is_expected.to match %r{Consul v1.5.0} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep Description") do
-      its(:stdout) { should match %r{test_token_xyz} }
+      its(:stdout) { is_expected.to match %r{test_token_xyz} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep -v Local | grep -v Create | grep -v Legacy | sed s/'.* - '//g") do
-      its(:stdout) { should include "test_token_xyz\nPolicies:\ntest_policy_abc" }
+      its(:stdout) { is_expected.to include "test_token_xyz\nPolicies:\ntest_policy_abc" }
     end
 
     describe command("consul acl policy read --name test_policy_abc --token #{acl_master_token}") do
-      its(:stdout) { should include "Rules:\nservice_prefix \"tst_service\" {\n  policy = \"read\"\n}\n\nkey \"test_key\" {\n  policy = \"write\"\n}\n\nnode_prefix \"\" {\n  policy = \"deny\"\n}" }
+      its(:stdout) do
+        is_expected.to include "Rules:\nservice_prefix \"tst_service\" {\n  policy = \"read\"\n}\n\nkey \"test_key\" {\n  policy = \"write\"\n}\n\nnode_prefix \"\" {\n  policy = \"deny\"\n}"
+      end
     end
   end
 end

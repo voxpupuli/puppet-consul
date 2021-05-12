@@ -1,11 +1,11 @@
 require 'json'
 require 'net/http'
 require 'uri'
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "puppet_x", "consul", "acl_base.rb"))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'consul', 'acl_base.rb'))
 
 Puppet::Type.type(:consul_policy).provide(
-    :default
-) do
+    :default,
+  ) do
   mk_resource_methods
 
   def self.prefetch(resources)
@@ -15,9 +15,9 @@ Puppet::Type.type(:consul_policy).provide(
       all_policies = list_policies(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries])
 
       if resource[:id] == ''
-        existing_policy = all_policies.select{|policy| policy.name == name}
+        existing_policy = all_policies.select { |policy| policy.name == name }
       else
-        existing_policy = all_policies.select{|policy| policy.id == resource[:id]}
+        existing_policy = all_policies.select { |policy| policy.id == resource[:id] }
 
         if existing_policy.empty?
           Puppet.warning("Unable to find any existing Consul ACL policy by specified ID=#{resource[:id]}")
@@ -74,8 +74,8 @@ Puppet::Type.type(:consul_policy).provide(
 
     if existing_policy
       @property_hash = {
-          :id          => existing_policy.id,
-          :description => existing_policy.description
+        id: existing_policy.id,
+          description: existing_policy.description
       }
 
       if rules_encoded == existing_policy.rules
@@ -150,9 +150,9 @@ class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
     end
 
     collection = []
-    response.each {|item|
+    response.each do |item|
       collection.push(ConsulPolicy.new(item['ID'], item['Name'], item['Description'], nil))
-    }
+    end
 
     collection
   end

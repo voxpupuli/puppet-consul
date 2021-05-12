@@ -1,14 +1,13 @@
 Puppet::Type.newtype(:consul_acl) do
-
   desc <<-'EOD'
   Manage a consul token and its ACLs.
   EOD
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Name of the token'
     validate do |value|
-      raise ArgumentError, "ACL name must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'ACL name must be a string' unless value.is_a?(String)
     end
   end
 
@@ -21,7 +20,7 @@ Puppet::Type.newtype(:consul_acl) do
   newparam(:acl_api_token) do
     desc 'Token for accessing the ACL API'
     validate do |value|
-      raise ArgumentError, "ACL API token must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'ACL API token must be a string' unless value.is_a?(String)
     end
     defaultto ''
   end
@@ -30,7 +29,7 @@ Puppet::Type.newtype(:consul_acl) do
     desc 'hash of ACL rules for this token'
     defaultto {}
     validate do |value|
-      raise ArgumentError, "ACL rules must be provided as a hash" if not value.is_a?(Hash)
+      raise ArgumentError, 'ACL rules must be provided as a hash' unless value.is_a?(Hash)
     end
 
     def is_to_s(value)
@@ -57,14 +56,14 @@ Puppet::Type.newtype(:consul_acl) do
     desc 'consul port'
     defaultto 8500
     validate do |value|
-      raise ArgumentError, "The port number must be a number" if not value.is_a?(Integer)
+      raise ArgumentError, 'The port number must be a number' unless value.is_a?(Integer)
     end
   end
 
   newparam(:hostname) do
     desc 'consul hostname'
     validate do |value|
-      raise ArgumentError, "The hostname must be a string" if not value.is_a?(String)
+      raise ArgumentError, 'The hostname must be a string' unless value.is_a?(String)
     end
     defaultto 'localhost'
   end
@@ -73,7 +72,7 @@ Puppet::Type.newtype(:consul_acl) do
     desc 'number of tries when contacting the Consul REST API'
     defaultto 3
     validate do |value|
-      raise ArgumentError, "Number of API tries must be a number" if not value.is_a?(Integer)
+      raise ArgumentError, 'Number of API tries must be a number' unless value.is_a?(Integer)
     end
   end
 
