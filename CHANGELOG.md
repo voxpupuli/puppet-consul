@@ -1,8 +1,18 @@
 # Changelog
 
-## [6.2.0](https://github.com/solarkennedy/puppet-consul/tree/6.2.0) (2021-05-08)
+## [7.0.0](https://github.com/solarkennedy/puppet-consul/tree/7.0.0) (2021-05-12)
 
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v6.1.0...6.2.0)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v6.1.0...7.0.0)
+
+**Breaking changes:**
+
+- Drop support for EoL Puppet 5 [\#571](https://github.com/solarkennedy/puppet-consul/issues/571)
+- Drop support for old SLES/SLED versions [\#570](https://github.com/solarkennedy/puppet-consul/issues/570)
+- Drop EoL FreeBSD 10 support [\#569](https://github.com/solarkennedy/puppet-consul/issues/569)
+- Drop EoL Fedora 25/26/27 support [\#568](https://github.com/solarkennedy/puppet-consul/issues/568)
+- Drop EoL Amazon Linux support [\#567](https://github.com/solarkennedy/puppet-consul/issues/567)
+- Drop EoL Ubuntu 16.04 support  [\#566](https://github.com/solarkennedy/puppet-consul/issues/566)
+- Drop EoL CentOS/RHEL 6 support [\#565](https://github.com/solarkennedy/puppet-consul/issues/565)
 
 **Implemented enhancements:**
 
@@ -23,6 +33,9 @@
 
 **Merged pull requests:**
 
+- List Debian 10 as supported [\#573](https://github.com/solarkennedy/puppet-consul/pull/573) ([genebean](https://github.com/genebean))
+- OS and Puppet versions update [\#564](https://github.com/solarkennedy/puppet-consul/pull/564) ([genebean](https://github.com/genebean))
+- PDK update, move CI to GH Actions [\#563](https://github.com/solarkennedy/puppet-consul/pull/563) ([genebean](https://github.com/genebean))
 - adding the option to setup the upstream HashiCorp repository [\#560](https://github.com/solarkennedy/puppet-consul/pull/560) ([attachmentgenie](https://github.com/attachmentgenie))
 - Add config\_name parameter to define the name of the consul config [\#558](https://github.com/solarkennedy/puppet-consul/pull/558) ([bogdankatishev](https://github.com/bogdankatishev))
 - Add description parameter for token [\#556](https://github.com/solarkennedy/puppet-consul/pull/556) ([Hexta](https://github.com/Hexta))
