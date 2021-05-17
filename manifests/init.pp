@@ -117,6 +117,12 @@
 # [*manage_user*]
 #   Whether to create/manage the user that should own consul's configuration files.
 #
+# [*manage_user_home_location*]
+#   Whether to explicitly set the location of the consul user's home directory when this modules
+#   manages the creation of the user (aka `manage_user = true`). If the consul user already exists
+#   and this is enabled, puppet tries to change the consul user's home to the new location. This
+#   will cause the puppet run to fail if the consul service is currently running.
+#
 # [*manage_data_dir*]
 #   Whether to manage the consul storage data directory.
 #
@@ -227,6 +233,7 @@ class consul (
   Boolean                               $manage_repo                 = $consul::params::manage_repo,
   Boolean                               $manage_service              = true,
   Boolean                               $manage_user                 = $consul::params::manage_user,
+  Boolean                               $manage_user_home_location   = false,
   Boolean                               $manage_data_dir             = true,
   String[1]                             $os                          = $facts['kernel'].downcase,
   String[1]                             $package_ensure              = 'latest',
