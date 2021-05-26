@@ -245,6 +245,16 @@ describe 'consul' do
         it { is_expected.to contain_group('consul').with(ensure: :present) }
       end
 
+      context 'When the user home directory location is not managed, a user should be created without the home parameter' do
+        let(:params) do
+          {
+            manage_user_home_location: false,
+          }
+        end
+
+        it { is_expected.to contain_user('consul').with(ensure: :present).without_home }
+      end
+
       context 'When data_dir is provided' do
         let(:params) do
           {

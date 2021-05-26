@@ -87,12 +87,21 @@ class consul::install {
   }
 
   if ($consul::manage_user) and ($consul::install_method != 'docker' ) {
+    # If the consul user already exists and this tries to change its home
+    # location the puppet run will fail if the consul service is currently
+    # running. This is a workaround for
+    # https://github.com/solarkennedy/puppet-consul/issues/559
+    $consul_user_home = $consul::manage_user_home_location ? {
+      true  => $real_data_dir,
+      false => undef,
+    }
+
     user { $consul::user_real:
       ensure => 'present',
       system => true,
       groups => $consul::extra_groups,
       shell  => $consul::shell,
-      home   => $real_data_dir,
+      home   => $consul_user_home,
     }
 
     if ($consul::manage_group) and ($consul::install_method != 'docker' ) {

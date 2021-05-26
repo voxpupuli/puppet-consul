@@ -48,6 +48,7 @@ new versions of consul. Pin to the version that works for your setup!
   - If installing from docker, you *must* ensure puppetlabs-docker_platform module is available.
   - If installing on windows, you *must* install the `puppetlabs/powershell` module.
 - Optionally installs a user to run it under
+  - *NOTE:* users enabling this and just starting with Consul should consider setting `manage_user_home_location` to `true`. It defaults to false for backwards compatibility.
 - Installs a configuration file (/etc/consul/config.json)
 - Manages the consul service via upstart, sysv, systemd, or nssm.
 - Optionally installs the Web UI
