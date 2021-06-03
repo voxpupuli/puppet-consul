@@ -9,6 +9,7 @@ module PuppetX::Consul
       def initialize(hostname, port, protocol, api_token = nil)
         @global_uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
         @http_client = Net::HTTP.new(@global_uri.host, @global_uri.port)
+        @http_client.use_ssl = true if @global_uri.instance_of? URI::HTTPS
         @api_token = api_token
       end
 

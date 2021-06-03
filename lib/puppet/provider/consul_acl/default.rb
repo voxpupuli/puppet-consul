@@ -41,6 +41,7 @@ Puppet::Type.type(:consul_acl).provide(
     # but would break for anyone using nonstandard paths
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
 
     path = uri.request_uri + "/list?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
@@ -93,6 +94,7 @@ Puppet::Type.type(:consul_acl).provide(
   def put_acl(method, body)
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
     req = Net::HTTP::Put.new(path)

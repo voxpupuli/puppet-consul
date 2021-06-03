@@ -39,6 +39,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     # but would break for anyone using nonstandard paths
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/query")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
 
     path = uri.request_uri + "?token=#{acl_api_token}"
     req = Net::HTTP::Get.new(path)
@@ -81,6 +82,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     idstr = id ? "/#{id}" : ''
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/query#{idstr}")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
     [uri.request_uri + "?token=#{acl_api_token}", http]
   end
