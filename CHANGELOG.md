@@ -1,8 +1,16 @@
 # Changelog
 
-## [7.0.1](https://github.com/solarkennedy/puppet-consul/tree/7.0.1) (2021-06-12)
+## [7.0.2](https://github.com/solarkennedy/puppet-consul/tree/7.0.2) (2021-06-12)
 
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v7.0.0...7.0.1)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v7.0.1...7.0.2)
+
+**Merged pull requests:**
+
+- enable ssl when protocol is https [\#577](https://github.com/solarkennedy/puppet-consul/pull/577) ([SimonPe](https://github.com/SimonPe))
+
+## [v7.0.1](https://github.com/solarkennedy/puppet-consul/tree/v7.0.1) (2021-06-12)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v7.0.0...v7.0.1)
 
 **Fixed bugs:**
 
