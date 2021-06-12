@@ -1,8 +1,28 @@
 # Changelog
 
-## [7.0.0](https://github.com/solarkennedy/puppet-consul/tree/7.0.0) (2021-05-12)
+## [7.0.1](https://github.com/solarkennedy/puppet-consul/tree/7.0.1) (2021-06-12)
 
-[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v6.1.0...7.0.0)
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v7.0.0...7.0.1)
+
+**Fixed bugs:**
+
+- Make home directory location setting optional [\#575](https://github.com/solarkennedy/puppet-consul/pull/575) ([genebean](https://github.com/genebean))
+
+**Closed issues:**
+
+- Migrate from master to main [\#572](https://github.com/solarkennedy/puppet-consul/issues/572)
+- New Home Attribute on consul user resource breaks our puppet runs. [\#559](https://github.com/solarkennedy/puppet-consul/issues/559)
+- Compatibility with Puppet 3.6 [\#503](https://github.com/solarkennedy/puppet-consul/issues/503)
+- upgrade puppetlabs-stdlib version in dependencies to \< 7.0.0? [\#496](https://github.com/solarkennedy/puppet-consul/issues/496)
+- service weights needs integer [\#492](https://github.com/solarkennedy/puppet-consul/issues/492)
+
+**Merged pull requests:**
+
+- Release v7.0.0 [\#574](https://github.com/solarkennedy/puppet-consul/pull/574) ([solarkennedy](https://github.com/solarkennedy))
+
+## [v7.0.0](https://github.com/solarkennedy/puppet-consul/tree/v7.0.0) (2021-05-12)
+
+[Full Changelog](https://github.com/solarkennedy/puppet-consul/compare/v6.1.0...v7.0.0)
 
 **Breaking changes:**
 
@@ -13,10 +33,10 @@
 - Drop EoL Amazon Linux support [\#567](https://github.com/solarkennedy/puppet-consul/issues/567)
 - Drop EoL Ubuntu 16.04 support  [\#566](https://github.com/solarkennedy/puppet-consul/issues/566)
 - Drop EoL CentOS/RHEL 6 support [\#565](https://github.com/solarkennedy/puppet-consul/issues/565)
+- consul user: set correct home [\#550](https://github.com/solarkennedy/puppet-consul/pull/550) ([bastelfreak](https://github.com/bastelfreak))
 
 **Implemented enhancements:**
 
-- consul user: set correct home [\#550](https://github.com/solarkennedy/puppet-consul/pull/550) ([bastelfreak](https://github.com/bastelfreak))
 - Allow for alias\_service checks [\#520](https://github.com/solarkennedy/puppet-consul/pull/520) ([genebean](https://github.com/genebean))
 
 **Fixed bugs:**
