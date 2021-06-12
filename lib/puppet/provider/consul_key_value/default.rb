@@ -87,6 +87,7 @@ Puppet::Type.type(:consul_key_value).provide(
   def get_path(name)
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}&token=#{@resource[:acl_api_token]}")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
     [uri.request_uri, http]
   end
