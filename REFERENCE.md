@@ -78,6 +78,8 @@ The following parameters are available in the `consul` class:
 * [`acl_api_token`](#-consul--acl_api_token)
 * [`arch`](#-consul--arch)
 * [`archive_path`](#-consul--archive_path)
+* [`bash_completion`](#-consul--bash_completion)
+* [`bash_completion_compat_dir`](#-consul--bash_completion_compat_dir)
 * [`bin_dir`](#-consul--bin_dir)
 * [`binary_group`](#-consul--binary_group)
 * [`binary_mode`](#-consul--binary_mode)
@@ -205,6 +207,22 @@ Data type: `Optional[Stdlib::Absolutepath]`
 Path used when installing consul via the url
 
 Default value: `undef`
+
+##### <a name="-consul--bash_completion"></a>`bash_completion`
+
+Data type: `Boolean`
+
+Whether to setup bash completion. Adjust bin_dir when install_method == package.
+
+Default value: `$consul::params::bash_completion`
+
+##### <a name="-consul--bash_completion_compat_dir"></a>`bash_completion_compat_dir`
+
+Data type: `String[1]`
+
+Directory to place bash-completion file for Consul into.
+
+Default value: `$consul::params::bash_completion_compat_dir`
 
 ##### <a name="-consul--bin_dir"></a>`bin_dir`
 

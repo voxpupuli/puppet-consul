@@ -47,6 +47,7 @@ class consul::params {
     default: {
       # 0 instead of root because OS X uses "wheel".
       $data_dir_mode = '0755'
+      $bash_completion_compat_dir = '/etc/bash_completion.d/'
       $binary_group = '0'
       $binary_mode = '0555'
       $binary_name = 'consul'
@@ -63,12 +64,14 @@ class consul::params {
 
   case $facts['os']['name'] {
     'Ubuntu': {
+      $bash_completion = true
       $shell = '/usr/sbin/nologin'
     }
     'RedHat': {
       $shell = '/sbin/nologin'
     }
     'Debian': {
+      $bash_completion = true
       $shell = '/usr/sbin/nologin'
     }
     'Archlinux': {
@@ -81,6 +84,7 @@ class consul::params {
       $shell = '/usr/sbin/nologin'
     }
     default: {
+      $bash_completion = false
       $shell = undef
     }
   }

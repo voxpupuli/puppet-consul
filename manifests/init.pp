@@ -11,6 +11,8 @@
 # @param acl_api_token Global token of ACL API, will be merged with consul_token resources
 # @param arch Architecture of consul binary to download
 # @param archive_path Path used when installing consul via the url
+# @param bash_completion Whether to setup bash completion. Adjust bin_dir when install_method == package.
+# @param bash_completion_compat_dir Directory to place bash-completion file for Consul into.
 # @param bin_dir Directory to create the symlink to the consul binary in.
 # @param binary_group The group that the file belongs to.
 # @param binary_mode Permissions mode for the file.
@@ -95,6 +97,8 @@ class consul (
   String[0]                             $acl_api_token               = '', # lint:ignore:params_empty_string_assignment
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
+  Boolean                               $bash_completion             = $consul::params::bash_completion,
+  String[1]                             $bash_completion_compat_dir  = $consul::params::bash_completion_compat_dir,
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,
   Optional[String[1]]                   $binary_group                = $consul::params::binary_group,
   String[1]                             $binary_mode                 = $consul::params::binary_mode,
