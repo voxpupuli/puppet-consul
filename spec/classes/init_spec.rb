@@ -241,7 +241,7 @@ describe 'consul' do
       end
 
       context 'By default, a user and group should be installed' do
-        it { is_expected.to contain_user('consul').with(ensure: :present).with_home('/opt/consul') }
+        it { is_expected.to contain_user('consul').with(ensure: :present) }
         it { is_expected.to contain_group('consul').with(ensure: :present) }
       end
 
