@@ -48,7 +48,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run tests
-        run: bundle exec rake
+        run: bundle exec rake spec
 
   acceptance:
     needs: setup_matrix
