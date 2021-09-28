@@ -96,7 +96,7 @@ describe Puppet::Type.type(:consul_policy) do
     }.to raise_error(Puppet::Error, %r{Policy rule disposition must be a string})
   end
 
-  context 'resource is acl or operator' do
+  context 'resource is acl, operator or keyring' do
     it 'passes if rule segment is missing' do
       expect {
         Puppet::Type.type(:consul_policy).new(
@@ -117,6 +117,17 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'operator',
+                'disposition' => 'read'
+            },
+          ],
+        )
+        Puppet::Type.type(:consul_policy).new(
+          name: 'testing',
+          id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
+          description: 'test description',
+          rules: [
+            {
+              'resource' => 'keyring',
                 'disposition' => 'read'
             },
           ],
@@ -142,7 +153,7 @@ describe Puppet::Type.type(:consul_policy) do
     end
   end
 
-  context 'resource is neither acl nor operator' do
+  context 'resource is neither acl nor operator nor keyring' do
     it 'fails if rule segment is missing' do
       expect {
         Puppet::Type.type(:consul_policy).new(
