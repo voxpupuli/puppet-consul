@@ -9,8 +9,8 @@
   "issues_url": "https://github.com/solarkennedy/puppet-consul/issues",
   "dependencies": [
     {
-      "name": "camptocamp/systemd",
-      "version_requirement": ">= 3.0.0 < 4.0.0"
+      "name": "puppet/systemd",
+      "version_requirement": ">= 3.1.0 < 4.0.0"
     },
     {
       "name": "puppet/archive",
