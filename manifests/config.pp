@@ -113,12 +113,12 @@ class consul::config (
     }
   }
 
-  file { $consul::config_dir:
-    ensure  => 'directory',
-    owner   => $consul::config_owner_real,
-    group   => $consul::group_real,
-    purge   => $purge,
-    recurse => $purge,
+  consul::directory {'Consul Config Directory':
+    directory => $consul::config_dir,
+    owner     => $consul::config_owner_real,
+    group     => $consul::group_real,
+    purge     => $purge,
+    recurse   => $purge,
   }
 
   file { 'consul config':

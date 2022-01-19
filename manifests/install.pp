@@ -16,10 +16,9 @@ class consul::install {
 
   consul::directory {'Consul Log Directory':
     directory => $consul::_log_file,
-  }
-
-  consul::directory {'Consul Config Directory':
-    directory => $consul::config_dir,
+    owner     => $consul::user_real,
+    group     => $consul::group_real,
+    mode      => $consul::data_dir_mode,
   }
 
   # only notify if we are installing a new version (work around for switching

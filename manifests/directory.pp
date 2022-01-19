@@ -11,6 +11,11 @@
 #
 define consul::directory (
   $directory = undef,
+  $owner     = undef,
+  $group     = undef,
+  $mode      = undef,
+  $purge     = false,
+  $recurse   = false,
 ) {
   include consul
 
@@ -33,9 +38,11 @@ define consul::directory (
     }
     file { $directory:
       ensure  => 'directory',
-      owner   => $consul::user_real,
-      group   => $consul::group_real,
-      mode    => $consul::data_dir_mode,
+      owner   => $owner,
+      group   => $group,
+      mode    => $mode,
+      purge   => $purge,
+      recurse => $recurse,
       require => Exec["Create ${$directory} Log Folder"],
     }
   }
