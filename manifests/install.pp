@@ -14,13 +14,13 @@ class consul::install {
     }
   }
 
-  if $consul::log_dir {
+  if $consul::_log_file {
     exec { 'Create Linux Consul Log Folder':
       path    => $facts['path'],
-      command => "mkdir -p ${$consul::log_dir}",
-      creates => $consul::log_dir,
+      command => "mkdir -p ${$consul::_log_file}",
+      creates => $consul::_log_file,
     }
-    file { $consul::log_dir:
+    file { $consul::_log_file:
       ensure  => 'directory',
       owner   => $consul::user_real,
       group   => $consul::group_real,
