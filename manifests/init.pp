@@ -287,9 +287,7 @@ class consul (
   }
 
   if $config_hash_real['log_file'] {
-    $log_dir = regsubst($config_hash_real['log_file'], '[^\\\/]+$', '')
-  } else {
-    $log_dir = undef
+    $log_file = pick(regsubst($config_hash_real['log_file'], '[^\\\/]+$', ''), $log_file)
   }
 
   if dig($config_hash_real,'ports','http') {

@@ -14,21 +14,18 @@ class consul::install {
     }
   }
 
-  if ($consul::log_dir != $consul::log_file) {
-    file { $consul::log_file:
-      ensure => 'directory',
-      owner  => $consul::user_real,
-      group  => $consul::group_real,
-      mode   => $consul::data_dir_mode,
-    }
-  }
-
   if $consul::log_dir {
+    exec { 'Create Linux Consul Log Folder':
+      path    => $facts['path'],
+      command => "mkdir -p ${$consul::log_dir}",
+      creates => $consul::log_dir,
+    }
     file { $consul::log_dir:
-      ensure => 'directory',
-      owner  => $consul::user_real,
-      group  => $consul::group_real,
-      mode   => $consul::data_dir_mode,
+      ensure  => 'directory',
+      owner   => $consul::user_real,
+      group   => $consul::group_real,
+      mode    => $consul::data_dir_mode,
+      require => Exec['Create Linux Consul Log Folder'],
     }
   }
 
