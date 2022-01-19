@@ -18,7 +18,7 @@ class consul::install {
     directory => $consul::_log_file,
   }
 
-  consul::directory {'Consul Log Directory':
+  consul::directory {'Consul Config Directory':
     directory => $consul::config_dir,
   }
 
