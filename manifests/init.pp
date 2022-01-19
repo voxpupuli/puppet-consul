@@ -229,7 +229,7 @@ class consul (
   Array                                 $extra_groups                = [],
   Optional[String[1]]                   $extra_options               = undef,
   String[1]                             $group                       = $consul::params::group,
-  Stdlib::Absolutepath                  $log_file                    = '/var/log/consul',
+  Stdlib::Absolutepath                  $log_file                    = $consul::params::log_file,
   String[1]                             $init_style                  = $consul::params::init_style,
   String[1]                             $install_method              = 'url',
   Optional[String[1]]                   $join_wan                    = undef,
@@ -284,6 +284,12 @@ class consul (
     $data_dir = $config_hash_real['data_dir']
   } else {
     $data_dir = undef
+  }
+
+  if $config_hash_real['log_file'] {
+    $log_dir = regsubst($config_hash_real['log_file'], '[^\\\/]+$', '')
+  } else {
+    $log_dir = undef
   }
 
   if dig($config_hash_real,'ports','http') {

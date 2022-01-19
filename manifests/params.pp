@@ -38,6 +38,7 @@ class consul::params {
       $config_defaults  = {
         data_dir => 'C:\\ProgramData\\consul',
       }
+      $log_file = 'C:\\ProgramData\\consul\\log'
       $manage_user = false
       $manage_group = false
       $user = 'NT AUTHORITY\NETWORK SERVICE'
@@ -53,6 +54,7 @@ class consul::params {
       $config_defaults  = {
         data_dir => '/opt/consul',
       }
+      $log_file = '/var/log/consul'
       $manage_user = true
       $manage_group = true
       $user = 'consul'
