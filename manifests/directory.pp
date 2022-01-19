@@ -9,6 +9,26 @@
 #   Define folder that needs to be created.
 #   Defaults to undef
 #
+# [*owner*]
+#   Define the folder's owner
+#   Defaults to undef
+#
+# [*group*]
+#   Define the folder's group
+#   Defaults to undef
+#
+# [*mode*]
+#   Define the folder's permissions
+#   Defaults to undef
+#
+# [*purge*]
+#   Define if the folder should be purged
+#   Defaults to false
+#
+# [*recurse*]
+#   Define if the folder should be recursive
+#   Defaults to false
+#
 define consul::directory (
   $directory = undef,
   $owner     = undef,
@@ -22,14 +42,14 @@ define consul::directory (
   if $directory {
     case $facts['os']['name'] {
       'windows': {
-        exec { "Create ${$directory} Log Folder":
+        exec { "Create ${$directory} Folder":
           path    => $facts['system32'],
           command => "cmd.exe /c mkdir ${$directory}",
           creates => $directory,
         }
       }
       default: {
-        exec { "Create ${$directory} Log Folder":
+        exec { "Create ${$directory} Folder":
           path    => $facts['path'],
           command => "mkdir -p ${$directory}",
           creates => $directory,
@@ -43,7 +63,7 @@ define consul::directory (
       mode    => $mode,
       purge   => $purge,
       recurse => $recurse,
-      require => Exec["Create ${$directory} Log Folder"],
+      require => Exec["Create ${$directory} Folder"],
     }
   }
 }
