@@ -49,7 +49,6 @@ class consul::install {
         directory => $consul::bin_dir,
         owner     => $consul::binary_owner,
         group     => $consul::binary_group,
-        mode      => $consul::data_dir_mode,
       }
 
       archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
