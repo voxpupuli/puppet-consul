@@ -45,6 +45,13 @@ class consul::install {
         mode   => $consul::binary_mode,
       }
 
+      consul::directory {'Consul Bin Directory':
+        directory => $consul::bin_dir,
+        owner     => $consul::binary_owner,
+        group     => $consul::binary_group,
+        mode      => $consul::data_dir_mode,
+      }
+
       archive { "${install_path}/consul-${consul::version}.${consul::download_extension}":
         ensure       => present,
         source       => $consul::real_download_url,
@@ -52,7 +59,10 @@ class consul::install {
         extract      => true,
         extract_path => "${install_path}/consul-${consul::version}",
         creates      => "${install_path}/consul-${consul::version}/${consul::binary_name}",
-        require      => File["${install_path}/consul-${consul::version}"],
+        require      => [
+          File["${install_path}/consul-${consul::version}"],
+          Consul::Directory['Consul Bin Directory'],
+        ],
       }
 
       file { "${install_path}/consul-${consul::version}/${consul::binary_name}":
@@ -62,19 +72,11 @@ class consul::install {
         require => Archive["${install_path}/consul-${consul::version}.${consul::download_extension}"],
       }
 
-      consul::directory {'Consul Bin Directory':
-        directory => $consul::bin_dir,
-        owner     => $consul::binary_owner,
-        group     => $consul::binary_group,
-        mode      => $consul::binary_mode,
-        require   => File["${install_path}/consul-${consul::version}/${consul::binary_name}"],
-      }
-
       file { "${consul::bin_dir}/${consul::binary_name}":
         ensure  => link,
         notify  => $do_notify_service,
         target  => "${install_path}/consul-${consul::version}/${consul::binary_name}",
-        require => Consul::Directory['Consul Bin Directory'],
+        require => File["${install_path}/consul-${consul::version}/${consul::binary_name}"],
       }
     }
     'package': {
