@@ -15,17 +15,28 @@ class consul::install {
   }
 
   if $consul::_log_file {
-    exec { 'Create Linux Consul Log Folder':
-      path    => $facts['path'],
-      command => "mkdir -p ${$consul::_log_file}",
-      creates => $consul::_log_file,
+    case $facts['os']['name'] {
+      'windows': {
+        exec { 'Create Consul Log Folder':
+          path    => $facts['system32'],
+          command => "cmd.exe /c mkdir ${$consul::_log_file}",
+          creates => $consul::_log_file,
+        }
+      }
+      default: {
+        exec { 'Create Consul Log Folder':
+          path    => $facts['path'],
+          command => "mkdir -p ${$consul::_log_file}",
+          creates => $consul::_log_file,
+        }
+      }
     }
     file { $consul::_log_file:
       ensure  => 'directory',
       owner   => $consul::user_real,
       group   => $consul::group_real,
       mode    => $consul::data_dir_mode,
-      require => Exec['Create Linux Consul Log Folder'],
+      require => Exec['Create Consul Log Folder'],
     }
   }
 
