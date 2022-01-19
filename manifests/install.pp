@@ -14,30 +14,12 @@ class consul::install {
     }
   }
 
-  if $consul::_log_file {
-    case $facts['os']['name'] {
-      'windows': {
-        exec { 'Create Consul Log Folder':
-          path    => $facts['system32'],
-          command => "cmd.exe /c mkdir ${$consul::_log_file}",
-          creates => $consul::_log_file,
-        }
-      }
-      default: {
-        exec { 'Create Consul Log Folder':
-          path    => $facts['path'],
-          command => "mkdir -p ${$consul::_log_file}",
-          creates => $consul::_log_file,
-        }
-      }
-    }
-    file { $consul::_log_file:
-      ensure  => 'directory',
-      owner   => $consul::user_real,
-      group   => $consul::group_real,
-      mode    => $consul::data_dir_mode,
-      require => Exec['Create Consul Log Folder'],
-    }
+  consul::directory {'Consul Log Directory':
+    directory => $consul::_log_file,
+  }
+
+  consul::directory {'Consul Log Directory':
+    directory => $consul::config_dir,
   }
 
   # only notify if we are installing a new version (work around for switching
