@@ -3,6 +3,7 @@ type Consul::PolicyStruct = Struct[
     id            => Optional[String[1]],
     ensure        => Optional[Enum['present', 'absent']],
     description   => Optional[String[0]],
+    datacenters   => Optional[Array[String]],
     rules         => Optional[Array[Struct[{
             resource    => String[1],
             segment     => Optional[String[0]],

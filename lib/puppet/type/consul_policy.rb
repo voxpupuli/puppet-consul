@@ -27,6 +27,15 @@ Puppet::Type.newtype(:consul_policy) do
     end
   end
 
+  newproperty(:datacenters, array_matching: :all) do
+    desc 'List of datacenter names assigned to the policy'
+    validate do |value|
+      raise ArgumentError, 'Datacenter name list must be an array of strings' unless value.is_a?(String)
+    end
+
+    defaultto []
+  end
+
   newproperty(:rules, array_matching: :all) do
     desc 'List of ACL rules for this policy'
     validate do |value|
