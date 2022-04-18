@@ -19,6 +19,12 @@ describe Puppet::Type.type(:consul_policy) do
     }.to raise_error(Puppet::Error, %r{Description must be a string})
   end
 
+  it 'fails if datacenters list is not an array' do
+    expect {
+      Puppet::Type.type(:consul_policy).new(name: 'foo', datacenters: [[]])
+    }.to raise_error(Puppet::Error, %r{Datacenter name list must be an array of strings})
+  end
+
   it 'fails if rules is not a hash' do
     expect {
       Puppet::Type.type(:consul_policy).new(
@@ -201,12 +207,14 @@ describe Puppet::Type.type(:consul_policy) do
           'disposition' => 'write'
       },
     ]
+    datacenters = ['testdc']
 
     before :each do
       @policy = Puppet::Type.type(:consul_policy).new(
         name: 'testing',
         id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
         description: 'test description',
+        datacenters: datacenters,
         rules: rules,
       )
     end
@@ -217,6 +225,10 @@ describe Puppet::Type.type(:consul_policy) do
 
     it 'accepts a description' do
       expect(@policy[:description]).to eq('test description')
+    end
+
+    it 'accepts datacenters' do
+      expect(@policy[:datacenters]).to eq(datacenters)
     end
 
     it 'accepts rules' do
