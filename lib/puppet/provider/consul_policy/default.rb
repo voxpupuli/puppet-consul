@@ -4,8 +4,8 @@ require 'uri'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'consul', 'acl_base.rb'))
 
 Puppet::Type.type(:consul_policy).provide(
-    :default,
-  ) do
+  :default
+) do
   mk_resource_methods
 
   def self.prefetch(resources)
@@ -43,7 +43,7 @@ Puppet::Type.type(:consul_policy).provide(
     encoded = []
 
     rules.each do |rule|
-      if ['acl', 'operator', 'keyring'].include?(rule['resource'])
+      if %w[acl operator keyring].include?(rule['resource'])
         encoded.push("#{rule['resource']} = \"#{rule['disposition']}\"")
       else
         encoded.push("#{rule['resource']} \"#{rule['segment']}\" {\n  policy = \"#{rule['disposition']}\"\n}")
@@ -55,9 +55,7 @@ Puppet::Type.type(:consul_policy).provide(
 
   def self.list_policies(acl_api_token, hostname, port, protocol, tries)
     @all_policies ||= nil
-    if @all_policies
-      return @all_policies
-    end
+    return @all_policies if @all_policies
 
     @client ||= ConsulACLPolicyClient.new(hostname, port, protocol, acl_api_token)
     @all_policies = @client.get_all_policies(tries)
@@ -79,9 +77,7 @@ Puppet::Type.type(:consul_policy).provide(
         datacenters: existing_policy.datacenters
       }
 
-      if rules_encoded == existing_policy.rules
-        @property_hash[:rules] = resource[:rules]
-      end
+      @property_hash[:rules] = resource[:rules] if rules_encoded == existing_policy.rules
     end
   end
 
@@ -131,8 +127,8 @@ Puppet::Type.type(:consul_policy).provide(
 end
 
 class ConsulPolicy
-  attr_reader :id, :name, :description, :datacenters, :rules
-  attr_writer :id, :rules, :description, :datacenters
+  attr_accessor :id, :description, :datacenters, :rules
+  attr_reader :name
 
   def initialize(id, name, description, datacenters, rules)
     @id = id

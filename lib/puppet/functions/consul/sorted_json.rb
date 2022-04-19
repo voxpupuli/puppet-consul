@@ -58,7 +58,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
   #
   def sorted_json(unsorted_hash = {}, pretty = false, indent_len = 4)
     # simplify jsonification of standard types
-    simple_generate = ->(obj, quoted) do
+    simple_generate = lambda do |obj, quoted|
       case obj
       when NilClass, :undef
         'null'
@@ -67,11 +67,11 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
       else
         # Should be a string
         # keep string integers unquoted
-        (obj =~ %r{\A[-]?(0|[1-9]\d*)\z} && !quoted) ? obj : obj.to_json
+        obj =~ %r{\A-?(0|[1-9]\d*)\z} && !quoted ? obj : obj.to_json
       end
     end
 
-    sorted_generate = ->(obj, quoted) do
+    sorted_generate = lambda do |obj, quoted|
       case obj
       when NilClass, :undef, Integer, Float, TrueClass, FalseClass, String
         return simple_generate.call(obj, quoted)
@@ -85,7 +85,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
         ret = []
         obj.keys.sort.each do |k|
           # Stringify all children of node_meta, meta, and tags
-          quote_children = (k =~ %r{\A(node_meta|meta|tags|args)\z} || quoted) ? true : false
+          quote_children = k =~ %r{\A(node_meta|meta|tags|args)\z} || quoted ? true : false
           ret.push(k.to_json << ':' << sorted_generate.call(obj[k], quote_children))
         end
         return '{' << ret.join(',') << '}'
@@ -94,7 +94,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
       end
     end
 
-    sorted_pretty_generate = ->(obj, sorted_pretty_indent_len = 4, level = 0, quoted) do
+    sorted_pretty_generate = lambda do |obj, sorted_pretty_indent_len = 4, level = 0, quoted|
       # Indent length
       indent = ' ' * sorted_pretty_indent_len
 
@@ -130,7 +130,7 @@ Puppet::Functions.create_function(:'consul::sorted_json') do
         level += 1
         obj.keys.sort.each do |k|
           # Stringify all children of node_meta, meta, and tags
-          quote_children = (k =~ %r{\A(node_meta|meta|tags|args)\z} || quoted) ? true : false
+          quote_children = k =~ %r{\A(node_meta|meta|tags|args)\z} || quoted ? true : false
           ret.push((indent * level).to_s << k.to_json << ': ' << sorted_pretty_generate.call(obj[k], sorted_pretty_indent_len, level, quote_children))
         end
         level -= 1

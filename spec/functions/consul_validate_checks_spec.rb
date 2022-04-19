@@ -6,7 +6,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'http' => 'localhost',
-                                          'script' => 'true'
+                                         'script' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -16,8 +16,8 @@ describe 'consul::validate_checks' do
     it {
       is_expected.to run.with_params([
                                        {
-                                         'tcp'    => 'localhost',
-                                          'script' => 'true'
+                                         'tcp' => 'localhost',
+                                         'script' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -27,8 +27,8 @@ describe 'consul::validate_checks' do
     it {
       is_expected.to run.with_params([
                                        {
-                                         'tcp'    => 'localhost',
-                                          'http' => 'true'
+                                         'tcp' => 'localhost',
+                                         'http' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -39,7 +39,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'interval' => '30s',
-                                          'script' => 'true'
+                                         'script' => 'true'
                                        },
                                      ])
     }
@@ -80,7 +80,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'script' => 'true',
-                                          'ttl' => 'true'
+                                         'ttl' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -91,7 +91,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'http' => 'localhost',
-                                          'ttl' => 'true'
+                                         'ttl' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -102,7 +102,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'tcp' => 'localhost',
-                                          'ttl' => 'true'
+                                         'ttl' => 'true'
                                        },
                                      ]).and_raise_error(Exception)
     }
@@ -113,7 +113,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'tcp' => 'localhost:80',
-                                          'interval' => '30s',
+                                         'interval' => '30s',
                                        },
                                      ])
     }
@@ -124,7 +124,7 @@ describe 'consul::validate_checks' do
       is_expected.to run.with_params([
                                        {
                                          'name' => 'foo-service-alias',
-                                          'alias_service' => 'foo-service',
+                                         'alias_service' => 'foo-service',
                                        },
                                      ])
     }

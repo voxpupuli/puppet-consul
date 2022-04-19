@@ -2,7 +2,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 Puppet::Type.type(:consul_prepared_query).provide(
-  :default,
+  :default
 ) do
   mk_resource_methods
 
@@ -31,9 +31,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
   end
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    if @prepared_queries
-      return @prepared_queries
-    end
+    return @prepared_queries if @prepared_queries
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
@@ -90,13 +88,9 @@ Puppet::Type.type(:consul_prepared_query).provide(
   def create_prepared_query(body)
     path, http = get_path(false)
     req = Net::HTTP::Post.new(path)
-    if body
-      req.body = body.to_json
-    end
+    req.body = body.to_json if body
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def update_prepared_query(id, body)
@@ -107,18 +101,14 @@ Puppet::Type.type(:consul_prepared_query).provide(
       req.body = body.to_json
     end
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} update: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def delete_prepared_query(id)
     path, http = get_path(id)
     req = Net::HTTP::Delete.new(path)
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def get_resource(name, port, hostname, protocol, tries)
@@ -166,17 +156,17 @@ Puppet::Type.type(:consul_prepared_query).provide(
     template_type = @resource[:template_type]
     prepared_query = get_resource(name, port, hostname, protocol, tries)
     query_data = {
-      'Name'    => name.to_s,
-      'Token'   => token.to_s,
+      'Name' => name.to_s,
+      'Token' => token.to_s,
       'Service' => {
-        'Service'     => service_name.to_s,
-        'Near'        => service_near.to_s,
-        'Failover'    => {
-          'NearestN'    => service_failover_n,
+        'Service' => service_name.to_s,
+        'Near' => service_near.to_s,
+        'Failover' => {
+          'NearestN' => service_failover_n,
           'Datacenters' => service_failover_dcs,
         },
         'OnlyPassing' => service_only_passing,
-        'Tags'        => service_tags,
+        'Tags' => service_tags,
       },
       'DNS' => {
         'TTL' => "#{ttl}s"
@@ -185,7 +175,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     if template
       query_data['Template'] = {
         'Type' => template_type,
-                            'Regexp' => template_regexp,
+        'Regexp' => template_regexp,
       }
     end
     if prepared_query
