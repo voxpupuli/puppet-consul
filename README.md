@@ -33,8 +33,9 @@ new versions of consul. Pin to the version that works for your setup!
 
 | Consul Version   | Recommended Puppet Module Version   |
 | ---------------- | ----------------------------------- |
-| >= 1.1.0         | >= 4.0.0                            |
-| 1.1.0- 0.9.0     | <= 3.4.2                            |
+| >= 1.11.x        | >= 6.0.0                            |
+| 1.1.0-1.10.x     | 4.0.0-7.0.x                         |
+| 0.9-1.1.0        | <= 3.4.2                            |
 | 0.8.x            | <= 3.2.4                            |
 | 0.7.0            | <= 2.1.1                            |
 | 0.6.0            | <= 2.1.1                            |
