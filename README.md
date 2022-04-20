@@ -1,9 +1,14 @@
-# KyleAnderson/consul
+# puppet-consul
 
-[![Puppet Forge](https://img.shields.io/puppetforge/e/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
-[![Puppet Forge](https://img.shields.io/puppetforge/f/KyleAnderson/consul.svg)](https://forge.puppetlabs.com/KyleAnderson/consul)
-[![Build Status](https://github.com/solarkennedy/puppet-consul/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/solarkennedy/puppet-consul/actions/workflows/ci.yml)
+[![Build Status](https://github.com/voxpupuli/puppet-consul/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-consul/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-consul/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-consul/actions/workflows/release.yml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/consul.svg)](https://forge.puppetlabs.com/puppet/consul)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/consul.svg)](https://forge.puppetlabs.com/puppet/consul)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/consul.svg)](https://forge.puppetlabs.com/puppet/consul)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/consul.svg)](https://forge.puppetlabs.com/puppet/consul)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-consul)
+[![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-consul.svg)](LICENSE)
+[![Donated by KyleAnderson](https://img.shields.io/badge/donated%20by-KyleAnderson-fb7047.svg)](#transfer-notice)
 
 This module manages Consul servers and agents.
 
@@ -499,3 +504,12 @@ a module that can do that.
 Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 [fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
 [Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
+
+
+## Transfer Notice
+
+This plugin was originally authored by [KyleAnderson](http://github.com/KyleAnderson).
+The maintainer preferred that Vox Pupuli take ownership of the module for future improvement and maintenance.
+Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of Camptocamp.
+
+Previously: https://github.com/KyleAnderson/puppet-consul
