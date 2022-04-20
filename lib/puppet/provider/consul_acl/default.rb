@@ -3,7 +3,7 @@ require 'net/http'
 require 'pp'
 require 'uri'
 Puppet::Type.type(:consul_acl).provide(
-  :default,
+  :default
 ) do
   mk_resource_methods
 
@@ -33,9 +33,7 @@ Puppet::Type.type(:consul_acl).provide(
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries)
     @acls ||= {}
-    if @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
-      return @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ]
-    end
+    return @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"] if @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"]
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
@@ -59,9 +57,9 @@ Puppet::Type.type(:consul_acl).provide(
         res = http.request(req)
         res_code = res.code
         break if res_code == '200'
-      rescue Errno::ECONNREFUSED => exc
-        Puppet.debug("#{uri}/list?token=<redacted> #{exc.class} #{exc.message}")
-        res_code = exc.class.to_s
+      rescue Errno::ECONNREFUSED => e
+        Puppet.debug("#{uri}/list?token=<redacted> #{e.class} #{e.message}")
+        res_code = e.class.to_s
       end
     end
 
@@ -87,7 +85,7 @@ Puppet::Type.type(:consul_acl).provide(
       }
     end
 
-    @acls[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}" ] = nacls
+    @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"] = nacls
     nacls
   end
 
@@ -98,13 +96,9 @@ Puppet::Type.type(:consul_acl).provide(
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
     req = Net::HTTP::Put.new(path)
-    if body
-      req.body = body.to_json
-    end
+    req.body = body.to_json if body
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def get_resource(name, port, hostname, protocol, tries)
@@ -152,15 +146,15 @@ Puppet::Type.type(:consul_acl).provide(
         put_acl("destroy/#{id}", nil)
         return
       end
-      put_acl('update', { 'id'    => id.to_s,
-                          'name'  => name.to_s,
-                          'type'  => type.to_s,
+      put_acl('update', { 'id' => id.to_s,
+                          'name' => name.to_s,
+                          'type' => type.to_s,
                           'rules' => rules.to_s })
 
     else
-      put_acl('create', { 'id'    => (@resource[:id]).to_s,
-                          'name'  => name.to_s,
-                          'type'  => type.to_s,
+      put_acl('create', { 'id' => (@resource[:id]).to_s,
+                          'name' => name.to_s,
+                          'type' => type.to_s,
                           'rules' => rules.to_s })
     end
     @property_hash.clear

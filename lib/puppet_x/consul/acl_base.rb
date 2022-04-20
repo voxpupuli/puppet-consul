@@ -39,9 +39,7 @@ module PuppetX::Consul
         response_code = nil
         response = nil
 
-        unless @api_token.nil?
-          request['X-Consul-Token'] = @api_token
-        end
+        request['X-Consul-Token'] = @api_token unless @api_token.nil?
 
         (1..tries).each do |i|
           unless i == 1
@@ -53,8 +51,8 @@ module PuppetX::Consul
             response = @http_client.request(request)
             response_code = response.code
             break if response_code == '200'
-          rescue Errno::ECONNREFUSED => exc
-            Puppet.debug("#{exc.class} #{exc.message}")
+          rescue Errno::ECONNREFUSED => e
+            Puppet.debug("#{e.class} #{e.message}")
           end
         end
 

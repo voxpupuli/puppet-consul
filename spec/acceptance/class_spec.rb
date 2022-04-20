@@ -35,6 +35,7 @@ describe 'consul class' do
       its(:stdout) { is_expected.to match %r{Consul v1.0.5} }
     end
   end
+
   context 'default parameters' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
@@ -70,6 +71,7 @@ describe 'consul class' do
       its(:stdout) { is_expected.to match %r{Consul v1.1.0} }
     end
   end
+
   context 'with performance options' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
@@ -108,6 +110,7 @@ describe 'consul class' do
       its(:stdout) { is_expected.to match %r{Consul v1.2.0} }
     end
   end
+
   context 'with performance options' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
@@ -146,6 +149,7 @@ describe 'consul class' do
       its(:stdout) { is_expected.to match %r{Consul v1.2.3} }
     end
   end
+
   context 'with new ACL system' do
     acl_master_token = '222bf65c-2477-4003-8f8e-842a4b394d8d'
 

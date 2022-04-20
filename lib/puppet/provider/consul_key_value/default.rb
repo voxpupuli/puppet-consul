@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 require 'base64'
 Puppet::Type.type(:consul_key_value).provide(
-  :default,
+  :default
 ) do
   mk_resource_methods
 
@@ -34,9 +34,7 @@ Puppet::Type.type(:consul_key_value).provide(
 
   def self.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter)
     @key_values ||= {}
-    if @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ]
-      return @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ]
-    end
+    return @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"] if @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"]
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
@@ -75,7 +73,7 @@ Puppet::Type.type(:consul_key_value).provide(
         protocol: protocol,
       }
     end
-    @key_values[ "#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}" ] = nkey_values
+    @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"] = nkey_values
     nkey_values
   end
 
@@ -97,18 +95,14 @@ Puppet::Type.type(:consul_key_value).provide(
     req = Net::HTTP::Put.new(path + "&flags=#{flags}")
     req.body = value
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def delete_key_value(name)
     path, http = get_path(name)
     req = Net::HTTP::Delete.new(path)
     res = http.request(req)
-    if res.code != '200'
-      raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-    end
+    raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def get_resource(name, port, hostname, protocol, tries, datacenter)

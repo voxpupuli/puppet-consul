@@ -2,45 +2,45 @@ require 'spec_helper'
 
 describe Puppet::Type.type(:consul_token) do
   it 'fails if no name is provided' do
-    expect {
+    expect do
       Puppet::Type.type(:consul_token).new(type: 'client')
-    }.to raise_error(Puppet::Error, %r{Title or name must be provided})
+    end.to raise_error(Puppet::Error, %r{Title or name must be provided})
   end
 
   it 'fails if accessor_id ist not a string' do
-    expect {
+    expect do
       Puppet::Type.type(:consul_token).new(name: 'foo', accessor_id: {})
-    }.to raise_error(Puppet::Error, %r{ID must be a string})
+    end.to raise_error(Puppet::Error, %r{ID must be a string})
   end
 
   it 'fails if secret_id ist not a string' do
-    expect {
+    expect do
       Puppet::Type.type(:consul_token).new(name: 'foo', secret_id: {})
-    }.to raise_error(Puppet::Error, %r{ID must be a string})
+    end.to raise_error(Puppet::Error, %r{ID must be a string})
   end
 
   it 'fails if policy name list is not an array' do
-    expect {
+    expect do
       Puppet::Type.type(:consul_token).new(name: 'foo', policies_by_name: [[]])
-    }.to raise_error(Puppet::Error, %r{Policy name list must be an array of strings})
+    end.to raise_error(Puppet::Error, %r{Policy name list must be an array of strings})
   end
 
   it 'fails if policy ID list is not an array' do
-    expect {
+    expect do
       Puppet::Type.type(:consul_token).new(name: 'foo', policies_by_id: [[]])
-    }.to raise_error(Puppet::Error, %r{Policy ID list must be an array of strings})
+    end.to raise_error(Puppet::Error, %r{Policy ID list must be an array of strings})
   end
 
   context 'with name defined' do
     policies_by_name = ['test_1' 'test_2']
     policies_by_id = ['abc-123' 'xyz-456']
 
-    before :each do
+    before do
       @token = Puppet::Type.type(:consul_token).new(
         name: 'testing',
         accessor_id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
         policies_by_name: policies_by_name,
-        policies_by_id: policies_by_id,
+        policies_by_id: policies_by_id
       )
     end
 

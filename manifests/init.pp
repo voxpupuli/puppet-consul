@@ -206,7 +206,7 @@ class consul (
   String[1]                             $acl_api_protocol            = 'http',
   Integer[1, 65535]                     $acl_api_port                = 8500,
   Integer[1]                            $acl_api_tries               = 3,
-  String[0]                             $acl_api_token               = '', # lint:ignore:empty_string_assignment
+  String[0]                             $acl_api_token               = '', # lint:ignore:params_empty_string_assignment
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,

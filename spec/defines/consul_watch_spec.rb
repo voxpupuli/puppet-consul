@@ -3,7 +3,8 @@ require 'spec_helper'
 describe 'consul::watch' do
   on_supported_os.each do |os, facts|
     next unless facts[:kernel] == 'Linux'
-    context "on #{os} " do
+
+    context "on #{os}" do
       let :facts do
         facts
       end
@@ -14,7 +15,7 @@ describe 'consul::watch' do
           let(:params) do
             {
               'type' => 'nodes',
-           'handler' => 'handler_path',
+              'handler' => 'handler_path',
             }
           end
 
@@ -60,14 +61,14 @@ describe 'consul::watch' do
         let(:params) do
           {
             'type' => 'nodes',
-         'handler' => 'handler_path',
+            'handler' => 'handler_path',
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(%r{"handler" *: *"handler_path"}) \
-            .with_content(%r{"type" *: *"nodes"})
+          is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+            with_content(%r{"handler" *: *"handler_path"}). \
+            with_content(%r{"type" *: *"nodes"})
         }
       end
 
@@ -75,14 +76,14 @@ describe 'consul::watch' do
         let(:params) do
           {
             'type' => 'nodes',
-         'args' => ['sh', '-c', 'true'],
+            'args' => ['sh', '-c', 'true'],
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(%r{"args" *: *\[ *"sh", *"-c", *"true" *\]}) \
-            .with_content(%r{"type" *: *"nodes"})
+          is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+            with_content(%r{"args" *: *\[ *"sh", *"-c", *"true" *\]}). \
+            with_content(%r{"type" *: *"nodes"})
         }
       end
 
@@ -90,8 +91,8 @@ describe 'consul::watch' do
         let(:params) do
           {
             'type' => 'nodes',
-         'handler' => 'handler_path',
-         'args' => ['sh', '-c', 'true'],
+            'handler' => 'handler_path',
+            'args' => ['sh', '-c', 'true'],
           }
         end
 
@@ -104,17 +105,17 @@ describe 'consul::watch' do
         let(:params) do
           {
             'type' => 'nodes',
-         'handler' => 'handler_path',
+            'handler' => 'handler_path',
 
-         'datacenter' => 'dcName',
-         'token' => 'tokenValue',
+            'datacenter' => 'dcName',
+            'token' => 'tokenValue',
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-            .with_content(%r{"datacenter" *: *"dcName"}) \
-            .with_content(%r{"token" *: *"tokenValue"})
+          is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+            with_content(%r{"datacenter" *: *"dcName"}). \
+            with_content(%r{"token" *: *"tokenValue"})
         }
       end
 
@@ -124,7 +125,7 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'key',
-             'handler' => 'handler_path'
+                'handler' => 'handler_path'
               }
             end
 
@@ -132,20 +133,21 @@ describe 'consul::watch' do
               expect { is_expected.to raise_error(Puppet::Error) }
             }
           end
+
           context 'with key' do
             let(:params) do
               {
                 'type' => 'key',
-             'handler' => 'handler_path',
+                'handler' => 'handler_path',
 
-             'key'     => 'KeyName',
+                'key' => 'KeyName',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"type" *: *"key"}) \
-                .with_content(%r{"key" *: *"KeyName"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"type" *: *"key"}). \
+                with_content(%r{"key" *: *"KeyName"})
             }
           end
         end
@@ -155,7 +157,7 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'keyprefix',
-             'handler' => 'handler_path'
+                'handler' => 'handler_path'
               }
             end
 
@@ -168,16 +170,16 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'keyprefix',
-             'handler'   => 'handler_path',
+                'handler' => 'handler_path',
 
-             'keyprefix' => 'keyPref',
+                'keyprefix' => 'keyPref',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"type" *: *"keyprefix"}) \
-                .with_content(%r{"prefix" *: *"keyPref"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"type" *: *"keyprefix"}). \
+                with_content(%r{"prefix" *: *"keyPref"})
             }
           end
         end
@@ -186,8 +188,8 @@ describe 'consul::watch' do
           context 'without service' do
             let(:params) do
               {
-                'type'      => 'service',
-             'handler'   => 'handler_path',
+                'type' => 'service',
+                'handler' => 'handler_path',
               }
             end
 
@@ -199,17 +201,17 @@ describe 'consul::watch' do
           context 'with service' do
             let(:params) do
               {
-                'type'      => 'service',
-             'handler'   => 'handler_path',
+                'type' => 'service',
+                'handler' => 'handler_path',
 
-             'service'   => 'serviceName',
+                'service' => 'serviceName',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"type" *: *"service"}) \
-                .with_content(%r{"service" *: *"serviceName"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"type" *: *"service"}). \
+                with_content(%r{"service" *: *"serviceName"})
             }
           end
 
@@ -217,18 +219,18 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'service',
-             'handler'     => 'handler_path',
-             'service'     => 'serviceName',
+                'handler' => 'handler_path',
+                'service' => 'serviceName',
 
-             'service_tag' => 'serviceTagName',
-             'passingonly' => true
+                'service_tag' => 'serviceTagName',
+                'passingonly' => true
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"tag" *: *"serviceTagName"}) \
-                .with_content(%r{"passingonly" *: *true})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"tag" *: *"serviceTagName"}). \
+                with_content(%r{"passingonly" *: *true})
             }
           end
         end
@@ -238,13 +240,13 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'checks',
-             'handler' => 'handler_path',
+                'handler' => 'handler_path',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"type" *: *"checks"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"type" *: *"checks"})
             }
           end
 
@@ -252,17 +254,17 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'checks',
-             'handler' => 'handler_path',
+                'handler' => 'handler_path',
 
-             'service' => 'serviceName',
-             'state'   => 'serviceState',
+                'service' => 'serviceName',
+                'state' => 'serviceState',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"service" *: *"serviceName"}) \
-                .with_content(%r{"state" *: *"serviceState"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"service" *: *"serviceName"}). \
+                with_content(%r{"state" *: *"serviceState"})
             }
           end
         end
@@ -272,13 +274,13 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'event',
-             'handler'   => 'handler_path',
+                'handler' => 'handler_path',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"type" *: *"event"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"type" *: *"event"})
             }
           end
 
@@ -286,15 +288,15 @@ describe 'consul::watch' do
             let(:params) do
               {
                 'type' => 'event',
-             'handler'   => 'handler_path',
+                'handler' => 'handler_path',
 
-             'event_name' => 'eventName',
+                'event_name' => 'eventName',
               }
             end
 
             it {
-              is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-                .with_content(%r{"name" *: *"eventName"})
+              is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+                with_content(%r{"name" *: *"eventName"})
             }
           end
         end
@@ -303,13 +305,13 @@ describe 'consul::watch' do
           let(:params) do
             {
               'type' => 'nodes',
-           'handler' => 'handler_path'
+              'handler' => 'handler_path'
             }
           end
 
           it {
-            is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-              .with_content(%r{"type" *: *"nodes"})
+            is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+              with_content(%r{"type" *: *"nodes"})
           }
         end
 
@@ -317,13 +319,13 @@ describe 'consul::watch' do
           let(:params) do
             {
               'type' => 'services',
-           'handler' => 'handler_path'
+              'handler' => 'handler_path'
             }
           end
 
           it {
-            is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-              .with_content(%r{"type" *: *"services"})
+            is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+              with_content(%r{"type" *: *"services"})
           }
         end
 
@@ -331,7 +333,7 @@ describe 'consul::watch' do
           let(:params) do
             {
               'type' => 'unknown_type',
-           'handler' => 'handler_path',
+              'handler' => 'handler_path',
             }
           end
 
@@ -345,13 +347,13 @@ describe 'consul::watch' do
         let(:params) do
           {
             'type' => 'nodes',
-         'handler' => 'handler_path',
+            'handler' => 'handler_path',
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/watch_my_watch.json') \
-            .that_notifies('Class[consul::reload_service]') \
+          is_expected.to contain_file('/etc/consul/watch_my_watch.json'). \
+            that_notifies('Class[consul::reload_service]') \
         }
       end
     end

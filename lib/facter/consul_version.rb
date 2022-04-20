@@ -8,7 +8,7 @@ Facter.add(:consul_version) do
     ENV['PATH'] = path + ':/usr/local/bin'
     begin
       Facter::Util::Resolution.exec('consul --version 2> /dev/null').lines.first.split[1].tr('v', '')
-    rescue
+    rescue StandardError
       nil
     ensure
       ENV['PATH'] = original_path

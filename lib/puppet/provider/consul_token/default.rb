@@ -5,8 +5,8 @@ require 'uri'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'consul', 'acl_base.rb'))
 
 Puppet::Type.type(:consul_token).provide(
-    :default,
-  ) do
+  :default
+) do
   mk_resource_methods
 
   def self.prefetch(resources)
@@ -20,9 +20,7 @@ Puppet::Type.type(:consul_token).provide(
 
   def self.list_tokens(acl_api_token, hostname, port, protocol, tries)
     @token_collection ||= nil
-    if @token_collection
-      return @token_collection
-    end
+    return @token_collection if @token_collection
 
     @client ||= ConsulACLTokenClient.new(hostname, port, protocol, acl_api_token)
     @token_collection = @client.get_token_list(tries)
@@ -68,7 +66,7 @@ Puppet::Type.type(:consul_token).provide(
   def flush
     if @resource[:ensure] != :absent && !@existing_token
       created_token = @client.create_token(@resource[:accessor_id], @resource[:name], @resource[:policies_by_name], @resource[:policies_by_id], @resource[:api_tries],
-@resource[:secret_id] ? @resource[:secret_id] : nil)
+                                           @resource[:secret_id] || nil)
       @resource[:accessor_id] = created_token.accessor_id
       @resource[:secret_id] = created_token.secret_id
 
@@ -95,8 +93,8 @@ Puppet::Type.type(:consul_token).provide(
 end
 
 class ConsulToken
-  attr_reader :accessor_id, :secret_id, :description, :policies
-  attr_writer :policies, :description
+  attr_accessor :description, :policies
+  attr_reader :accessor_id, :secret_id
 
   def initialize(accessor_id, secret_id, description, policies)
     @accessor_id = accessor_id
@@ -107,9 +105,7 @@ class ConsulToken
 
   def is_policy_list_equal(policies_by_id, policies_by_name)
     total_length = (policies_by_id.length + policies_by_name.length)
-    if @policies.length != total_length
-      return false
-    end
+    return false if @policies.length != total_length
 
     actual_policies_by_id = @policies.map(&:policy_id)
     actual_policies_by_name = @policies.map(&:policy_name)
@@ -171,18 +167,14 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
   def delete_token(accessor_id)
     response = delete('/token/' + accessor_id)
 
-    if response == 'false'
-      raise 'Consul API returned false as response'
-    end
+    raise 'Consul API returned false as response' if response == 'false'
   rescue StandardError => e
     Puppet.warning("Unable to delete token #{accessor_id}: #{e.message}")
     nil
   end
 
   def parse_policies(response)
-    unless response
-      return []
-    end
+    return [] unless response
 
     policy_links = []
     response.each do |policy|
@@ -208,9 +200,7 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
     body.store('Local', false)
     body.store('Policies', policies)
 
-    if !secret_id.nil? && !secret_id.to_s.strip.empty?
-      body.store('SecretID', secret_id)
-    end
+    body.store('SecretID', secret_id) if !secret_id.nil? && !secret_id.to_s.strip.empty?
 
     body
   end

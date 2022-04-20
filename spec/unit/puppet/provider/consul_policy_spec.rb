@@ -6,24 +6,24 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
     Puppet::Type.type(:consul_policy).new(
       {
         name: 'test_policy',
-          description: 'test description',
-          datacenters: ['testdc'],
-          rules: [
-            {
-              'resource' => 'service_prefix',
-                'segment'     => 'test_service',
-                'disposition' => 'read'
-            },
-            {
-              'resource' => 'key',
-                  'segment'     => 'test_key',
-                  'disposition' => 'write'
-            },
-          ],
-          acl_api_token: 'e33653a6-0320-4a71-b3af-75f14578e3aa',
-          api_tries: 3,
-          ensure: 'present'
-      },
+        description: 'test description',
+        datacenters: ['testdc'],
+        rules: [
+          {
+            'resource' => 'service_prefix',
+            'segment' => 'test_service',
+            'disposition' => 'read'
+          },
+          {
+            'resource' => 'key',
+            'segment' => 'test_key',
+            'disposition' => 'write'
+          },
+        ],
+        acl_api_token: 'e33653a6-0320-4a71-b3af-75f14578e3aa',
+        api_tries: 3,
+        ensure: 'present'
+      }
     )
   end
 
@@ -32,10 +32,10 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
   describe '.list_resources' do
     context 'when the first two responses are unexpected' do
       it 'retries 3 times' do
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 400, body: '', headers: {}).times(2).then
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 400, body: '', headers: {}).times(2).then.
+          to_return(status: 200, body: '[]', headers: {})
 
         described_class.prefetch(resources)
         described_class.reset
@@ -45,22 +45,22 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'ID matched' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'Test description',
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'Test description',
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = []
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -73,10 +73,10 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
   describe 'create' do
     context 'when the first two responses are unexpected' do
       it 'retries 3 times' do
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 400, body: '', headers: {}).times(2).then
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 400, body: '', headers: {}).times(2).then.
+          to_return(status: 200, body: '[]', headers: {})
 
         described_class.prefetch(resources)
         described_class.reset
@@ -88,27 +88,27 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'matches ID on equal names' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'Test description',
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'Test description',
           },
           {
-            'ID'           => '92cc32cd-ef8e-4c5d-909a-e3fc625293fc',
-              'Name'         => 'other_policy',
-              'Description'  => 'Other description',
+            'ID' => '92cc32cd-ef8e-4c5d-909a-e3fc625293fc',
+            'Name' => 'other_policy',
+            'Description' => 'Other description',
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = []
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -117,9 +117,9 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       end
 
       it 'aborts if no policy is found by specified ID' do
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: '[]', headers: {})
 
         resource[:id] = '02298dc3-e1cd-e031-b2c8-ec3023702b20'
         described_class.prefetch(resources)
@@ -132,22 +132,22 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
   describe 'flush' do
     context 'create' do
       it 'if policy is not existing' do
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: '[]', headers: {})
 
         create_response = {
           'ID' => 'ce6c53fb-aebd-4acb-b108-b65d4ea67853',
-            'Name'         => 'test_policy',
-            'Description'  => 'Test description',
-            'Datacenters'  => ['testdc'],
-            'Rules'        => []
+          'Name' => 'test_policy',
+          'Description' => 'Test description',
+          'Datacenters' => ['testdc'],
+          'Rules' => []
         }
 
-        stub_request(:put, 'http://localhost:8500/v1/acl/policy')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
-                 body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}')
-          .to_return(status: 200, body: JSON.dump(create_response), headers: {})
+        stub_request(:put, 'http://localhost:8500/v1/acl/policy').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
+               body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}').
+          to_return(status: 200, body: JSON.dump(create_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -162,31 +162,31 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'if descriptions do not match"' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'other description',
-              'Datacenters'  => ['testdc'],
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'other description',
+            'Datacenters' => ['testdc'],
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = described_class.encode_rules(resource[:rules])
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         update_response = policy_response
         update_response['Description'] = 'test description'
 
-        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
-                 body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}')
-          .to_return(status: 200, body: JSON.dump(update_response), headers: {})
+        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
+               body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}').
+          to_return(status: 200, body: JSON.dump(update_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -198,31 +198,31 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'if datacenters do not match"' do
         list_response = [
           {
-              'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'test description',
-              'Datacenters'  => ['otherdc'],
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'test description',
+            'Datacenters' => ['otherdc'],
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = described_class.encode_rules(resource[:rules])
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         update_response = policy_response
         update_response['Datacenters'] = ['testdc']
 
-        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
-                 body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}')
-          .to_return(status: 200, body: JSON.dump(update_response), headers: {})
+        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
+               body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}').
+          to_return(status: 200, body: JSON.dump(update_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -234,31 +234,31 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'if rules do not match"' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'test description',
-              'Datacenters'  => ['testdc'],
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'test description',
+            'Datacenters' => ['testdc'],
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = ''
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         update_response = policy_response
         update_response['Rules'] = described_class.encode_rules(resource[:rules])
 
-        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
-                 body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}')
-          .to_return(status: 200, body: JSON.dump(update_response), headers: {})
+        stub_request(:put, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' },
+               body: '{"Name":"test_policy","Description":"test description","Datacenters":["testdc"],"Rules":"service_prefix \\"test_service\\" {\\n  policy = \\"read\\"\\n}\\n\\nkey \\"test_key\\" {\\n  policy = \\"write\\"\\n}"}').
+          to_return(status: 200, body: JSON.dump(update_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -270,23 +270,23 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'no update if rules and description are equal"' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'test description',
-              'Datacenters'  => ['testdc'],
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'test description',
+            'Datacenters' => ['testdc'],
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = described_class.encode_rules(resource[:rules])
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
         resource[:id] = ''
         described_class.prefetch(resources)
@@ -300,26 +300,26 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       it 'absent and existing policy"' do
         list_response = [
           {
-            'ID'           => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
-              'Name'         => 'test_policy',
-              'Description'  => 'other description',
+            'ID' => '02298dc3-e1cd-e031-b2c8-ec3023702b20',
+            'Name' => 'test_policy',
+            'Description' => 'other description',
           },
         ]
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(list_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(list_response), headers: {})
 
         policy_response = list_response.first
         policy_response['Rules'] = described_class.encode_rules(resource[:rules])
 
-        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: JSON.dump(policy_response), headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: JSON.dump(policy_response), headers: {})
 
-        stub_request(:delete, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:delete, 'http://localhost:8500/v1/acl/policy/02298dc3-e1cd-e031-b2c8-ec3023702b20').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: '[]', headers: {})
 
         resource[:id] = ''
         resource[:ensure] = :absent
@@ -330,9 +330,9 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
       end
 
       it 'absent and non-existing policy"' do
-        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
-          .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
-          .to_return(status: 200, body: '[]', headers: {})
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies').
+          with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' }).
+          to_return(status: 200, body: '[]', headers: {})
 
         resource[:id] = 'd555e778-b2e0-441e-9734-f76f3e9f43ca'
         resource[:ensure] = :absent

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'consul' do
   on_supported_os.each do |os, facts|
     next unless facts[:kernel] == 'Linux'
+
     puts "on #{os}"
     context "on #{os}" do
       provider = case facts[:os]['family']
@@ -93,7 +94,7 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'url',
-         manage_repo: true
+            manage_repo: true
           }
         end
 
@@ -109,7 +110,7 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'package',
-         manage_repo: true
+            manage_repo: true
           }
         end
 
@@ -135,8 +136,8 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'package',
-         package_ensure: 'specific_release',
-         package_name: 'custom_consul_package'
+            package_ensure: 'specific_release',
+            package_name: 'custom_consul_package'
           }
         end
 
@@ -276,7 +277,7 @@ describe 'consul' do
       context 'The bootstrap_expect in config_hash is an int' do
         let(:params) do
           {
-            config_hash:       { 'bootstrap_expect' => '5' }
+            config_hash: { 'bootstrap_expect' => '5' }
           }
         end
 
@@ -290,9 +291,9 @@ describe 'consul' do
             config_defaults: {
               'data_dir' => '/dir1',
             },
-         config_hash: {
-           'bootstrap_expect' => '5',
-         }
+            config_hash: {
+              'bootstrap_expect' => '5',
+            }
           }
         end
 
@@ -305,20 +306,20 @@ describe 'consul' do
           {
             config_defaults: {
               'data_dir' => '/dir1',
-                'server' => false,
-                'ports' => {
-                  'http' => 1,
-                  'https' => '8300',
-                },
+              'server' => false,
+              'ports' => {
+                'http' => 1,
+                'https' => '8300',
+              },
             },
-         config_hash: {
-           'bootstrap_expect' => '5',
-             'server' => true,
-             'ports' => {
-               'http'  => -1,
-               'https' => '8500',
-             },
-         }
+            config_hash: {
+              'bootstrap_expect' => '5',
+              'server' => true,
+              'ports' => {
+                'http' => -1,
+                'https' => '8500',
+              },
+            }
           }
         end
 
@@ -333,14 +334,14 @@ describe 'consul' do
         let(:params) do
           {
             pretty_config: true,
-         config_hash: {
-           'bootstrap_expect' => '5',
-             'server' => true,
-             'ports' => {
-               'http'  => -1,
-               'https' => 8500,
-             },
-         }
+            config_hash: {
+              'bootstrap_expect' => '5',
+              'server' => true,
+              'ports' => {
+                'http' => -1,
+                'https' => 8500,
+              },
+            }
           }
         end
 
@@ -373,11 +374,11 @@ describe 'consul' do
         let(:params) do
           {
             service_ensure: 'stopped',
-         services: {
-           'test_service1' => {
-             'port' => 8088
-           }
-         }
+            services: {
+              'test_service1' => {
+                'port' => 8088
+              }
+            }
           }
         end
 
@@ -388,11 +389,11 @@ describe 'consul' do
         let(:params) do
           {
             manage_service: false,
-         services: {
-           'test_service1' => {
-             'port' => 8088
-           }
-         }
+            services: {
+              'test_service1' => {
+                'port' => 8088
+              }
+            }
           }
         end
 
@@ -403,7 +404,7 @@ describe 'consul' do
         let(:params) do
           {
             user: 'custom_consul_user',
-         group: 'custom_consul_group',
+            group: 'custom_consul_group',
           }
         end
 
@@ -415,27 +416,30 @@ describe 'consul' do
         let(:params) do
           {
             user: 'custom_consul_user',
-         group: 'custom_consul_group',
-         config_mode: '0600',
+            group: 'custom_consul_group',
+            config_mode: '0600',
           }
         end
 
         it {
           is_expected.to contain_file('consul config').with(
-          owner: 'custom_consul_user',
-          group: 'custom_consul_group',
-          mode: '0600',
-        )
+            owner: 'custom_consul_user',
+            group: 'custom_consul_group',
+            mode: '0600'
+          )
         }
       end
 
-      context "Config with custom config owner" do
-        let(:params) {{
-          :config_owner => 'custom_consul_user',
-          :config_dir => '/etc/custom_consul_dir',
-        }}
-        it { should contain_file('consul config').with(:owner => 'custom_consul_user') }
-        it { should contain_file('/etc/custom_consul_dir').with(:owner => 'custom_consul_user') }
+      context 'Config with custom config owner' do
+        let(:params) do
+          {
+            config_owner: 'custom_consul_user',
+            config_dir: '/etc/custom_consul_dir',
+          }
+        end
+
+        it { is_expected.to contain_file('consul config').with(owner: 'custom_consul_user') }
+        it { is_expected.to contain_file('/etc/custom_consul_dir').with(owner: 'custom_consul_user') }
       end
 
       context 'When consul is reloaded' do
@@ -448,8 +452,8 @@ describe 'consul' do
         end
 
         it {
-          is_expected.to contain_exec('reload consul service')
-            .with_command('consul reload -http-addr=127.0.0.1:8500')
+          is_expected.to contain_exec('reload consul service').
+            with_command('consul reload -http-addr=127.0.0.1:8500')
         }
       end
 
@@ -459,20 +463,20 @@ describe 'consul' do
             services: {
               'test_service1' => {}
             },
-         config_hash: {
-           'ports' => {
-             'http' => 9999
-           },
-           'addresses' => {
-             'http' => 'consul.example.com'
-           }
-         }
+            config_hash: {
+              'ports' => {
+                'http' => 9999
+              },
+              'addresses' => {
+                'http' => 'consul.example.com'
+              }
+            }
           }
         end
 
         it {
-          is_expected.to contain_exec('reload consul service')
-            .with_command('consul reload -http-addr=consul.example.com:9999')
+          is_expected.to contain_exec('reload consul service').
+            with_command('consul reload -http-addr=consul.example.com:9999')
         }
       end
 
@@ -482,15 +486,15 @@ describe 'consul' do
             services: {
               'test_service1' => {}
             },
-         config_hash: {
-           'client_addr' => '192.168.34.56',
-         }
+            config_hash: {
+              'client_addr' => '192.168.34.56',
+            }
           }
         end
 
         it {
-          is_expected.to contain_exec('reload consul service')
-            .with_command('consul reload -http-addr=192.168.34.56:8500')
+          is_expected.to contain_exec('reload consul service').
+            with_command('consul reload -http-addr=192.168.34.56:8500')
         }
       end
 
@@ -516,7 +520,7 @@ describe 'consul' do
             watches: {
               'test_watch1' => {
                 'type' => 'nodes',
-                 'handler' => 'test.sh',
+                'handler' => 'test.sh',
               }
             }
           }
@@ -534,7 +538,7 @@ describe 'consul' do
             checks: {
               'test_check1' => {
                 'interval' => '30',
-                'script'   => 'test.sh',
+                'script' => 'test.sh',
               }
             }
           }
@@ -550,27 +554,27 @@ describe 'consul' do
         let(:params) do
           {
             config_hash: {
-              'data_dir'   => '/cust/consul',
+              'data_dir' => '/cust/consul',
               'datacenter' => 'devint',
-              'log_level'  => 'INFO',
-              'node_name'  => '${fqdn}'
+              'log_level' => 'INFO',
+              'node_name' => '${fqdn}'
             },
-         watches: {
-           'services' => {
-             'type'    => 'services',
-             'handler' => 'sudo python /usr/local/bin/reacktor services'
-           },
-           'httpd_service' => {
-             'type'    => 'service',
-             'service' => 'httpd',
-             'handler' => 'sudo python /usr/local/bin/reacktor service --service httpd'
-           },
-           'tomcat_service' => {
-             'type'    => 'service',
-             'service' => 'tomcat',
-             'handler' => 'sudo python /usr/local/bin/reacktor service --service tomcat'
-           }
-         }
+            watches: {
+              'services' => {
+                'type' => 'services',
+                'handler' => 'sudo python /usr/local/bin/reacktor services'
+              },
+              'httpd_service' => {
+                'type' => 'service',
+                'service' => 'httpd',
+                'handler' => 'sudo python /usr/local/bin/reacktor service --service httpd'
+              },
+              'tomcat_service' => {
+                'type' => 'service',
+                'service' => 'tomcat',
+                'handler' => 'sudo python /usr/local/bin/reacktor service --service tomcat'
+              }
+            }
           }
         end
 
@@ -587,9 +591,10 @@ describe 'consul' do
         end
 
         it { is_expected.to contain_class('consul').with_init_style('init') }
+
         it {
-          is_expected.to contain_file('/etc/init.d/consul')
-            .with_content(%r{-http-addr=127.0.0.1:8500})
+          is_expected.to contain_file('/etc/init.d/consul').
+            with_content(%r{-http-addr=127.0.0.1:8500})
         }
       end
 
@@ -597,21 +602,22 @@ describe 'consul' do
         let(:params) do
           {
             init_style: 'init',
-         config_hash: {
-           'ports' => {
-             'http' => 9999
-           },
-           'addresses' => {
-             'http' => 'consul.example.com'
-           }
-         }
+            config_hash: {
+              'ports' => {
+                'http' => 9999
+              },
+              'addresses' => {
+                'http' => 'consul.example.com'
+              }
+            }
           }
         end
 
         it { is_expected.to contain_class('consul').with_init_style('init') }
+
         it {
-          is_expected.to contain_file('/etc/init.d/consul')
-            .with_content(%r{-http-addr=consul.example.com:9999})
+          is_expected.to contain_file('/etc/init.d/consul').
+            with_content(%r{-http-addr=consul.example.com:9999})
         }
       end
 
@@ -619,16 +625,17 @@ describe 'consul' do
         let(:params) do
           {
             init_style: 'init',
-         config_hash: {
-           'client_addr' => '192.168.34.56',
-         }
+            config_hash: {
+              'client_addr' => '192.168.34.56',
+            }
           }
         end
 
         it { is_expected.to contain_class('consul').with_init_style('init') }
+
         it {
-          is_expected.to contain_file('/etc/init.d/consul')
-            .with_content(%r{-http-addr=192.168.34.56:8500})
+          is_expected.to contain_file('/etc/init.d/consul').
+            with_content(%r{-http-addr=192.168.34.56:8500})
         }
       end
 
@@ -640,9 +647,10 @@ describe 'consul' do
         end
 
         it { is_expected.to contain_class('consul').with_init_style('debian') }
+
         it {
-          is_expected.to contain_file('/etc/init.d/consul')
-            .with_content(%r{-http-addr=127.0.0.1:8500})
+          is_expected.to contain_file('/etc/init.d/consul').
+            with_content(%r{-http-addr=127.0.0.1:8500})
         }
       end
 
@@ -650,21 +658,22 @@ describe 'consul' do
         let(:params) do
           {
             init_style: 'debian',
-         config_hash: {
-           'ports' => {
-             'http' => 9999
-           },
-           'addresses' => {
-             'http' => 'consul.example.com'
-           }
-         }
+            config_hash: {
+              'ports' => {
+                'http' => 9999
+              },
+              'addresses' => {
+                'http' => 'consul.example.com'
+              }
+            }
           }
         end
 
         it { is_expected.to contain_class('consul').with_init_style('debian') }
+
         it {
-          is_expected.to contain_file('/etc/init.d/consul')
-            .with_content(%r{-http-addr=consul.example.com:9999})
+          is_expected.to contain_file('/etc/init.d/consul').
+            with_content(%r{-http-addr=consul.example.com:9999})
         }
       end
 
@@ -676,9 +685,10 @@ describe 'consul' do
         end
 
         it { is_expected.to contain_class('consul').with_init_style('upstart') }
+
         it {
-          is_expected.to contain_file('/etc/init/consul.conf')
-            .with_content(%r{-http-addr=127.0.0.1:8500})
+          is_expected.to contain_file('/etc/init/consul.conf').
+            with_content(%r{-http-addr=127.0.0.1:8500})
         }
       end
 
@@ -686,23 +696,25 @@ describe 'consul' do
         let(:params) do
           {
             init_style: 'upstart',
-         config_hash: {
-           'ports' => {
-             'http' => 9999
-           },
-           'addresses' => {
-             'http' => 'consul.example.com'
-           }
-         }
+            config_hash: {
+              'ports' => {
+                'http' => 9999
+              },
+              'addresses' => {
+                'http' => 'consul.example.com'
+              }
+            }
           }
         end
 
         it { is_expected.to contain_class('consul').with_init_style('upstart') }
+
         it {
-          is_expected.to contain_file('/etc/init/consul.conf')
-            .with_content(%r{-http-addr=consul.example.com:9999})
+          is_expected.to contain_file('/etc/init/consul.conf').
+            with_content(%r{-http-addr=consul.example.com:9999})
         }
       end
+
       context 'When asked not to manage the init system' do
         let(:params) { { init_style: 'unmanaged' } }
 
@@ -710,6 +722,7 @@ describe 'consul' do
         it { is_expected.not_to contain_file('/etc/init.d/consul') }
         it { is_expected.not_to contain_file('/etc/systemd/system/consul.service') }
       end
+
       case facts[:os]['family']
       when 'RedHat'
         if facts[:os]['release']['major'].to_i == 6
@@ -749,11 +762,12 @@ describe 'consul' do
           if facts[:os]['release']['major'].to_i < 14
             context 'On legacy Ubuntu' do
               it { is_expected.to contain_class('consul') }
+
               it {
-                is_expected.to contain_file('/etc/init.d/consul') \
-                  .with_content(%r{start-stop-daemon .* \$DAEMON}) \
-                  .with_content(%r{DAEMON_ARGS="agent}) \
-                  .with_content(%r{--user \$USER})
+                is_expected.to contain_file('/etc/init.d/consul'). \
+                  with_content(%r{start-stop-daemon .* \$DAEMON}). \
+                  with_content(%r{DAEMON_ARGS="agent}). \
+                  with_content(%r{--user \$USER})
               }
             end
           elsif facts[:os]['release']['major'].to_i > 15
