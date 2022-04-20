@@ -1,12 +1,12 @@
 {
-  "name": "KyleAnderson-consul",
+  "name": "puppet-consul",
   "version": "7.0.2",
-  "author": "Kyle Anderson <kyle@xkyle.com>",
+  "author": "Vox Pupuli",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
-  "source": "https://github.com/solarkennedy/puppet-consul",
-  "project_page": "https://github.com/solarkennedy/puppet-consul",
-  "issues_url": "https://github.com/solarkennedy/puppet-consul/issues",
+  "source": "https://github.com/voxpuupli/puppet-consul",
+  "project_page": "https://github.com/voxpupuli/puppet-consul",
+  "issues_url": "https://github.com/voxpupuli/puppet-consul/issues",
   "dependencies": [
     {
       "name": "puppet/systemd",
@@ -120,8 +120,5 @@
       "version_requirement": ">= 6.1.0 < 8.0.0"
     }
   ],
-  "description": "Configures Consul by Hashicorp",
-  "pdk-version": "2.1.0",
-  "template-url": "pdk-default#2.1.0",
-  "template-ref": "tags/2.1.0-0-ga675ea5"
+  "description": "Configures Consul by Hashicorp"
 }
