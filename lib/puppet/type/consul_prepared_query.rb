@@ -138,4 +138,18 @@ Puppet::Type.newtype(:consul_prepared_query) do
       raise ArgumentError, 'The template type must be a string' unless value.is_a?(String)
     end
   end
+
+  newparam(:node_meta) do
+    desc 'List of user-defined key/value pairs to filter on NodeMeta'
+    validate do |value|
+      raise ArgumentError, 'NodeMeta type must be a hash' unless value.is_a?(Hash)
+    end
+  end
+
+  newparam(:service_meta) do
+    desc 'List of user-defined key/value pairs to filter on ServiceMeta'
+    validate do |value|
+      raise ArgumentError, 'ServiceMeta type must be a hash' unless value.is_a?(Hash)
+    end
+  end
 end

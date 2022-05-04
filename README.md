@@ -349,6 +349,7 @@ consul_prepared_query { 'consul':
   service_failover_dcs => [ 'dc1', 'dc2' ],
   service_only_passing => true,
   service_tags         => [ 'tag1', 'tag2' ],
+  service_meta         => { 'version' => '1.2.3' },
   ttl                  => 10,
 }
 ```
@@ -364,6 +365,7 @@ consul_prepared_query { 'consul':
   service_failover_dcs => [ 'dc1', 'dc2' ],
   service_only_passing => true,
   service_tags         => [ '${match(2)}' ], # lint:ignore:single_quote_string_with_variables
+  node_meta            => { 'is_virtual' => 'false' },
   template             => true,
   template_regexp      => '^consul-(.*)-(.*)$',
   template_type        => 'name_prefix_match',
