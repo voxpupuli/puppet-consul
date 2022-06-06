@@ -6,7 +6,7 @@
 class consul::params {
   $manage_repo = false
 
-  if versioncmp ($::version, '1.9.11') >= 0 {
+  if versioncmp ($consul::version, '1.9.11') >= 0 {
     case $facts['os']['architecture'] {
       'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
       'i386':                   { $arch = '386' }
@@ -16,7 +16,7 @@ class consul::params {
         fail("Unsupported kernel architecture: ${facts['os']['architecture']}")
       }
     }
-  } elsif versioncmp ($::version, '1.9.11') == -1 {
+  } elsif versioncmp ($consul::version, '1.9.11') == -1 {
     case $facts['os']['architecture'] {
       'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
       'i386':                   { $arch = '386' }
