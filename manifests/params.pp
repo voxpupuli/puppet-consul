@@ -6,16 +6,28 @@
 class consul::params {
   $manage_repo = false
 
-  case $facts['os']['architecture'] {
-    'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
-    'i386':                   { $arch = '386' }
-    'aarch64':                { $arch = 'arm64' }
-    'armv7l':                 { $arch = 'armhfv6' }
-    /^arm.*/:                 { $arch = 'arm' }
-    default:                  {
-      fail("Unsupported kernel architecture: ${facts['os']['architecture']}")
+  if versioncmp ($::version, '1.9.11') >= 0 {
+    case $facts['os']['architecture'] {
+      'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
+      'i386':                   { $arch = '386' }
+      'aarch64':                { $arch = 'arm64' }
+      /^arm.*/:                 { $arch = 'arm' }
+      default:                  {
+        fail("Unsupported kernel architecture: ${facts['os']['architecture']}")
+      }
     }
-  }
+  } elsif versioncmp ($::version, '1.9.11') == -1 {
+      case $facts['os']['architecture'] {
+        'x86_64', 'x64', 'amd64': { $arch = 'amd64' }
+        'i386':                   { $arch = '386' }
+        'aarch64':                { $arch = 'arm64' }
+        'arm7l':                  { $arch = 'armhfv6' }
+        /^arm.*/:                 { $arch = 'arm' }
+        default:                  {
+          fail("Unsupported kernel architecture: ${facts['os']['architecture']}")
+        }
+      }
+    }
 
   $config_dir = $facts['os']['family'] ? {
     'FreeBSD' => '/usr/local/etc/consul.d',
