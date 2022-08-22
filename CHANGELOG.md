@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.2.0](https://github.com/voxpupuli/puppet-consul/tree/v7.2.0) (2022-08-22)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.1.0...v7.2.0)
+
+**Implemented enhancements:**
+
+- Support Service and Nodemeta for queries [\#597](https://github.com/voxpupuli/puppet-consul/pull/597) ([jardleex](https://github.com/jardleex))
+
+**Closed issues:**
+
+- legacy ACL v1 no longer working  starting from Consul version 1.11 [\#588](https://github.com/voxpupuli/puppet-consul/issues/588)
+
 ## [v7.1.0](https://github.com/voxpupuli/puppet-consul/tree/v7.1.0) (2022-04-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.0.2...v7.1.0)
@@ -210,7 +222,7 @@ These should not affect the functionality of the module.
 
 **Breaking changes:**
 
-- Updated windows support [\#464](https://github.com/voxpupuli/puppet-consul/pull/464) ([krjensen](https://github.com/krjensen))
+- Updated windows support [\#464](https://github.com/voxpupuli/puppet-consul/pull/464) ([KZachariassen](https://github.com/KZachariassen))
 
 **Implemented enhancements:**
 
