@@ -106,7 +106,8 @@ describe 'consul' do
         end
       end
 
-      context 'When asked to manage the repo and to install as package' do
+      # hashicorp repo is not supported on Arch Linux/SLES
+      context 'When asked to manage the repo and to install as package', unless: %w[Archlinux SLES Suse].include?(facts[:os]['family']) do
         let(:params) do
           {
             install_method: 'package',
@@ -120,6 +121,20 @@ describe 'consul' do
         when 'RedHat'
           it { is_expected.to contain_yumrepo('HashiCorp') }
         end
+        it { is_expected.to contain_file('/opt/consul').with_ensure('directory').that_requires('Package[consul]') }
+        it { is_expected.to contain_package('consul').with(ensure: 'latest') }
+      end
+
+      context 'When asked to install as package and not to manage data_dir' do
+        let(:params) do
+          {
+            install_method: 'package',
+            manage_data_dir: false
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_file('/opt/consul').with_ensure('directory') }
       end
 
       context 'When requesting to install via a package with defaults' do
