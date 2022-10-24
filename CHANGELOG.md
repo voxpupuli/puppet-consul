@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v7.3.0](https://github.com/voxpupuli/puppet-consul/tree/v7.3.0) (2022-10-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.2.0...v7.3.0)
+
+**Implemented enhancements:**
+
+- Drop legacy init scripts [\#609](https://github.com/voxpupuli/puppet-consul/pull/609) ([bastelfreak](https://github.com/bastelfreak))
+- Add Debian 11 support [\#608](https://github.com/voxpupuli/puppet-consul/pull/608) ([bastelfreak](https://github.com/bastelfreak))
+- Add Ubuntu 22.04 support [\#607](https://github.com/voxpupuli/puppet-consul/pull/607) ([bastelfreak](https://github.com/bastelfreak))
+- Document and test package based installation [\#606](https://github.com/voxpupuli/puppet-consul/pull/606) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Package install: Fix ordering when data\_dir isnt managed [\#610](https://github.com/voxpupuli/puppet-consul/pull/610) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v7.2.0](https://github.com/voxpupuli/puppet-consul/tree/v7.2.0) (2022-08-22)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.1.0...v7.2.0)
