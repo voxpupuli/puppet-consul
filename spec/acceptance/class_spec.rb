@@ -248,4 +248,81 @@ describe 'consul class' do
       end
     end
   end
+
+  context 'cleanup' do
+    it 'cleans up old mess' do
+      pp = <<-EOS
+        service { 'consul':
+          ensure => 'stopped',
+          enable => false,
+        }
+        -> file { ['/opt/consul', '/var/lib/consul', '/etc/default/consul', '/etc/sysconfig/consul']:
+          ensure => 'absent',
+          force  => true,
+        }
+        -> file { '/etc/systemd/system/consul.service':
+          ensure => 'absent',
+        }
+        ~> exec { 'reload systemd':
+          command     => 'systemctl daemon-reload',
+          path        => $facts['path'],
+          refreshonly => true,
+        }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe file(['/opt/consul', '/var/lib/consul']) do
+      it { is_expected.not_to be_directory }
+    end
+  end
+
+  # no fedora packages available
+  context 'package based installation', if: fact('os.name') != 'Fedora' do
+    it 'runs consul via package with explicit default data_dir' do
+      pp = <<-EOS
+      class { 'consul':
+        install_method  => 'package',
+        manage_repo     => $facts['os']['name'] != 'Archlinux',
+        init_style      => 'unmanaged',
+        manage_data_dir => true,
+        manage_group    => false,
+        manage_user     => false,
+        config_dir      => '/etc/consul.d/',
+        config_hash     => {
+          'server'   => true,
+        },
+      }
+      systemd::dropin_file { 'foo.conf':
+        unit           => 'consul.service',
+        content        => "[Unit]\nConditionFileNotEmpty=\nConditionFileNotEmpty=/etc/consul.d/config.json",
+        notify_service => true,
+      }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe file('/opt/consul') do
+      it { is_expected.to be_directory }
+    end
+
+    describe service('consul') do
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
+    end
+
+    describe package('consul') do
+      it { is_expected.to be_installed }
+    end
+
+    describe command('consul version') do
+      its(:stdout) { is_expected.to match %r{Consul v} }
+    end
+  end
 end
