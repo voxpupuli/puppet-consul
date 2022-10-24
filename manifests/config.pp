@@ -33,44 +33,10 @@ class consul::config (
 
   if ($consul::init_style_real != 'unmanaged') {
     case $consul::init_style_real {
-      'upstart': {
-        file { '/etc/init/consul.conf':
-          ensure  => file,
-          mode    => '0444',
-          owner   => 'root',
-          group   => 'root',
-          content => template('consul/consul.upstart.erb'),
-        }
-        file { '/etc/init.d/consul':
-          ensure => link,
-          target => '/lib/init/upstart-job',
-          owner  => 'root',
-          group  => 'root',
-          mode   => '0755',
-        }
-      }
       'systemd': {
         systemd::unit_file { 'consul.service':
           content => template('consul/consul.systemd.erb'),
           notify  => $notify_service,
-        }
-      }
-      'init','redhat': {
-        file { '/etc/init.d/consul':
-          ensure  => file,
-          mode    => '0555',
-          owner   => 'root',
-          group   => 'root',
-          content => template('consul/consul.init.erb'),
-        }
-      }
-      'debian': {
-        file { '/etc/init.d/consul':
-          ensure  => file,
-          mode    => '0555',
-          owner   => 'root',
-          group   => 'root',
-          content => template('consul/consul.debian.erb'),
         }
       }
       'sles': {
