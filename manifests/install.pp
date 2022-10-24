@@ -76,7 +76,7 @@ class consul::install {
         User[$consul::user_real] -> Package[$consul::package_name]
       }
 
-      if $consul::data_dir {
+      if $consul::data_dir and $consul::manage_data_dir {
         Package[$consul::package_name] -> File[$real_data_dir]
       }
     }
