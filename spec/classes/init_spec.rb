@@ -243,7 +243,7 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_file('consul config').with_content(%r{"ui":true}) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"ui":true})) }
       end
 
       context 'When not installing UI' do
@@ -253,7 +253,7 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.not_to contain_file('consul config').with_content(%r{"ui":true}) }
+        it { is_expected.not_to contain_file('consul config').with_content(sensitive(%r{"ui":true})) }
       end
 
       context 'By default, a user and group should be installed' do
@@ -296,8 +296,8 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_file('consul config').with_content(%r{"bootstrap_expect":5}) }
-        it { is_expected.not_to contain_file('consul config').with_content(%r{"bootstrap_expect":"5"}) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"bootstrap_expect":5})) }
+        it { is_expected.not_to contain_file('consul config').with_content(sensitive(%r{"bootstrap_expect":"5"})) }
       end
 
       context 'Config_defaults is used to provide additional config' do
@@ -312,8 +312,8 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_file('consul config').with_content(%r{"bootstrap_expect":5}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"data_dir":"/dir1"}) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"bootstrap_expect":5})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"data_dir":"/dir1"})) }
       end
 
       context 'Config_defaults is used to provide additional config and is overridden' do
@@ -338,11 +338,11 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_file('consul config').with_content(%r{"bootstrap_expect":5}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"data_dir":"/dir1"}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"server":true}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"http":-1}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"https":8500}) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"bootstrap_expect":5})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"data_dir":"/dir1"})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"server":true})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"http":-1})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"https":8500})) }
       end
 
       context 'When pretty config is true' do
@@ -360,11 +360,11 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_file('consul config').with_content(%r{"bootstrap_expect": 5,}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"server": true}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"http": -1,}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"https": 8500}) }
-        it { is_expected.to contain_file('consul config').with_content(%r{"ports": \{}) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"bootstrap_expect": 5,})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"server": true})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"http": -1,})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"https": 8500})) }
+        it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"ports": \{})) }
       end
 
       context 'When asked not to manage the user' do

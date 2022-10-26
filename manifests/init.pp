@@ -218,7 +218,7 @@ class consul (
   Hash                                  $config_defaults             = $consul::params::config_defaults,
   Stdlib::Absolutepath                  $config_dir                  = $consul::params::config_dir,
   String[1]                             $config_name                 = 'config.json',
-  Hash                                  $config_hash                 = {},
+  Variant[Hash,Sensitive[Hash]]         $config_hash                 = {},
   String[1]                             $config_mode                 = '0664',
   Optional[String[1]]                   $config_owner                = undef,
   String[1]                             $data_dir_mode               = $consul::params::data_dir_mode,
@@ -262,6 +262,10 @@ class consul (
     "${download_url_base}${version}/${package_name}_${version}_${os}_${arch}.${download_extension}",
   )
 
+  $_config_hash = $config_hash ? {
+    Sensitive => $config_hash.unwrap,
+    default   => $config_hash
+  }
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 
   if $install_method == 'docker' {
