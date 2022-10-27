@@ -4,8 +4,9 @@
 # configuration changes that support reload.
 #
 # https://www.consul.io/docs/agent/options.html#reloadable-configuration
-#
+# @api private
 class consul::reload_service {
+  assert_private()
   # Don't attempt to reload if we're not supposed to be running.
   # This can happen during pre-provisioning of a node.
   if $consul::manage_service == true and $consul::service_ensure == 'running' {
