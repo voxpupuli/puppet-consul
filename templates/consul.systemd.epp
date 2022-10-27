@@ -22,7 +22,7 @@ Type=notify
 <% if $allow_binding_to_root_ports { -%>
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 <% } -%>
-<% if $enable_beta_ui == true { -%>
+<% if $enable_beta_ui { -%>
 Environment=CONSUL_UI_BETA=true
 <% } -%>
 User=<%= $user %>
