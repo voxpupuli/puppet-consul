@@ -36,10 +36,14 @@ class consul::config (
   if ($consul::init_style_real != 'unmanaged') {
     case $consul::init_style_real {
       'systemd': {
+        $type = if ($config_hash['retry_join'] == undef or $config_hash['retry_join'].length < 2) {
+          'exec'
+        } else {
+          'notify'
+        }
         systemd::unit_file { 'consul.service':
           content => epp("${module_name}/consul.systemd.epp",
             {
-              'config_hash'                 => $config_hash,
               'user'                        => $consul::user,
               'group'                       => $consul::group,
               'bin_dir'                     => $consul::bin_dir,
@@ -47,6 +51,7 @@ class consul::config (
               'extra_options'               => $consul::extra_options,
               'allow_binding_to_root_ports' => $allow_binding_to_root_ports,
               'enable_beta_ui'              => $enable_beta_ui,
+              'type'                        => $type,
             }
           ),
           notify  => $notify_service,
