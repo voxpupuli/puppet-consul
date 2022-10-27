@@ -1,0 +1,37 @@
+<%- | Hash $config_hash,
+      String[1] $user,
+      String[1] $group,
+      Stdlib::Absolutepath $bin_dir,
+      Stdlib::Absolutepath $config_dir,
+      Optional[String] $extra_options,
+      Boolean $allow_binding_to_root_ports,
+      Boolean $enable_beta_ui
+| -%>
+# THIS FILE IS MANAGED BY PUPPET
+[Unit]
+Description=Consul Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+<% if $config_hash['retry_join'] == undef or $config_hash['retry_join'].length < 2 { -%>
+Type=exec
+<% } else { -%>
+Type=notify
+<% } -%>
+<% if $allow_binding_to_root_ports == true { -%>
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+<% } -%>
+<% if $enable_beta_ui == true { -%>
+Environment=CONSUL_UI_BETA=true
+<% } -%>
+User=<%= $user %>
+Group=<%= $group %>
+ExecStart=<%= $bin_dir %>/consul agent \
+  -config-dir <%= $config_dir %> <%= $extra_options %>
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+LimitNOFILE=131072
+
+[Install]
+WantedBy=multi-user.target

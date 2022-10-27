@@ -37,7 +37,18 @@ class consul::config (
     case $consul::init_style_real {
       'systemd': {
         systemd::unit_file { 'consul.service':
-          content => template('consul/consul.systemd.erb'),
+          content => epp("${module_name}/consul.systemd.epp",
+            {
+              'config_hash'                 => $config_hash,
+              'user'                        => $consul::user,
+              'group'                       => $consul::group,
+              'bin_dir'                     => $consul::bin_dir,
+              'config_dir'                  => $consul::config_dir,
+              'extra_options'               => $consul::extra_options,
+              'allow_binding_to_root_ports' => $allow_binding_to_root_ports,
+              'enable_beta_ui'              => $enable_beta_ui,
+            }
+          ),
           notify  => $notify_service,
         }
       }
