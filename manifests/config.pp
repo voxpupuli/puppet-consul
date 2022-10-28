@@ -111,6 +111,6 @@ class consul::config (
     owner   => $consul::config_owner_real,
     group   => $consul::group_real,
     mode    => $consul::config_mode,
-    content => consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent),
+    content => Sensitive(consul::sorted_json($config_hash, $consul::pretty_config, $consul::pretty_config_indent)),
   }
 }
