@@ -1,9 +1,7 @@
-# == Class consul::reload_service
 #
-# This class is meant to be called from certain
-# configuration changes that support reload.
+# @summary This class is meant to be called from certain configuration changes that support reload.
 #
-# https://www.consul.io/docs/agent/options.html#reloadable-configuration
+# @see https://www.consul.io/docs/agent/options.html#reloadable-configuration
 # @api private
 class consul::reload_service {
   assert_private()

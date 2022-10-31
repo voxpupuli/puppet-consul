@@ -1,23 +1,11 @@
-# == Class consul::config
 #
-# This class is called from consul::init to install the config file.
+# @summary This class is called from consul::init to install the config file.
 #
-# == Parameters
-#
-# [*config_hash*]
-#   Hash for Consul to be deployed as JSON
-#
-# [*purge*]
-#   Bool. If set will make puppet remove stale config files.
-#
-# [*enable_beta_ui*]
-#   Bool. Should the UI be enabled
-#
-# [*allow_binding_to_root_ports*]
-#   Bool. Should binding to specified ports be allowed
-#
-# [*restart_on_change*]
-#   Bool. Should the service be restarted on changes
+# @param config_hash Hash for Consul to be deployed as JSON
+# @param purge If set will make puppet remove stale config files.
+# @param enable_beta_ui Should the UI be enabled
+# @param allow_binding_to_root_ports Should binding to specified ports be allowed
+# @param restart_on_change Should the service be restarted on changes
 #
 # @api private
 class consul::config (

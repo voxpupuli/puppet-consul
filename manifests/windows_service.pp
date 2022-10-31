@@ -1,14 +1,11 @@
-# == Class consul::windows_service
 #
-# Installs consul windows server
-# == Parameters
+# @summary Installs consul windows server
 #
-# [*sys32*]
-#   path to system32 folder
+# @param sys32 path to system32 folder
+# @param service_name Name of the service
 #
-# [*service_name*]
-#   Name of the service
 # @api private
+#
 class consul::windows_service (
   $sys32 = 'c:\\windows\\system32',
   $service_name = 'Consul'
