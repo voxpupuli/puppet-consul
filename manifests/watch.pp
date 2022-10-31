@@ -1,51 +1,22 @@
-# == Define: consul::watch
 #
-# Sets up Consul watch, to span commands when data changes.
-# http://www.consul.io/docs/agent/watches.html
+# @summary Sets up Consul watch, to span commands when data changes.
 #
-# == Parameters
+# @see http://www.consul.io/docs/agent/watches.html
+# @see https://github.com/hashicorp/consul/issues/3509
 #
-# [*datacenter*]
-#   String overriding consul's default datacenter.
-#
-# [*ensure*]
-#   Define availability of watch. Use 'absent' to remove existing watches.
-#   Defaults to 'present'
-#
-# [*event_name*]
-#   Name of an event to watch for.
-#
-# [*handler*]
-#   Full path to the script that will be excuted. This parameter is deprecated
-#   in Consul 1.0.0, see https://github.com/hashicorp/consul/issues/3509.
-#
-# [*args*]
-#   Arguments to be `exec`ed for the watch.
-#
-# [*key*]
-#   Watch a specific key.
-#
-# [*keyprefix*]
-#   Watch a whole keyprefix
-#
-# [*passingonly*]
-#   Watch only those services that are passing healthchecks.
-#
-# [*service*]
-#   Watch a particular service
-#
-# [*service_tag*]
-#   This actually maps to the "tag" param for service watches.
-#   (`tag` is a puppet builtin metaparameter)
-#
-# [*state*]
-#   Watch a state change on a service healthcheck.
-#
-# [*token*]
-#   String to override the default token.
-#
-# [*type*]
-#   Type of data to watch. (Like key, service, services, nodes)
+# @param datacenter String overriding consul's default datacenter.
+# @param ensure Define availability of watch. Use 'absent' to remove existing watches.
+# @param event_name Name of an event to watch for.
+# @param handler Full path to the script that will be excuted. This parameter is deprecated in Consul 1.0.0
+# @param args Arguments to be `exec`ed for the watch.
+# @param key Watch a specific key.
+# @param keyprefix Watch a whole keyprefix
+# @param passingonly Watch only those services that are passing healthchecks.
+# @param service Watch a particular service
+# @param service_tag This actually maps to the "tag" param for service watches. (`tag` is a puppet builtin metaparameter)
+# @param state Watch a state change on a service healthcheck.
+# @param token String to override the default token.
+# @param type Type of data to watch. (Like key, service, services, nodes)
 #
 define consul::watch (
   $args                          = undef,

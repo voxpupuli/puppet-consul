@@ -1,6 +1,5 @@
-# == Class consul::install
 #
-# Installs consul based on the parameters from init
+# @summary Installs consul based on the parameters from init
 #
 # @api private
 class consul::install {

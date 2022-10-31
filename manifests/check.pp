@@ -1,62 +1,25 @@
-# == Define consul::check
+# @summary Sets up a Consul healthcheck
+# @see http://www.consul.io/docs/agent/checks.html
 #
-# Sets up a Consul healthcheck
-# http://www.consul.io/docs/agent/checks.html
-#
-# == Parameters
-#
-# [*ensure*]
-#   Define availability of check. Use 'absent' to remove existing checks.
-#   Defaults to 'present'
-#
-# [*http*]
-#   HTTP endpoint for the service healthcheck
-#
-# [*id*]
-#   The id for the check (defaults to $title)
-#
-# [*interval*]
-#   Value in seconds for the interval between runs of the check
-#
-# [*notes*]
-#   Human readable description of the check
-#
-# [*script*]
+# @param ensure Define availability of check. Use 'absent' to remove existing checks
+# @param http HTTP endpoint for the service healthcheck
+# @param id The id for the check (defaults to $title)
+# @param interval Value in seconds for the interval between runs of the check
+# @param notes Human readable description of the check
+# @param script
 #   Full path to the location of the healthcheck script. Must be nagios
 #   compliant with regards to the return codes. This parameter is deprecated
 #   in Consul 1.0.0, see https://github.com/hashicorp/consul/issues/3509.
 #
-# [*args*]
-#   Arguments to be `exec`ed for the healthcheck script.
-#
-# [*service_id*]
-#   An optional service_id to match this check against
-#
-# [*status*]
-#   The default state of the check when it is registered against a consul
-#   agent. Should be either "critical" or "passing"
-#
-# [*tcp*]
-#   The IP/hostname and port for the service healthcheck. Should be in
-#   'hostname:port' format.
-#
-# [*timeout*]
-#   A timeout value for HTTP request only
-#
-# [*token*]
-#   ACL token for interacting with the catalog (must be 'management' type)
-#
-# [*ttl*]
-#   Value in seconds before the http endpoint considers a failing healthcheck
-#   to be "HARD" down.
-#
-# [*success_before_passing*]
-#   Value may be set to become check passing only after a specified number of consecutive
-#   checks return passing
-#
-# [*failures_before_critical*]
-#   Value may be set to become check critical only after a specified number of consecutive
-#   checks return critical
+# @param args Arguments to be `exec`ed for the healthcheck script.
+# @param service_id An optional service_id to match this check against
+# @param status The default state of the check when it is registered against a consul agent. Should be either "critical" or "passing"
+# @param tcp The IP/hostname and port for the service healthcheck. Should be in 'hostname:port' format.
+# @param timeout A timeout value for HTTP request only
+# @param token ACL token for interacting with the catalog (must be 'management' type)
+# @param ttl Value in seconds before the http endpoint considers a failing healthcheck to be "HARD" down.
+# @param success_before_passing Value may be set to become check passing only after a specified number of consecutive checks return passing
+# @param failures_before_critical Value may be set to become check critical only after a specified number of consecutive checks return critical
 #
 define consul::check (
   $ensure                   = present,

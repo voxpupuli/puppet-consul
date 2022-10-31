@@ -1,8 +1,7 @@
-# == Class consul::service
 #
-# This class is meant to be called from consul
-# It ensure the service is running
+# @summary This class is meant to be called from consul. It ensures the service is running
 # @api private
+#
 class consul::run_service {
   assert_private()
   $service_name = $consul::init_style_real ? {

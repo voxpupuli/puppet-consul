@@ -1,46 +1,20 @@
-# == Define consul::service
 #
-# Sets up a Consul service definition
-# http://www.consul.io/docs/agent/services.html
+# @summary Sets up a Consul service definition
+# @see http://www.consul.io/docs/agent/services.html
 #
-# == Parameters
+# @param address IP address the service is running at.
+# @param checks If provided an array of checks that will be added to this service
+# @param enable_tag_override enable_tag_override support for service. Defaults to False.
+# @param ensure Define availability of service. Use 'absent' to remove existing services. Defaults to 'present'
+# @param id The unique ID of the service on the node. Defaults to title.
+# @param port TCP port the service runs on.
+# @param service_name Name of the service. Defaults to title.
+# @param service_config_hash Use this to populate the basic service params for each of the services
+# @param tags Array of strings.
+# @param token ACL token for interacting with the catalog (must be 'management' type)
+# @param meta Service meta key/value pairs as hash.
 #
-# [*address*]
-#   IP address the service is running at.
-#
-# [*checks*]
-#   If provided an array of checks that will be added to this service
-#
-# [*enable_tag_override*]
-#   enable_tag_override support for service. Defaults to False.
-#
-# [*ensure*]
-#   Define availability of service. Use 'absent' to remove existing services.
-#   Defaults to 'present'
-#
-# [*id*]
-#   The unique ID of the service on the node. Defaults to title.
-#
-# [*port*]
-#   TCP port the service runs on.
-#
-# [*service_name*]
-#   Name of the service. Defaults to title.
-#
-# [*service_config_hash*]
-#   Use this to populate the basic service params for each of the services
-#
-# [*tags*]
-#   Array of strings.
-#
-# [*token*]
-#   ACL token for interacting with the catalog (must be 'management' type)
-#
-# [*meta*]
-#   Service meta key/value pairs as hash.
-#
-# === Examples
-# @example
+# @example simple MySQL service
 #  consul::service { 'my_db':
 #    port                => 3306,
 #    tags                => ['db','mysql'],
@@ -60,7 +34,7 @@
 #    ],
 #  }
 #
-# @example
+# @example simple HTTPS service
 #  consul::service { 'my_https_app':
 #    port                => 443,
 #    tags                => ['web','rails'],

@@ -1,194 +1,80 @@
-# == Class: consul
 #
-# Installs, configures and manages consul
+# @summary Installs, configures and manages consul
 #
-# === Parameters
-#
-# [*acls*]
-#   Hash of consul_acl resources to create.
-#
-# [*tokens*]
-#   Hash of consul_token resources to create.
-#
-# [*policies*]
-#   Hash of consul_policy resources to create.
-#
-# [*acl_api_hostname*]
-#   Global hostname of ACL API, will be merged with consul_token resources
-#
-# [*acl_api_protocol*]
-#   Global protocl of ACL API, will be merged with consul_token resources
-#
-# [*acl_api_port*]
-#   Global port of ACL API, will be merged with consul_token resources
-#
-# [*acl_api_tries*]
-#   Global max. tries of ACL API, will be merged with consul_token resources
-#
-# [*acl_api_token*]
-#   Global token of ACL API, will be merged with consul_token resources
-#
-# [*arch*]
-#   Architecture of consul binary to download.
-#
-# [*archive_path*]
-#   Path used when installing consul via the url.
-#
-# [*bin_dir*]
-#   Directory to create the symlink to the consul binary in.
-#
-# [*binary_group*]
-#   The group that the file belongs to.
-#
-# [*binary_mode*]
-#   Permissions mode for the file.
-#
-# [*binary_name*]
-#   The binary name file.
-#
-# [*binary_owner*]
-#   The user that owns the file.
-#
-# [*checks*]
-#   Hash of consul::check resources to create.
-#
-# [*config_defaults*]
-#   Configuration defaults hash. Gets merged with config_hash.
-#
-# [*config_dir*]
-#   Directory to place consul configuration files in.
-#
-# [*config_name*]
-#   Name of the consul configuration file.
-#
-# [*config_hash*]
-#   Use this to populate the JSON config file for consul.
-#
-# [*config_mode*]
-#   Use this to set the JSON config file mode for consul.
-#
-# [*config_owner*]
-#   The user that owns the config_dir directory and its files.
-#
-# [*data_dir_mode*]
-#   Use this to set the data_dir directory mode for consul.
-#
-# [*docker_image*]
-#   Only valid when the install_method == docker. Defaults to `consul`.
-#
-# [*download_extension*]
-#   The extension of the archive file containing the consul binary to download.
-#
-# [*download_url*]
-#   Fully qualified url to the location of the archive file containing the consul binary.
-#
-# [*download_url_base*]
-#   Base url to the location of the archive file containing the consul binary.
-#
-# [*extra_groups*]
-#   Extra groups to add the consul system user to.
-#
-# [*extra_options*]
-#   Extra arguments to be passed to the consul agent
-#
-# [*group*]
-#   Name of the group that should own the consul configuration files.
-#
-# [*init_style*]
+# @param acls Hash of consul_acl resources to create.
+# @param tokens Hash of consul_token resources to create.
+# @param policies Hash of consul_policy resources to create.
+# @param acl_api_hostname Global hostname of ACL API, will be merged with consul_token resources
+# @param acl_api_protocol Global protocl of ACL API, will be merged with consul_token resources
+# @param acl_api_port Global port of ACL API, will be merged with consul_token resources
+# @param acl_api_tries Global max. tries of ACL API, will be merged with consul_token resources
+# @param acl_api_token Global token of ACL API, will be merged with consul_token resources
+# @param arch Architecture of consul binary to download
+# @param archive_path Path used when installing consul via the url
+# @param bin_dir Directory to create the symlink to the consul binary in.
+# @param binary_group The group that the file belongs to.
+# @param binary_mode Permissions mode for the file.
+# @param binary_name The binary name file.
+# @param binary_owner The user that owns the file.
+# @param checks Hash of consul::check resources to create.
+# @param config_defaults Configuration defaults hash. Gets merged with config_hash.
+# @param config_dir Directory to place consul configuration files in.
+# @param config_name Name of the consul configuration file.
+# @param config_hash Use this to populate the JSON config file for consul.
+# @param config_mode Use this to set the JSON config file mode for consul.
+# @param config_owner The user that owns the config_dir directory and its files.
+# @param data_dir_mode Use this to set the data_dir directory mode for consul.
+# @param docker_image Only valid when the install_method == docker. Defaults to `consul`.
+# @param download_extension The extension of the archive file containing the consul binary to download.
+# @param download_url Fully qualified url to the location of the archive file containing the consul binary.
+# @param download_url_base Base url to the location of the archive file containing the consul binary.
+# @param extra_groups Extra groups to add the consul system user to.
+# @param extra_options Extra arguments to be passed to the consul agent
+# @param group Name of the group that should own the consul configuration files.
+# @param init_style
 #   What style of init system your system uses. Set to 'unmanaged' to disable
 #   managing init system files for the consul service entirely.
 #   This is ignored when install_method == 'docker'
-#
-# [*install_method*]
+# @param install_method
 #   Valid strings: `docker`  - install via docker container
 #                  `package` - install via system package
 #                  `url`     - download and extract from a url. Defaults to `url`.
 #                  `none`    - disable install.
-#
-# [*join_wan*]
-#   The wan to join on service start (e.g. 'wan.foo.com'). Defaults to undef (i.e. won't join a wan).
-#
-# [*manage_group*]
-#   Whether to create/manage the group that should own the consul configuration files.
-#
-# [*manage_repo*]
-#   Configure the upstream HashiCorp repository. Only relevant when $nomad::install_method = 'package'.
-#
-# [*manage_service*]
-#   Whether to manage the consul service.
-#
-# [*manage_user*]
-#   Whether to create/manage the user that should own consul's configuration files.
-#
-# [*manage_user_home_location*]
+# @param join_wan The wan to join on service start (e.g. 'wan.foo.com'). Defaults to undef (i.e. won't join a wan).
+# @param manage_group Whether to create/manage the group that should own the consul configuration files.
+# @param manage_repo Configure the upstream HashiCorp repository. Only relevant when $nomad::install_method = 'package'.
+# @param manage_service Whether to manage the consul service.
+# @param manage_user Whether to create/manage the user that should own consul's configuration files.
+# @param manage_user_home_location
 #   Whether to explicitly set the location of the consul user's home directory when this modules
 #   manages the creation of the user (aka `manage_user = true`). If the consul user already exists
 #   and this is enabled, puppet tries to change the consul user's home to the new location. This
 #   will cause the puppet run to fail if the consul service is currently running.
-#
-# [*manage_data_dir*]
-#   Whether to manage the consul storage data directory.
-#
-# [*os*]
-#   OS component in the name of the archive file containing the consul binary.
-#
-# [*package_ensure*]
-#   Only valid when the install_method == package. Defaults to `latest`.
-#
-# [*package_name*]
-#   Only valid when the install_method == package. Defaults to `consul`.
-#
-# [*pretty_config*]
-#   Generates a human readable JSON config file. Defaults to `false`.
-#
-# [*pretty_config_indent*]
-#   Toggle indentation for human readable JSON file. Defaults to `4`.
-#
-# [*proxy_server*]
-#   Specify a proxy server, with port number if needed. ie: https://example.com:8080.
-#
-# [*purge_config_dir*]
-#   Purge config files no longer generated by Puppet
-#
-# [*restart_on_change*]
+# @param manage_data_dir Whether to manage the consul storage data directory.
+# @param os OS component in the name of the archive file containing the consul binary.
+# @param package_ensure Only valid when the install_method == package. Defaults to `latest`.
+# @param package_name Only valid when the install_method == package. Defaults to `consul`.
+# @param pretty_config Generates a human readable JSON config file. Defaults to `false`.
+# @param pretty_config_indent Toggle indentation for human readable JSON file. Defaults to `4`.
+# @param proxy_server Specify a proxy server, with port number if needed. ie: https://example.com:8080.
+# @param purge_config_dir Purge config files no longer generated by Puppet
+# @param restart_on_change
 #   Determines whether to restart consul agent on $config_hash changes.
 #   This will not affect reloads when service, check or watch configs change.
-#   Defaults to `true`.
-#
-# [*service_enable*]
-#   Whether to enable the consul service to start at boot.
-#
-# [*service_ensure*]
-#   Whether the consul service should be running or not.
-#
-# [*services*]
-#   Hash of consul::service resources to create.
-#
-# [*user*]
-#   Name of the user that should own the consul configuration files.
-#
-# [*version*]
-#   Specify version of consul binary to download.
-#
-# [*watches*]
-#   Hash of consul::watch resources to create.
-#
-# [*shell*]
-#   The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
-#
-# [*enable_beta_ui*]
+# @param service_enable Whether to enable the consul service to start at boot.
+# @param service_ensure Whether the consul service should be running or not.
+# @param services Hash of consul::service resources to create.
+# @param user Name of the user that should own the consul configuration files.
+# @param version Specify version of consul binary to download.
+# @param watches Hash of consul::watch resources to create.
+# @param shell The shell for the consul user. Defaults to something that prohibits login, like /usr/sbin/nologin
+# @param enable_beta_ui
 #   consul 1.1.0 introduced a new UI, which is currently (2018-05-12) in beta status.
 #   You can enable it by setting this variable to true. Defaults to false
+# @param allow_binding_to_root_ports enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
+# @param log_file where should the log file be located
 #
-# [*allow_binding_to_root_ports*]
-#   Boolean, enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
-#
-# [*log_file*]
-#   String, where should the log file be located
-#
-# === Examples
-#
-#  @example
+# @example simple consul setup
 #    class { 'consul':
 #      config_hash => {
 #        'datacenter'   => 'east-aws',
