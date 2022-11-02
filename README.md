@@ -532,8 +532,8 @@ Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 
 ## Transfer Notice
 
-This module was originally authored by [KyleAnderson](http://github.com/KyleAnderson).
+This module was originally authored by [solarkennedy](http://github.com/solarkennedy).
 The maintainer preferred that Vox Pupuli take ownership of the module for future improvement and maintenance.
 Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of KyleAnderson.
 
-Previously: https://github.com/KyleAnderson/puppet-consul
+Previously: https://github.com/solarkennedy/puppet-consul
