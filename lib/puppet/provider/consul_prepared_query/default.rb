@@ -146,6 +146,8 @@ Puppet::Type.type(:consul_prepared_query).provide(
     service_failover_dcs = @resource[:service_failover_dcs]
     service_only_passing = @resource[:service_only_passing]
     service_tags = @resource[:service_tags]
+    node_meta = @resource[:node_meta]
+    service_meta = @resource[:service_meta]
     ttl = @resource[:ttl]
     port = @resource[:port]
     hostname = @resource[:hostname]
@@ -167,6 +169,8 @@ Puppet::Type.type(:consul_prepared_query).provide(
         },
         'OnlyPassing' => service_only_passing,
         'Tags' => service_tags,
+        'NodeMeta' => node_meta,
+        'ServiceMeta' => service_meta
       },
       'DNS' => {
         'TTL' => "#{ttl}s"

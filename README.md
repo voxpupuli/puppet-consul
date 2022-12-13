@@ -108,6 +108,28 @@ class { 'consul':
 }
 ```
 
+Install the (HashiCorp) packages:
+
+```puppet
+class { 'consul':
+  install_method  => 'package',
+  manage_repo     => $facts['os']['name'] != 'Archlinux',
+  init_style      => 'unmanaged',
+  manage_data_dir => true,
+  manage_group    => false,
+  manage_user     => false,
+  config_dir      => '/etc/consul.d/',
+  config_hash     => {
+    'server'   => true,
+  },
+}
+systemd::dropin_file { 'foo.conf':
+  unit           => 'consul.service',
+  content        => "[Unit]\nConditionFileNotEmpty=\nConditionFileNotEmpty=/etc/consul.d/config.json",
+  notify_service => true,
+}
+```
+
 ## Web UI
 
 To install and run the Web UI on the server, include `ui => true` in the
@@ -349,6 +371,7 @@ consul_prepared_query { 'consul':
   service_failover_dcs => [ 'dc1', 'dc2' ],
   service_only_passing => true,
   service_tags         => [ 'tag1', 'tag2' ],
+  service_meta         => { 'version' => '1.2.3' },
   ttl                  => 10,
 }
 ```
@@ -364,6 +387,7 @@ consul_prepared_query { 'consul':
   service_failover_dcs => [ 'dc1', 'dc2' ],
   service_only_passing => true,
   service_tags         => [ '${match(2)}' ], # lint:ignore:single_quote_string_with_variables
+  node_meta            => { 'is_virtual' => 'false' },
   template             => true,
   template_regexp      => '^consul-(.*)-(.*)$',
   template_type        => 'name_prefix_match',
@@ -508,8 +532,8 @@ Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
 
 ## Transfer Notice
 
-This plugin was originally authored by [KyleAnderson](http://github.com/KyleAnderson).
+This module was originally authored by [solarkennedy](http://github.com/solarkennedy).
 The maintainer preferred that Vox Pupuli take ownership of the module for future improvement and maintenance.
-Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of Camptocamp.
+Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of KyleAnderson.
 
-Previously: https://github.com/KyleAnderson/puppet-consul
+Previously: https://github.com/solarkennedy/puppet-consul

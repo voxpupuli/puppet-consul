@@ -3,6 +3,7 @@
 # This class is meant to be called from consul
 # It sets variables according to platform
 #
+# @api private
 class consul::params {
   $manage_repo = false
 

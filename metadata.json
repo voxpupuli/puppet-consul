@@ -1,6 +1,6 @@
 {
   "name": "puppet-consul",
-  "version": "7.1.1-rc0",
+  "version": "7.3.2-rc0",
   "author": "Vox Pupuli",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
@@ -45,7 +45,8 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "10"
+        "10",
+        "11"
       ]
     },
     {
@@ -102,7 +103,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "18.04",
-        "20.04"
+        "20.04",
+        "22.04"
       ]
     },
     {

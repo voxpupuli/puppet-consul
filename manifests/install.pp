@@ -1,8 +1,9 @@
-# == Class consul::install
 #
-# Installs consul based on the parameters from init
+# @summary Installs consul based on the parameters from init
 #
+# @api private
 class consul::install {
+  assert_private()
   $real_data_dir = pick($consul::data_dir, $consul::config_hash[data_dir], $consul::config_defaults[data_dir])
 
   if $consul::manage_data_dir {
@@ -65,7 +66,11 @@ class consul::install {
     'package': {
       if $consul::manage_repo {
         include hashi_stack::repo
-        Class['hashi_stack::repo'] -> Package[$consul::package_name]
+        if $facts['os']['family'] == 'Debian' {
+          Exec['apt_update'] -> Package[$consul::package_name]
+        } else {
+          Class['hashi_stack::repo'] -> Package[$consul::package_name]
+        }
       }
       package { $consul::package_name:
         ensure => $consul::package_ensure,
@@ -76,7 +81,7 @@ class consul::install {
         User[$consul::user_real] -> Package[$consul::package_name]
       }
 
-      if $consul::data_dir {
+      if $consul::data_dir and $consul::manage_data_dir {
         Package[$consul::package_name] -> File[$real_data_dir]
       }
     }
