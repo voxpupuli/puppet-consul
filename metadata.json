@@ -4,7 +4,7 @@
   "author": "Vox Pupuli",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",
-  "source": "https://github.com/voxpuupli/puppet-consul",
+  "source": "https://github.com/voxpupuli/puppet-consul",
   "project_page": "https://github.com/voxpupuli/puppet-consul",
   "issues_url": "https://github.com/voxpupuli/puppet-consul/issues",
   "dependencies": [
