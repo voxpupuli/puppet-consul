@@ -47,7 +47,6 @@ class consul::params {
     default: {
       # 0 instead of root because OS X uses "wheel".
       $data_dir_mode = '0755'
-      $bash_completion_compat_dir = '/etc/bash_completion.d/'
       $binary_group = '0'
       $binary_mode = '0555'
       $binary_name = 'consul'

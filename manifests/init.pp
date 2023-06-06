@@ -98,7 +98,7 @@ class consul (
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
   Boolean                               $bash_completion             = $consul::params::bash_completion,
-  String[1]                             $bash_completion_compat_dir  = $consul::params::bash_completion_compat_dir,
+  String[1]                             $bash_completion_compat_dir  = '/etc/bash_completion.d/',
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,
   Optional[String[1]]                   $binary_group                = $consul::params::binary_group,
   String[1]                             $binary_mode                 = $consul::params::binary_mode,

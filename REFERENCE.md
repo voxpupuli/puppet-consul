@@ -222,7 +222,7 @@ Data type: `String[1]`
 
 Directory to place bash-completion file for Consul into.
 
-Default value: `$consul::params::bash_completion_compat_dir`
+Default value: `'/etc/bash_completion.d/'`
 
 ##### <a name="-consul--bin_dir"></a>`bin_dir`
 
