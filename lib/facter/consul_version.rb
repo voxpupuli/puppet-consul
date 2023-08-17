@@ -3,7 +3,7 @@
 Facter.add(:consul_version) do
   confine kernel: 'Linux'
   setcode do
-    original_path = ENV['PATH']
+    original_path = ENV.fetch('PATH', nil)
     path = ENV.fetch('PATH') { '/bin:/usr/bin:/usr/local/bin' }
     ENV['PATH'] = path + ':/usr/local/bin'
     begin

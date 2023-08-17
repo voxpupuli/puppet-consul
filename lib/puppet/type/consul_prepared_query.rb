@@ -1,7 +1,7 @@
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:consul_prepared_query) do
-  desc <<-'EOD'
+  desc <<-EOD
   Manage a consul prepared query.
   EOD
   ensurable

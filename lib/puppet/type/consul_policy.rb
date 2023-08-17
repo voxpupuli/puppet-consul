@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:consul_policy) do
-  desc <<-'EOD'
+  desc <<-EOD
   Manages a Consul ACL policy
   EOD
   ensurable
