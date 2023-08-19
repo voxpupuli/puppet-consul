@@ -106,7 +106,7 @@ define consul::watch (
     }
   }
 
-  $merged_hash = merge($basic_hash, $type_hash)
+  $merged_hash = $basic_hash + $type_hash
 
   $watch_hash = {
     watches => [$merged_hash.filter |$key, $val| { $val =~ NotUndef }],
