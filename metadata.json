@@ -10,19 +10,19 @@
   "dependencies": [
     {
       "name": "puppet/systemd",
-      "version_requirement": ">= 3.1.0 < 5.0.0"
+      "version_requirement": ">= 3.1.0 < 6.0.0"
     },
     {
       "name": "puppet/archive",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
+      "version_requirement": ">= 5.0.0 < 8.0.0"
     },
     {
       "name": "puppet/hashi_stack",
-      "version_requirement": ">= 2.0.0 < 3.0.0"
+      "version_requirement": ">= 2.0.0 < 4.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 6.6.0 < 9.0.0"
+      "version_requirement": ">= 6.6.0 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
