@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:consul_acl) do
-  desc <<-'EOD'
+  desc <<-EOD
   Manage a consul token and its ACLs.
   EOD
   ensurable

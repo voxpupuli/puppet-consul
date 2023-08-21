@@ -77,6 +77,7 @@ RSpec.shared_examples 'handling_simple_types' do |pretty|
     is_expected.to run.with_params({ 'args' => ['aString', '1', 2] }, pretty).and_return(deprettyfy("{\n    \"args\": [\n        \"aString\",\n        \"1\",\n        \"2\"\n    ]\n}\n", pretty))
   end
 end
+
 describe 'consul::sorted_json', type: :puppet_function do
   let(:test_hash) { { 'z' => 3, 'a' => '1', 'p' => '2', 's' => '-7' } }
 

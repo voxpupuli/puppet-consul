@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:consul_key_value) do
-  desc <<-'EOD'
+  desc <<-EOD
   Manage a consul key value object.
   EOD
   ensurable

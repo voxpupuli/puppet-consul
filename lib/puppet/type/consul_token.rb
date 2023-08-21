@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:consul_token) do
-  desc <<-'EOD'
+  desc <<-EOD
   Manages a v2 Consul token
   EOD
   ensurable
