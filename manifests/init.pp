@@ -254,12 +254,12 @@ class consul (
   }
 
   $policies.each | $name, $policy_config | {
-    $merges_policy_config = merge($global_acl_config, $policy_config)
+    $merges_policy_config = $global_acl_config + $policy_config
     create_resources(consul_policy, { $name => $merges_policy_config })
   }
 
   $tokens.each | $name, $token_config | {
-    $merged_token_config = merge($global_acl_config, $token_config)
+    $merged_token_config = $global_acl_config + $token_config
     create_resources(consul_token, { $name => $merged_token_config })
   }
 }
