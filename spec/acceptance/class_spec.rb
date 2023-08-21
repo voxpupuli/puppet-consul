@@ -34,6 +34,11 @@ describe 'consul class' do
     describe command('consul version') do
       its(:stdout) { is_expected.to match %r{Consul v1.0.5} }
     end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
+    end
   end
 
   context 'default parameters' do
@@ -69,6 +74,11 @@ describe 'consul class' do
 
     describe command('consul version') do
       its(:stdout) { is_expected.to match %r{Consul v1.1.0} }
+    end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
     end
   end
 
@@ -109,6 +119,11 @@ describe 'consul class' do
     describe command('consul version') do
       its(:stdout) { is_expected.to match %r{Consul v1.2.0} }
     end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
+    end
   end
 
   context 'with performance options' do
@@ -147,6 +162,11 @@ describe 'consul class' do
 
     describe command('consul version') do
       its(:stdout) { is_expected.to match %r{Consul v1.2.3} }
+    end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
     end
   end
 
@@ -247,6 +267,11 @@ describe 'consul class' do
         is_expected.to include "Rules:\nservice_prefix \"tst_service\" {\n  policy = \"read\"\n}\n\nkey \"test_key\" {\n  policy = \"write\"\n}\n\nnode_prefix \"\" {\n  policy = \"deny\"\n}"
       end
     end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
+    end
   end
 
   context 'cleanup' do
@@ -313,6 +338,25 @@ describe 'consul class' do
       # Run it twice and test for idempotency
       apply_manifest(pp, catch_failures: true)
       apply_manifest(pp, catch_changes: true)
+    end
+
+    describe file('/etc/systemd/system/consul.conf') do
+      it { is_expected.not_to be_file }
+    end
+
+    describe file('/etc/systemd/system/consul.service.d/foo.conf') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{ConditionFileNotEmpty=/etc/consul.d/config.json}) }
+    end
+
+    describe file('/etc/consul.d/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
+    end
+
+    describe command('systemctl cat consul') do
+      its(:exit_status) { is_expected.to eq 0 }
+      its(:stdout) { is_expected.to match(%r{Type=}) }
     end
 
     describe file('/opt/consul') do
