@@ -296,9 +296,16 @@ describe 'consul class' do
           'server'   => true,
         },
       }
+      # default is Type=forking which has problems within CI
+      # the module defaults to Type=exec, which makes sense
+      systemd::dropin_file { 'type.conf':
+        unit           => 'consul.service',
+        content        => "[Service]\nType=\nType=simple\n",
+        notify_service => true,
+      }
       systemd::dropin_file { 'foo.conf':
         unit           => 'consul.service',
-        content        => "[Unit]\nConditionFileNotEmpty=\nConditionFileNotEmpty=/etc/consul.d/config.json",
+        content        => "[Unit]\nConditionFileNotEmpty=\nConditionFileNotEmpty=/etc/consul.d/config.json\n",
         notify_service => true,
       }
       EOS
