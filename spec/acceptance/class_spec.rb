@@ -4,9 +4,9 @@ describe 'consul class' do
   context 'default parameters' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
-        package { 'unzip': ensure => present } ->
-        class { 'consul':
-          version        => '1.0.5',
+        package { 'unzip': ensure => present }
+        -> class { 'consul':
+          version        => '1.16.0',
           manage_service => true,
           config_hash    => {
               'data_dir'   => '/opt/consul',
@@ -32,7 +32,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.0.5} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.0} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -44,9 +44,9 @@ describe 'consul class' do
   context 'default parameters' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
-        package { 'unzip': ensure => present } ->
-        class { 'consul':
-          version        => '1.1.0',
+        package { 'unzip': ensure => present }
+        -> class { 'consul':
+          version        => '1.16.1',
           manage_service => true,
           config_hash    => {
               'datacenter' => 'east-aws',
@@ -73,7 +73,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.1.0} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -85,9 +85,9 @@ describe 'consul class' do
   context 'with performance options' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
-        package { 'unzip': ensure => present } ->
-        class { 'consul':
-          version        => '1.2.0',
+        package { 'unzip': ensure => present }
+        -> class { 'consul':
+          version        => '1.16.1',
           manage_service => true,
           config_hash    => {
               'datacenter'  => 'east-aws',
@@ -117,51 +117,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.2.0} }
-    end
-
-    describe file('/etc/consul/config.json') do
-      it { is_expected.to be_file }
-      its(:content) { is_expected.to match(%r{server}) }
-    end
-  end
-
-  context 'with performance options' do
-    it 'works with no errors based on the example' do
-      pp = <<-EOS
-        package { 'unzip': ensure => present } ->
-        class { 'consul':
-          version        => '1.2.3',
-          manage_service => true,
-          config_hash    => {
-              'datacenter'  => 'east-aws',
-              'data_dir'    => '/opt/consul',
-              'log_level'   => 'INFO',
-              'node_name'   => 'foobar',
-              'server'      => true,
-              'performance' => {
-                'raft_multiplier' => 2,
-              },
-          }
-        }
-      EOS
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
-    end
-
-    describe file('/opt/consul') do
-      it { is_expected.to be_directory }
-    end
-
-    describe service('consul') do
-      it { is_expected.to be_enabled }
-      it { is_expected.to be_running }
-    end
-
-    describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.2.3} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -175,9 +131,9 @@ describe 'consul class' do
 
     it 'works with no errors based on the example' do
       pp = <<-EOS
-        package { 'unzip': ensure => present } ->
-        class { 'consul':
-          version        => '1.5.0',
+        package { 'unzip': ensure => present }
+        -> class { 'consul':
+          version        => '1.16.1',
           manage_service => true,
           config_hash    => {
               'datacenter'         => 'east-aws',
@@ -251,7 +207,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.5.0} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep Description") do
