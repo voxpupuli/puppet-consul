@@ -25,7 +25,7 @@ class consul::config (
     case $consul::init_style_real {
       'systemd': {
         $type = if ($config_hash['retry_join'] == undef or $config_hash['retry_join'].length < 2) {
-          'exec'
+          'simple'
         } else {
           'notify'
         }
