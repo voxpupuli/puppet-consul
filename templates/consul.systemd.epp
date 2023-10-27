@@ -5,7 +5,7 @@
       Optional[String] $extra_options,
       Boolean $allow_binding_to_root_ports,
       Boolean $enable_beta_ui,
-      Enum['exec', 'notify'] $type,
+      Enum['simple', 'notify'] $type,
 | -%>
 # THIS FILE IS MANAGED BY PUPPET
 [Unit]
