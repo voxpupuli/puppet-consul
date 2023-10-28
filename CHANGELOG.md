@@ -4,6 +4,52 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.0](https://github.com/voxpupuli/puppet-consul/tree/v8.0.0) (2023-10-31)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.3.1...v8.0.0)
+
+**Breaking changes:**
+
+- Update default version 1.16.1-\>1.16.3 [\#643](https://github.com/voxpupuli/puppet-consul/pull/643) ([bastelfreak](https://github.com/bastelfreak))
+- Update default consul version 1.2.3-\>1.16.1 [\#637](https://github.com/voxpupuli/puppet-consul/pull/637) ([bastelfreak](https://github.com/bastelfreak))
+- Drop Puppet 6 support [\#626](https://github.com/voxpupuli/puppet-consul/pull/626) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Add AlmaLinux/Rocky support [\#646](https://github.com/voxpupuli/puppet-consul/pull/646) ([bastelfreak](https://github.com/bastelfreak))
+- Add EL9 support [\#645](https://github.com/voxpupuli/puppet-consul/pull/645) ([bastelfreak](https://github.com/bastelfreak))
+- Add Debian 12 support [\#644](https://github.com/voxpupuli/puppet-consul/pull/644) ([bastelfreak](https://github.com/bastelfreak))
+- Add Puppet 8 support [\#628](https://github.com/voxpupuli/puppet-consul/pull/628) ([bastelfreak](https://github.com/bastelfreak))
+- bump puppet/systemd to \< 5.0.0 [\#622](https://github.com/voxpupuli/puppet-consul/pull/622) ([jhoblitt](https://github.com/jhoblitt))
+- Implement Sensitive support for config [\#614](https://github.com/voxpupuli/puppet-consul/pull/614) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- fixed systemd err "Failed to parse service type, ignoring: exec" [\#641](https://github.com/voxpupuli/puppet-consul/pull/641) ([fb929](https://github.com/fb929))
+- CI: Use Type=exec instead of Type=notify [\#638](https://github.com/voxpupuli/puppet-consul/pull/638) ([bastelfreak](https://github.com/bastelfreak))
+- systemd template: add missing space [\#635](https://github.com/voxpupuli/puppet-consul/pull/635) ([bastelfreak](https://github.com/bastelfreak))
+
+**Closed issues:**
+
+- systemd Failed to parse service type, ignoring: exec [\#640](https://github.com/voxpupuli/puppet-consul/issues/640)
+- Adding ACLS / Policies failes with unable to get local issuer certificate -\> Puppet 6 / LetsEncrypt [\#623](https://github.com/voxpupuli/puppet-consul/issues/623)
+
+**Merged pull requests:**
+
+- enhance acceptance tests [\#639](https://github.com/voxpupuli/puppet-consul/pull/639) ([bastelfreak](https://github.com/bastelfreak))
+- Replace legacy merge\(\) with native puppet code [\#636](https://github.com/voxpupuli/puppet-consul/pull/636) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/hashi\_stack: Allow 3.x [\#634](https://github.com/voxpupuli/puppet-consul/pull/634) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/archive: Allow 7.x [\#633](https://github.com/voxpupuli/puppet-consul/pull/633) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: Allow 9.x [\#632](https://github.com/voxpupuli/puppet-consul/pull/632) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/systemd: Allow 5.x [\#631](https://github.com/voxpupuli/puppet-consul/pull/631) ([bastelfreak](https://github.com/bastelfreak))
+- Update metadata.json [\#624](https://github.com/voxpupuli/puppet-consul/pull/624) ([kengelhardt-godaddy](https://github.com/kengelhardt-godaddy))
+- correct original author in README.md [\#620](https://github.com/voxpupuli/puppet-consul/pull/620) ([bastelfreak](https://github.com/bastelfreak))
+- README.md: fix wrong camptocamp references [\#619](https://github.com/voxpupuli/puppet-consul/pull/619) ([bastelfreak](https://github.com/bastelfreak))
+- puppet-lint: enforce parameter documentation [\#618](https://github.com/voxpupuli/puppet-consul/pull/618) ([bastelfreak](https://github.com/bastelfreak))
+- Convert classes to puppet-strings [\#617](https://github.com/voxpupuli/puppet-consul/pull/617) ([bastelfreak](https://github.com/bastelfreak))
+- mark internal classes as private [\#616](https://github.com/voxpupuli/puppet-consul/pull/616) ([bastelfreak](https://github.com/bastelfreak))
+- systemd service: Switch erb to epp template [\#615](https://github.com/voxpupuli/puppet-consul/pull/615) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v7.3.1](https://github.com/voxpupuli/puppet-consul/tree/v7.3.1) (2022-10-26)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v7.3.0...v7.3.1)
