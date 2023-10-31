@@ -137,7 +137,7 @@ class consul (
   Enum['stopped', 'running']            $service_ensure              = 'running',
   Hash                                  $services                    = {},
   String[1]                             $user                        = $consul::params::user,
-  String[1]                             $version                     = '1.16.1',
+  String[1]                             $version                     = '1.16.3',
   Hash                                  $watches                     = {},
   Optional[String[1]]                   $shell                       = $consul::params::shell,
   Boolean                               $enable_beta_ui              = false,
