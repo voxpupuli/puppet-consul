@@ -46,7 +46,7 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.1',
+          version        => '1.16.3',
           manage_service => true,
           config_hash    => {
               'datacenter' => 'east-aws',
@@ -73,7 +73,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.3} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -87,7 +87,7 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.1',
+          version        => '1.16.3',
           manage_service => true,
           config_hash    => {
               'datacenter'  => 'east-aws',
@@ -117,7 +117,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.3} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -133,7 +133,7 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.1',
+          version        => '1.16.3',
           manage_service => true,
           config_hash    => {
               'datacenter'         => 'east-aws',
@@ -207,7 +207,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.1} }
+      its(:stdout) { is_expected.to match %r{Consul v1.16.3} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep Description") do
