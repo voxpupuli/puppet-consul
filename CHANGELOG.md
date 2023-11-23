@@ -525,7 +525,7 @@ These should not affect the functionality of the module.
 
 - Execution of 'unzip -o /var/lib/consul/archives/consul-0.7.4.zip' returned 1:  [\#332](https://github.com/voxpupuli/puppet-consul/issues/332)
 - please specify json module version minimum [\#328](https://github.com/voxpupuli/puppet-consul/issues/328)
-- Could not look up qualified variable '$::consul\_version' [\#327](https://github.com/voxpupuli/puppet-consul/issues/327)
+- Could not look up qualified variable '$consul\_version' [\#327](https://github.com/voxpupuli/puppet-consul/issues/327)
 
 **Merged pull requests:**
 
@@ -549,7 +549,7 @@ These should not affect the functionality of the module.
 - Fix idempotent issue within key\_value runs. [\#323](https://github.com/voxpupuli/puppet-consul/pull/323) ([jrasell](https://github.com/jrasell))
 - Reduce travis matrix [\#322](https://github.com/voxpupuli/puppet-consul/pull/322) ([solarkennedy](https://github.com/solarkennedy))
 - Bump default consul version. Improve FreeBSD support [\#319](https://github.com/voxpupuli/puppet-consul/pull/319) ([olevole](https://github.com/olevole))
-- fix ::consul\_version fact lookup during installation [\#316](https://github.com/voxpupuli/puppet-consul/pull/316) ([wstiern](https://github.com/wstiern))
+- fix consul\_version fact lookup during installation [\#316](https://github.com/voxpupuli/puppet-consul/pull/316) ([wstiern](https://github.com/wstiern))
 
 ## [v2.1.0](https://github.com/voxpupuli/puppet-consul/tree/v2.1.0) (2017-01-12)
 
@@ -580,13 +580,13 @@ These should not affect the functionality of the module.
 - cant use latest consul version as parameter [\#305](https://github.com/voxpupuli/puppet-consul/issues/305)
 - EC2 Join Support [\#302](https://github.com/voxpupuli/puppet-consul/issues/302)
 - Consul user is created with login shell [\#293](https://github.com/voxpupuli/puppet-consul/issues/293)
-- Validate and document all params that could be passed to ::consul [\#170](https://github.com/voxpupuli/puppet-consul/issues/170)
+- Validate and document all params that could be passed to consul [\#170](https://github.com/voxpupuli/puppet-consul/issues/170)
 
 **Merged pull requests:**
 
 - Add support of custom log\_file in sles and upstart init scripts [\#306](https://github.com/voxpupuli/puppet-consul/pull/306) ([AlexLov](https://github.com/AlexLov))
 - More Systemd unit file improvements [\#304](https://github.com/voxpupuli/puppet-consul/pull/304) ([amiryal](https://github.com/amiryal))
-- Check $::consul\_version more correctly [\#303](https://github.com/voxpupuli/puppet-consul/pull/303) ([logic](https://github.com/logic))
+- Check $consul\_version more correctly [\#303](https://github.com/voxpupuli/puppet-consul/pull/303) ([logic](https://github.com/logic))
 - Cleanup Systemd unit file [\#301](https://github.com/voxpupuli/puppet-consul/pull/301) ([amiryal](https://github.com/amiryal))
 - Fixing init service start/stop messages and locks [\#300](https://github.com/voxpupuli/puppet-consul/pull/300) ([mrwulf](https://github.com/mrwulf))
 - Initial support for FreeBSD platform [\#299](https://github.com/voxpupuli/puppet-consul/pull/299) ([olevole](https://github.com/olevole))
