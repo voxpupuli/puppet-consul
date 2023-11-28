@@ -15,6 +15,7 @@
 # @param service_id An optional service_id to match this check against
 # @param status The default state of the check when it is registered against a consul agent. Should be either "critical" or "passing"
 # @param tcp The IP/hostname and port for the service healthcheck. Should be in 'hostname:port' format.
+# @param grpc GRPC endpoint for the service healthcheck
 # @param timeout A timeout value for HTTP request only
 # @param token ACL token for interacting with the catalog (must be 'management' type)
 # @param ttl Value in seconds before the http endpoint considers a failing healthcheck to be "HARD" down.
@@ -32,6 +33,7 @@ define consul::check (
   $service_id               = undef,
   $status                   = undef,
   $tcp                      = undef,
+  $grpc                     = undef,
   $timeout                  = undef,
   $token                    = undef,
   $ttl                      = undef,
@@ -48,6 +50,7 @@ define consul::check (
     'script'                   => $script,
     'args'                     => $args,
     'tcp'                      => $tcp,
+    'grpc'                     => $grpc,
     'interval'                 => $interval,
     'timeout'                  => $timeout,
     'service_id'               => $service_id,

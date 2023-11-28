@@ -240,6 +240,41 @@ describe 'consul::check' do
         }
       end
 
+      describe 'with grpc' do
+        let(:params) do
+          {
+            'grpc' => 'localhost:80',
+            'interval' => '30s',
+          }
+        end
+
+        it {
+          is_expected.to contain_file('/etc/consul/check_my_check.json'). \
+            with_content(%r{"id" *: *"my_check"}). \
+            with_content(%r{"name" *: *"my_check"}). \
+            with_content(%r{"check" *: *\{}). \
+            with_content(%r{"grpc" *: *"localhost:80"})
+        }
+      end
+
+      describe 'with grpc with interval' do
+        let(:params) do
+          {
+            'grpc' => 'localhost:80',
+            'interval' => '30s',
+          }
+        end
+
+        it {
+          is_expected.to contain_file('/etc/consul/check_my_check.json'). \
+            with_content(%r{"id" *: *"my_check"}). \
+            with_content(%r{"name" *: *"my_check"}). \
+            with_content(%r{"check" *: *\{}). \
+            with_content(%r{"grpc" *: *"localhost:80"}). \
+            with_content(%r{"interval" *: *"30s"})
+        }
+      end
+
       describe 'with script and service_id' do
         let(:params) do
           {
@@ -289,7 +324,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, and interval must not be defined for ttl checks})
+          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, grpc and interval must not be defined for ttl checks})
         }
       end
 
@@ -303,7 +338,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, and interval must not be defined for ttl checks})
+          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, grpc and interval must not be defined for ttl checks})
         }
       end
 
@@ -317,7 +352,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, and interval must not be defined for ttl checks})
+          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, grpc and interval must not be defined for ttl checks})
         }
       end
 
@@ -331,7 +366,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, and interval must not be defined for ttl checks})
+          is_expected.to raise_error(Puppet::Error, %r{script, http, tcp, grpc and interval must not be defined for ttl checks})
         }
       end
 
@@ -345,7 +380,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{script and tcp must not be defined for http checks})
+          is_expected.to raise_error(Puppet::Error, %r{script, tcp and grpc must not be defined for http checks})
         }
       end
 
@@ -357,7 +392,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, and script checks})
+          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, grpc and script checks})
         }
       end
 
@@ -369,7 +404,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, and script checks})
+          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, grpc and script checks})
         }
       end
 
@@ -381,7 +416,7 @@ describe 'consul::check' do
         end
 
         it {
-          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, and script checks})
+          is_expected.to raise_error(Puppet::Error, %r{interval must be defined for tcp, http, grpc and script checks})
         }
       end
 
