@@ -615,6 +615,7 @@ The following parameters are available in the `consul::check` defined type:
 * [`service_id`](#-consul--check--service_id)
 * [`status`](#-consul--check--status)
 * [`tcp`](#-consul--check--tcp)
+* [`grpc`](#-consul--check--grpc)
 * [`timeout`](#-consul--check--timeout)
 * [`token`](#-consul--check--token)
 * [`ttl`](#-consul--check--ttl)
@@ -700,6 +701,14 @@ Default value: `undef`
 Data type: `Any`
 
 The IP/hostname and port for the service healthcheck. Should be in 'hostname:port' format.
+
+Default value: `undef`
+
+##### <a name="-consul--check--grpc"></a>`grpc`
+
+Data type: `Any`
+
+GRPC endpoint for the service healthcheck
 
 Default value: `undef`
 
