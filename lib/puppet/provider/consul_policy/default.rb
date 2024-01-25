@@ -43,7 +43,7 @@ Puppet::Type.type(:consul_policy).provide(
     encoded = []
 
     rules.each do |rule|
-      if %w[acl operator keyring].include?(rule['resource'])
+      if %w[acl operator keyring mesh peering].include?(rule['resource'])
         encoded.push("#{rule['resource']} = \"#{rule['disposition']}\"")
       else
         encoded.push("#{rule['resource']} \"#{rule['segment']}\" {\n  policy = \"#{rule['disposition']}\"\n}")
