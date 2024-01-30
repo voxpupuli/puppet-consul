@@ -38,9 +38,13 @@ Puppet::Type.type(:consul_key_value).provide(
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
-    consul_url = "#{protocol}://#{hostname}:#{port}/v1/kv/?dc=#{datacenter}&recurse&token=#{acl_api_token}"
+    consul_url = "#{protocol}://#{hostname}:#{port}/v1/kv/?dc=#{datacenter}&recurse"
 
     uri = URI(consul_url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    req = Net::HTTP::Get.new(uri.request_uri, http_headers)
     res = nil
 
     # retry Consul API query for ACLs, in case Consul has just started
@@ -49,7 +53,7 @@ Puppet::Type.type(:consul_key_value).provide(
         Puppet.debug("retrying Consul API query in #{i} seconds")
         sleep i
       end
-      res = Net::HTTP.get_response(uri)
+      res = http.request(req)
       break if res.code == '200'
     end
 
@@ -83,24 +87,25 @@ Puppet::Type.type(:consul_key_value).provide(
   end
 
   def get_path(name)
-    uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}&token=#{@resource[:acl_api_token]}")
+    uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
-    [uri.request_uri, http]
+    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    [uri.request_uri, http, http_headers]
   end
 
   def create_or_update_key_value(name, value, flags)
-    path, http = get_path(name)
-    req = Net::HTTP::Put.new(path + "&flags=#{flags}")
+    path, http, http_headers = get_path(name)
+    req = Net::HTTP::Put.new(path + "&flags=#{flags}", http_headers)
     req.body = value
     res = http.request(req)
     raise(Puppet::Error, "Session #{name} create/update: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end
 
   def delete_key_value(name)
-    path, http = get_path(name)
-    req = Net::HTTP::Delete.new(path)
+    path, http, http_headers = get_path(name)
+    req = Net::HTTP::Delete.new(path, http_headers)
     res = http.request(req)
     raise(Puppet::Error, "Session #{name} delete: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
   end

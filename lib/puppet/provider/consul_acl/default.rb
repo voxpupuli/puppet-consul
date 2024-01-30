@@ -41,8 +41,9 @@ Puppet::Type.type(:consul_acl).provide(
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
 
-    path = uri.request_uri + "/list?token=#{acl_api_token}"
-    req = Net::HTTP::Get.new(path)
+    path = uri.request_uri + "/list"
+    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    req = Net::HTTP::Get.new(path, http_headers)
     res = nil
     res_code = nil
 
@@ -58,7 +59,7 @@ Puppet::Type.type(:consul_acl).provide(
         res_code = res.code
         break if res_code == '200'
       rescue Errno::ECONNREFUSED => e
-        Puppet.debug("#{uri}/list?token=<redacted> #{e.class} #{e.message}")
+        Puppet.debug("#{uri}/list #{e.class} #{e.message}")
         res_code = e.class.to_s
       end
     end
@@ -94,8 +95,9 @@ Puppet::Type.type(:consul_acl).provide(
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
-    path = uri.request_uri + "/#{method}?token=#{acl_api_token}"
-    req = Net::HTTP::Put.new(path)
+    path = uri.request_uri + "/#{method}"
+    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    req = Net::HTTP::Put.new(path, http_headers)
     req.body = body.to_json if body
     res = http.request(req)
     raise(Puppet::Error, "Session #{name} create: invalid return code #{res.code} uri: #{path} body: #{req.body}") if res.code != '200'
