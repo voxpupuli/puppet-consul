@@ -41,8 +41,8 @@ Puppet::Type.type(:consul_acl).provide(
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
 
-    path = uri.request_uri + "/list"
-    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    path = "#{uri.request_uri}/list"
+    http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     req = Net::HTTP::Get.new(path, http_headers)
     res = nil
     res_code = nil
@@ -96,7 +96,7 @@ Puppet::Type.type(:consul_acl).provide(
     http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}"
-    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     req = Net::HTTP::Put.new(path, http_headers)
     req.body = body.to_json if body
     res = http.request(req)

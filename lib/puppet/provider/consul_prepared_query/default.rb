@@ -38,7 +38,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/query")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
-    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     req = Net::HTTP::Get.new(uri.request_uri, http_headers)
     res = nil
 
@@ -81,7 +81,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.instance_of? URI::HTTPS
     acl_api_token = @resource[:acl_api_token]
-    http_headers = { 'X-Consul-Token' => "#{acl_api_token}" }
+    http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     [uri.request_uri, http, http_headers]
   end
 
