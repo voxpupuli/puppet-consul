@@ -1110,7 +1110,7 @@ The following parameters are available in the `consul_acl` type.
 
 Token for accessing the ACL API
 
-Default value: `''`
+Default value: `anonymous`
 
 ##### <a name="-consul_acl--api_tries"></a>`api_tries`
 
@@ -1179,7 +1179,7 @@ The following parameters are available in the `consul_key_value` type.
 
 Token for accessing the ACL API
 
-Default value: `''`
+Default value: `anonymous`
 
 ##### <a name="-consul_key_value--api_tries"></a>`api_tries`
 
@@ -1373,7 +1373,7 @@ The following parameters are available in the `consul_prepared_query` type.
 
 Token for accessing the ACL API
 
-Default value: `''`
+Default value: `anonymous`
 
 ##### <a name="-consul_prepared_query--api_tries"></a>`api_tries`
 
