@@ -328,9 +328,9 @@ Default value: `'zip'`
 
 ##### <a name="-consul--download_url"></a>`download_url`
 
-Data type: `Optional[Stdlib::HTTPUrl]`
+Data type: `Optional[Stdlib::Filesource]`
 
-Fully qualified url to the location of the archive file containing the consul binary.
+Fully qualified url, puppet uri or absolute path to the location of the archive file containing the consul binary.
 
 Default value: `undef`
 
