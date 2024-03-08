@@ -22,7 +22,7 @@ Puppet::Type.newtype(:consul_acl) do
     validate do |value|
       raise ArgumentError, 'ACL API token must be a string' unless value.is_a?(String)
     end
-    defaultto ''
+    defaultto 'anonymous'
   end
 
   newproperty(:rules) do
