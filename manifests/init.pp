@@ -26,7 +26,7 @@
 # @param data_dir_mode Use this to set the data_dir directory mode for consul.
 # @param docker_image Only valid when the install_method == docker. Defaults to `consul`.
 # @param download_extension The extension of the archive file containing the consul binary to download.
-# @param download_url Fully qualified url to the location of the archive file containing the consul binary.
+# @param download_url Fully qualified url, puppet uri or absolute path to the location of the archive file containing the consul binary.
 # @param download_url_base Base url to the location of the archive file containing the consul binary.
 # @param extra_groups Extra groups to add the consul system user to.
 # @param extra_options Extra arguments to be passed to the consul agent
@@ -110,7 +110,7 @@ class consul (
   String[1]                             $data_dir_mode               = $consul::params::data_dir_mode,
   String[1]                             $docker_image                = 'consul',
   String[1]                             $download_extension          = 'zip',
-  Optional[Stdlib::HTTPUrl]             $download_url                = undef,
+  Optional[Stdlib::Filesource]          $download_url                = undef,
   String[1]                             $download_url_base           = 'https://releases.hashicorp.com/consul/',
   Array                                 $extra_groups                = [],
   Optional[String[1]]                   $extra_options               = undef,
