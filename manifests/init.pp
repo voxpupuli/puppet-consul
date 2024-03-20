@@ -42,7 +42,7 @@
 #                  `none`    - disable install.
 # @param join_wan The wan to join on service start (e.g. 'wan.foo.com'). Defaults to undef (i.e. won't join a wan).
 # @param manage_group Whether to create/manage the group that should own the consul configuration files.
-# @param manage_repo Configure the upstream HashiCorp repository. Only relevant when $nomad::install_method = 'package'.
+# @param manage_repo Configure the upstream HashiCorp repository. Only relevant when $consul::install_method = 'package'.
 # @param manage_service Whether to manage the consul service.
 # @param manage_user Whether to create/manage the user that should own consul's configuration files.
 # @param manage_user_home_location
