@@ -407,7 +407,7 @@ Default value: `$consul::params::manage_group`
 
 Data type: `Boolean`
 
-Configure the upstream HashiCorp repository. Only relevant when $nomad::install_method = 'package'.
+Configure the upstream HashiCorp repository. Only relevant when $consul::install_method = 'package'.
 
 Default value: `$consul::params::manage_repo`
 
