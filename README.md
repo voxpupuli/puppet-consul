@@ -178,7 +178,7 @@ configure a health check to monitor its availability.
 consul::service { 'redis':
   checks  => [
     {
-      script   => '/usr/local/bin/check_redis.py',
+      args     => ['/usr/local/bin/check_redis.py'],
       interval => '10s'
     },
   ],
@@ -241,7 +241,7 @@ it easy to declare in hiera.
 ```puppet
 consul::check { 'true_check':
   interval => '30s',
-  script   => '/bin/true',
+  args     => ['/bin/true'],
 }
 ```
 
