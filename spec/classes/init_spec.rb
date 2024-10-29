@@ -1,28 +1,13 @@
 require 'spec_helper'
 
 describe 'consul' do
-  on_supported_os.each do |os, facts|
-    next unless facts[:kernel] == 'Linux'
+  on_supported_os.each do |os, os_facts|
+    next unless os_facts[:kernel] == 'Linux'
 
     puts "on #{os}"
     context "on #{os}" do
-      provider = case facts[:os]['family']
-                 when 'Archlinux'
-                   { service_provider: 'systemd' }
-                 when 'Debian'
-                   { service_provider: 'systemd' }
-                 when 'RedHat'
-                   { service_provider: 'systemd' }
-                 when 'windows'
-                   { service_provider: 'unmanaged' }
-                 when 'FreeBSD'
-                   { service_provider: 'freebsd' }
-                 else
-                   { service_provider: 'systemd' }
-                 end
-      facts = facts.merge(provider)
       let(:facts) do
-        facts
+        os_facts
       end
 
       it { is_expected.to compile.with_all_deps }
@@ -82,7 +67,7 @@ describe 'consul' do
           }
         end
 
-        case facts[:os]['family']
+        case os_facts[:os]['family']
         when 'Debian'
           it { is_expected.not_to contain_apt__source('HashiCorp') }
         when 'RedHat'
@@ -98,7 +83,7 @@ describe 'consul' do
           }
         end
 
-        case facts[:os]['family']
+        case os_facts[:os]['family']
         when 'Debian'
           it { is_expected.not_to contain_apt__source('HashiCorp') }
         when 'RedHat'
@@ -107,7 +92,7 @@ describe 'consul' do
       end
 
       # hashicorp repo is not supported on Arch Linux/SLES
-      context 'When asked to manage the repo and to install as package', unless: %w[Archlinux SLES Suse].include?(facts[:os]['family']) do
+      context 'When asked to manage the repo and to install as package', unless: %w[Archlinux SLES Suse].include?(os_facts[:os]['family']) do
         let(:params) do
           {
             install_method: 'package',
@@ -115,7 +100,7 @@ describe 'consul' do
           }
         end
 
-        case facts[:os]['family']
+        case os_facts[:os]['family']
         when 'Debian'
           it { is_expected.to contain_apt__source('HashiCorp') }
         when 'RedHat'
@@ -181,9 +166,9 @@ describe 'consul' do
 
       context 'When installing by archive via URL and current version is already installed' do
         let(:facts) do
-          facts.merge({
-                        consul_version: '1.16.3'
-                      })
+          os_facts.merge({
+                           consul_version: '1.16.3'
+                         })
         end
 
         it { is_expected.to contain_archive('/opt/consul/archives/consul-1.16.3.zip').with(source: 'https://releases.hashicorp.com/consul/1.16.3/consul_1.16.3_linux_amd64.zip') }
@@ -606,7 +591,7 @@ describe 'consul' do
         it { is_expected.not_to contain_file('/etc/systemd/system/consul.service') }
       end
 
-      case facts[:os]['family']
+      case os_facts[:os]['family']
       when 'RedHat', 'Archlinux', 'Debian'
         context 'On a modern OS' do
           it { is_expected.to contain_class('consul').with_init_style('systemd') }
