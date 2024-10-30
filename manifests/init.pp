@@ -75,6 +75,7 @@
 # @param log_file where should the log file be located
 # @param comment the comment for the consul user, will be added to /etc/passwd
 # @param uid the ID for the consul user
+# @param gid the ID for the consul group
 #
 # @example simple consul setup
 #    class { 'consul':
@@ -146,6 +147,7 @@ class consul (
   Boolean                               $allow_binding_to_root_ports = false,
   Optional[String[1]]                   $comment                     = undef,
   Optional[Integer[1]]                  $uid                         = undef,
+  Optional[Integer[1]]                  $gid                         = undef,
 ) inherits consul::params {
   $real_download_url = pick(
     $download_url,

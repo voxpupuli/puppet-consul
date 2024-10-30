@@ -119,6 +119,7 @@ class consul::install {
     group { $consul::group_real:
       ensure => 'present',
       system => true,
+      gid    => $consul::gid,
     }
   }
 }

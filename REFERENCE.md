@@ -127,6 +127,7 @@ The following parameters are available in the `consul` class:
 * [`log_file`](#-consul--log_file)
 * [`comment`](#-consul--comment)
 * [`uid`](#-consul--uid)
+* [`gid`](#-consul--gid)
 
 ##### <a name="-consul--acls"></a>`acls`
 
@@ -607,6 +608,14 @@ Default value: `undef`
 Data type: `Optional[Integer[1]]`
 
 the ID for the consul user
+
+Default value: `undef`
+
+##### <a name="-consul--gid"></a>`gid`
+
+Data type: `Optional[Integer[1]]`
+
+the ID for the consul group
 
 Default value: `undef`
 
