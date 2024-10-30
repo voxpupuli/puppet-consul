@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.0.0](https://github.com/voxpupuli/puppet-consul/tree/v9.0.0) (2024-10-30)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v8.1.0...v9.0.0)
+
+**Breaking changes:**
+
+- Drop EoL RedHat 7 support [\#673](https://github.com/voxpupuli/puppet-consul/pull/673) ([bastelfreak](https://github.com/bastelfreak))
+- Drop EoL Debian 10 support [\#671](https://github.com/voxpupuli/puppet-consul/pull/671) ([bastelfreak](https://github.com/bastelfreak))
+- Drop EoL Scientific linux support [\#670](https://github.com/voxpupuli/puppet-consul/pull/670) ([bastelfreak](https://github.com/bastelfreak))
+- Drop EoL Ubuntu 18.04 support [\#665](https://github.com/voxpupuli/puppet-consul/pull/665) ([bastelfreak](https://github.com/bastelfreak))
+- Drop EoL CentOS 7/8 & OracleLinux 7 [\#664](https://github.com/voxpupuli/puppet-consul/pull/664) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Update default version from 1.16.3-\>1.20.0 [\#681](https://github.com/voxpupuli/puppet-consul/pull/681) ([bastelfreak](https://github.com/bastelfreak))
+- Add missing datatypes to all parameters [\#679](https://github.com/voxpupuli/puppet-consul/pull/679) ([bastelfreak](https://github.com/bastelfreak))
+- consul::windows\_service: Add datatypes [\#678](https://github.com/voxpupuli/puppet-consul/pull/678) ([bastelfreak](https://github.com/bastelfreak))
+- Add support for managing group ID [\#677](https://github.com/voxpupuli/puppet-consul/pull/677) ([bastelfreak](https://github.com/bastelfreak))
+- Add support for managing user ID and comment [\#676](https://github.com/voxpupuli/puppet-consul/pull/676) ([bastelfreak](https://github.com/bastelfreak))
+- manage\_repo: Move value from params.pp-\>init.pp [\#675](https://github.com/voxpupuli/puppet-consul/pull/675) ([bastelfreak](https://github.com/bastelfreak))
+- Add Ubuntu 24.04 support [\#674](https://github.com/voxpupuli/puppet-consul/pull/674) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- update puppet-systemd upper bound to 8.0.0 [\#661](https://github.com/voxpupuli/puppet-consul/pull/661) ([TheMeier](https://github.com/TheMeier))
+- `init.pp`: Fix `manage_repo` param docstring, replace nomad with consul [\#658](https://github.com/voxpupuli/puppet-consul/pull/658) ([lbdemv](https://github.com/lbdemv))
+
 ## [v8.1.0](https://github.com/voxpupuli/puppet-consul/tree/v8.1.0) (2024-03-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v8.0.0...v8.1.0)
@@ -712,7 +739,7 @@ These should not affect the functionality of the module.
 - EL \< 7 uses init service provider, not sysv.  [\#241](https://github.com/voxpupuli/puppet-consul/pull/241) ([fatmcgav](https://github.com/fatmcgav))
 - Update reload\_service.pp [\#235](https://github.com/voxpupuli/puppet-consul/pull/235) ([nvtkaszpir](https://github.com/nvtkaszpir))
 - add support for arm \(Raspberry pi's ARM here\) architecture [\#234](https://github.com/voxpupuli/puppet-consul/pull/234) ([gibre](https://github.com/gibre))
-- Added custom init style "custom" [\#233](https://github.com/voxpupuli/puppet-consul/pull/233) ([sy-bee](https://github.com/sy-bee))
+- Added custom init style "custom" [\#233](https://github.com/voxpupuli/puppet-consul/pull/233) ([sy-be](https://github.com/sy-be))
 - lazily return nil when consul client isn't installed [\#227](https://github.com/voxpupuli/puppet-consul/pull/227) ([roobert](https://github.com/roobert))
 - add NOFILE limit to systemd template [\#226](https://github.com/voxpupuli/puppet-consul/pull/226) ([eliranbz](https://github.com/eliranbz))
 - Debian init script should depend on networking, resolution and syslog [\#222](https://github.com/voxpupuli/puppet-consul/pull/222) ([chrisboulton](https://github.com/chrisboulton))
