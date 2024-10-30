@@ -7,8 +7,8 @@
 # @api private
 #
 class consul::windows_service (
-  $sys32 = 'c:\\windows\\system32',
-  $service_name = 'Consul'
+  Stdlib::Windowspath $sys32 = 'c:\\windows\\system32',
+  String[1] $service_name = 'Consul'
 ) {
   assert_private()
   $executable_file = "${consul::bin_dir}\\${consul::binary_name}"
