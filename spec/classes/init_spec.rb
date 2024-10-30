@@ -256,15 +256,17 @@ describe 'consul' do
         it { is_expected.to contain_user('consul').with(ensure: :present).without_home }
       end
 
-      context 'with uid and comment' do
+      context 'with uid and comment and gid' do
         let :params do
           {
             uid: 2,
             comment: 'this is a comment',
+            gid: 3,
           }
         end
 
         it { is_expected.to contain_user('consul').with(ensure: :present).with_uid(2).with_comment('this is a comment') }
+        it { is_expected.to contain_group('consul').with(ensure: :present).with_gid(3) }
       end
 
       context 'When data_dir is provided' do
