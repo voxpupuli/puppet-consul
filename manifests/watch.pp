@@ -19,19 +19,19 @@
 # @param type Type of data to watch. (Like key, service, services, nodes)
 #
 define consul::watch (
-  $args                          = undef,
-  $datacenter                    = undef,
-  $ensure                        = present,
-  $event_name                    = undef,
-  $handler                       = undef,
-  $key                           = undef,
-  $keyprefix                     = undef,
-  Optional[Boolean] $passingonly = undef,
-  $service                       = undef,
-  $service_tag                   = undef,
-  $state                         = undef,
-  $token                         = undef,
-  $type                          = undef,
+  Optional $args                    = undef,
+  Optional $datacenter              = undef,
+  Enum['present', 'absent'] $ensure = present,
+  Optional $event_name              = undef,
+  Optional $handler                 = undef,
+  Optional $key                     = undef,
+  Optional $keyprefix               = undef,
+  Optional[Boolean] $passingonly    = undef,
+  Optional $service                 = undef,
+  Optional $service_tag             = undef,
+  Optional $state                   = undef,
+  Optional $token                   = undef,
+  Optional $type                    = undef,
 ) {
   include consul
   $id = $title

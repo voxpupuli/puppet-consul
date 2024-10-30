@@ -2,4 +2,3 @@
 # https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
 --fail-on-warnings
---no-parameter_types-check

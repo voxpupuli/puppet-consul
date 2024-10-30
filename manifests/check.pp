@@ -23,22 +23,22 @@
 # @param failures_before_critical Value may be set to become check critical only after a specified number of consecutive checks return critical
 #
 define consul::check (
-  $ensure                   = present,
-  $http                     = undef,
-  $id                       = $title,
-  $interval                 = undef,
-  $notes                    = undef,
-  $script                   = undef,
-  $args                     = undef,
-  $service_id               = undef,
-  $status                   = undef,
-  $tcp                      = undef,
-  $grpc                     = undef,
-  $timeout                  = undef,
-  $token                    = undef,
-  $ttl                      = undef,
-  $success_before_passing   = undef,
-  $failures_before_critical = undef,
+  Enum['absent', 'present'] $ensure  = present,
+  Optional $http                     = undef,
+  String[1] $id                      = $title,
+  Optional $interval                 = undef,
+  Optional $notes                    = undef,
+  Optional $script                   = undef,
+  Optional $args                     = undef,
+  Optional $service_id               = undef,
+  Optional $status                   = undef,
+  Optional $tcp                      = undef,
+  Optional $grpc                     = undef,
+  Optional $timeout                  = undef,
+  Optional $token                    = undef,
+  Optional $ttl                      = undef,
+  Optional $success_before_passing   = undef,
+  Optional $failures_before_critical = undef,
 ) {
   include consul
 

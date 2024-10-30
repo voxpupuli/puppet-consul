@@ -642,7 +642,7 @@ The following parameters are available in the `consul::check` defined type:
 
 ##### <a name="-consul--check--ensure"></a>`ensure`
 
-Data type: `Any`
+Data type: `Enum['absent', 'present']`
 
 Define availability of check. Use 'absent' to remove existing checks
 
@@ -650,7 +650,7 @@ Default value: `present`
 
 ##### <a name="-consul--check--http"></a>`http`
 
-Data type: `Any`
+Data type: `Optional`
 
 HTTP endpoint for the service healthcheck
 
@@ -658,7 +658,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--id"></a>`id`
 
-Data type: `Any`
+Data type: `String[1]`
 
 The id for the check (defaults to $title)
 
@@ -666,7 +666,7 @@ Default value: `$title`
 
 ##### <a name="-consul--check--interval"></a>`interval`
 
-Data type: `Any`
+Data type: `Optional`
 
 Value in seconds for the interval between runs of the check
 
@@ -674,7 +674,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--notes"></a>`notes`
 
-Data type: `Any`
+Data type: `Optional`
 
 Human readable description of the check
 
@@ -682,7 +682,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--script"></a>`script`
 
-Data type: `Any`
+Data type: `Optional`
 
 Full path to the location of the healthcheck script. Must be nagios
 compliant with regards to the return codes. This parameter is deprecated
@@ -692,7 +692,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--args"></a>`args`
 
-Data type: `Any`
+Data type: `Optional`
 
 Arguments to be `exec`ed for the healthcheck script.
 
@@ -700,7 +700,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--service_id"></a>`service_id`
 
-Data type: `Any`
+Data type: `Optional`
 
 An optional service_id to match this check against
 
@@ -708,7 +708,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--status"></a>`status`
 
-Data type: `Any`
+Data type: `Optional`
 
 The default state of the check when it is registered against a consul agent. Should be either "critical" or "passing"
 
@@ -716,7 +716,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--tcp"></a>`tcp`
 
-Data type: `Any`
+Data type: `Optional`
 
 The IP/hostname and port for the service healthcheck. Should be in 'hostname:port' format.
 
@@ -724,7 +724,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--grpc"></a>`grpc`
 
-Data type: `Any`
+Data type: `Optional`
 
 GRPC endpoint for the service healthcheck
 
@@ -732,7 +732,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--timeout"></a>`timeout`
 
-Data type: `Any`
+Data type: `Optional`
 
 A timeout value for HTTP request only
 
@@ -740,7 +740,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--token"></a>`token`
 
-Data type: `Any`
+Data type: `Optional`
 
 ACL token for interacting with the catalog (must be 'management' type)
 
@@ -748,7 +748,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--ttl"></a>`ttl`
 
-Data type: `Any`
+Data type: `Optional`
 
 Value in seconds before the http endpoint considers a failing healthcheck to be "HARD" down.
 
@@ -756,7 +756,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--success_before_passing"></a>`success_before_passing`
 
-Data type: `Any`
+Data type: `Optional`
 
 Value may be set to become check passing only after a specified number of consecutive checks return passing
 
@@ -764,7 +764,7 @@ Default value: `undef`
 
 ##### <a name="-consul--check--failures_before_critical"></a>`failures_before_critical`
 
-Data type: `Any`
+Data type: `Optional`
 
 Value may be set to become check critical only after a specified number of consecutive checks return critical
 
@@ -969,7 +969,7 @@ The following parameters are available in the `consul::watch` defined type:
 
 ##### <a name="-consul--watch--datacenter"></a>`datacenter`
 
-Data type: `Any`
+Data type: `Optional`
 
 String overriding consul's default datacenter.
 
@@ -977,7 +977,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--ensure"></a>`ensure`
 
-Data type: `Any`
+Data type: `Enum['present', 'absent']`
 
 Define availability of watch. Use 'absent' to remove existing watches.
 
@@ -985,7 +985,7 @@ Default value: `present`
 
 ##### <a name="-consul--watch--event_name"></a>`event_name`
 
-Data type: `Any`
+Data type: `Optional`
 
 Name of an event to watch for.
 
@@ -993,7 +993,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--handler"></a>`handler`
 
-Data type: `Any`
+Data type: `Optional`
 
 Full path to the script that will be excuted. This parameter is deprecated in Consul 1.0.0
 
@@ -1001,7 +1001,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--args"></a>`args`
 
-Data type: `Any`
+Data type: `Optional`
 
 Arguments to be `exec`ed for the watch.
 
@@ -1009,7 +1009,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--key"></a>`key`
 
-Data type: `Any`
+Data type: `Optional`
 
 Watch a specific key.
 
@@ -1017,7 +1017,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--keyprefix"></a>`keyprefix`
 
-Data type: `Any`
+Data type: `Optional`
 
 Watch a whole keyprefix
 
@@ -1033,7 +1033,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--service"></a>`service`
 
-Data type: `Any`
+Data type: `Optional`
 
 Watch a particular service
 
@@ -1041,7 +1041,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--service_tag"></a>`service_tag`
 
-Data type: `Any`
+Data type: `Optional`
 
 This actually maps to the "tag" param for service watches. (`tag` is a puppet builtin metaparameter)
 
@@ -1049,7 +1049,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--state"></a>`state`
 
-Data type: `Any`
+Data type: `Optional`
 
 Watch a state change on a service healthcheck.
 
@@ -1057,7 +1057,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--token"></a>`token`
 
-Data type: `Any`
+Data type: `Optional`
 
 String to override the default token.
 
@@ -1065,7 +1065,7 @@ Default value: `undef`
 
 ##### <a name="-consul--watch--type"></a>`type`
 
-Data type: `Any`
+Data type: `Optional`
 
 Type of data to watch. (Like key, service, services, nodes)
 
