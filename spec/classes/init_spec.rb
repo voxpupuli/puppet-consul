@@ -242,7 +242,7 @@ describe 'consul' do
       end
 
       context 'By default, a user and group should be installed' do
-        it { is_expected.to contain_user('consul').with(ensure: :present) }
+        it { is_expected.to contain_user('consul').with(ensure: :present).without_uid.without_comment }
         it { is_expected.to contain_group('consul').with(ensure: :present) }
       end
 
@@ -254,6 +254,17 @@ describe 'consul' do
         end
 
         it { is_expected.to contain_user('consul').with(ensure: :present).without_home }
+      end
+
+      context 'with uid and comment' do
+        let :params do
+          {
+            uid: 2,
+            comment: 'this is a comment',
+          }
+        end
+
+        it { is_expected.to contain_user('consul').with(ensure: :present).with_uid(2).with_comment('this is a comment') }
       end
 
       context 'When data_dir is provided' do

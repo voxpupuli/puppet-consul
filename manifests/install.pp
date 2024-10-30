@@ -102,11 +102,13 @@ class consul::install {
     }
 
     user { $consul::user_real:
-      ensure => 'present',
-      system => true,
-      groups => $consul::extra_groups,
-      shell  => $consul::shell,
-      home   => $consul_user_home,
+      ensure  => 'present',
+      system  => true,
+      groups  => $consul::extra_groups,
+      shell   => $consul::shell,
+      home    => $consul_user_home,
+      uid     => $consul::uid,
+      comment => $consul::comment,
     }
 
     if ($consul::manage_group) and ($consul::install_method != 'docker' ) {

@@ -73,6 +73,8 @@
 #   You can enable it by setting this variable to true. Defaults to false
 # @param allow_binding_to_root_ports enables CAP_NET_BIND_SERVICE if true. This is currently only implemented on systemd nodes
 # @param log_file where should the log file be located
+# @param comment the comment for the consul user, will be added to /etc/passwd
+# @param uid the ID for the consul user
 #
 # @example simple consul setup
 #    class { 'consul':
@@ -142,6 +144,8 @@ class consul (
   Optional[String[1]]                   $shell                       = $consul::params::shell,
   Boolean                               $enable_beta_ui              = false,
   Boolean                               $allow_binding_to_root_ports = false,
+  Optional[String[1]]                   $comment                     = undef,
+  Optional[Integer[1]]                  $uid                         = undef,
 ) inherits consul::params {
   $real_download_url = pick(
     $download_url,
