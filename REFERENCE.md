@@ -552,7 +552,7 @@ Data type: `String[1]`
 
 Specify version of consul binary to download.
 
-Default value: `'1.16.3'`
+Default value: `'1.20.0'`
 
 ##### <a name="-consul--watches"></a>`watches`
 

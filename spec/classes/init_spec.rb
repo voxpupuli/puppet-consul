@@ -145,9 +145,9 @@ describe 'consul' do
       end
 
       context 'When installing via URL by default' do
-        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.16.3.zip').with(source: 'https://releases.hashicorp.com/consul/1.16.3/consul_1.16.3_linux_amd64.zip') }
+        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.20.0.zip').with(source: 'https://releases.hashicorp.com/consul/1.20.0/consul_1.20.0_linux_amd64.zip') }
         it { is_expected.to contain_file('/opt/consul/archives').with(ensure: 'directory') }
-        it { is_expected.to contain_file('/opt/consul/archives/consul-1.16.3').with(ensure: 'directory') }
+        it { is_expected.to contain_file('/opt/consul/archives/consul-1.20.0').with(ensure: 'directory') }
         it { is_expected.to contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 
@@ -158,20 +158,20 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_archive('/usr/share/puppet-archive/consul-1.16.3.zip').with(source: 'https://releases.hashicorp.com/consul/1.16.3/consul_1.16.3_linux_amd64.zip') }
+        it { is_expected.to contain_archive('/usr/share/puppet-archive/consul-1.20.0.zip').with(source: 'https://releases.hashicorp.com/consul/1.20.0/consul_1.20.0_linux_amd64.zip') }
         it { is_expected.to contain_file('/usr/share/puppet-archive').with(ensure: 'directory') }
-        it { is_expected.to contain_file('/usr/share/puppet-archive/consul-1.16.3').with(ensure: 'directory') }
+        it { is_expected.to contain_file('/usr/share/puppet-archive/consul-1.20.0').with(ensure: 'directory') }
         it { is_expected.to contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 
       context 'When installing by archive via URL and current version is already installed' do
         let(:facts) do
           os_facts.merge({
-                           consul_version: '1.16.3'
+                           consul_version: '1.20.0'
                          })
         end
 
-        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.16.3.zip').with(source: 'https://releases.hashicorp.com/consul/1.16.3/consul_1.16.3_linux_amd64.zip') }
+        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.20.0.zip').with(source: 'https://releases.hashicorp.com/consul/1.20.0/consul_1.20.0_linux_amd64.zip') }
         it { is_expected.to contain_file('/usr/local/bin/consul') }
         it { is_expected.not_to contain_notify(['Class[consul::run_service]']) }
       end
@@ -194,7 +194,7 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.16.3.zip').with(source: 'http://myurl') }
+        it { is_expected.to contain_archive('/opt/consul/archives/consul-1.20.0.zip').with(source: 'http://myurl') }
         it { is_expected.to contain_file('/usr/local/bin/consul').that_notifies('Class[consul::run_service]') }
       end
 
