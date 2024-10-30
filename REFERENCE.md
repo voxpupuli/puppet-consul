@@ -125,6 +125,8 @@ The following parameters are available in the `consul` class:
 * [`enable_beta_ui`](#-consul--enable_beta_ui)
 * [`allow_binding_to_root_ports`](#-consul--allow_binding_to_root_ports)
 * [`log_file`](#-consul--log_file)
+* [`comment`](#-consul--comment)
+* [`uid`](#-consul--uid)
 
 ##### <a name="-consul--acls"></a>`acls`
 
@@ -591,6 +593,22 @@ Data type: `Stdlib::Absolutepath`
 where should the log file be located
 
 Default value: `'/var/log/consul'`
+
+##### <a name="-consul--comment"></a>`comment`
+
+Data type: `Optional[String[1]]`
+
+the comment for the consul user, will be added to /etc/passwd
+
+Default value: `undef`
+
+##### <a name="-consul--uid"></a>`uid`
+
+Data type: `Optional[Integer[1]]`
+
+the ID for the consul user
+
+Default value: `undef`
 
 ## Defined types
 
