@@ -120,7 +120,7 @@ class consul (
   String[1]                             $install_method              = 'url',
   Optional[String[1]]                   $join_wan                    = undef,
   Boolean                               $manage_group                = $consul::params::manage_group,
-  Boolean                               $manage_repo                 = $consul::params::manage_repo,
+  Boolean                               $manage_repo                 = false,
   Boolean                               $manage_service              = true,
   Boolean                               $manage_user                 = $consul::params::manage_user,
   Boolean                               $manage_user_home_location   = false,
