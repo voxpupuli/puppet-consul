@@ -6,52 +6,11 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.0',
-          manage_service => true,
-          config_hash    => {
-              'data_dir'   => '/opt/consul',
-              'datacenter' => 'east-aws',
-              'node_name'  => 'foobar',
-              'server'     => true,
-          }
-        }
-      EOS
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
-    end
-
-    describe file('/opt/consul') do
-      it { is_expected.to be_directory }
-    end
-
-    describe service('consul') do
-      it { is_expected.to be_enabled }
-      it { is_expected.to be_running }
-    end
-
-    describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.0} }
-    end
-
-    describe file('/etc/consul/config.json') do
-      it { is_expected.to be_file }
-      its(:content) { is_expected.to match(%r{server}) }
-    end
-  end
-
-  context 'default parameters' do
-    it 'works with no errors based on the example' do
-      pp = <<-EOS
-        package { 'unzip': ensure => present }
-        -> class { 'consul':
           version        => '1.16.3',
           manage_service => true,
           config_hash    => {
-              'datacenter' => 'east-aws',
               'data_dir'   => '/opt/consul',
-              'log_level'  => 'INFO',
+              'datacenter' => 'east-aws',
               'node_name'  => 'foobar',
               'server'     => true,
           }
@@ -82,12 +41,52 @@ describe 'consul class' do
     end
   end
 
+  context 'default parameters' do
+    it 'works with no errors based on the example' do
+      pp = <<-EOS
+        package { 'unzip': ensure => present }
+        -> class { 'consul':
+          version        => '1.20.0',
+          manage_service => true,
+          config_hash    => {
+              'datacenter' => 'east-aws',
+              'data_dir'   => '/opt/consul',
+              'log_level'  => 'INFO',
+              'node_name'  => 'foobar',
+              'server'     => true,
+          }
+        }
+      EOS
+
+      # Run it twice and test for idempotency
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_changes: true)
+    end
+
+    describe file('/opt/consul') do
+      it { is_expected.to be_directory }
+    end
+
+    describe service('consul') do
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
+    end
+
+    describe command('consul version') do
+      its(:stdout) { is_expected.to match %r{Consul v1.20.0} }
+    end
+
+    describe file('/etc/consul/config.json') do
+      it { is_expected.to be_file }
+      its(:content) { is_expected.to match(%r{server}) }
+    end
+  end
+
   context 'with performance options' do
     it 'works with no errors based on the example' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.3',
           manage_service => true,
           config_hash    => {
               'datacenter'  => 'east-aws',
@@ -117,7 +116,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.3} }
+      its(:stdout) { is_expected.to match %r{Consul v1.20.0} }
     end
 
     describe file('/etc/consul/config.json') do
@@ -133,7 +132,6 @@ describe 'consul class' do
       pp = <<-EOS
         package { 'unzip': ensure => present }
         -> class { 'consul':
-          version        => '1.16.3',
           manage_service => true,
           config_hash    => {
               'datacenter'         => 'east-aws',
@@ -207,7 +205,7 @@ describe 'consul class' do
     end
 
     describe command('consul version') do
-      its(:stdout) { is_expected.to match %r{Consul v1.16.3} }
+      its(:stdout) { is_expected.to match %r{Consul v1.20.0} }
     end
 
     describe command("consul acl token list --token #{acl_master_token} | grep Description") do
