@@ -525,10 +525,9 @@ a module that can do that.
 
 ## Development
 
-Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
-[fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
-[Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
-
+Open an [issue](https://github.com/voxpupuli/puppet-consul/issues) or
+[fork](https://github.com/voxpupuli/puppet-consul/fork) and open a
+[Pull Request](https://github.com/voxpupuli/puppet-consul/pulls)
 
 ## Transfer Notice
 
