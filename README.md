@@ -163,7 +163,7 @@ include 'nginx'
 $server_names = [$facts['networking']['fqdn'], $aliases]
 
 nginx::resource::vhost { $facts['networking']['fqdn']:
-  proxy       => 'http://localhost:8500',
+  proxy       => 'http://127.0.0.1:8500',
   server_name => $server_names,
 }
 ```
