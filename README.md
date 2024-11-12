@@ -163,7 +163,7 @@ include 'nginx'
 $server_names = [$facts['networking']['fqdn'], $aliases]
 
 nginx::resource::vhost { $facts['networking']['fqdn']:
-  proxy       => 'http://localhost:8500',
+  proxy       => 'http://127.0.0.1:8500',
   server_name => $server_names,
 }
 ```
@@ -525,10 +525,9 @@ a module that can do that.
 
 ## Development
 
-Open an [issue](https://github.com/solarkennedy/puppet-consul/issues) or
-[fork](https://github.com/solarkennedy/puppet-consul/fork) and open a
-[Pull Request](https://github.com/solarkennedy/puppet-consul/pulls)
-
+Open an [issue](https://github.com/voxpupuli/puppet-consul/issues) or
+[fork](https://github.com/voxpupuli/puppet-consul/fork) and open a
+[Pull Request](https://github.com/voxpupuli/puppet-consul/pulls)
 
 ## Transfer Notice
 
