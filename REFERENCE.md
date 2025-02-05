@@ -57,7 +57,7 @@ Installs, configures and manages consul
 class { 'consul':
   config_hash => {
     'datacenter'   => 'east-aws',
-    'node_name'    => $facts['fqdn'],
+    'node_name'    => $facts['networking']['fqdn'],
     'pretty_config => true,
     'retry-join'   => ['172.16.0.1'],
   },
