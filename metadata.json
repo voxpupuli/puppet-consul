@@ -1,6 +1,6 @@
 {
   "name": "puppet-consul",
-  "version": "9.0.1-rc0",
+  "version": "9.1.0",
   "author": "Vox Pupuli",
   "summary": "Configures Consul by Hashicorp",
   "license": "Apache-2.0",

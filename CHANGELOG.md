@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.1.0](https://github.com/voxpupuli/puppet-consul/tree/v9.1.0) (2025-02-11)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.0.0...v9.1.0)
+
+**Merged pull requests:**
+
+- facts\[fqdn\] is a legacy fact, use facts\['networking'\]\['fqdn'\] in the example. [\#684](https://github.com/voxpupuli/puppet-consul/pull/684) ([TomRitserveldt](https://github.com/TomRitserveldt))
+- puppet/systemd: allow 8.x [\#683](https://github.com/voxpupuli/puppet-consul/pull/683) ([jay7x](https://github.com/jay7x))
+- README.md: Adjust links after repo migration [\#682](https://github.com/voxpupuli/puppet-consul/pull/682) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v9.0.0](https://github.com/voxpupuli/puppet-consul/tree/v9.0.0) (2024-10-30)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v8.1.0...v9.0.0)
