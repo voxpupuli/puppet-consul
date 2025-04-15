@@ -10,6 +10,7 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
               {
                   'resource'    => 'service_prefix',
                   'segment'     => 'test_service',
+                  'intentions'  => 'write',
                   'disposition' => 'read'
               },
               {

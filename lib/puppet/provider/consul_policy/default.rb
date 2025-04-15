@@ -46,7 +46,11 @@ Puppet::Type.type(:consul_policy).provide(
       if ['acl', 'operator'].include?(rule['resource'])
         encoded.push("#{rule['resource']} = \"#{rule['disposition']}\"")
       else
-        encoded.push("#{rule['resource']} \"#{rule['segment']}\" {\n  policy = \"#{rule['disposition']}\"\n}")
+        inner = "\n  policy = \"#{rule['disposition']}\"\n"
+        unless rule.fetch('intentions', '').to_s.empty?
+          inner += "\n  intentions = #{rule['intentions']}\n"
+        end
+        encoded.push("#{rule['resource']} \"#{rule['segment']}\" {#{inner}}")
       end
     end
 
