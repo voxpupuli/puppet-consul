@@ -1,9 +1,10 @@
+---
 fixtures:
   repositories:
-    stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
-    archive: "https://github.com/voxpupuli/puppet-archive.git"
-    hashi_stack: "https://github.com/voxpupuli/puppet-hashi_stack.git"
-    systemd: "https://github.com/camptocamp/puppet-systemd.git"
-    apt: "https://github.com/puppetlabs/puppetlabs-apt.git"
-    yum: "https://github.com/voxpupuli/puppet-yum.git"
-    yumrepo_core: "https://github.com/puppetlabs/puppetlabs-yumrepo_core.git"
+    apt: https://github.com/puppetlabs/puppetlabs-apt.git
+    archive: https://github.com/voxpupuli/puppet-archive.git
+    hashi_stack: https://github.com/voxpupuli/puppet-hashi_stack.git
+    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+    systemd: https://github.com/camptocamp/puppet-systemd.git
+    yum: https://github.com/voxpupuli/puppet-yum.git
+    yumrepo_core: https://github.com/puppetlabs/puppetlabs-yumrepo_core.git
