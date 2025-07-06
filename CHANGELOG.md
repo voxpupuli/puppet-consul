@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.2.0](https://github.com/voxpupuli/puppet-consul/tree/v9.2.0) (2025-07-06)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.1.0...v9.2.0)
+
+**Implemented enhancements:**
+
+- puppet/archive: Allow 8.x [\#695](https://github.com/voxpupuli/puppet-consul/pull/695) ([bastelfreak](https://github.com/bastelfreak))
+- metadata.json: Add OpenVox [\#688](https://github.com/voxpupuli/puppet-consul/pull/688) ([jstraw](https://github.com/jstraw))
+
+**Fixed bugs:**
+
+- fix incorrect log\_file variable name in FreeBSD Template [\#691](https://github.com/voxpupuli/puppet-consul/pull/691) ([ikonia](https://github.com/ikonia))
+
+**Closed issues:**
+
+- freebsd template log\_file parameter incorrectly named [\#690](https://github.com/voxpupuli/puppet-consul/issues/690)
+
 ## [v9.1.0](https://github.com/voxpupuli/puppet-consul/tree/v9.1.0) (2025-02-11)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.0.0...v9.1.0)
@@ -139,7 +156,7 @@ These should not affect the functionality of the module.
 **Implemented enhancements:**
 
 - Adding datacenters property for Consul policies [\#590](https://github.com/voxpupuli/puppet-consul/pull/590) ([jonesbrennan](https://github.com/jonesbrennan))
-- Add special rule format for keyring type policy [\#582](https://github.com/voxpupuli/puppet-consul/pull/582) ([weastur](https://github.com/weastur))
+- Add special rule format for keyring type policy [\#582](https://github.com/voxpupuli/puppet-consul/pull/582) ([psapezhka](https://github.com/psapezhka))
 - Allow changing the configuration directory and files owner [\#535](https://github.com/voxpupuli/puppet-consul/pull/535) ([thias](https://github.com/thias))
 
 **Closed issues:**
@@ -153,7 +170,7 @@ These should not affect the functionality of the module.
 - Cleanup metadata.json/README.md after migration [\#593](https://github.com/voxpupuli/puppet-consul/pull/593) ([bastelfreak](https://github.com/bastelfreak))
 - updating README.md for consul version compatibility [\#592](https://github.com/voxpupuli/puppet-consul/pull/592) ([jonesbrennan](https://github.com/jonesbrennan))
 - Switch from camptocamp/systemd to puppet/systemd [\#586](https://github.com/voxpupuli/puppet-consul/pull/586) ([bastelfreak](https://github.com/bastelfreak))
-- Run unit tests on CI [\#583](https://github.com/voxpupuli/puppet-consul/pull/583) ([weastur](https://github.com/weastur))
+- Run unit tests on CI [\#583](https://github.com/voxpupuli/puppet-consul/pull/583) ([psapezhka](https://github.com/psapezhka))
 
 ## [v7.0.2](https://github.com/voxpupuli/puppet-consul/tree/v7.0.2) (2021-06-12)
 
@@ -313,7 +330,7 @@ These should not affect the functionality of the module.
 
 - Lint, style, and parameter data types [\#476](https://github.com/voxpupuli/puppet-consul/pull/476) ([natemccurdy](https://github.com/natemccurdy))
 - Support for Consul 1.4.0+ ACL system [\#474](https://github.com/voxpupuli/puppet-consul/pull/474) ([marius-meissner](https://github.com/marius-meissner))
-- quote all values of tags, meta & node\_meta [\#473](https://github.com/voxpupuli/puppet-consul/pull/473) ([tmu-sprd](https://github.com/tmu-sprd))
+- quote all values of tags, meta & node\_meta [\#473](https://github.com/voxpupuli/puppet-consul/pull/473) ([sprd-tmu](https://github.com/sprd-tmu))
 
 **Closed issues:**
 
@@ -327,7 +344,7 @@ These should not affect the functionality of the module.
 
 **Merged pull requests:**
 
-- resources 'acl' and 'operator' don't have a segment [\#483](https://github.com/voxpupuli/puppet-consul/pull/483) ([tmu-sprd](https://github.com/tmu-sprd))
+- resources 'acl' and 'operator' don't have a segment [\#483](https://github.com/voxpupuli/puppet-consul/pull/483) ([sprd-tmu](https://github.com/sprd-tmu))
 - Fixing idempotence issues of new ACL system + improved handling of properties [\#480](https://github.com/voxpupuli/puppet-consul/pull/480) ([marius-meissner](https://github.com/marius-meissner))
 - Switch from anchor pattern to contain function [\#475](https://github.com/voxpupuli/puppet-consul/pull/475) ([natemccurdy](https://github.com/natemccurdy))
 - fix case where multiple http\_addr [\#470](https://github.com/voxpupuli/puppet-consul/pull/470) ([robmbrooks](https://github.com/robmbrooks))
@@ -418,7 +435,6 @@ These should not affect the functionality of the module.
 - Allow puppetlabs-stdlib v5.x [\#440](https://github.com/voxpupuli/puppet-consul/pull/440) ([hfm](https://github.com/hfm))
 - allow camptocamp/systemd 2.x [\#439](https://github.com/voxpupuli/puppet-consul/pull/439) ([l-lotz](https://github.com/l-lotz))
 - Fix broken testmatrix due to gem updates [\#437](https://github.com/voxpupuli/puppet-consul/pull/437) ([bastelfreak](https://github.com/bastelfreak))
-- Update Readme.md to Include Telemetry Settings [\#432](https://github.com/voxpupuli/puppet-consul/pull/432) ([ghost](https://github.com/ghost))
 
 ## [v3.4.0](https://github.com/voxpupuli/puppet-consul/tree/v3.4.0) (2018-07-05)
 
@@ -510,7 +526,6 @@ These should not affect the functionality of the module.
 - Do not unquote integers with a leading zero [\#391](https://github.com/voxpupuli/puppet-consul/pull/391) ([phaer](https://github.com/phaer))
 - replace fedora versions with current supported ones [\#390](https://github.com/voxpupuli/puppet-consul/pull/390) ([bastelfreak](https://github.com/bastelfreak))
 - set sane default shell for consul user [\#388](https://github.com/voxpupuli/puppet-consul/pull/388) ([bastelfreak](https://github.com/bastelfreak))
-- fix typo in check timeout [\#387](https://github.com/voxpupuli/puppet-consul/pull/387) ([lobeck](https://github.com/lobeck))
 - Fixes \#360 by setting config\_dir under FreeBSD [\#386](https://github.com/voxpupuli/puppet-consul/pull/386) ([madelaney](https://github.com/madelaney))
 - allow "args" and "script" for consul check config [\#382](https://github.com/voxpupuli/puppet-consul/pull/382) ([zg](https://github.com/zg))
 - Breaking: Update Puppet version to 4.7.1 and add data types [\#381](https://github.com/voxpupuli/puppet-consul/pull/381) ([wyardley](https://github.com/wyardley))
@@ -574,10 +589,6 @@ These should not affect the functionality of the module.
 - please specify json module version minimum [\#328](https://github.com/voxpupuli/puppet-consul/issues/328)
 - Could not look up qualified variable `$consul_version` [\#327](https://github.com/voxpupuli/puppet-consul/issues/327)
 
-**Merged pull requests:**
-
-- BREAKING - Consul 0.8.0 fixes [\#337](https://github.com/voxpupuli/puppet-consul/pull/337) ([lobeck](https://github.com/lobeck))
-
 ## [v2.1.1](https://github.com/voxpupuli/puppet-consul/tree/v2.1.1) (2017-03-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v2.1.0...v2.1.1)
@@ -593,7 +604,6 @@ These should not affect the functionality of the module.
 
 - Try pinning more things in fixtures [\#326](https://github.com/voxpupuli/puppet-consul/pull/326) ([solarkennedy](https://github.com/solarkennedy))
 - Remove unnecessary .gitkeep files in lib/ [\#325](https://github.com/voxpupuli/puppet-consul/pull/325) ([cosmopetrich](https://github.com/cosmopetrich))
-- Fix idempotent issue within key\_value runs. [\#323](https://github.com/voxpupuli/puppet-consul/pull/323) ([jrasell](https://github.com/jrasell))
 - Reduce travis matrix [\#322](https://github.com/voxpupuli/puppet-consul/pull/322) ([solarkennedy](https://github.com/solarkennedy))
 - Bump default consul version. Improve FreeBSD support [\#319](https://github.com/voxpupuli/puppet-consul/pull/319) ([olevole](https://github.com/olevole))
 - Fix `consul_version` fact lookup during installation [\#316](https://github.com/voxpupuli/puppet-consul/pull/316) ([wstiern](https://github.com/wstiern))
