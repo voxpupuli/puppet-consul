@@ -231,6 +231,16 @@ describe 'consul' do
         it { is_expected.to contain_file('consul config').with_content(sensitive(%r{"ui":true})) }
       end
 
+      context 'When passing "config_hash" as Sensitive' do
+        let :params do
+          {
+            config_hash: RSpec::Puppet::RawString.new('Sensitive({})'),
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+      end
+
       context 'When not installing UI' do
         let(:params) do
           {
