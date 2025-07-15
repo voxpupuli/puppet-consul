@@ -4,7 +4,7 @@
 # @api private
 class consul::install {
   assert_private()
-  $real_data_dir = pick($consul::data_dir, $consul::config_hash[data_dir], $consul::config_defaults[data_dir])
+  $real_data_dir = pick($consul::data_dir, $consul::config_hash_real[data_dir], $consul::config_defaults[data_dir])
 
   if $consul::manage_data_dir {
     file { $real_data_dir:
