@@ -158,7 +158,7 @@ class consul (
     Sensitive => $config_hash.unwrap,
     default   => $config_hash
   }
-  $config_hash_real = deep_merge($config_defaults, $config_hash)
+  $config_hash_real = deep_merge($config_defaults, $_config_hash)
 
   if $install_method == 'docker' {
     $user_real         = undef
