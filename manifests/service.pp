@@ -68,11 +68,11 @@ define consul::service (
   Array[String[1]]            $tags                 = [],
   Optional[String[1]]         $token                = undef,
   Optional[Hash[
+    String[1],
+    Variant[
       String[1],
-      Variant[
-        String[1],
-        Numeric,
-        Boolean,
+      Numeric,
+      Boolean,
   ]]]                         $meta                 = undef,
 ) {
   include consul

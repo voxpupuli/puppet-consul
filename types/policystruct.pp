@@ -5,9 +5,9 @@ type Consul::PolicyStruct = Struct[
     description   => Optional[String[0]],
     datacenters   => Optional[Array[String[1]]],
     rules         => Optional[Array[Struct[{
-            resource    => String[1],
-            segment     => Optional[String[0]],
-            disposition => String[1],
+      resource    => String[1],
+      segment     => Optional[String[0]],
+      disposition => String[1],
     }]]],
     acl_api_token => Optional[String[1]],
     protocol      => Optional[String[1]],
