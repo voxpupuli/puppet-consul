@@ -4,7 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v9.2.0](https://github.com/voxpupuli/puppet-consul/tree/v9.2.0) (2025-07-06)
+## [v10.0.0](https://github.com/voxpupuli/puppet-consul/tree/v10.0.0) (2025-10-07)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.2.0...v10.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#699](https://github.com/voxpupuli/puppet-consul/pull/699) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- puppet/hashi\_stack: Allow 4.x [\#705](https://github.com/voxpupuli/puppet-consul/pull/705) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/systemd: Allow 9.x [\#704](https://github.com/voxpupuli/puppet-consul/pull/704) ([bastelfreak](https://github.com/bastelfreak))
+
+**Merged pull requests:**
+
+- actually use unwrapped config\_hash value [\#697](https://github.com/voxpupuli/puppet-consul/pull/697) ([kBite](https://github.com/kBite))
+
+## [v9.2.0](https://github.com/voxpupuli/puppet-consul/tree/v9.2.0) (2025-07-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.1.0...v9.2.0)
 
