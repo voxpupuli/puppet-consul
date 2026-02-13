@@ -122,4 +122,18 @@ class consul::install {
       gid    => $consul::gid,
     }
   }
+
+  if ($consul::bash_completion) and ($consul::install_method != 'docker' ) {
+    file { $consul::bash_completion_compat_dir:
+      ensure => 'directory',
+    }
+
+    file { "${consul::bash_completion_compat_dir}/consul":
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "complete -C ${consul::bin_dir}/${consul::binary_name} consul\n",
+    }
+  }
 }
