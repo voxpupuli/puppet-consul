@@ -3,7 +3,7 @@ require 'net/http'
 require 'pp'
 require 'uri'
 Puppet::Type.type(:consul_acl).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -82,7 +82,7 @@ Puppet::Type.type(:consul_acl).provide(
         hostname: hostname,
         protocol: protocol,
         api_tries: tries,
-        ensure: :present
+        ensure: :present,
       }
     end
 
@@ -113,7 +113,7 @@ Puppet::Type.type(:consul_acl).provide(
   end
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 
@@ -151,13 +151,13 @@ Puppet::Type.type(:consul_acl).provide(
       put_acl('update', { 'id' => id.to_s,
                           'name' => name.to_s,
                           'type' => type.to_s,
-                          'rules' => rules.to_s })
+                          'rules' => rules.to_s, })
 
     else
-      put_acl('create', { 'id' => (@resource[:id]).to_s,
+      put_acl('create', { 'id' => @resource[:id].to_s,
                           'name' => name.to_s,
                           'type' => type.to_s,
-                          'rules' => rules.to_s })
+                          'rules' => rules.to_s, })
     end
     @property_hash.clear
   end

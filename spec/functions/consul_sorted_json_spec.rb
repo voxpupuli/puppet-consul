@@ -110,8 +110,8 @@ describe 'consul::sorted_json', type: :puppet_function do
       'key' => 'value',
       'undef' => :undef,
       'nested_undef' => {
-        'undef' => :undef
-      }
+        'undef' => :undef,
+      },
     }
     json = subject.execute(nested_undef_hash)
     expect(json).to match('{"key":"value","nested_undef":{"undef":null},"undef":null}')
@@ -121,7 +121,7 @@ describe 'consul::sorted_json', type: :puppet_function do
     let(:nested_test_hash) do
       { 'z' => [{ 'l' => 3, 'k' => '2', 'j' => '1' }],
         'a' => { 'z' => '3', 'x' => '1', 'y' => '2' },
-        'p' => %w[9 8 7] }
+        'p' => %w[9 8 7], }
     end
 
     before do

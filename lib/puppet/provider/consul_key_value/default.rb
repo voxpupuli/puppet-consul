@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 require 'base64'
 Puppet::Type.type(:consul_key_value).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -120,7 +120,7 @@ Puppet::Type.type(:consul_key_value).provide(
   end
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 

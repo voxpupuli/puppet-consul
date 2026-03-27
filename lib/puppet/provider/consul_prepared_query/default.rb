@@ -2,7 +2,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 Puppet::Type.type(:consul_prepared_query).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -121,7 +121,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
   end
 
   def initialize(value = {})
-    super(value)
+    super
     @property_flush = {}
   end
 
@@ -170,11 +170,11 @@ Puppet::Type.type(:consul_prepared_query).provide(
         'OnlyPassing' => service_only_passing,
         'Tags' => service_tags,
         'NodeMeta' => node_meta,
-        'ServiceMeta' => service_meta
+        'ServiceMeta' => service_meta,
       },
       'DNS' => {
-        'TTL' => "#{ttl}s"
-      }
+        'TTL' => "#{ttl}s",
+      },
     }
     if template
       query_data['Template'] = {

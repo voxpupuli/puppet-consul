@@ -4,9 +4,9 @@ describe Puppet::Type.type(:consul_acl) do
   samplerules = {
     'key' => {
       'test' => {
-        'policy' => 'read'
-      }
-    }
+        'policy' => 'read',
+      },
+    },
   }
 
   it 'fails if type is not client or management' do
@@ -32,7 +32,7 @@ describe Puppet::Type.type(:consul_acl) do
       @acl = Puppet::Type.type(:consul_acl).new(
         name: 'testing',
         type: 'management',
-        rules: samplerules
+        rules: samplerules,
       )
     end
 

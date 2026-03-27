@@ -12,7 +12,7 @@ describe Puppet::Type.type(:consul_key_value) do
       @key_value = Puppet::Type.type(:consul_key_value).new(
         name: 'sample/key',
         value: 'sampleValue',
-        flags: 1
+        flags: 1,
       )
     end
 
