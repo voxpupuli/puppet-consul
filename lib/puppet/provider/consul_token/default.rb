@@ -4,7 +4,7 @@ require 'uri'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'consul', 'acl_base.rb'))
 
 Puppet::Type.type(:consul_token).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 

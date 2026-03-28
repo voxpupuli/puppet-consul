@@ -11,7 +11,7 @@ describe Puppet::Type.type(:consul_prepared_query) do
     expect do
       Puppet::Type.type(:consul_prepared_query).new(
         name: 'testing',
-        node_meta: 'test'
+        node_meta: 'test',
       )
     end.to raise_error(Puppet::Error, %r{NodeMeta type must be a hash})
   end
@@ -20,7 +20,7 @@ describe Puppet::Type.type(:consul_prepared_query) do
     expect do
       Puppet::Type.type(:consul_prepared_query).new(
         name: 'testing',
-        service_meta: 'test'
+        service_meta: 'test',
       )
     end.to raise_error(Puppet::Error, %r{ServiceMeta type must be a hash})
   end
@@ -37,7 +37,7 @@ describe Puppet::Type.type(:consul_prepared_query) do
         service_only_passing: true,
         ttl: 10,
         node_meta: { 'is_virtual' => 'false' },
-        service_meta: { 'version' => '1.2.3' }
+        service_meta: { 'version' => '1.2.3' },
       )
     end
 

@@ -4,7 +4,7 @@ require 'uri'
 require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet_x', 'consul', 'acl_base.rb'))
 
 Puppet::Type.type(:consul_policy).provide(
-  :default
+  :default,
 ) do
   mk_resource_methods
 
@@ -74,7 +74,7 @@ Puppet::Type.type(:consul_policy).provide(
       @property_hash = {
         id: existing_policy.id,
         description: existing_policy.description,
-        datacenters: existing_policy.datacenters
+        datacenters: existing_policy.datacenters,
       }
 
       @property_hash[:rules] = resource[:rules] if rules_encoded == existing_policy.rules

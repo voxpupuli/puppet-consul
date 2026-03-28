@@ -14,11 +14,11 @@ describe 'consul::service' do
         let(:params) { {} }
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"service" *: *\{}). \
-            with_content(%r{"id" *: *"my_service"}). \
-            with_content(%r{"name" *: *"my_service"}). \
-            with_content(%r{"enable_tag_override" *: *false})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"service" *: *\{})
+            .with_content(%r{"id" *: *"my_service"})
+            .with_content(%r{"name" *: *"my_service"})
+            .with_content(%r{"enable_tag_override" *: *false})
         }
       end
 
@@ -28,11 +28,11 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"service" *: *\{}). \
-            with_content(%r{"id" *: *"my_service"}). \
-            with_content(%r{"name" *: *"my_service"}). \
-            with_content(%r{"enable_tag_override" *: *false})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"service" *: *\{})
+            .with_content(%r{"id" *: *"my_service"})
+            .with_content(%r{"name" *: *"my_service"})
+            .with_content(%r{"enable_tag_override" *: *false})
         }
       end
 
@@ -44,15 +44,15 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with('ensure' => 'absent')
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with('ensure' => 'absent')
         }
       end
 
       describe 'notify reload service' do
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            that_notifies('Class[consul::reload_service]')
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .that_notifies('Class[consul::reload_service]')
         }
       end
 
@@ -64,10 +64,10 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"service" *: *\{}). \
-            with_content(%r{"id" *: *"my_service"}). \
-            with_content(%r{"name" *: *"different_name"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"service" *: *\{})
+            .with_content(%r{"id" *: *"my_service"})
+            .with_content(%r{"name" *: *"different_name"})
         }
       end
 
@@ -79,11 +79,11 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"service" *: *\{}). \
-            with_content(%r{"id" *: *"my_service"}). \
-            with_content(%r{"name" *: *"my_service"}). \
-            with_content(%r{"enable_tag_override" *: *true})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"service" *: *\{})
+            .with_content(%r{"id" *: *"my_service"})
+            .with_content(%r{"name" *: *"my_service"})
+            .with_content(%r{"enable_tag_override" *: *true})
         }
       end
 
@@ -96,11 +96,11 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"service" *: *\{}). \
-            with_content(%r{"id" *: *"my_service"}). \
-            with_content(%r{"name" *: *"different_name"}). \
-            with_content(%r{"address" *: *"127.0.0.1"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"service" *: *\{})
+            .with_content(%r{"id" *: *"my_service"})
+            .with_content(%r{"name" *: *"different_name"})
+            .with_content(%r{"address" *: *"127.0.0.1"})
         }
       end
 
@@ -110,17 +110,17 @@ describe 'consul::service' do
             'checks' => [
               {
                 'interval' => '30s',
-                'script' => 'true'
+                'script' => 'true',
               },
-            ]
+            ],
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"checks" *: *\[}). \
-            with_content(%r{"interval" *: *"30s"}). \
-            with_content(%r{"script" *: *"true"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"checks" *: *\[})
+            .with_content(%r{"interval" *: *"30s"})
+            .with_content(%r{"script" *: *"true"})
         }
       end
 
@@ -130,17 +130,17 @@ describe 'consul::service' do
             'checks' => [
               {
                 'interval' => '30s',
-                'http' => 'localhost'
+                'http' => 'localhost',
               },
-            ]
+            ],
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"checks" *: *\[}). \
-            with_content(%r{"interval" *: *"30s"}). \
-            with_content(%r{"http" *: *"localhost"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"checks" *: *\[})
+            .with_content(%r{"interval" *: *"30s"})
+            .with_content(%r{"http" *: *"localhost"})
         }
       end
 
@@ -151,14 +151,14 @@ describe 'consul::service' do
               {
                 'ttl' => '30s',
               },
-            ]
+            ],
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"checks" *: *\[}). \
-            with_content(%r{"ttl" *: *"30s"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"checks" *: *\[})
+            .with_content(%r{"ttl" *: *"30s"})
         }
       end
 
@@ -170,7 +170,7 @@ describe 'consul::service' do
                 'ttl' => '30s',
                 'interval' => '30s',
               },
-            ]
+            ],
           }
         end
 
@@ -194,13 +194,13 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"port":5})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"port":5})
         }
 
         it {
-          is_expected.not_to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"port":"5"})
+          is_expected.not_to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"port":"5"})
         }
       end
 
@@ -210,20 +210,20 @@ describe 'consul::service' do
             'service_config_hash' => {
               'weights' => {
                 'passing' => 10,
-                'warning' => 1
-              }
-            }
+                'warning' => 1,
+              },
+            },
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"passing":10})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"passing":10})
         }
 
         it {
-          is_expected.not_to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"passing":"10"})
+          is_expected.not_to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"passing":"10"})
         }
       end
 
@@ -233,9 +233,9 @@ describe 'consul::service' do
             'checks' => [
               {
                 'ttl' => '30s',
-                'script' => 'true'
+                'script' => 'true',
               },
-            ]
+            ],
           }
         end
 
@@ -253,7 +253,7 @@ describe 'consul::service' do
               {
                 'interval' => '30s',
               },
-            ]
+            ],
           }
         end
 
@@ -270,23 +270,23 @@ describe 'consul::service' do
             'checks' => [
               {
                 'interval' => '30s',
-                'script' => 'true'
+                'script' => 'true',
               },
               {
                 'interval' => '10s',
-                'http' => 'localhost'
+                'http' => 'localhost',
               },
-            ]
+            ],
           }
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"checks" *: *\[}). \
-            with_content(%r{"interval" *: *"30s"}). \
-            with_content(%r{"script" *: *"true"}). \
-            with_content(%r{"interval" *: *"10s"}). \
-            with_content(%r{"http" *: *"localhost"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"checks" *: *\[})
+            .with_content(%r{"interval" *: *"30s"})
+            .with_content(%r{"script" *: *"true"})
+            .with_content(%r{"interval" *: *"10s"})
+            .with_content(%r{"http" *: *"localhost"})
         }
       end
 
@@ -298,8 +298,8 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_aa_bb.json'). \
-            with_content(%r{"id" *: *"aa/bb"})
+          is_expected.to contain_file('/etc/consul/service_aa_bb.json')
+            .with_content(%r{"id" *: *"aa/bb"})
         }
       end
 
@@ -311,8 +311,8 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_aa_bb_cc.json'). \
-            with_content(%r{"id" *: *"aa/bb/cc"})
+          is_expected.to contain_file('/etc/consul/service_aa_bb_cc.json')
+            .with_content(%r{"id" *: *"aa/bb/cc"})
         }
       end
 
@@ -322,12 +322,12 @@ describe 'consul::service' do
             'checks' => [
               {
                 'interval' => '30s',
-                'script' => 'true'
+                'script' => 'true',
               },
               {
-                'http' => 'localhost'
+                'http' => 'localhost',
               },
-            ]
+            ],
           }
         end
 
@@ -346,8 +346,8 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"token" *: *"too-cool-for-this-service"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"token" *: *"too-cool-for-this-service"})
         }
       end
 
@@ -361,9 +361,9 @@ describe 'consul::service' do
         end
 
         it {
-          is_expected.to contain_file('/etc/consul/service_my_service.json'). \
-            with_content(%r{"meta" *: *\{}). \
-            with_content(%r{"foo" *: *"bar"})
+          is_expected.to contain_file('/etc/consul/service_my_service.json')
+            .with_content(%r{"meta" *: *\{})
+            .with_content(%r{"foo" *: *"bar"})
         }
       end
     end

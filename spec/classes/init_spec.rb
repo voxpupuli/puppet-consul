@@ -25,7 +25,7 @@ describe 'consul' do
       context 'When disable config purging' do
         let(:params) do
           {
-            purge_config_dir: false
+            purge_config_dir: false,
           }
         end
 
@@ -39,7 +39,7 @@ describe 'consul' do
       context 'consul::config should not notify consul::run_service on config change' do
         let(:params) do
           {
-            restart_on_change: false
+            restart_on_change: false,
           }
         end
 
@@ -49,7 +49,7 @@ describe 'consul' do
       context 'When joining consul to a wan cluster by a known URL' do
         let(:params) do
           {
-            join_wan: 'wan_host.test.com'
+            join_wan: 'wan_host.test.com',
           }
         end
 
@@ -63,7 +63,7 @@ describe 'consul' do
       context 'When asked not to manage the repo' do
         let(:params) do
           {
-            manage_repo: false
+            manage_repo: false,
           }
         end
 
@@ -79,7 +79,7 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'url',
-            manage_repo: true
+            manage_repo: true,
           }
         end
 
@@ -96,7 +96,7 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'package',
-            manage_repo: true
+            manage_repo: true,
           }
         end
 
@@ -114,7 +114,7 @@ describe 'consul' do
         let(:params) do
           {
             install_method: 'package',
-            manage_data_dir: false
+            manage_data_dir: false,
           }
         end
 
@@ -125,7 +125,7 @@ describe 'consul' do
       context 'When requesting to install via a package with defaults' do
         let(:params) do
           {
-            install_method: 'package'
+            install_method: 'package',
           }
         end
 
@@ -137,7 +137,7 @@ describe 'consul' do
           {
             install_method: 'package',
             package_ensure: 'specific_release',
-            package_name: 'custom_consul_package'
+            package_name: 'custom_consul_package',
           }
         end
 
@@ -167,7 +167,7 @@ describe 'consul' do
       context 'When installing by archive via URL and current version is already installed' do
         let(:facts) do
           os_facts.merge({
-                           consul_version: '1.20.0'
+                           consul_version: '1.20.0',
                          })
         end
 
@@ -201,7 +201,7 @@ describe 'consul' do
       context 'When requesting to install via a package with defaults' do
         let(:params) do
           {
-            install_method: 'package'
+            install_method: 'package',
           }
         end
 
@@ -211,7 +211,7 @@ describe 'consul' do
       context 'When requesting to not to install' do
         let(:params) do
           {
-            install_method: 'none'
+            install_method: 'none',
           }
         end
 
@@ -223,7 +223,7 @@ describe 'consul' do
         let(:params) do
           {
             config_hash: {
-              'ui' => true
+              'ui' => true,
             },
           }
         end
@@ -300,7 +300,7 @@ describe 'consul' do
       context 'The bootstrap_expect in config_hash is an int' do
         let(:params) do
           {
-            config_hash: { 'bootstrap_expect' => '5' }
+            config_hash: { 'bootstrap_expect' => '5' },
           }
         end
 
@@ -316,7 +316,7 @@ describe 'consul' do
             },
             config_hash: {
               'bootstrap_expect' => '5',
-            }
+            },
           }
         end
 
@@ -342,7 +342,7 @@ describe 'consul' do
                 'http' => -1,
                 'https' => '8500',
               },
-            }
+            },
           }
         end
 
@@ -364,7 +364,7 @@ describe 'consul' do
                 'http' => -1,
                 'https' => 8500,
               },
-            }
+            },
           }
         end
 
@@ -399,9 +399,9 @@ describe 'consul' do
             service_ensure: 'stopped',
             services: {
               'test_service1' => {
-                'port' => 8088
-              }
-            }
+                'port' => 8088,
+              },
+            },
           }
         end
 
@@ -414,9 +414,9 @@ describe 'consul' do
             manage_service: false,
             services: {
               'test_service1' => {
-                'port' => 8088
-              }
-            }
+                'port' => 8088,
+              },
+            },
           }
         end
 
@@ -448,7 +448,7 @@ describe 'consul' do
           is_expected.to contain_file('consul config').with(
             owner: 'custom_consul_user',
             group: 'custom_consul_group',
-            mode: '0600'
+            mode: '0600',
           )
         }
       end
@@ -469,14 +469,14 @@ describe 'consul' do
         let(:params) do
           {
             services: {
-              'test_service1' => {}
-            }
+              'test_service1' => {},
+            },
           }
         end
 
         it {
-          is_expected.to contain_exec('reload consul service').
-            with_command('consul reload -http-addr=127.0.0.1:8500')
+          is_expected.to contain_exec('reload consul service')
+            .with_command('consul reload -http-addr=127.0.0.1:8500')
         }
       end
 
@@ -484,22 +484,22 @@ describe 'consul' do
         let(:params) do
           {
             services: {
-              'test_service1' => {}
+              'test_service1' => {},
             },
             config_hash: {
               'ports' => {
-                'http' => 9999
+                'http' => 9999,
               },
               'addresses' => {
-                'http' => 'consul.example.com'
-              }
-            }
+                'http' => 'consul.example.com',
+              },
+            },
           }
         end
 
         it {
-          is_expected.to contain_exec('reload consul service').
-            with_command('consul reload -http-addr=consul.example.com:9999')
+          is_expected.to contain_exec('reload consul service')
+            .with_command('consul reload -http-addr=consul.example.com:9999')
         }
       end
 
@@ -507,17 +507,17 @@ describe 'consul' do
         let(:params) do
           {
             services: {
-              'test_service1' => {}
+              'test_service1' => {},
             },
             config_hash: {
               'client_addr' => '192.168.34.56',
-            }
+            },
           }
         end
 
         it {
-          is_expected.to contain_exec('reload consul service').
-            with_command('consul reload -http-addr=192.168.34.56:8500')
+          is_expected.to contain_exec('reload consul service')
+            .with_command('consul reload -http-addr=192.168.34.56:8500')
         }
       end
 
@@ -526,9 +526,9 @@ describe 'consul' do
           {
             services: {
               'test_service1' => {
-                'port' => 8088
-              }
-            }
+                'port' => 8088,
+              },
+            },
           }
         end
 
@@ -544,8 +544,8 @@ describe 'consul' do
               'test_watch1' => {
                 'type' => 'nodes',
                 'handler' => 'test.sh',
-              }
-            }
+              },
+            },
           }
         end
 
@@ -562,8 +562,8 @@ describe 'consul' do
               'test_check1' => {
                 'interval' => '30',
                 'script' => 'test.sh',
-              }
-            }
+              },
+            },
           }
         end
 
@@ -580,24 +580,24 @@ describe 'consul' do
               'data_dir' => '/cust/consul',
               'datacenter' => 'devint',
               'log_level' => 'INFO',
-              'node_name' => '${fqdn}'
+              'node_name' => '${fqdn}',
             },
             watches: {
               'services' => {
                 'type' => 'services',
-                'handler' => 'sudo python /usr/local/bin/reacktor services'
+                'handler' => 'sudo python /usr/local/bin/reacktor services',
               },
               'httpd_service' => {
                 'type' => 'service',
                 'service' => 'httpd',
-                'handler' => 'sudo python /usr/local/bin/reacktor service --service httpd'
+                'handler' => 'sudo python /usr/local/bin/reacktor service --service httpd',
               },
               'tomcat_service' => {
                 'type' => 'service',
                 'service' => 'tomcat',
-                'handler' => 'sudo python /usr/local/bin/reacktor service --service tomcat'
-              }
-            }
+                'handler' => 'sudo python /usr/local/bin/reacktor service --service tomcat',
+              },
+            },
           }
         end
 

@@ -1131,7 +1131,6 @@ The following parameters are available in the `consul_acl` type.
 * [`hostname`](#-consul_acl--hostname)
 * [`name`](#-consul_acl--name)
 * [`port`](#-consul_acl--port)
-* [`provider`](#-consul_acl--provider)
 
 ##### <a name="-consul_acl--acl_api_token"></a>`acl_api_token`
 
@@ -1162,11 +1161,6 @@ Name of the token
 consul port
 
 Default value: `8500`
-
-##### <a name="-consul_acl--provider"></a>`provider`
-
-The specific backend to use for this `consul_acl` resource. You will seldom need to specify this --- Puppet will usually
-discover the appropriate provider for your platform.
 
 ### <a name="consul_key_value"></a>`consul_key_value`
 
@@ -1200,7 +1194,6 @@ The following parameters are available in the `consul_key_value` type.
 * [`name`](#-consul_key_value--name)
 * [`port`](#-consul_key_value--port)
 * [`protocol`](#-consul_key_value--protocol)
-* [`provider`](#-consul_key_value--provider)
 
 ##### <a name="-consul_key_value--acl_api_token"></a>`acl_api_token`
 
@@ -1253,11 +1246,6 @@ consul protocol
 
 Default value: `http`
 
-##### <a name="-consul_key_value--provider"></a>`provider`
-
-The specific backend to use for this `consul_key_value` resource. You will seldom need to specify this --- Puppet will
-usually discover the appropriate provider for your platform.
-
 ### <a name="consul_policy"></a>`consul_policy`
 
 Manages a Consul ACL policy
@@ -1306,7 +1294,6 @@ The following parameters are available in the `consul_policy` type.
 * [`name`](#-consul_policy--name)
 * [`port`](#-consul_policy--port)
 * [`protocol`](#-consul_policy--protocol)
-* [`provider`](#-consul_policy--provider)
 
 ##### <a name="-consul_policy--acl_api_token"></a>`acl_api_token`
 
@@ -1346,11 +1333,6 @@ consul protocol
 
 Default value: `http`
 
-##### <a name="-consul_policy--provider"></a>`provider`
-
-The specific backend to use for this `consul_policy` resource. You will seldom need to specify this --- Puppet will
-usually discover the appropriate provider for your platform.
-
 ### <a name="consul_prepared_query"></a>`consul_prepared_query`
 
 Manage a consul prepared query.
@@ -1382,7 +1364,6 @@ The following parameters are available in the `consul_prepared_query` type.
 * [`node_meta`](#-consul_prepared_query--node_meta)
 * [`port`](#-consul_prepared_query--port)
 * [`protocol`](#-consul_prepared_query--protocol)
-* [`provider`](#-consul_prepared_query--provider)
 * [`service_failover_dcs`](#-consul_prepared_query--service_failover_dcs)
 * [`service_failover_n`](#-consul_prepared_query--service_failover_n)
 * [`service_meta`](#-consul_prepared_query--service_meta)
@@ -1437,11 +1418,6 @@ Valid values: `http`, `https`
 consul protocol
 
 Default value: `http`
-
-##### <a name="-consul_prepared_query--provider"></a>`provider`
-
-The specific backend to use for this `consul_prepared_query` resource. You will seldom need to specify this --- Puppet
-will usually discover the appropriate provider for your platform.
 
 ##### <a name="-consul_prepared_query--service_failover_dcs"></a>`service_failover_dcs`
 
@@ -1565,7 +1541,6 @@ The following parameters are available in the `consul_token` type.
 * [`name`](#-consul_token--name)
 * [`port`](#-consul_token--port)
 * [`protocol`](#-consul_token--protocol)
-* [`provider`](#-consul_token--provider)
 
 ##### <a name="-consul_token--acl_api_token"></a>`acl_api_token`
 
@@ -1604,11 +1579,6 @@ Valid values: `http`, `https`
 consul protocol
 
 Default value: `http`
-
-##### <a name="-consul_token--provider"></a>`provider`
-
-The specific backend to use for this `consul_token` resource. You will seldom need to specify this --- Puppet will
-usually discover the appropriate provider for your platform.
 
 ## Functions
 

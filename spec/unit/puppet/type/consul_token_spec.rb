@@ -40,7 +40,7 @@ describe Puppet::Type.type(:consul_token) do
         name: 'testing',
         accessor_id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
         policies_by_name: policies_by_name,
-        policies_by_id: policies_by_id
+        policies_by_id: policies_by_id,
       )
     end
 

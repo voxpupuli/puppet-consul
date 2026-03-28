@@ -31,7 +31,7 @@ describe Puppet::Type.type(:consul_policy) do
         name: 'testing',
         id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
         description: 'test description',
-        rules: 'abc'
+        rules: 'abc',
       )
     end.to raise_error(Puppet::Error, %r{Policy rule must be a hash})
   end
@@ -45,9 +45,9 @@ describe Puppet::Type.type(:consul_policy) do
         rules: [
           {
             'segment' => 'test_service',
-            'disposition' => 'read'
+            'disposition' => 'read',
           },
-        ]
+        ],
       )
     end.to raise_error(Puppet::Error, %r{Policy rule needs to specify a resource})
   end
@@ -63,7 +63,7 @@ describe Puppet::Type.type(:consul_policy) do
             'resource' => 'service_prefix',
             'segment' => 'test_service',
           },
-        ]
+        ],
       )
     end.to raise_error(Puppet::Error, %r{Policy rule needs to specify a disposition})
   end
@@ -78,9 +78,9 @@ describe Puppet::Type.type(:consul_policy) do
           {
             'resource' => [],
             'segment' => 'test_service',
-            'disposition' => 'read'
+            'disposition' => 'read',
           },
-        ]
+        ],
       )
     end.to raise_error(Puppet::Error, %r{Policy rule resource must be a string})
   end
@@ -95,9 +95,9 @@ describe Puppet::Type.type(:consul_policy) do
           {
             'resource' => 'key_prefix',
             'segment' => 'test_service',
-            'disposition' => []
+            'disposition' => [],
           },
-        ]
+        ],
       )
     end.to raise_error(Puppet::Error, %r{Policy rule disposition must be a string})
   end
@@ -112,9 +112,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'acl',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
         Puppet::Type.type(:consul_policy).new(
           name: 'testing',
@@ -123,9 +123,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'operator',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
         Puppet::Type.type(:consul_policy).new(
           name: 'testing',
@@ -134,9 +134,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'keyring',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
       end.not_to raise_error
     end
@@ -151,9 +151,9 @@ describe Puppet::Type.type(:consul_policy) do
             {
               'resource' => 'operator',
               'segment' => [],
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
       end.not_to raise_error
     end
@@ -169,9 +169,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'service_prefix',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
       end.to raise_error(Puppet::Error, %r{Policy rule needs to specify a segment})
     end
@@ -186,9 +186,9 @@ describe Puppet::Type.type(:consul_policy) do
             {
               'resource' => 'key_prefix',
               'segment' => [],
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
       end.to raise_error(Puppet::Error, %r{Policy rule segment must be a string})
     end
@@ -199,12 +199,12 @@ describe Puppet::Type.type(:consul_policy) do
       {
         'resource' => 'service_prefix',
         'segment' => 'test_service',
-        'disposition' => 'read'
+        'disposition' => 'read',
       },
       {
         'resource' => 'key_prefix',
         'segment' => 'key',
-        'disposition' => 'write'
+        'disposition' => 'write',
       },
     ]
     datacenters = ['testdc']
@@ -215,7 +215,7 @@ describe Puppet::Type.type(:consul_policy) do
         id: '39c75e12-7f43-0a40-dfba-9aa3fcda08d4',
         description: 'test description',
         datacenters: datacenters,
-        rules: rules
+        rules: rules,
       )
     end
 
