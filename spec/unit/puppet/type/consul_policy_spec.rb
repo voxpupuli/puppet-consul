@@ -145,9 +145,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'mesh',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
         Puppet::Type.type(:consul_policy).new(
           name: 'testing',
@@ -156,9 +156,9 @@ describe Puppet::Type.type(:consul_policy) do
           rules: [
             {
               'resource' => 'peering',
-              'disposition' => 'read'
+              'disposition' => 'read',
             },
-          ]
+          ],
         )
       end.not_to raise_error
     end
