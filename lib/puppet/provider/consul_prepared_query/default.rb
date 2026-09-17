@@ -1,3 +1,4 @@
+require_relative '../../../puppet_x/consul/http_client'
 require 'json'
 require 'net/http'
 require 'uri'
@@ -7,6 +8,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
   mk_resource_methods
 
   def self.prefetch(resources)
+    reset
     resources.each do |name, resource|
       Puppet.debug("prefetching for #{name}")
       port = resource[:port]
@@ -15,7 +17,7 @@ Puppet::Type.type(:consul_prepared_query).provide(
       token = resource[:acl_api_token]
       tries = resource[:api_tries]
 
-      found_prepared_queries = list_resources(token, port, hostname, protocol, tries).select do |prepared_query|
+      found_prepared_queries = list_resources(token, port, hostname, protocol, tries, PuppetX::Consul::HTTPClient.tls_options(resource)).select do |prepared_query|
         prepared_query[:name] == name
       end
 
@@ -30,14 +32,15 @@ Puppet::Type.type(:consul_prepared_query).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port, hostname, protocol, tries)
-    return @prepared_queries if @prepared_queries
+  def self.list_resources(acl_api_token, port, hostname, protocol, tries, tls_options = {})
+    @prepared_queries ||= {}
+    cache_key = [acl_api_token, port, hostname, protocol, tries, tls_options]
+    return @prepared_queries[cache_key] if @prepared_queries.key?(cache_key)
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/query")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, tls_options)
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     req = Net::HTTP::Get.new(uri.request_uri, http_headers)
     res = nil
@@ -68,15 +71,14 @@ Puppet::Type.type(:consul_prepared_query).provide(
       }
     end
 
-    @prepared_queries = nprepared_queries
+    @prepared_queries[cache_key] = nprepared_queries
     nprepared_queries
   end
 
   def get_path(id)
     idstr = id ? "/#{id}" : ''
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/query#{idstr}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, PuppetX::Consul::HTTPClient.tls_options(@resource))
     acl_api_token = @resource[:acl_api_token]
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     [uri.request_uri, http, http_headers]
@@ -110,11 +112,15 @@ Puppet::Type.type(:consul_prepared_query).provide(
 
   def get_resource(name, port, hostname, protocol, tries)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries, PuppetX::Consul::HTTPClient.tls_options(@resource)).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
     resources.first || nil
+  end
+
+  def self.reset
+    @prepared_queries = {}
   end
 
   def initialize(value = {})

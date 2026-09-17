@@ -9,10 +9,11 @@ Puppet::Type.type(:consul_policy).provide(
   mk_resource_methods
 
   def self.prefetch(resources)
+    reset
     resources.each do |name, resource|
       rules_encoded = encode_rules(resource[:rules])
 
-      all_policies = list_policies(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries])
+      all_policies = list_policies(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries], PuppetX::Consul::HTTPClient.tls_options(resource))
 
       if resource[:id] == ''
         existing_policy = all_policies.select { |policy| policy.name == name }
@@ -53,13 +54,12 @@ Puppet::Type.type(:consul_policy).provide(
     encoded.join("\n\n")
   end
 
-  def self.list_policies(acl_api_token, hostname, port, protocol, tries)
-    @all_policies ||= nil
-    return @all_policies if @all_policies
-
-    @client ||= ConsulACLPolicyClient.new(hostname, port, protocol, acl_api_token)
-    @all_policies = @client.get_all_policies(tries)
-    @all_policies
+  def self.list_policies(acl_api_token, hostname, port, protocol, tries, tls_options = {})
+    @clients ||= {}
+    @all_policies ||= {}
+    key = [hostname, port, protocol, acl_api_token, tries, tls_options]
+    @client = @clients[key] ||= ConsulACLPolicyClient.new(hostname, port, protocol, acl_api_token, tls_options)
+    @all_policies[key] ||= @client.get_all_policies(tries)
   end
 
   def initialize(messages, client = nil, rules_encoded = '', existing_policy = nil, resource = nil)
@@ -123,6 +123,7 @@ Puppet::Type.type(:consul_policy).provide(
   def self.reset
     @all_policies = nil
     @client = nil
+    @clients = {}
   end
 end
 

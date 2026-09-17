@@ -9,21 +9,21 @@ Puppet::Type.type(:consul_token).provide(
   mk_resource_methods
 
   def self.prefetch(resources)
+    reset
     resources.each do |_name, resource|
-      tokens = list_tokens(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries])
+      tokens = list_tokens(resource[:acl_api_token], resource[:hostname], resource[:port], resource[:protocol], resource[:api_tries], PuppetX::Consul::HTTPClient.tls_options(resource))
       token = tokens.select { |token| token.accessor_id == resource[:accessor_id] }
 
       resource.provider = new({}, @client, token.any? ? token.first : nil, resource)
     end
   end
 
-  def self.list_tokens(acl_api_token, hostname, port, protocol, tries)
-    @token_collection ||= nil
-    return @token_collection if @token_collection
-
-    @client ||= ConsulACLTokenClient.new(hostname, port, protocol, acl_api_token)
-    @token_collection = @client.get_token_list(tries)
-    @token_collection
+  def self.list_tokens(acl_api_token, hostname, port, protocol, tries, tls_options = {})
+    @clients ||= {}
+    @token_collection ||= {}
+    key = [hostname, port, protocol, acl_api_token, tries, tls_options]
+    @client = @clients[key] ||= ConsulACLTokenClient.new(hostname, port, protocol, acl_api_token, tls_options)
+    @token_collection[key] ||= @client.get_token_list(tries)
   end
 
   def initialize(messages, client = nil, existing_token = nil, resource = nil)
@@ -87,6 +87,7 @@ Puppet::Type.type(:consul_token).provide(
 
   def self.reset
     @client = nil
+    @clients = {}
     @token_collection = nil
   end
 end
