@@ -1,3 +1,4 @@
+require_relative '../../../puppet_x/consul/http_client'
 require 'json'
 require 'net/http'
 require 'uri'
@@ -8,6 +9,7 @@ Puppet::Type.type(:consul_key_value).provide(
   mk_resource_methods
 
   def self.prefetch(resources)
+    reset
     resources.each do |name, resource|
       Puppet.debug("prefetching for #{name}")
       port = resource[:port]
@@ -17,7 +19,7 @@ Puppet::Type.type(:consul_key_value).provide(
       tries = resource[:api_tries]
       datacenter = resource[:datacenter]
 
-      found_key_values = list_resources(token, port, hostname, protocol, tries, datacenter).select do |key_value|
+      found_key_values = list_resources(token, port, hostname, protocol, tries, datacenter, PuppetX::Consul::HTTPClient.tls_options(resource)).select do |key_value|
         key_value[:name] == name
       end
 
@@ -32,17 +34,17 @@ Puppet::Type.type(:consul_key_value).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter)
+  def self.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter, tls_options = {})
     @key_values ||= {}
-    return @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"] if @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"]
+    cache_key = [acl_api_token, port, hostname, protocol, tries, datacenter, tls_options]
+    return @key_values[cache_key] if @key_values.key?(cache_key)
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
     consul_url = "#{protocol}://#{hostname}:#{port}/v1/kv/?dc=#{datacenter}&recurse"
 
     uri = URI(consul_url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, tls_options)
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     req = Net::HTTP::Get.new(uri.request_uri, http_headers)
     res = nil
@@ -64,8 +66,7 @@ Puppet::Type.type(:consul_key_value).provide(
     elsif res.code == '404'
       return []
     else
-      Puppet.warning("Cannot retrieve key_values: invalid return code #{res.code} uri: #{uri.request_uri}")
-      return {}
+      raise Puppet::Error, "Cannot retrieve Consul resources: HTTP #{res.code}"
     end
 
     nkey_values = key_values.collect do |key_value|
@@ -77,7 +78,7 @@ Puppet::Type.type(:consul_key_value).provide(
         protocol: protocol,
       }
     end
-    @key_values["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}#{datacenter}"] = nkey_values
+    @key_values[cache_key] = nkey_values
     nkey_values
   end
 
@@ -88,8 +89,7 @@ Puppet::Type.type(:consul_key_value).provide(
 
   def get_path(name)
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/kv/#{name}?dc=#{@resource[:datacenter]}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, PuppetX::Consul::HTTPClient.tls_options(@resource))
     acl_api_token = @resource[:acl_api_token]
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
     [uri.request_uri, http, http_headers]
@@ -112,7 +112,7 @@ Puppet::Type.type(:consul_key_value).provide(
 
   def get_resource(name, port, hostname, protocol, tries, datacenter)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries, datacenter, PuppetX::Consul::HTTPClient.tls_options(@resource)).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things

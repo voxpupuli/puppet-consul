@@ -75,6 +75,10 @@ The following parameters are available in the `consul` class:
 * [`acl_api_protocol`](#-consul--acl_api_protocol)
 * [`acl_api_port`](#-consul--acl_api_port)
 * [`acl_api_tries`](#-consul--acl_api_tries)
+* [`acl_api_ca_file`](#-consul--acl_api_ca_file)
+* [`acl_api_ca_path`](#-consul--acl_api_ca_path)
+* [`acl_api_client_cert`](#-consul--acl_api_client_cert)
+* [`acl_api_client_key`](#-consul--acl_api_client_key)
 * [`acl_api_token`](#-consul--acl_api_token)
 * [`arch`](#-consul--arch)
 * [`archive_path`](#-consul--archive_path)
@@ -164,7 +168,7 @@ Default value: `'localhost'`
 
 ##### <a name="-consul--acl_api_protocol"></a>`acl_api_protocol`
 
-Data type: `String[1]`
+Data type: `Enum['http', 'https']`
 
 Global protocl of ACL API, will be merged with consul_token resources
 
@@ -185,6 +189,38 @@ Data type: `Integer[1]`
 Global max. tries of ACL API, will be merged with consul_token resources
 
 Default value: `3`
+
+##### <a name="-consul--acl_api_ca_file"></a>`acl_api_ca_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+PEM CA bundle for HTTPS API providers and CLI commands.
+
+Default value: `undef`
+
+##### <a name="-consul--acl_api_ca_path"></a>`acl_api_ca_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+OpenSSL hashed CA directory for HTTPS API providers and CLI commands.
+
+Default value: `undef`
+
+##### <a name="-consul--acl_api_client_cert"></a>`acl_api_client_cert`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+PEM client certificate and optional intermediate chain for mutual TLS.
+
+Default value: `undef`
+
+##### <a name="-consul--acl_api_client_key"></a>`acl_api_client_key`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Unencrypted PEM private key for acl_api_client_cert.
+
+Default value: `undef`
 
 ##### <a name="-consul--acl_api_token"></a>`acl_api_token`
 
@@ -1137,6 +1173,10 @@ The following parameters are available in the `consul_acl` type.
 
 * [`acl_api_token`](#-consul_acl--acl_api_token)
 * [`api_tries`](#-consul_acl--api_tries)
+* [`ca_file`](#-consul_acl--ca_file)
+* [`ca_path`](#-consul_acl--ca_path)
+* [`client_cert`](#-consul_acl--client_cert)
+* [`client_key`](#-consul_acl--client_key)
 * [`hostname`](#-consul_acl--hostname)
 * [`name`](#-consul_acl--name)
 * [`port`](#-consul_acl--port)
@@ -1152,6 +1192,22 @@ Default value: `anonymous`
 number of tries when contacting the Consul REST API
 
 Default value: `3`
+
+##### <a name="-consul_acl--ca_file"></a>`ca_file`
+
+Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.
+
+##### <a name="-consul_acl--ca_path"></a>`ca_path`
+
+Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.
+
+##### <a name="-consul_acl--client_cert"></a>`client_cert`
+
+Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.
+
+##### <a name="-consul_acl--client_key"></a>`client_key`
+
+Absolute path to the unencrypted PEM private key for client_cert.
 
 ##### <a name="-consul_acl--hostname"></a>`hostname`
 
@@ -1197,6 +1253,10 @@ The following parameters are available in the `consul_key_value` type.
 
 * [`acl_api_token`](#-consul_key_value--acl_api_token)
 * [`api_tries`](#-consul_key_value--api_tries)
+* [`ca_file`](#-consul_key_value--ca_file)
+* [`ca_path`](#-consul_key_value--ca_path)
+* [`client_cert`](#-consul_key_value--client_cert)
+* [`client_key`](#-consul_key_value--client_key)
 * [`datacenter`](#-consul_key_value--datacenter)
 * [`flags`](#-consul_key_value--flags)
 * [`hostname`](#-consul_key_value--hostname)
@@ -1215,6 +1275,22 @@ Default value: `anonymous`
 number of tries when contacting the Consul REST API
 
 Default value: `3`
+
+##### <a name="-consul_key_value--ca_file"></a>`ca_file`
+
+Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.
+
+##### <a name="-consul_key_value--ca_path"></a>`ca_path`
+
+Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.
+
+##### <a name="-consul_key_value--client_cert"></a>`client_cert`
+
+Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.
+
+##### <a name="-consul_key_value--client_key"></a>`client_key`
+
+Absolute path to the unencrypted PEM private key for client_cert.
 
 ##### <a name="-consul_key_value--datacenter"></a>`datacenter`
 
@@ -1299,6 +1375,10 @@ The following parameters are available in the `consul_policy` type.
 
 * [`acl_api_token`](#-consul_policy--acl_api_token)
 * [`api_tries`](#-consul_policy--api_tries)
+* [`ca_file`](#-consul_policy--ca_file)
+* [`ca_path`](#-consul_policy--ca_path)
+* [`client_cert`](#-consul_policy--client_cert)
+* [`client_key`](#-consul_policy--client_key)
 * [`hostname`](#-consul_policy--hostname)
 * [`name`](#-consul_policy--name)
 * [`port`](#-consul_policy--port)
@@ -1315,6 +1395,22 @@ Default value: `''`
 number of tries when contacting the Consul REST API
 
 Default value: `3`
+
+##### <a name="-consul_policy--ca_file"></a>`ca_file`
+
+Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.
+
+##### <a name="-consul_policy--ca_path"></a>`ca_path`
+
+Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.
+
+##### <a name="-consul_policy--client_cert"></a>`client_cert`
+
+Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.
+
+##### <a name="-consul_policy--client_key"></a>`client_key`
+
+Absolute path to the unencrypted PEM private key for client_cert.
 
 ##### <a name="-consul_policy--hostname"></a>`hostname`
 
@@ -1368,6 +1464,10 @@ The following parameters are available in the `consul_prepared_query` type.
 
 * [`acl_api_token`](#-consul_prepared_query--acl_api_token)
 * [`api_tries`](#-consul_prepared_query--api_tries)
+* [`ca_file`](#-consul_prepared_query--ca_file)
+* [`ca_path`](#-consul_prepared_query--ca_path)
+* [`client_cert`](#-consul_prepared_query--client_cert)
+* [`client_key`](#-consul_prepared_query--client_key)
 * [`hostname`](#-consul_prepared_query--hostname)
 * [`name`](#-consul_prepared_query--name)
 * [`node_meta`](#-consul_prepared_query--node_meta)
@@ -1397,6 +1497,22 @@ Default value: `anonymous`
 number of tries when contacting the Consul REST API
 
 Default value: `3`
+
+##### <a name="-consul_prepared_query--ca_file"></a>`ca_file`
+
+Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.
+
+##### <a name="-consul_prepared_query--ca_path"></a>`ca_path`
+
+Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.
+
+##### <a name="-consul_prepared_query--client_cert"></a>`client_cert`
+
+Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.
+
+##### <a name="-consul_prepared_query--client_key"></a>`client_key`
+
+Absolute path to the unencrypted PEM private key for client_cert.
 
 ##### <a name="-consul_prepared_query--hostname"></a>`hostname`
 
@@ -1546,6 +1662,10 @@ The following parameters are available in the `consul_token` type.
 
 * [`acl_api_token`](#-consul_token--acl_api_token)
 * [`api_tries`](#-consul_token--api_tries)
+* [`ca_file`](#-consul_token--ca_file)
+* [`ca_path`](#-consul_token--ca_path)
+* [`client_cert`](#-consul_token--client_cert)
+* [`client_key`](#-consul_token--client_key)
 * [`hostname`](#-consul_token--hostname)
 * [`name`](#-consul_token--name)
 * [`port`](#-consul_token--port)
@@ -1562,6 +1682,22 @@ Default value: `''`
 number of tries when contacting the Consul REST API
 
 Default value: `3`
+
+##### <a name="-consul_token--ca_file"></a>`ca_file`
+
+Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.
+
+##### <a name="-consul_token--ca_path"></a>`ca_path`
+
+Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.
+
+##### <a name="-consul_token--client_cert"></a>`client_cert`
+
+Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.
+
+##### <a name="-consul_token--client_key"></a>`client_key`
+
+Absolute path to the unencrypted PEM private key for client_cert.
 
 ##### <a name="-consul_token--hostname"></a>`hostname`
 
@@ -1659,6 +1795,10 @@ Struct[{
       disposition => String[1],
     }]]],
     acl_api_token => Optional[String[1]],
+    ca_file          => Optional[Stdlib::Absolutepath],
+    ca_path          => Optional[Stdlib::Absolutepath],
+    client_cert      => Optional[Stdlib::Absolutepath],
+    client_key       => Optional[Stdlib::Absolutepath],
     protocol      => Optional[String[1]],
     port          => Optional[Integer[1, 65535]],
     hostname      => Optional[String[1]],
@@ -1681,6 +1821,10 @@ Struct[{
     policies_by_name => Optional[Array[String]],
     policies_by_id   => Optional[Array[String]],
     acl_api_token    => Optional[String[1]],
+    ca_file          => Optional[Stdlib::Absolutepath],
+    ca_path          => Optional[Stdlib::Absolutepath],
+    client_cert      => Optional[Stdlib::Absolutepath],
+    client_key       => Optional[Stdlib::Absolutepath],
     protocol         => Optional[String[1]],
     port             => Optional[Integer[1, 65535]],
     hostname         => Optional[String[1]],

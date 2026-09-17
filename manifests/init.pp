@@ -8,6 +8,10 @@
 # @param acl_api_protocol Global protocl of ACL API, will be merged with consul_token resources
 # @param acl_api_port Global port of ACL API, will be merged with consul_token resources
 # @param acl_api_tries Global max. tries of ACL API, will be merged with consul_token resources
+# @param acl_api_ca_file PEM CA bundle for HTTPS API providers and CLI commands.
+# @param acl_api_ca_path OpenSSL hashed CA directory for HTTPS API providers and CLI commands.
+# @param acl_api_client_cert PEM client certificate and optional intermediate chain for mutual TLS.
+# @param acl_api_client_key Unencrypted PEM private key for acl_api_client_cert.
 # @param acl_api_token Global token of ACL API, will be merged with consul_token resources
 # @param arch Architecture of consul binary to download
 # @param archive_path Path used when installing consul via the url
@@ -93,10 +97,14 @@ class consul (
   Hash[String[1], Consul::TokenStruct]  $tokens                      = {},
   Hash[String[1], Consul::PolicyStruct] $policies                    = {},
   String[1]                             $acl_api_hostname            = 'localhost',
-  String[1]                             $acl_api_protocol            = 'http',
+  Enum['http', 'https']                  $acl_api_protocol            = 'http',
   Integer[1, 65535]                     $acl_api_port                = 8500,
   Integer[1]                            $acl_api_tries               = 3,
   String[0]                             $acl_api_token               = '', # lint:ignore:params_empty_string_assignment
+  Optional[Stdlib::Absolutepath]        $acl_api_ca_file             = undef,
+  Optional[Stdlib::Absolutepath]        $acl_api_ca_path             = undef,
+  Optional[Stdlib::Absolutepath]        $acl_api_client_cert         = undef,
+  Optional[Stdlib::Absolutepath]        $acl_api_client_key          = undef,
   String[1]                             $arch                        = $consul::params::arch,
   Optional[Stdlib::Absolutepath]        $archive_path                = undef,
   Stdlib::Absolutepath                  $bin_dir                     = $consul::params::bin_dir,
@@ -204,23 +212,47 @@ class consul (
     $http_addr = '127.0.0.1'
   }
 
-  if dig($config_hash_real,'verify_incoming') {
-    $verify_incoming = $config_hash_real['verify_incoming']
-  } else {
-    $verify_incoming = false
+  if ($acl_api_client_cert == undef) != ($acl_api_client_key == undef) {
+    fail('acl_api_client_cert and acl_api_client_key must be supplied together')
   }
 
-  if dig($config_hash_real,'cert_file') {
-    $cert_file = $config_hash_real['cert_file']
+  # Explicit API credentials override agent TLS settings for local CLI commands.
+  $https_tls = {
+    'ca_file'         => $config_hash_real['ca_file'],
+    'ca_path'         => $config_hash_real['ca_path'],
+    'cert_file'       => $config_hash_real['cert_file'],
+    'key_file'        => $config_hash_real['key_file'],
+    'verify_incoming' => $config_hash_real['verify_incoming'],
+  } + pick(dig($config_hash_real, 'tls', 'defaults'), {}) + pick(dig($config_hash_real, 'tls', 'https'), {})
+
+  $cli_tls = {
+    'ca-file'     => $https_tls['ca_file'],
+    'ca-path'     => $https_tls['ca_path'],
+    'client-cert' => $https_tls['verify_incoming'] ? { true => $https_tls['cert_file'], default => undef },
+    'client-key'  => $https_tls['verify_incoming'] ? { true => $https_tls['key_file'], default => undef },
+  } + {
+    'ca-file'     => $acl_api_ca_file,
+    'ca-path'     => $acl_api_ca_path,
+    'client-cert' => $acl_api_client_cert,
+    'client-key'  => $acl_api_client_key,
+  }.filter |$key, $value| { $value != undef }
+
+  if $acl_api_protocol == 'https' {
+    $cli_address = "https://${acl_api_hostname}:${acl_api_port}"
+  } elsif $http_port == -1 {
+    $cli_address = "https://${acl_api_hostname}:${https_port}"
   } else {
-    $cert_file = Undef
+    $cli_host = $http_addr ? { '0.0.0.0' => '127.0.0.1', default => $http_addr }
+    $cli_address = "${cli_host}:${http_port}"
   }
 
-  if dig($config_hash_real,'key_file') {
-    $key_file = $config_hash_real['key_file']
+  $cli_tls_args = if $acl_api_protocol == 'https' or $http_port == -1 {
+    $cli_tls.filter |$key, $value| { $value != undef }.map |$key, $value| { "-${key}=${value}" }
   } else {
-    $key_file = Undef
+    []
   }
+  $cli_token_args = $acl_api_token ? { '' => [], default => ["-token=${acl_api_token}"] }
+  $cli_options = shellquote(["-http-addr=${cli_address}"] + $cli_tls_args + $cli_token_args)
 
   if $services {
     create_resources(consul::service, $services)
@@ -259,15 +291,21 @@ class consul (
     'port'          => $acl_api_port,
     'api_tries'     => $acl_api_tries,
     'acl_api_token' => $acl_api_token,
+    'ca_file'       => $acl_api_ca_file,
+    'ca_path'       => $acl_api_ca_path,
+    'client_cert'   => $acl_api_client_cert,
+    'client_key'    => $acl_api_client_key,
   }
 
+  $global_acl_config_real = $global_acl_config.filter |$key, $value| { $value != undef }
+
   $policies.each | $name, $policy_config | {
-    $merges_policy_config = $global_acl_config + $policy_config
+    $merges_policy_config = $global_acl_config_real + $policy_config
     create_resources(consul_policy, { $name => $merges_policy_config })
   }
 
   $tokens.each | $name, $token_config | {
-    $merged_token_config = $global_acl_config + $token_config
+    $merged_token_config = $global_acl_config_real + $token_config
     create_resources(consul_token, { $name => $merged_token_config })
   }
 }

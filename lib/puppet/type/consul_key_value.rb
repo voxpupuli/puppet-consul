@@ -1,7 +1,11 @@
+require_relative '../../puppet_x/consul/tls_parameters'
+
 Puppet::Type.newtype(:consul_key_value) do
   desc <<-EOD
   Manage a consul key value object.
   EOD
+  PuppetX::Consul::TLSParameters.apply(self)
+
   ensurable
 
   newparam(:name, namevar: true) do
@@ -48,6 +52,22 @@ Puppet::Type.newtype(:consul_key_value) do
     defaultto :http
   end
 
+  newparam(:ca_file, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.'
+  end
+
+  newparam(:ca_path, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.'
+  end
+
+  newparam(:client_cert, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.'
+  end
+
+  newparam(:client_key, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to the unencrypted PEM private key for client_cert.'
+  end
+
   newparam(:port) do
     desc 'consul port'
     defaultto 8500
@@ -70,5 +90,9 @@ Puppet::Type.newtype(:consul_key_value) do
     validate do |value|
       raise ArgumentError, 'Number of API tries must be a number' unless value.is_a?(Integer)
     end
+  end
+
+  autorequire(:service) do
+    ['consul']
   end
 end

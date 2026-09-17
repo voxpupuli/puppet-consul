@@ -2,14 +2,14 @@ require 'puppet_x'
 require 'json'
 require 'net/http'
 require 'uri'
+require_relative 'http_client'
 
 module PuppetX::Consul
   module PuppetX::Consul::ACLBase
     class BaseClient
-      def initialize(hostname, port, protocol, api_token = nil)
+      def initialize(hostname, port, protocol, api_token = nil, tls_options = {})
         @global_uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
-        @http_client = Net::HTTP.new(@global_uri.host, @global_uri.port)
-        @http_client.use_ssl = true if @global_uri.instance_of? URI::HTTPS
+        @http_client = PuppetX::Consul::HTTPClient.build(@global_uri, tls_options)
         @api_token = api_token
       end
 

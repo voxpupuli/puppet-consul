@@ -1,3 +1,4 @@
+require_relative '../../../puppet_x/consul/http_client'
 require 'json'
 require 'net/http'
 require 'pp'
@@ -8,6 +9,7 @@ Puppet::Type.type(:consul_acl).provide(
   mk_resource_methods
 
   def self.prefetch(resources)
+    reset
     resources.each do |name, resource|
       Puppet.debug("prefetching for #{name}")
       port = resource[:port]
@@ -16,7 +18,7 @@ Puppet::Type.type(:consul_acl).provide(
       token = resource[:acl_api_token]
       tries = resource[:api_tries]
 
-      found_acls = list_resources(token, port, hostname, protocol, tries).select do |acl|
+      found_acls = list_resources(token, port, hostname, protocol, tries, PuppetX::Consul::HTTPClient.tls_options(resource)).select do |acl|
         acl[:name] == name
       end
 
@@ -31,15 +33,15 @@ Puppet::Type.type(:consul_acl).provide(
     end
   end
 
-  def self.list_resources(acl_api_token, port, hostname, protocol, tries)
+  def self.list_resources(acl_api_token, port, hostname, protocol, tries, tls_options = {})
     @acls ||= {}
-    return @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"] if @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"]
+    cache_key = [acl_api_token, port, hostname, protocol, tries, tls_options]
+    return @acls[cache_key] if @acls.key?(cache_key)
 
     # this might be configurable by searching /etc/consul.d
     # but would break for anyone using nonstandard paths
     uri = URI("#{protocol}://#{hostname}:#{port}/v1/acl")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, tls_options)
 
     path = "#{uri.request_uri}/list"
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
@@ -64,12 +66,9 @@ Puppet::Type.type(:consul_acl).provide(
       end
     end
 
-    if res_code == '200'
-      acls = JSON.parse(res.body)
-    else
-      Puppet.warning("Cannot retrieve ACLs: invalid return code #{res_code} uri: #{path} body: #{req.body}")
-      return {}
-    end
+    raise Puppet::Error, "Cannot retrieve Consul resources: HTTP #{res_code}" unless res_code == '200'
+
+    acls = JSON.parse(res.body)
 
     nacls = acls.collect do |acl|
       {
@@ -86,14 +85,13 @@ Puppet::Type.type(:consul_acl).provide(
       }
     end
 
-    @acls["#{acl_api_token}#{port}#{hostname}#{protocol}#{tries}"] = nacls
+    @acls[cache_key] = nacls
     nacls
   end
 
   def put_acl(method, body)
     uri = URI("#{@resource[:protocol]}://#{@resource[:hostname]}:#{@resource[:port]}/v1/acl")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if uri.instance_of? URI::HTTPS
+    http = PuppetX::Consul::HTTPClient.build(uri, PuppetX::Consul::HTTPClient.tls_options(@resource))
     acl_api_token = @resource[:acl_api_token]
     path = uri.request_uri + "/#{method}"
     http_headers = { 'X-Consul-Token' => acl_api_token.to_s }
@@ -105,11 +103,15 @@ Puppet::Type.type(:consul_acl).provide(
 
   def get_resource(name, port, hostname, protocol, tries)
     acl_api_token = @resource[:acl_api_token]
-    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries).select do |res|
+    resources = self.class.list_resources(acl_api_token, port, hostname, protocol, tries, PuppetX::Consul::HTTPClient.tls_options(@resource)).select do |res|
       res[:name] == name
     end
     # if the user creates multiple with the same name this will do odd things
     resources.first || nil
+  end
+
+  def self.reset
+    @acls = {}
   end
 
   def initialize(value = {})

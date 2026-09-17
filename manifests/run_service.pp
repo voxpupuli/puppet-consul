@@ -51,22 +51,25 @@ class consul::run_service {
 
   case $consul::install_method {
     'docker': {
-      $wan_command = "docker exec consul consul join -wan ${consul::join_wan}"
-      $wan_unless = "docker exec consul consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"  #lint:ignore:140chars
+      $wan_command = "docker exec -e CONSUL_HTTP_SSL_VERIFY=true consul consul join -wan ${consul::cli_options} ${consul::join_wan}"
+      $wan_unless = "docker exec -e CONSUL_HTTP_SSL_VERIFY=true consul consul members -wan -detailed ${consul::cli_options} | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"  #lint:ignore:140chars
     }
     default: {
-      $wan_command = "consul join -wan ${consul::join_wan}"
-      $wan_unless = "consul members -wan -detailed | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
+      $wan_command = "consul join -wan ${consul::cli_options} ${consul::join_wan}"
+      $wan_unless = "consul members -wan -detailed ${consul::cli_options} | grep -vP \"dc=${consul::config_hash_real['datacenter']}\" | grep -P 'alive'"
     }
   }
 
   if $consul::join_wan {
+    $join_command = $consul::acl_api_token ? { '' => $wan_command, default => Sensitive($wan_command) }
+    $join_unless = $consul::acl_api_token ? { '' => $wan_unless, default => Sensitive($wan_unless) }
     exec { 'join consul wan':
-      cwd       => $consul::config_dir,
-      path      => [$consul::bin_dir,'/bin','/usr/bin'],
-      command   => $wan_command,
-      unless    => $wan_unless,
-      subscribe => Service['consul'],
+      cwd         => $consul::config_dir,
+      path        => [$consul::bin_dir,'/bin','/usr/bin'],
+      command     => $join_command,
+      unless      => $join_unless,
+      environment => ['CONSUL_HTTP_SSL_VERIFY=true'],
+      subscribe   => Service['consul'],
     }
   }
 }
