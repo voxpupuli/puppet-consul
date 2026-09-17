@@ -61,24 +61,31 @@ class consul::params {
 
   case $facts['os']['name'] {
     'Ubuntu': {
+      $bash_completion = true
       $shell = '/usr/sbin/nologin'
     }
     'RedHat': {
+      $bash_completion = false
       $shell = '/sbin/nologin'
     }
     'Debian': {
+      $bash_completion = true
       $shell = '/usr/sbin/nologin'
     }
     'Archlinux': {
+      $bash_completion = false
       $shell = '/sbin/nologin'
     }
     'OpenSuSE': {
+      $bash_completion = false
       $shell = '/usr/sbin/nologin'
     }
     /SLE[SD]/: {
+      $bash_completion = false
       $shell = '/usr/sbin/nologin'
     }
     default: {
+      $bash_completion = false
       $shell = undef
     }
   }
