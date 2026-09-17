@@ -53,7 +53,7 @@ describe 'consul' do
           }
         end
 
-        it { is_expected.to contain_exec('join consul wan').with(command: 'consul join -wan wan_host.test.com') }
+        it { is_expected.to contain_exec('join consul wan').with(command: 'consul join -wan -http-addr=127.0.0.1:8500 wan_host.test.com') }
       end
 
       context 'By default, should not attempt to join a wan cluster' do

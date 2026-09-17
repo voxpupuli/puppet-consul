@@ -11,40 +11,19 @@ class consul::reload_service {
     if $consul::reload_command {
       $command = Sensitive($consul::reload_command)
     } else {
-      # Make sure we don't try to connect to 0.0.0.0, use 127.0.0.1 instead
-      # This can happen if the consul agent RPC port is bound to 0.0.0.0
-      if $consul::http_addr == '0.0.0.0' {
-        $http_addr = '127.0.0.1'
-      } else {
-        $http_addr = $consul::http_addr
+      $command_prefix = $consul::install_method ? {
+        'docker' => 'docker exec -e CONSUL_HTTP_SSL_VERIFY=true consul consul reload',
+        default  => 'consul reload',
       }
-
-      # The reload service should connect to http if possible (http port different from -1)
-      if $consul::http_port != -1 {
-        $reload_options = "-http-addr=${http_addr}:${consul::http_port}"
-      }
-      elsif $consul::verify_incoming { # in case incoming connections are verified correct certificate files should be used
-        $reload_options = "-http-addr=https://localhost:${consul::https_port} -client-cert=${consul::cert_file} -client-key=${consul::key_file}"
-      }
-      else {
-        $reload_options = "-http-addr=https://localhost:${consul::https_port}"
-      }
-
-      case $consul::install_method {
-        'docker': { $command_part1 = "docker exec consul consul reload  ${reload_options}" }
-        default: { $command_part1 = "consul reload ${reload_options}" }
-      }
-
-      if $consul::acl_api_token != '' {
-        $command = Sensitive("${command_part1} -token=${consul::acl_api_token}")
-      } else {
-        $command = $command_part1
+      $command = $consul::acl_api_token ? {
+        ''      => "${command_prefix} ${consul::cli_options}",
+        default => Sensitive("${command_prefix} ${consul::cli_options}"),
       }
     }
 
     exec { 'reload consul service':
       path        => [$consul::bin_dir,'/bin','/usr/bin'],
-      environment => ['CONSUL_HTTP_SSL_VERIFY=false',],
+      environment => ['CONSUL_HTTP_SSL_VERIFY=true',],
       command     => $command,
       refreshonly => true,
       tries       => 3,
