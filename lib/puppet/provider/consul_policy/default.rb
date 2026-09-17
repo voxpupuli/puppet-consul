@@ -141,12 +141,7 @@ end
 
 class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
   def get_all_policies(max_tries)
-    begin
-      response = get('/policies', max_tries)
-    rescue StandardError => e
-      Puppet.warning("Cannot retrieve ACL token list: #{e.message}")
-      response = {}
-    end
+    response = get('/policies', max_tries)
 
     collection = []
     response.each do |item|
@@ -157,12 +152,7 @@ class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
   end
 
   def get_policy_rules(policy_id, max_tries)
-    begin
-      response = get('/policy/' + policy_id, max_tries)
-    rescue StandardError => e
-      Puppet.warning("Cannot retrieve ACL #{id}: #{e.message}")
-      return ''
-    end
+    response = get('/policy/' + policy_id, max_tries)
 
     response['Rules']
   end
@@ -170,22 +160,14 @@ class ConsulACLPolicyClient < PuppetX::Consul::ACLBase::BaseClient
   def create_policy(policy, tries)
     body = create_body(policy)
 
-    begin
-      response = put('/policy', body, tries)
-      policy.id = response['ID']
-    rescue StandardError => e
-      Puppet.warning("Unable to create policy #{policy.name}: #{e.message}")
-    end
+    response = put('/policy', body, tries)
+    policy.id = response['ID']
   end
 
   def update_policy(policy)
     body = create_body(policy)
 
-    begin
-      put('/policy/' + policy.id, body)
-    rescue StandardError => e
-      Puppet.warning("Unable to update policy #{policy.name} (ID: #{policy.id}): #{e.message}")
-    end
+    put('/policy/' + policy.id, body)
   end
 
   def create_body(policy)

@@ -52,12 +52,9 @@ Puppet::Type.type(:consul_prepared_query).provide(
       break if res.code == '200'
     end
 
-    if res.code == '200'
-      prepared_queries = JSON.parse(res.body)
-    else
-      Puppet.warning("Cannot retrieve prepared_queries: invalid return code #{res.code} uri: #{path} body: #{req.body}")
-      return {}
-    end
+    raise Puppet::Error, "Cannot retrieve Consul resources: HTTP #{res.code}" unless res.code == '200'
+
+    prepared_queries = JSON.parse(res.body)
 
     nprepared_queries = prepared_queries.collect do |prepared_query|
       {

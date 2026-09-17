@@ -124,12 +124,7 @@ end
 
 class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
   def get_token_list(tries)
-    begin
-      response = get('/tokens', tries)
-    rescue StandardError => e
-      Puppet.warning("Cannot retrieve ACL token list: #{e.message}")
-      response = {}
-    end
+    response = get('/tokens', tries)
 
     collection = []
     response.each do |item|
@@ -140,25 +135,15 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
   end
 
   def create_token(accessor_id, description, policies_by_name, policies_by_id, tries, secret_id = nil)
-    begin
-      body = encode_body(accessor_id, description, policies_by_name, policies_by_id, secret_id)
-      response = put('/token', body, tries)
-    rescue StandardError => e
-      Puppet.warning("Unable to create token #{description}: #{e.message}")
-      return nil
-    end
+    body = encode_body(accessor_id, description, policies_by_name, policies_by_id, secret_id)
+    response = put('/token', body, tries)
 
     ConsulToken.new(response['AccessorID'], response['SecretID'], description, parse_policies(response['Policies']))
   end
 
   def update_token(accessor_id, description, policies_by_name, policies_by_id)
-    begin
-      body = encode_body(accessor_id, description, policies_by_name, policies_by_id, nil)
-      response = put('/token/' + accessor_id, body)
-    rescue StandardError => e
-      Puppet.warning("Unable to update token #{description} (Accessor ID: #{accessor_id}): #{e.message}")
-      return nil
-    end
+    body = encode_body(accessor_id, description, policies_by_name, policies_by_id, nil)
+    response = put('/token/' + accessor_id, body)
 
     parse_policies(response['Policies'])
   end
@@ -167,9 +152,6 @@ class ConsulACLTokenClient < PuppetX::Consul::ACLBase::BaseClient
     response = delete('/token/' + accessor_id)
 
     raise 'Consul API returned false as response' if response == 'false'
-  rescue StandardError => e
-    Puppet.warning("Unable to delete token #{accessor_id}: #{e.message}")
-    nil
   end
 
   def parse_policies(response)

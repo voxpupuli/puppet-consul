@@ -64,12 +64,9 @@ Puppet::Type.type(:consul_acl).provide(
       end
     end
 
-    if res_code == '200'
-      acls = JSON.parse(res.body)
-    else
-      Puppet.warning("Cannot retrieve ACLs: invalid return code #{res_code} uri: #{path} body: #{req.body}")
-      return {}
-    end
+    raise Puppet::Error, "Cannot retrieve Consul resources: HTTP #{res_code}" unless res_code == '200'
+
+    acls = JSON.parse(res.body)
 
     nacls = acls.collect do |acl|
       {

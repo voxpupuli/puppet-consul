@@ -64,8 +64,7 @@ Puppet::Type.type(:consul_key_value).provide(
     elsif res.code == '404'
       return []
     else
-      Puppet.warning("Cannot retrieve key_values: invalid return code #{res.code} uri: #{uri.request_uri}")
-      return {}
+      raise Puppet::Error, "Cannot retrieve Consul resources: HTTP #{res.code}"
     end
 
     nkey_values = key_values.collect do |key_value|
