@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.0.0](https://github.com/voxpupuli/puppet-consul/tree/v11.0.0) (2026-09-24)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v10.0.0...v11.0.0)
+
+**Breaking changes:**
+
+- feat: Support HTTPS-only Consul with custom CA certificates and mutual TLS [\#717](https://github.com/voxpupuli/puppet-consul/pull/717) ([rwaffen](https://github.com/rwaffen))
+
+**Implemented enhancements:**
+
+- replace deprecated calls with Facter::Core::Execution [\#715](https://github.com/voxpupuli/puppet-consul/pull/715) ([corporate-gadfly](https://github.com/corporate-gadfly))
+- Allow specifying custom reload command [\#714](https://github.com/voxpupuli/puppet-consul/pull/714) ([hbro](https://github.com/hbro))
+- Add Debian 13 support [\#708](https://github.com/voxpupuli/puppet-consul/pull/708) ([bastelfreak](https://github.com/bastelfreak))
+- Add special rule format for mesh and peering type policy [\#653](https://github.com/voxpupuli/puppet-consul/pull/653) ([bratucornel](https://github.com/bratucornel))
+
+**Fixed bugs:**
+
+- Fix rubocop trailing comma warnings in consul\_policy\_spec [\#713](https://github.com/voxpupuli/puppet-consul/pull/713) ([SHWETHABHAT1](https://github.com/SHWETHABHAT1))
+
 ## [v10.0.0](https://github.com/voxpupuli/puppet-consul/tree/v10.0.0) (2025-10-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v9.2.0...v10.0.0)
