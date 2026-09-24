@@ -12,24 +12,29 @@
 
 This module manages Consul servers and agents.
 
-- [Compatibility](#compatibility)
-  - [What This Module Affects](#what-this-module-affects)
-- [Usage](#usage)
-- [Web UI](#web-ui)
-- [Service Definition](#service-definition)
-- [Watch Definitions](#watch-definitions)
-- [Check Definitions](#check-definitions)
-- [Removing Service, Check and Watch definitions](#removing-service-check-and-watch-definitions)
-- [ACL Definitions](#acl-definitions)
-  - [Policy/Token system](#policytoken-system)
-  - [Legacy system](#legacy-system)
-- [Prepared Queries and Prepared Query Templates](#prepared-queries-and-prepared-query-templates)
-- [Key/Value Objects](#keyvalue-objects)
-- [Limitations](#limitations)
-- [Windows Experimental Support](#windows-experimental-support)
-- [Telemetry](#telemetry)
-- [Consul Template](#consul-template)
-- [Development](#development)
+- [puppet-consul](#puppet-consul)
+  - [Compatibility](#compatibility)
+    - [What This Module Affects](#what-this-module-affects)
+  - [🚧 Breaking changes](#-breaking-changes)
+    - [v11.x](#v11x)
+  - [Usage](#usage)
+  - [HTTPS with a private CA](#https-with-a-private-ca)
+  - [Web UI](#web-ui)
+  - [Service Definition](#service-definition)
+  - [Watch Definitions](#watch-definitions)
+  - [Check Definitions](#check-definitions)
+  - [Removing Service, Check and Watch definitions](#removing-service-check-and-watch-definitions)
+  - [ACL Definitions](#acl-definitions)
+    - [Policy/Token system](#policytoken-system)
+    - [Legacy system](#legacy-system)
+  - [Prepared Queries and Prepared Query Templates](#prepared-queries-and-prepared-query-templates)
+  - [Key/Value Objects](#keyvalue-objects)
+  - [Limitations](#limitations)
+  - [Windows Experimental Support](#windows-experimental-support)
+  - [Telemetry](#telemetry)
+  - [Consul Template](#consul-template)
+  - [Development](#development)
+  - [Transfer Notice](#transfer-notice)
 
 ## Compatibility
 
@@ -58,6 +63,15 @@ new versions of consul. Pin to the version that works for your setup!
 - Installs a configuration file (/etc/consul/config.json)
 - Manages the consul service via upstart, sysv, systemd, or nssm.
 - Optionally installs the Web UI
+
+## 🚧 Breaking changes
+
+### v11.x
+
+Consul API failures will fail the affected Puppet resources and mark the run as failed,
+instead of logging warnings and treating failed requests as empty results.
+
+See [PR #717](https://github.com/voxpupuli/puppet-consul/pull/717) for details.
 
 ## Usage
 
