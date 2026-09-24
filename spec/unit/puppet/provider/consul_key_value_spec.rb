@@ -39,14 +39,13 @@ describe Puppet::Type.type(:consul_key_value).provider(:default) do
     end
 
     context 'when the first three responses are unexpected' do
-      it 'silentlies fail to prefetch' do
+      it 'fails rather than treating an unsuccessful read as an absent key' do
         stub_request(:get, 'http://localhost:8500/v1/kv/?dc=dc1&recurse')
           .with(headers: { 'Accept' => '*/*', 'User-Agent' => 'Ruby', 'X-Consul-Token' => 'sampleToken' })
           .to_return(status: 400, body: '', headers: {})
 
         described_class.reset
-        described_class.prefetch(resources)
-        expect(resource.provider.ensure).to be(:absent)
+        expect { described_class.prefetch(resources) }.to raise_error(Puppet::Error, %r{HTTP 400})
       end
     end
 

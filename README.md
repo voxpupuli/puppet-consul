@@ -12,24 +12,29 @@
 
 This module manages Consul servers and agents.
 
-- [Compatibility](#compatibility)
-  - [What This Module Affects](#what-this-module-affects)
-- [Usage](#usage)
-- [Web UI](#web-ui)
-- [Service Definition](#service-definition)
-- [Watch Definitions](#watch-definitions)
-- [Check Definitions](#check-definitions)
-- [Removing Service, Check and Watch definitions](#removing-service-check-and-watch-definitions)
-- [ACL Definitions](#acl-definitions)
-  - [Policy/Token system](#policytoken-system)
-  - [Legacy system](#legacy-system)
-- [Prepared Queries and Prepared Query Templates](#prepared-queries-and-prepared-query-templates)
-- [Key/Value Objects](#keyvalue-objects)
-- [Limitations](#limitations)
-- [Windows Experimental Support](#windows-experimental-support)
-- [Telemetry](#telemetry)
-- [Consul Template](#consul-template)
-- [Development](#development)
+- [puppet-consul](#puppet-consul)
+  - [Compatibility](#compatibility)
+    - [What This Module Affects](#what-this-module-affects)
+  - [🚧 Breaking changes](#-breaking-changes)
+    - [v11.x](#v11x)
+  - [Usage](#usage)
+  - [HTTPS with a private CA](#https-with-a-private-ca)
+  - [Web UI](#web-ui)
+  - [Service Definition](#service-definition)
+  - [Watch Definitions](#watch-definitions)
+  - [Check Definitions](#check-definitions)
+  - [Removing Service, Check and Watch definitions](#removing-service-check-and-watch-definitions)
+  - [ACL Definitions](#acl-definitions)
+    - [Policy/Token system](#policytoken-system)
+    - [Legacy system](#legacy-system)
+  - [Prepared Queries and Prepared Query Templates](#prepared-queries-and-prepared-query-templates)
+  - [Key/Value Objects](#keyvalue-objects)
+  - [Limitations](#limitations)
+  - [Windows Experimental Support](#windows-experimental-support)
+  - [Telemetry](#telemetry)
+  - [Consul Template](#consul-template)
+  - [Development](#development)
+  - [Transfer Notice](#transfer-notice)
 
 ## Compatibility
 
@@ -58,6 +63,15 @@ new versions of consul. Pin to the version that works for your setup!
 - Installs a configuration file (/etc/consul/config.json)
 - Manages the consul service via upstart, sysv, systemd, or nssm.
 - Optionally installs the Web UI
+
+## 🚧 Breaking changes
+
+### v11.x
+
+Consul API failures will fail the affected Puppet resources and mark the run as failed,
+instead of logging warnings and treating failed requests as empty results.
+
+See [PR #717](https://github.com/voxpupuli/puppet-consul/pull/717) for details.
 
 ## Usage
 
@@ -129,6 +143,84 @@ systemd::dropin_file { 'foo.conf':
   notify_service => true,
 }
 ```
+
+## HTTPS with a private CA
+
+The API providers support HTTPS with your own CA and optional mutual TLS (mTLS).
+Set `protocol => 'https'`, the HTTPS port, and a hostname present in the server certificate's Subject Alternative Names.
+Server certificate and hostname verification are always enabled.
+The providers use Puppet's Ruby/OpenSSL trust store unless you specify `ca_file` or `ca_path`.
+They do not read the Consul CLI's `CONSUL_*` environment variables.
+
+This example adds HTTPS-only API access to an existing cluster configuration on Consul 1.12 or later:
+
+```puppet
+class { 'consul':
+  config_hash => {
+    'ports' => {
+      'http'  => -1,
+      'https' => 8501,
+    },
+    'tls' => {
+      'https' => {
+        'ca_file'         => '/etc/consul-tls/ca.pem',
+        'cert_file'       => '/etc/consul-tls/server.pem',
+        'key_file'        => '/etc/consul-tls/server-key.pem',
+        'verify_incoming' => true,
+      },
+    },
+  },
+  acl_api_protocol    => 'https',
+  acl_api_hostname    => 'consul01.example.internal',
+  acl_api_port        => 8501,
+  acl_api_ca_file     => '/etc/consul-tls/ca.pem',
+  acl_api_client_cert => '/etc/consul-tls/puppet.pem',
+  acl_api_client_key  => '/etc/consul-tls/puppet-key.pem',
+}
+```
+
+Manage the CA bundle, certificates and private keys separately and provide them before starting or reloading Consul.
+Keep them outside the purged configuration directory, or explicitly manage every file there with Puppet.
+The Consul process must be able to read its server credentials; the Puppet process must be able to read its API credentials.
+Use an unencrypted PEM private key with restrictive file permissions.
+A client certificate bundle must contain the leaf certificate first, followed by any intermediate CA certificates.
+An OpenSSL CA directory supplied through `ca_path` must have the appropriate certificate hash links.
+
+`verify_incoming => true` requires API clients to present a trusted client certificate.
+For HTTPS without client authentication, set it to `false` and omit `acl_api_client_cert` and `acl_api_client_key`.
+HTTP remains disabled by `ports.http => -1` in either case.
+Configure ACL tokens separately when ACLs are enabled; a TLS client certificate does not replace ACL authorization.
+This example configures the HTTPS API only; internal RPC, gossip and gRPC encryption need their own configuration.
+
+The global `acl_api_*` settings apply to resources created through the class's `policies` and `tokens` hashes.
+Individual hash entries can override `ca_file`, `ca_path`, `client_cert` and `client_key`.
+For directly declared resources, specify the connection settings on the resource:
+
+```puppet
+consul_key_value { 'application/settings':
+  ensure      => present,
+  value       => 'managed value',
+  protocol    => 'https',
+  hostname    => 'consul01.example.internal',
+  port        => 8501,
+  ca_file     => '/etc/consul-tls/ca.pem',
+  client_cert => '/etc/consul-tls/puppet.pem',
+  client_key  => '/etc/consul-tls/puppet-key.pem',
+}
+```
+
+The same TLS parameters are available on `consul_acl`, `consul_policy`, `consul_token` and `consul_prepared_query`.
+Always supply `client_cert` and `client_key` together.
+The types automatically require matching managed TLS files and `Service['consul']` when present in the catalog.
+Providers prefetch all resources of their type together, so make all required TLS files available before the first API resource.
+
+Reload and WAN join commands also verify HTTPS certificates, including when using `reload_command`.
+Explicit `acl_api_*` TLS paths override the CLI defaults derived from `tls.https`, `tls.defaults` or legacy top-level TLS settings.
+Without explicit client credentials, the CLI uses the agent certificate and key when HTTPS client verification is enabled.
+Set `acl_api_hostname` to the local agent's certificate name when these commands should operate on the local agent.
+For Docker installations, CLI certificate paths must exist inside the container; provider paths refer to the Puppet host.
+Existing HTTPS installations that relied on the previous reload verification bypass must now configure a trusted CA and matching hostname.
+TLS and API errors fail the resource instead of being interpreted as an absent object.
 
 ## Web UI
 

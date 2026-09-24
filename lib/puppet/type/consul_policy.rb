@@ -1,7 +1,11 @@
+require_relative '../../puppet_x/consul/tls_parameters'
+
 Puppet::Type.newtype(:consul_policy) do
   desc <<-EOD
   Manages a Consul ACL policy
   EOD
+  PuppetX::Consul::TLSParameters.apply(self)
+
   ensurable
 
   newparam(:name, namevar: true) do
@@ -65,6 +69,22 @@ Puppet::Type.newtype(:consul_policy) do
     desc 'consul protocol'
     newvalues(:http, :https)
     defaultto :http
+  end
+
+  newparam(:ca_file, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to a PEM CA bundle used to verify the Consul HTTPS server.'
+  end
+
+  newparam(:ca_path, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to an OpenSSL hashed CA directory used to verify the Consul HTTPS server.'
+  end
+
+  newparam(:client_cert, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to a PEM client certificate, optionally followed by intermediate certificates, for mutual TLS.'
+  end
+
+  newparam(:client_key, parent: PuppetX::Consul::TLSParameters::Path) do
+    desc 'Absolute path to the unencrypted PEM private key for client_cert.'
   end
 
   newparam(:port) do
