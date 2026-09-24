@@ -128,9 +128,11 @@ describe 'Consul HTTPS API with a private CA' do
 
     expect(on(default, 'curl --silent --max-time 5 http://127.0.0.1:8500/v1/status/leader', acceptable_exit_codes: [0, 7]).exit_code).to eq(7)
     expect(on(default, https_get('status/leader', ca_file: 'wrong-ca.pem'), acceptable_exit_codes: [0, 60]).exit_code).to eq(60)
-    expect(on(default, https_get('status/leader', hostname: '127.0.0.1'), acceptable_exit_codes: [0, 60]).exit_code).to eq(60)
-    # TLS versions and curl backends report a rejected client handshake with different exit codes.
-    expect(on(default, https_get('status/leader', client: false), acceptable_exit_codes: [0, 35, 55, 56]).exit_code).not_to eq(0)
+    # Older curl versions use 51 for hostname mismatches; newer versions use 60.
+    hostname_result = on(default, https_get('status/leader', hostname: '127.0.0.1'), acceptable_exit_codes: [0, 51, 60])
+    expect(hostname_result.exit_code).to eq(51).or eq(60)
+    # TLS versions and curl backends report rejected client handshakes differently, including HTTP/2 errors (16).
+    expect(on(default, https_get('status/leader', client: false), acceptable_exit_codes: [0, 16, 35, 55, 56]).exit_code).not_to eq(0)
 
     pid = on(default, 'systemctl show consul --property=MainPID').stdout
     expect(pid).to match(%r{MainPID=[1-9]\d*})
