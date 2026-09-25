@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v11.0.0](https://github.com/voxpupuli/puppet-consul/tree/v11.0.0) (2026-09-24)
+## [v11.0.1](https://github.com/voxpupuli/puppet-consul/tree/v11.0.1) (2026-09-25)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v11.0.0...v11.0.1)
+
+**Fixed bugs:**
+
+- fix: handle missing Consul ACL policy IDs correctly [\#719](https://github.com/voxpupuli/puppet-consul/pull/719) ([rwaffen](https://github.com/rwaffen))
+
+## [v11.0.0](https://github.com/voxpupuli/puppet-consul/tree/v11.0.0) (2026-09-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v10.0.0...v11.0.0)
 
