@@ -116,15 +116,41 @@ describe Puppet::Type.type(:consul_policy).provider(:default) do
         expect(resource[:id]).to eql('02298dc3-e1cd-e031-b2c8-ec3023702b20')
       end
 
-      it 'aborts if no policy is found by specified ID' do
+      it 'raises a clear error without changing ensure if a requested policy ID is missing' do
         stub_request(:get, 'http://localhost:8500/v1/acl/policies')
           .with(headers: { 'X-Consul-Token' => 'e33653a6-0320-4a71-b3af-75f14578e3aa', 'User-Agent' => 'Ruby' })
           .to_return(status: 200, body: '[]', headers: {})
 
         resource[:id] = '02298dc3-e1cd-e031-b2c8-ec3023702b20'
-        described_class.prefetch(resources)
-        described_class.reset
+        expect { described_class.prefetch(resources) }
+          .to raise_error(Puppet::Error, %r{Consul ACL policy test_policy with ID=02298dc3-e1cd-e031-b2c8-ec3023702b20 does not exist.*already existing policy})
+        expect(resource[:ensure]).to be(:present)
+      end
+
+      it 'keeps a missing policy absent and initializes subsequent resources' do
+        stub_request(:get, 'http://localhost:8500/v1/acl/policies')
+          .to_return(status: 200, body: '[]', headers: {})
+
+        resource[:id] = '02298dc3-e1cd-e031-b2c8-ec3023702b20'
+        resource[:ensure] = :absent
+        following = Puppet::Type.type(:consul_policy).new(
+          name: 'following_policy', ensure: :present, acl_api_token: resource[:acl_api_token],
+        )
+        creation = stub_request(:put, 'http://localhost:8500/v1/acl/policy')
+                   .with { |request| JSON.parse(request.body)['Name'] == 'following_policy' }
+                   .to_return(status: 200, body: JSON.dump('ID' => 'ce6c53fb-aebd-4acb-b108-b65d4ea67853'))
+
+        described_class.prefetch(resources.merge('following_policy' => following))
+
         expect(resource[:ensure]).to be(:absent)
+        expect(resource.provider.exists?).to be_nil
+        resource.provider.flush
+        expect(creation).not_to have_been_requested
+
+        following.provider.create
+        following.provider.flush
+        expect(creation).to have_been_requested.once
+        expect(following[:id]).to eq('ce6c53fb-aebd-4acb-b108-b65d4ea67853')
       end
     end
   end
