@@ -20,10 +20,9 @@ Puppet::Type.type(:consul_policy).provide(
       else
         existing_policy = all_policies.select { |policy| policy.id == resource[:id] }
 
-        if existing_policy.empty?
-          Puppet.warning("Unable to find any existing Consul ACL policy by specified ID=#{resource[:id]}")
-          resource[:ensure] = :absent
-          return
+        if existing_policy.empty? && resource[:ensure] != :absent
+          raise Puppet::Error, "Consul ACL policy #{name} with ID=#{resource[:id]} does not exist. " \
+                               'The id property must refer to an already existing policy; omit id or set it to an empty string to create a policy by name.'
         end
       end
 
