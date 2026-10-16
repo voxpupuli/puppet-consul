@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.1.0](https://github.com/voxpupuli/puppet-consul/tree/v11.1.0) (2026-10-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v11.0.1...v11.1.0)
+
+**Implemented enhancements:**
+
+- puppet/systemd: Allow 10.x & puppetlabs/stdlib: Allow 10.x [\#723](https://github.com/voxpupuli/puppet-consul/pull/723) ([bastelfreak](https://github.com/bastelfreak))
+- Update requirements to allow OpenVox 9 [\#722](https://github.com/voxpupuli/puppet-consul/pull/722) ([sebastianrakel](https://github.com/sebastianrakel))
+
 ## [v11.0.1](https://github.com/voxpupuli/puppet-consul/tree/v11.0.1) (2026-09-25)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v11.0.0...v11.0.1)
