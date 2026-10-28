@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.3.0](https://github.com/voxpupuli/puppet-consul/tree/v11.3.0) (2026-10-28)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v11.2.0...v11.3.0)
+
+**Implemented enhancements:**
+
+- puppet/systemd: Allow 11.x [\#727](https://github.com/voxpupuli/puppet-consul/pull/727) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v11.2.0](https://github.com/voxpupuli/puppet-consul/tree/v11.2.0) (2026-10-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-consul/compare/v11.1.0...v11.2.0)
